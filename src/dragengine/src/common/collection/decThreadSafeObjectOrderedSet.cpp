@@ -504,6 +504,158 @@ void decThreadSafeObjectOrderedSet::GetSliced( decThreadSafeObjectOrderedSet &se
 
 
 
+void decThreadSafeObjectOrderedSet::Visit(decThreadSafeObjectVisitor &visitor,
+int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			visitor(pObjects[i]);
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			visitor(pObjects[i]);
+		}
+	}
+}
+
+bool decThreadSafeObjectOrderedSet::Find(decThreadSafeObjectEvaluator &evaluator,
+deThreadSafeObject *&found, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			if(evaluator(pObjects[i])){
+				found = pObjects[i];
+				return true;
+			}
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pObjects[i])){
+				found = pObjects[i];
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::Collect(
+decThreadSafeObjectEvaluator &evaluator, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	decThreadSafeObjectOrderedSet collected;
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			if(evaluator(pObjects[i])){
+				collected.Add(pObjects[i]);
+			}
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pObjects[i])){
+				collected.Add(pObjects[i]);
+			}
+		}
+	}
+	return collected;
+}
+
+void decThreadSafeObjectOrderedSet::RemoveIf(decThreadSafeObjectEvaluator &evaluator,
+int from, int to, int step){
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			if(evaluator(pObjects[i])){
+				RemoveFrom(i);
+				i--;
+				to--;
+			}
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pObjects[i])){
+				RemoveFrom(i);
+				i++;
+				to++;
+			}
+		}
+	}
+}
+
+void decThreadSafeObjectOrderedSet::Sort(decThreadSafeObjectComparator &comparator){
+	if(pObjectCount > 1){
+		pSort(comparator, 0, pObjectCount - 1);
+	}
+}
+
+decThreadSafeObjectOrderedSet decThreadSafeObjectOrderedSet::GetSorted(
+decThreadSafeObjectComparator &comparator) const{
+	decThreadSafeObjectOrderedSet copy(*this);
+	copy.Sort(comparator);
+	return copy;
+}
+
+
+
 // Operators
 //////////////
 
@@ -582,4 +734,40 @@ decThreadSafeObjectOrderedSet &decThreadSafeObjectOrderedSet::operator+=( const 
 	}
 	
 	return *this;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void decThreadSafeObjectOrderedSet::pSort(decThreadSafeObjectComparator &comparator, int left, int right){
+	deThreadSafeObject * const pivot = pObjects[left];
+	const int r_hold = right;
+	const int l_hold = left;
+	
+	while(left < right){
+		while(left < right && comparator(pObjects[right], pivot) >= 0){
+			right--;
+		}
+		if(left != right){
+			pObjects[left] = pObjects[right];
+			left++;
+		}
+		while(left < right && comparator(pObjects[left], pivot) <= 0){
+			left++;
+		}
+		if(left != right){
+			pObjects[right] = pObjects[left];
+			right--;
+		}
+	}
+	
+	pObjects[left] = pivot;
+	if(l_hold < left){
+		pSort(comparator, l_hold, left - 1);
+	}
+	if(r_hold > left){
+		pSort(comparator, left + 1, r_hold);
+	}
 }

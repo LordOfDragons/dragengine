@@ -25,7 +25,7 @@
 #ifndef _DECTHREADSAFEOBJECTORDEREDSET_H_
 #define _DECTHREADSAFEOBJECTORDEREDSET_H_
 
-#include "../../dragengine_export.h"
+#include "decCollectionInterfaces.h"
 
 class deThreadSafeObject;
 
@@ -196,6 +196,53 @@ public:
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
 	void GetSliced( decThreadSafeObjectOrderedSet &set, int from, int to, int step ) const;
+	
+	
+	
+	/**
+	 * \brief Visit objects.
+	 * \param[in] visitor Visitor.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	void Visit(decThreadSafeObjectVisitor &visitor, int from = 0, int to = -1, int step = 1) const;
+	
+	/**
+	 * \brief Find object.
+	 * \param[in] evaluator Evaluator.
+	 * \param[out] found Found object if true is returned.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	bool Find(decThreadSafeObjectEvaluator &evaluator, deThreadSafeObject *&found,
+		int from = 0, int to = -1, int step = 1) const;
+	
+	/**
+	 * \brief Collect object into a new list.
+	 * \param[in] evaluator Evaluator.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	decThreadSafeObjectOrderedSet Collect(decThreadSafeObjectEvaluator &evaluator,
+		int from = 0, int to = -1, int step = 1) const;
+	
+	/**
+	 * \brief Remove objects matching condition.
+	 * \param[in] evaluator Evaluator.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	void RemoveIf(decThreadSafeObjectEvaluator &evaluator, int from = 0, int to = -1, int step = 1);
+	
+	/** \brief Sort objects in place. */
+	void Sort(decThreadSafeObjectComparator &comparator);
+	
+	/** \brief Sort objects as new list. */
+	decThreadSafeObjectOrderedSet GetSorted(decThreadSafeObjectComparator &comparator) const;
 	/*@}*/
 	
 	
@@ -220,6 +267,10 @@ public:
 	/** \brief Append objects of set to this set. */
 	decThreadSafeObjectOrderedSet &operator+=( const decThreadSafeObjectOrderedSet &set );
 	/*@}*/
+	
+	
+private:
+	void pSort(decThreadSafeObjectComparator &comparator, int left, int right);
 };
 
 #endif

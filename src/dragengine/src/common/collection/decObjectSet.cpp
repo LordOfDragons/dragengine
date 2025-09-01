@@ -225,6 +225,157 @@ bool decObjectSet::Equals( const decObjectSet &set ) const{
 
 
 
+void decObjectSet::Visit(decObjectVisitor &visitor, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			visitor(pObjects[i]);
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			visitor(pObjects[i]);
+		}
+	}
+}
+
+bool decObjectSet::Find(decObjectEvaluator &evaluator, deObject *&found, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			if(evaluator(pObjects[i])){
+				found = pObjects[i];
+				return true;
+			}
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pObjects[i])){
+				found = pObjects[i];
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+decObjectSet decObjectSet::Collect(decObjectEvaluator &evaluator, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	decObjectSet collected;
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			if(evaluator(pObjects[i])){
+				collected.Add(pObjects[i]);
+			}
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pObjects[i])){
+				collected.Add(pObjects[i]);
+			}
+		}
+	}
+	return collected;
+}
+
+void decObjectSet::RemoveIf(decObjectEvaluator &evaluator, int from, int to, int step){
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			if(evaluator(pObjects[i])){
+				if(pObjects[i]){
+					pObjects[i]->FreeReference();
+				}
+				
+				pObjectCount--;
+				if(i < pObjectCount){
+					pObjects[i] = pObjects[pObjectCount];
+				}
+				
+				i--;
+				to--;
+			}
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pObjects[i])){
+				if(pObjects[i]){
+					pObjects[i]->FreeReference();
+				}
+				
+				pObjectCount--;
+				if(i < pObjectCount){
+					pObjects[i] = pObjects[pObjectCount];
+				}
+				
+				i++;
+				to++;
+			}
+		}
+	}
+}
+
+
+
 // Operators
 //////////////
 

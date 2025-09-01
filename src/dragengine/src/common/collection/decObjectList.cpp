@@ -455,13 +455,170 @@ void decObjectList::GetMiddle( decObjectList &list, int from, int to ) const{
 }
 
 decObjectList decObjectList::GetSliced( int from, int to, int step ) const{
-	// TODO Imeplementation
-	return GetMiddle( from, to );
+	if(step == 1){
+		return GetMiddle(from, to);
+		
+	}else{
+		// TODO Imeplementation
+		DETHROW_INFO(deeInvalidAction, "Not implemented yet");
+	}
 }
 
 void decObjectList::GetSliced( decObjectList &list, int from, int to, int step ) const{
-	// TODO Imeplementation
-	GetMiddle( list, from, to );
+	if(step == 1){
+		GetMiddle(list, from, to);
+		
+	}else{
+		// TODO Imeplementation
+		DETHROW_INFO(deeInvalidAction, "Not implemented yet");
+	}
+}
+
+
+
+void decObjectList::Visit(decObjectVisitor &visitor, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			visitor(pObjects[i]);
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			visitor(pObjects[i]);
+		}
+	}
+}
+
+bool decObjectList::Find(decObjectEvaluator &evaluator, deObject *&found, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			if(evaluator(pObjects[i])){
+				found = pObjects[i];
+				return true;
+			}
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pObjects[i])){
+				found = pObjects[i];
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+decObjectList decObjectList::Collect(decObjectEvaluator &evaluator, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	decObjectList collected;
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			if(evaluator(pObjects[i])){
+				collected.Add(pObjects[i]);
+			}
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pObjects[i])){
+				collected.Add(pObjects[i]);
+			}
+		}
+	}
+	return collected;
+}
+
+void decObjectList::RemoveIf(decObjectEvaluator &evaluator, int from, int to, int step){
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pObjectCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pObjectCount)
+	
+	if(to < 0){
+		to = pObjectCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	DEASSERT_TRUE(to < pObjectCount)
+	
+	int i;
+	if(step > 0){
+		for(i=from; i<=to; i+=step){
+			if(evaluator(pObjects[i])){
+				RemoveFrom(i);
+				i--;
+				to--;
+			}
+		}
+		
+	}else{
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pObjects[i])){
+				RemoveFrom(i);
+				i++;
+				to++;
+			}
+		}
+	}
+}
+
+void decObjectList::Sort(decObjectComparator &comparator){
+	if(pObjectCount > 1){
+		pSort(comparator, 0, pObjectCount - 1);
+	}
+}
+
+decObjectList decObjectList::GetSorted(decObjectComparator &comparator) const{
+	decObjectList copy(*this);
+	copy.Sort(comparator);
+	return copy;
 }
 
 
@@ -557,4 +714,40 @@ decObjectList &decObjectList::operator+=( const decObjectList &list ){
 	}
 	
 	return *this;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void decObjectList::pSort(decObjectComparator &comparator, int left, int right){
+	deObject * const pivot = pObjects[left];
+	const int r_hold = right;
+	const int l_hold = left;
+	
+	while(left < right){
+		while(left < right && comparator(pObjects[right], pivot) >= 0){
+			right--;
+		}
+		if(left != right){
+			pObjects[left] = pObjects[right];
+			left++;
+		}
+		while(left < right && comparator(pObjects[left], pivot) <= 0){
+			left++;
+		}
+		if(left != right){
+			pObjects[right] = pObjects[left];
+			right--;
+		}
+	}
+	
+	pObjects[left] = pivot;
+	if(l_hold < left){
+		pSort(comparator, l_hold, left - 1);
+	}
+	if(r_hold > left){
+		pSort(comparator, left + 1, r_hold);
+	}
 }

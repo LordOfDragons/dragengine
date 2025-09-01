@@ -25,7 +25,7 @@
 #ifndef _DECPOINTERSET_H_
 #define _DECPOINTERSET_H_
 
-#include "../../dragengine_export.h"
+#include "decCollectionInterfaces.h"
 
 
 /**
@@ -99,6 +99,46 @@ public:
 	
 	/** \brief Determine if this set is equal to another set. */
 	bool Equals( const decPointerSet &set ) const;
+	
+	
+	
+	/**
+	 * \brief Visit pointers.
+	 * \param[in] visitor Visitor.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	void Visit(decPointerVisitor &visitor, int from = 0, int to = -1, int step = 1) const;
+	
+	/**
+	 * \brief Find pointer.
+	 * \param[in] evaluator Evaluator.
+	 * \param[out] found Found pointer if true is returned.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	bool Find(decPointerEvaluator &evaluator, void *&found,
+		int from = 0, int to = -1, int step = 1) const;
+	
+	/**
+	 * \brief Collect pointer into a new list.
+	 * \param[in] evaluator Evaluator.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	decPointerSet Collect(decPointerEvaluator &evaluator, int from = 0, int to = -1, int step = 1) const;
+	
+	/**
+	 * \brief Remove pointers matching condition.
+	 * \param[in] evaluator Evaluator.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	void RemoveIf(decPointerEvaluator &evaluator, int from = 0, int to = -1, int step = 1);
 	/*@}*/
 	
 	
