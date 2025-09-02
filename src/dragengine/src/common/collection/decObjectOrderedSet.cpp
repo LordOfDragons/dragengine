@@ -519,24 +519,27 @@ void decObjectOrderedSet::Visit(decObjectVisitor &visitor, int from, int to, int
 	DEASSERT_TRUE(step != 0)
 	
 	if(from < 0){
-		from = pObjectCount - from;
+		from = pObjectCount + from;
 	}
 	DEASSERT_TRUE(from >= 0)
 	DEASSERT_TRUE(from < pObjectCount)
 	
 	if(to < 0){
-		to = pObjectCount - to;
+		to = pObjectCount + to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pObjectCount)
 	
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pObjectCount)
+		
+		for(i=from; i<to; i+=step){
 			visitor(pObjects[i]);
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pObjectCount)
+		
 		for(i=from; i>=to; i+=step){
 			visitor(pObjects[i]);
 		}
@@ -548,20 +551,21 @@ deObject *&found, int from, int to, int step) const{
 	DEASSERT_TRUE(step != 0)
 	
 	if(from < 0){
-		from = pObjectCount - from;
+		from = pObjectCount + from;
 	}
 	DEASSERT_TRUE(from >= 0)
 	DEASSERT_TRUE(from < pObjectCount)
 	
 	if(to < 0){
-		to = pObjectCount - to;
+		to = pObjectCount + to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pObjectCount)
 	
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pObjectCount)
+		
+		for(i=from; i<to; i+=step){
 			if(evaluator(pObjects[i])){
 				found = pObjects[i];
 				return true;
@@ -569,6 +573,8 @@ deObject *&found, int from, int to, int step) const{
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pObjectCount)
+		
 		for(i=from; i>=to; i+=step){
 			if(evaluator(pObjects[i])){
 				found = pObjects[i];
@@ -583,27 +589,30 @@ decObjectOrderedSet decObjectOrderedSet::Collect(decObjectEvaluator &evaluator, 
 	DEASSERT_TRUE(step != 0)
 	
 	if(from < 0){
-		from = pObjectCount - from;
+		from = pObjectCount + from;
 	}
 	DEASSERT_TRUE(from >= 0)
 	DEASSERT_TRUE(from < pObjectCount)
 	
 	if(to < 0){
-		to = pObjectCount - to;
+		to = pObjectCount + to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pObjectCount)
 	
 	decObjectOrderedSet collected;
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pObjectCount)
+		
+		for(i=from; i<to; i+=step){
 			if(evaluator(pObjects[i])){
 				collected.Add(pObjects[i]);
 			}
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pObjectCount)
+		
 		for(i=from; i>=to; i+=step){
 			if(evaluator(pObjects[i])){
 				collected.Add(pObjects[i]);
@@ -617,20 +626,21 @@ void decObjectOrderedSet::RemoveIf(decObjectEvaluator &evaluator, int from, int 
 	DEASSERT_TRUE(step != 0)
 	
 	if(from < 0){
-		from = pObjectCount - from;
+		from = pObjectCount + from;
 	}
 	DEASSERT_TRUE(from >= 0)
 	DEASSERT_TRUE(from < pObjectCount)
 	
 	if(to < 0){
-		to = pObjectCount - to;
+		to = pObjectCount + to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pObjectCount)
 	
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pObjectCount)
+		
+		for(i=from; i<to; i+=step){
 			if(evaluator(pObjects[i])){
 				RemoveFrom(i);
 				i--;
@@ -639,6 +649,8 @@ void decObjectOrderedSet::RemoveIf(decObjectEvaluator &evaluator, int from, int 
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pObjectCount)
+		
 		for(i=from; i>=to; i+=step){
 			if(evaluator(pObjects[i])){
 				RemoveFrom(i);

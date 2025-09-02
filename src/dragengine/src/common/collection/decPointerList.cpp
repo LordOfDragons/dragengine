@@ -415,15 +415,18 @@ void decPointerList::Visit(decPointerVisitor &visitor, int from, int to, int ste
 		to = pPointerCount - to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pPointerCount)
 	
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
 			visitor(pPointers[i]);
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
 		for(i=from; i>=to; i+=step){
 			visitor(pPointers[i]);
 		}
@@ -444,11 +447,12 @@ int from, int to, int step) const{
 		to = pPointerCount - to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pPointerCount)
 	
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
 			if(evaluator(pPointers[i])){
 				found = pPointers[i];
 				return true;
@@ -456,6 +460,8 @@ int from, int to, int step) const{
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
 		for(i=from; i>=to; i+=step){
 			if(evaluator(pPointers[i])){
 				found = pPointers[i];
@@ -479,18 +485,21 @@ decPointerList decPointerList::Collect(decPointerEvaluator &evaluator, int from,
 		to = pPointerCount - to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pPointerCount)
 	
 	decPointerList collected;
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
 			if(evaluator(pPointers[i])){
 				collected.Add(pPointers[i]);
 			}
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
 		for(i=from; i>=to; i+=step){
 			if(evaluator(pPointers[i])){
 				collected.Add(pPointers[i]);
@@ -513,11 +522,12 @@ void decPointerList::RemoveIf(decPointerEvaluator &evaluator, int from, int to, 
 		to = pPointerCount - to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pPointerCount)
 	
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
 			if(evaluator(pPointers[i])){
 				RemoveFrom(i);
 				i--;
@@ -526,6 +536,8 @@ void decPointerList::RemoveIf(decPointerEvaluator &evaluator, int from, int to, 
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
 		for(i=from; i>=to; i+=step){
 			if(evaluator(pPointers[i])){
 				RemoveFrom(i);

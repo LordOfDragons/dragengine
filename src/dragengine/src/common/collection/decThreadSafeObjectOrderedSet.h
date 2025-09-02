@@ -203,40 +203,54 @@ public:
 	 * \brief Visit objects.
 	 * \param[in] visitor Visitor.
 	 * \param[in] from First index to visit. Negative counts from end of list.
-	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	void Visit(decThreadSafeObjectVisitor &visitor, int from = 0, int to = -1, int step = 1) const;
+	void Visit(decThreadSafeObjectVisitor &visitor, int from, int to = -1, int step = 1) const;
+	
+	inline void Visit(decThreadSafeObjectVisitor &visitor) const{ Visit(visitor, 0, pObjectCount); }
 	
 	/**
 	 * \brief Find object.
 	 * \param[in] evaluator Evaluator.
 	 * \param[out] found Found object if true is returned.
 	 * \param[in] from First index to visit. Negative counts from end of list.
-	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	bool Find(decThreadSafeObjectEvaluator &evaluator, deThreadSafeObject *&found,
 		int from = 0, int to = -1, int step = 1) const;
 	
+	inline bool Find(decThreadSafeObjectEvaluator &evaluator, deThreadSafeObject *&found) const{
+		return Find(evaluator, found, 0, pObjectCount);
+	}
+	
 	/**
 	 * \brief Collect object into a new list.
 	 * \param[in] evaluator Evaluator.
 	 * \param[in] from First index to visit. Negative counts from end of list.
-	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
 	decThreadSafeObjectOrderedSet Collect(decThreadSafeObjectEvaluator &evaluator,
 		int from = 0, int to = -1, int step = 1) const;
 	
+	inline decThreadSafeObjectOrderedSet Collect(decThreadSafeObjectEvaluator &evaluator) const{
+		return Collect(evaluator, 0, pObjectCount);
+	}
+	
 	/**
 	 * \brief Remove objects matching condition.
 	 * \param[in] evaluator Evaluator.
 	 * \param[in] from First index to visit. Negative counts from end of list.
-	 * \param[in] to Last index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
 	 * \param[in] step Step size. Can be negative but not 0.
 	 */
-	void RemoveIf(decThreadSafeObjectEvaluator &evaluator, int from = 0, int to = -1, int step = 1);
+	void RemoveIf(decThreadSafeObjectEvaluator &evaluator, int from, int to = -1, int step = 1);
+	
+	inline void RemoveIf(decThreadSafeObjectEvaluator &evaluator){
+		RemoveIf(evaluator, 0, pObjectCount);
+	}
 	
 	/** \brief Sort objects in place. */
 	void Sort(decThreadSafeObjectComparator &comparator);

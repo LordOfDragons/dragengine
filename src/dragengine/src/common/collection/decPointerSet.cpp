@@ -209,15 +209,18 @@ void decPointerSet::Visit(decPointerVisitor &visitor, int from, int to, int step
 		to = pPointerCount - to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pPointerCount)
 	
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
 			visitor(pPointers[i]);
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
 		for(i=from; i>=to; i+=step){
 			visitor(pPointers[i]);
 		}
@@ -237,11 +240,12 @@ bool decPointerSet::Find(decPointerEvaluator &evaluator, void *&found, int from,
 		to = pPointerCount - to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pPointerCount)
 	
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
 			if(evaluator(pPointers[i])){
 				found = pPointers[i];
 				return true;
@@ -249,6 +253,8 @@ bool decPointerSet::Find(decPointerEvaluator &evaluator, void *&found, int from,
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
 		for(i=from; i>=to; i+=step){
 			if(evaluator(pPointers[i])){
 				found = pPointers[i];
@@ -272,18 +278,21 @@ decPointerSet decPointerSet::Collect(decPointerEvaluator &evaluator, int from, i
 		to = pPointerCount - to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pPointerCount)
 	
 	decPointerSet collected;
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
 			if(evaluator(pPointers[i])){
 				collected.Add(pPointers[i]);
 			}
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
 		for(i=from; i>=to; i+=step){
 			if(evaluator(pPointers[i])){
 				collected.Add(pPointers[i]);
@@ -306,11 +315,12 @@ void decPointerSet::RemoveIf(decPointerEvaluator &evaluator, int from, int to, i
 		to = pPointerCount - to;
 	}
 	DEASSERT_TRUE(to >= 0)
-	DEASSERT_TRUE(to < pPointerCount)
 	
 	int i;
 	if(step > 0){
-		for(i=from; i<=to; i+=step){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
 			if(evaluator(pPointers[i])){
 				pPointerCount--;
 				if(i < pPointerCount){
@@ -323,6 +333,8 @@ void decPointerSet::RemoveIf(decPointerEvaluator &evaluator, int from, int to, i
 		}
 		
 	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
 		for(i=from; i>=to; i+=step){
 			if(evaluator(pPointers[i])){
 				pPointerCount--;
