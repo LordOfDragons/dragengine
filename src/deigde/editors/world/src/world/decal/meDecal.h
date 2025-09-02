@@ -53,6 +53,11 @@ class deSkin;
  * \brief Decal.
  */
 class meDecal : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meDecal> Ref;
+	
+	
 private:
 	igdeEnvironment *pEnvironment;
 	

@@ -60,6 +60,9 @@ class igdeWDebugDrawerShape;
  */
 class meHeightTerrainSector : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHeightTerrainSector> Ref;
+	
 	/** Data types. */
 	enum eDataTypes{
 		/** 8-bit integer. */

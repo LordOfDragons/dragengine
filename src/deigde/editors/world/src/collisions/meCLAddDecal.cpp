@@ -175,8 +175,6 @@ void meCLAddDecal::Cancel(){
 //////////////////
 
 void meCLAddDecal::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	meCLHitListEntry *entry = NULL;
-	
 	if( info->IsCollider() ){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
 			*pWorld->GetEnvironment(), info->GetCollider() );
@@ -185,21 +183,11 @@ void meCLAddDecal::CollisionResponse( deCollider *owner, deCollisionInfo *info )
 		}
 		
 		if( colliderOwner->GetObject() ){
-			try{
-				entry = new meCLHitListEntry;
-				entry->SetObject( colliderOwner->GetObject() );
-				entry->SetDistance( info->GetDistance() );
-				entry->SetNormal( info->GetNormal() );
-				
-				pHitList.AddEntry( entry );
-				entry = NULL;
-				
-			}catch( const deException & ){
-				if( entry ){
-					delete entry;
-				}
-				throw;
-			}
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			entry->SetObject( colliderOwner->GetObject() );
+			entry->SetDistance( info->GetDistance() );
+			entry->SetNormal( info->GetNormal() );
+			pHitList.AddEntry( entry );
 		}
 		
 	}else if( info->IsHTSector() ){

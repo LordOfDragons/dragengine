@@ -740,7 +740,7 @@ void meDecal::AttachDecals(){
 	}
 	
 	if( world ){
-		meCLCollect collect( world );
+		meCLCollect collect(*world);
 		
 		decDMatrix matrix = decDMatrix::CreateRT( pRotation * DEG2RAD, pPosition );
 		const decVector halfSize( decVector( 0.001f, 0.001f, 0.001f ).Largest( decVector( pSize * 0.5f ) ) );
@@ -752,8 +752,7 @@ void meDecal::AttachDecals(){
 		collisionFilter.SetBit( meWorld::eclmObjects );
 		collisionFilter.SetBit( meWorld::eclmHeightTerrains );
 		
-		collect.SetCollectObjects( true );
-		collect.SetCollectDecals( false );
+		collect.SetTestObjects(true);
 		
 		world->CollisionTestBox( matrix * decDVector( 0.0, 0.0, -halfSize.z ), matrix.ToQuaternion(),
 			halfSize, &collect, decCollisionFilter( collisionCategory, collisionFilter ) );

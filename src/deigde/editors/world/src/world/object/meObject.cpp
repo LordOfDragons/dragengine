@@ -537,8 +537,8 @@ void meObject::SetSize( const decVector &size ){
 		return;
 	}
 	
-	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
-	InvalidateDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect( *pWObject );
 	
 	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
 	
@@ -553,8 +553,8 @@ void meObject::SetSize( const decVector &size ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	InvalidateDecals.Collect( *pWObject );
-	InvalidateDecals.InvalidateDecals();
+	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -564,8 +564,8 @@ void meObject::SetScaling( const decVector &scaling ){
 		return;
 	}
 	
-	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
-	InvalidateDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect( *pWObject );
 	
 	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
 	
@@ -581,8 +581,8 @@ void meObject::SetScaling( const decVector &scaling ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	InvalidateDecals.Collect( *pWObject );
-	InvalidateDecals.InvalidateDecals();
+	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -592,8 +592,8 @@ void meObject::SetSizeAndScaling( const decVector &size, const decVector &scalin
 		return;
 	}
 	
-	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
-	InvalidateDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect( *pWObject );
 	
 	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
 	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
@@ -608,8 +608,8 @@ void meObject::SetSizeAndScaling( const decVector &size, const decVector &scalin
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	InvalidateDecals.Collect( *pWObject );
-	InvalidateDecals.InvalidateDecals();
+	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -621,8 +621,8 @@ void meObject::SetRotation( const decVector &rotation ){
 	
 	const decQuaternion orientation = decQuaternion::CreateFromEuler( rotation * DEG2RAD );
 	
-	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
-	InvalidateDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect( *pWObject );
 	
 	pRotation = rotation;
 	
@@ -640,8 +640,8 @@ void meObject::SetRotation( const decVector &rotation ){
 	pRepositionCamera();
 	UpdateNavPathTest();
 	
-	InvalidateDecals.Collect( *pWObject );
-	InvalidateDecals.InvalidateDecals();
+	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -978,9 +978,9 @@ void meObject::WOAsyncFinished(){
 	ShowStateChanged();
 	
 	if( pWorld ){
-		meCLInvalidateDecals InvalidateDecals( pWorld );
-		InvalidateDecals.Collect( *pWObject );
-		InvalidateDecals.InvalidateDecals();
+		meCLInvalidateDecals invalidateDecals(*pWorld);
+		invalidateDecals.Collect(*pWObject);
+		invalidateDecals.InvalidateDecals();
 	}
 }
 
@@ -1706,36 +1706,43 @@ bool meObject::IsPropertyShapeOrShapeList( const char *property ) const{
 // Decals
 ///////////
 
-meDecal *meObject::GetDecalAt( int index ) const{
-	if( index < 0 || index >= pDecalCount ) DETHROW( deeInvalidParam );
+meDecal *meObject::GetDecalAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pDecalCount)
 	
-	return pDecals[ index ];
+	return pDecals[index];
 }
 
-int meObject::IndexOfDecal( meDecal *decal ) const{
-	if( ! decal ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pDecalCount; i++ ){
-		if( decal == pDecals[ i ] ) return i;
+int meObject::IndexOfDecal(meDecal *decal) const{
+	if(!decal){
+		return -1;
 	}
 	
+	int i;
+	for(i=0; i<pDecalCount; i++){
+		if(decal == pDecals[i]){
+			return i;
+		}
+	}
 	return -1;
 }
 
-bool meObject::HasDecal( meDecal *decal ) const{
-	if( ! decal ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pDecalCount; i++ ){
-		if( decal == pDecals[ i ] ) return true;
+bool meObject::HasDecal(meDecal *decal) const{
+	if(!decal){
+		return false;
 	}
 	
+	int i;
+	for(i=0; i<pDecalCount; i++){
+		if(decal == pDecals[i]){
+			return true;
+		}
+	}
 	return false;
 }
 
 void meObject::AddDecal( meDecal *decal ){
-	if( HasDecal( decal ) ) DETHROW( deeInvalidParam );
+	DEASSERT_FALSE(HasDecal(decal))
 	
 	if( pDecalCount == pDecalSize ){
 		int newSize = pDecalCount * 3 / 2 + 1;
@@ -1760,9 +1767,11 @@ void meObject::AddDecal( meDecal *decal ){
 }
 
 void meObject::InsertDecalAt( meDecal *decal, int index ){
-	if( HasDecal( decal ) || index < 0 || index > pDecalCount ) DETHROW( deeInvalidParam );
-	int i;
+	DEASSERT_FALSE(HasDecal(decal))
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index <= pDecalCount)
 	
+	int i;
 	for( i=pDecalCount-1; i>index; i-- ){
 		pDecals[ i ] = pDecals[ i - 1 ];
 	}
@@ -1779,7 +1788,7 @@ void meObject::InsertDecalAt( meDecal *decal, int index ){
 
 void meObject::RemoveDecal( meDecal *decal ){
 	int i, index = IndexOfDecal( decal );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	DEASSERT_TRUE(index != -1)
 	
 	for( i=index+1; i<pDecalCount; i++ ){
 		pDecals[ i - 1 ] = pDecals[ i ];

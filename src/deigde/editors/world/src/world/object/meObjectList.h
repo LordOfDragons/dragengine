@@ -87,13 +87,21 @@ public:
 	/** Removes all objects. */
 	void RemoveAll();
 	
-	void Visit(Visitor &visitor, int from = 0, int to = -1, int step = 1) const;
+	void Visit(Visitor &visitor, int from, int to = -1, int step = 1) const;
 	
-	meObject *Find(Evaluator &evaluator, int from = 0, int to = -1, int step = 1) const;
+	inline void Visit(Visitor &visitor) const{ Visit(visitor, 0, pObjects.GetCount()); }
 	
-	meObjectList Collect(Evaluator &evaluator, int from = 0, int to = -1, int step = 1) const;
+	meObject *Find(Evaluator &evaluator, int from, int to = -1, int step = 1) const;
 	
-	void RemoveIf(Evaluator &evaluator, int from = 0, int to = -1, int step = 1);
+	inline meObject *Find(Evaluator &evaluator) const{ return Find(evaluator, 0, pObjects.GetCount()); }
+	
+	meObjectList Collect(Evaluator &evaluator, int from, int to = -1, int step = 1) const;
+	
+	inline meObjectList Collect(Evaluator &evaluator) const{ return Collect(evaluator, 0, pObjects.GetCount()); }
+	
+	void RemoveIf(Evaluator &evaluator, int from, int to = -1, int step = 1);
+	
+	inline void RemoveIf(Evaluator &evaluator){ RemoveIf(evaluator, 0, pObjects.GetCount()); }
 	
 	void Sort(Comparator &comparator);
 	

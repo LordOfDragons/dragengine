@@ -49,6 +49,11 @@ class deComponent;
  * \brief Navigation Space.
  */
 class meNavigationSpace : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meNavigationSpace> Ref;
+	
+	
 private:
 	igdeEnvironment *pEnvironment;
 	

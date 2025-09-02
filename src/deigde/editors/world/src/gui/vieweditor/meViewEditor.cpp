@@ -87,7 +87,7 @@ meWorldGuiParameters &meViewEditor::GetWorldGuiParameters() const{
 	return GetWorld().GetGuiParameters();
 }
 
-int meViewEditor::GetElementMode() const{
+meWorldGuiParameters::eElementModes meViewEditor::GetElementMode() const{
 	return GetWorldGuiParameters().GetElementMode();
 }
 

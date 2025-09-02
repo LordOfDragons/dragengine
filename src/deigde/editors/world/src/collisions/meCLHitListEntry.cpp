@@ -26,14 +26,11 @@
 #include <stdlib.h>
 
 #include "meCLHitListEntry.h"
-#include "../world/decal/meDecal.h"
 #include "../world/meWorld.h"
-#include "../world/navspace/meNavigationSpace.h"
-#include "../world/object/meObject.h"
-#include "../world/objectshape/meObjectShape.h"
+#include "../world/object/meObjectSnapPoint.h"
+#include "../world/terrain/meHeightTerrainSector.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class meCLHitListEntry
@@ -43,94 +40,59 @@
 ////////////////////////////
 
 meCLHitListEntry::meCLHitListEntry() :
-pObject( NULL ),
-pObjectShape( NULL ),
-pDecal( NULL ),
-pNavSpace( NULL ),
-pHTNavSpacePoint( -1 ),
-pDistance( 0.0f ){
+pHTNavSpacePoint(-1),
+pDistance(0.0f){
 }
-
-meCLHitListEntry::~meCLHitListEntry(){
-	Clear();
-}
-
 
 
 // Management
 ///////////////
 
 void meCLHitListEntry::Clear(){
-	SetObject( NULL );
-	SetObjectShape( NULL );
-	SetDecal( NULL );
-	SetNavigationSpace( NULL );
-	SetHTNavSpacePoint( -1 );
+	pObject = nullptr;
+	pObjectShape = nullptr;
+	pDecal = nullptr;
+	pNavSpace = nullptr;
+	pHTNavSpacePoint = -1;
+	pHTSector = nullptr;
+	pSnapPoint = nullptr;
 	pDistance = 0.0f;
-	pNormal.Set( 0.0f, 1.0f, 0.0f );
+	pNormal.Set(0.0f, 1.0f, 0.0f);
 }
 
-void meCLHitListEntry::SetObject( meObject *object ){
+void meCLHitListEntry::SetObject(meObject *object){
 	pObject = object;
 }
 
-void meCLHitListEntry::SetObjectShape( meObjectShape *objectShape ){
-	if( objectShape == pObjectShape ){
-		return;
-	}
-	
-	if( pObjectShape ){
-		pObjectShape->FreeReference();
-	}
-	
+void meCLHitListEntry::SetObjectShape(meObjectShape *objectShape){
 	pObjectShape = objectShape;
-	
-	if( objectShape ){
-		objectShape->AddReference();
-	}
 }
 
-void meCLHitListEntry::SetDecal( meDecal *decal ){
-	if( decal == pDecal ){
-		return;
-	}
-	
-	if( pDecal ){
-		pDecal->FreeReference();
-	}
-	
+void meCLHitListEntry::SetDecal(meDecal *decal){
 	pDecal = decal;
-	
-	if( decal ){
-		decal->AddReference();
-	}
 }
 
-void meCLHitListEntry::SetNavigationSpace( meNavigationSpace *navspace ){
-	if( navspace == pNavSpace ){
-		return;
-	}
-	
-	if( pNavSpace ){
-		pNavSpace->FreeReference();
-	}
-	
+void meCLHitListEntry::SetNavigationSpace(meNavigationSpace *navspace){
 	pNavSpace = navspace;
-	
-	if( navspace ){
-		navspace->AddReference();
-	}
 }
 
-void meCLHitListEntry::SetHTNavSpacePoint( int point ){
+void meCLHitListEntry::SetHTNavSpacePoint(int point){
 	pHTNavSpacePoint = point;
 }
 
-void meCLHitListEntry::SetDistance( float distance ){
+void meCLHitListEntry::SetHTSector(meHeightTerrainSector *htsector){
+	pHTSector = htsector;
+}
+
+void meCLHitListEntry::SetSnapPoint(meObjectSnapPoint *snapPoint){
+	pSnapPoint = snapPoint;
+}
+
+void meCLHitListEntry::SetDistance(float distance){
 	pDistance = distance;
 }
 
-void meCLHitListEntry::SetNormal( const decVector &normal ){
+void meCLHitListEntry::SetNormal(const decVector &normal){
 	pNormal = normal;
 }
 
@@ -139,33 +101,48 @@ void meCLHitListEntry::SortDecals(){
 	DETHROW( deeInvalidParam );
 }
 
-int meCLHitListEntry::CompareTo( const meCLHitListEntry &entry ) const{
+int meCLHitListEntry::CompareTo(const meCLHitListEntry &entry) const{
 	const float difference = entry.GetDistance() - pDistance;
 	
-	if( difference > FLOAT_SAFE_EPSILON ){
+	if(difference > FLOAT_SAFE_EPSILON){
 		return -1;
 	}
-	if( difference < -FLOAT_SAFE_EPSILON ){
+	if(difference < -FLOAT_SAFE_EPSILON){
 		return 1;
 	}
 	
-	if( entry.pDecal && pDecal && entry.pObject == pObject && entry.pObjectShape == pObjectShape
-	&& entry.pNavSpace == pNavSpace && entry.pHTNavSpacePoint == pHTNavSpacePoint ){
+	if(entry.pDecal == pDecal
+	&& entry.pObject == pObject
+	&& entry.pObjectShape == pObjectShape
+	&& entry.pNavSpace == pNavSpace
+	&& entry.pHTNavSpacePoint == pHTNavSpacePoint
+	&& entry.pHTSector == pHTSector
+	&& entry.pSnapPoint == pSnapPoint){
 		int myIndex = 0;
 		int otherIndex = 0;
 		
-		if( pObject ){
-			myIndex = pObject->IndexOfDecal( pDecal );
-			otherIndex = entry.pObject->IndexOfDecal( entry.pDecal );
+		if(pObject){
+			myIndex = pObject->IndexOfDecal(pDecal);
+			otherIndex = entry.pObject->IndexOfDecal(entry.pDecal);
 			
-			if( myIndex < otherIndex ){
+			if(myIndex < otherIndex){
 				return 1;
 				
-			}else if( myIndex > otherIndex ){
+			}else if(myIndex > otherIndex){
 				return -1;
 			}
 		}
 	}
 	
 	return 0;
+}
+
+bool meCLHitListEntry::IsSame(const meCLHitListEntry &entry) const{
+	return pObject == entry.GetObject()
+		&& pObjectShape == entry.GetObjectShape()
+		&& pDecal == entry.GetDecal()
+		&& pNavSpace == entry.GetNavigationSpace()
+		&& pHTNavSpacePoint == entry.GetHTNavSpacePoint()
+		&& pHTSector == entry.GetHTSector()
+		&& pSnapPoint == entry.GetSnapPoint();
 }

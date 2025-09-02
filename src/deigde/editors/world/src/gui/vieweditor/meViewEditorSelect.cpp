@@ -32,6 +32,8 @@
 #include "../meWindowMain.h"
 #include "../../collisions/meCLSelect.h"
 #include "../../collisions/meCLClosestElement.h"
+#include "../../collisions/meCLCollect.h"
+#include "../../collisions/meCLHitListEntry.h"
 #include "../../configuration/meConfiguration.h"
 #include "../../world/meCamera.h"
 #include "../../world/meWorld.h"
@@ -39,6 +41,7 @@
 #include "../../world/object/meObject.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -62,8 +65,9 @@
 
 meViewEditorSelect::meViewEditorSelect( meView3D &view ) :
 meViewEditorNavigation( view ),
-pCLSelect( nullptr ),
-pCLClosest ( nullptr )
+pCLSelect(nullptr),
+pCLBubbleInfo(nullptr),
+pFontSize(nullptr)
 {
 	pColVol.TakeOver( view.GetEngine()->GetColliderManager()->CreateColliderVolume() );
 	
@@ -80,7 +84,7 @@ pCLClosest ( nullptr )
 	
 	deFontManager &fontmgr = *view.GetEngine()->GetFontManager();
 	const deFont::Ref font(deFont::Ref::New(fontmgr.LoadFont("/igde/fonts/sans_10.defont", "/")));
-	font->PrepareSize(font->GetLineHeight());
+	pFontSize = font->PrepareSize(font->GetLineHeight());
 	
 	pInfoBubbleText.TakeOver( view.GetEngine()->GetCanvasManager()->CreateCanvasText() );
 	pInfoBubbleText->SetFont(font);
@@ -90,8 +94,8 @@ pCLClosest ( nullptr )
 	pInfoBubble->GetCanvasContent()->AddCanvas( pInfoBubbleText );
 	
 	try{
-		pCLSelect = new meCLSelect( *view.GetWorld() );
-		pCLClosest = new meCLClosestElement( *view.GetWorld() );
+		pCLSelect = new meCLSelect(*view.GetWorld());
+		pCLBubbleInfo = new meCLSelect(*view.GetWorld());
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -174,6 +178,22 @@ void meViewEditorSelect::UpdateRectSelection(){
 // Callbacks
 //////////////
 
+bool meViewEditorSelect::OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control){
+	if(key == deInputEvent::ekcControl){
+		OnMouseMove(pLastMousePosition.x, pLastMousePosition.y, shift, true);
+	}
+	
+	return meViewEditorNavigation::OnKeyPress(key, shift, control);
+}
+
+bool meViewEditorSelect::OnKeyRelease(deInputEvent::eKeyCodes key, bool shift, bool control){
+	if(key == deInputEvent::ekcControl){
+		OnMouseMove(pLastMousePosition.x, pLastMousePosition.y, shift, false);
+	}
+	
+	return meViewEditorNavigation::OnKeyRelease(key, shift, control);
+}
+
 void meViewEditorSelect::OnResize(){
 	if( ! GetDragLeftMouseButton() || ! pCLSelect || ! pCLSelect->GetRectSelect() ){
 		pCanvasSelect->SetVisible( false );
@@ -197,6 +217,7 @@ void meViewEditorSelect::OnResize(){
 
 void meViewEditorSelect::OnLeftMouseButtonPress( int x, int y, bool shift, bool control ){
 	meViewEditorNavigation::OnLeftMouseButtonPress( x, y, shift, control );
+	pLastMousePosition.Set(x, y);
 	
 	if( GetDragLeftMouseButton() && pCLSelect ){
 		const int elementMode = GetElementMode();
@@ -229,39 +250,145 @@ void meViewEditorSelect::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 		const decVector rayDirection = GetActiveCamera().GetDirectionFor(
 			GetViewWidth(), GetViewHeight(), x, y ) * guiparams.GetRectSelDistance();
 		pCLSelect->SetRay( rayPosition, rayDirection );
-		RayTestCollision( pCLSelect, rayPosition, rayDirection, decCollisionFilter( collisionCategory, collisionFilter ) );
-		pCLSelect->RunAction();
 		
 		pInfoBubble->Hide();
 		OnResize();
 	}
 }
 
+class BuildSelectionListVisitor : public meCLHitList::Visitor{
+public:
+	meWorldGuiParameters::eElementModes elementMode;
+	decStringList selectionList;
+	decObjectList selectionHitEntries;
+	float rayDistance;
+	BuildSelectionListVisitor() = default;
+	
+	void operator() (meCLHitListEntry &entry) override{
+		decString text;
+		
+		switch(elementMode){
+		case meWorldGuiParameters::eemObject:
+			if(entry.GetObject()){
+				const meObject &object = *entry.GetObject();
+				text.Format("%s%s (%s): %.1f m",
+					object.GetActive() ? "[A] " : object.GetSelected() ? "[S] " : "",
+					object.GetClassName().GetString(),
+					object.GetID().ToHexString().GetString(),
+					entry.GetDistance() * rayDistance);
+				selectionList.Add(text);
+				selectionHitEntries.Add(&entry);
+			}
+			break;
+			
+		case meWorldGuiParameters::eemObjectShape:
+			if(entry.GetObjectShape()){
+				const meObjectShape &shape = *entry.GetObjectShape();
+				text.Format("%sShape: %.1f m",
+					shape.GetActive() ? "[A] " : shape.GetSelected() ? "[S] " : "",
+					entry.GetDistance() * rayDistance);
+				selectionList.Add(text);
+				selectionHitEntries.Add(&entry);
+			}
+			break;
+			
+		case meWorldGuiParameters::eemDecal:
+			if(entry.GetDecal()){
+				const meDecal &decal = *entry.GetDecal();
+				
+				decString path(decal.GetSkinPath());
+				if(path.GetLength() > 50){
+					path = decString("...") + path.GetRight(50);
+				}
+				
+				text.Format("%s%s",
+					decal.GetActive() ? "[A] " : decal.GetSelected() ? "[S] " : "",
+					path.GetString());
+				selectionList.Add(text);
+				selectionHitEntries.Add(&entry);
+			}
+			break;
+			
+		case meWorldGuiParameters::eemNavSpace:
+			if(entry.GetNavigationSpace()){
+				const meNavigationSpace &navspace = *entry.GetNavigationSpace();
+				text.Format("%sNavSpace: %.1f m",
+					navspace.GetActive() ? "[A] " : navspace.GetSelected() ? "[S] " : "",
+					entry.GetDistance() * rayDistance);
+				selectionList.Add(text);
+				selectionHitEntries.Add(&entry);
+			}
+			break;
+		}
+	}
+};
+
 void meViewEditorSelect::OnLeftMouseButtonRelease( int x, int y, bool shift, bool control ){
 	meViewEditorNavigation::OnLeftMouseButtonRelease( x, y, shift, control );
+	pLastMousePosition.Set(x, y);
 	
-	if( pCLSelect ){
+	if(pCLSelect){
 		pCLSelect->Reset();
 		
+		if(!pCLSelect->GetRectSelect()){
+			decLayerMask collisionCategory;
+			collisionCategory.SetBit( meWorld::eclmEditing );
+			
+			decLayerMask collisionFilter;
+			collisionFilter.SetBit( meWorld::eclmDecals );
+			collisionFilter.SetBit( meWorld::eclmObjects );
+			collisionFilter.SetBit( meWorld::eclmObjectShape );
+			collisionFilter.SetBit( meWorld::eclmAI );
+			
+			RayTestCollision(pCLSelect, pCLSelect->GetRayOrigin(), pCLSelect->GetRayDirection(),
+				decCollisionFilter(collisionCategory, collisionFilter));
+			
+			meCLHitList &hitList = pCLSelect->GetHitList();
+			if(hitList.GetEntryCount() > 0){
+				hitList.SortByDistance();
+				
+				if(hitList.GetEntryCount() == 1 || !control){
+					pCLSelect->RunAction(0);
+					
+				}else{
+					hitList.RemoveDuplicates();
+					
+					BuildSelectionListVisitor visitor;
+					visitor.elementMode = GetWorldGuiParameters().GetElementMode();
+					visitor.rayDistance = (float)pCLSelect->GetRayDirection().Length();
+					hitList.Visit(visitor);
+					
+					int selectionIndex = 0;
+					if(igdeCommonDialogs::SelectString(&GetView(), "Choose Element",
+					"Choose element to select/deselect:", visitor.selectionList, selectionIndex)){
+						pCLSelect->RunAction(selectionIndex);
+					}
+				}
+			}
+		}
+		
 		OnResize();
-		pUpdateInfoBubble( x, y );
+		pUpdateInfoBubble(x, y, !control);
 	}
 }
 
 void meViewEditorSelect::OnRightMouseButtonPress( int x, int y, bool shift, bool control ){
 	meViewEditorNavigation::OnRightMouseButtonPress( x, y, shift, control );
+	pLastMousePosition.Set(x, y);
 	
 	pInfoBubble->Hide();
 }
 
 void meViewEditorSelect::OnRightMouseButtonRelease( int x, int y, bool shift, bool control ){
 	meViewEditorNavigation::OnRightMouseButtonRelease( x, y, shift, control );
+	pLastMousePosition.Set(x, y);
 	
-	pUpdateInfoBubble( x, y );
+	pUpdateInfoBubble(x, y, !control);
 }
 
 void meViewEditorSelect::OnMouseMove( int x, int y, bool shift, bool control ){
 	meViewEditorNavigation::OnMouseMove( x, y, shift, control );
+	pLastMousePosition.Set(x, y);
 	
 	if( GetDragLeftMouseButton() && pCLSelect ){
 		if( ! pCLSelect->GetRectSelect() ){
@@ -280,7 +407,7 @@ void meViewEditorSelect::OnMouseMove( int x, int y, bool shift, bool control ){
 		UpdateRectSelection();
 		
 	}else{
-		pUpdateInfoBubble( x, y );
+		pUpdateInfoBubble(x, y, !control);
 	}
 }
 
@@ -319,69 +446,184 @@ void meViewEditorSelect::pCleanUp(){
 		GetView().RemoveCanvas( pCanvasSelect );
 	}
 	
-	if( pCLClosest ){
-		delete pCLClosest;
+	if(pCLBubbleInfo){
+		delete pCLBubbleInfo;
 	}
-	if( pCLSelect ){
+	if(pCLSelect){
 		delete pCLSelect;
 	}
 }
 
-void meViewEditorSelect::pUpdateInfoBubble( int x, int y ){
-	if( GetDragLeftMouseButton() || GetDragRightMouseButton() || ! pCLClosest ){
+class BuildBubbleTextVisitor : public meCLHitList::Visitor{
+public:
+	meWorldGuiParameters::eElementModes elementMode;
+	decStringList lines;
+	float rayDistance;
+	BuildBubbleTextVisitor() = default;
+	
+	void operator() (meCLHitListEntry &entry) override{
+		decString text;
+		
+		switch(elementMode){
+		case meWorldGuiParameters::eemObject:
+			if(entry.GetObject()){
+				const meObject * const object = entry.GetObject();
+				text.Format("%s%s (%s): %.1f m",
+					object->GetActive() ? "[A] " : object->GetSelected() ? "[S] " : "",
+					object->GetClassName().GetString(),
+					object->GetID().ToHexString().GetString(),
+					entry.GetDistance() * rayDistance);
+				lines.InsertAt(text, 0);
+			}
+			break;
+			
+		case meWorldGuiParameters::eemObjectShape:
+			if(entry.GetObjectShape()){
+				const meObjectShape &shape = *entry.GetObjectShape();
+				text.Format("%sShape: %.1f m",
+					shape.GetActive() ? "[A] " : shape.GetSelected() ? "[S] " : "",
+					entry.GetDistance() * rayDistance);
+				lines.InsertAt(text, 0);
+			}
+			break;
+			
+		case meWorldGuiParameters::eemDecal:
+			if(entry.GetDecal()){
+				const meDecal &decal = *entry.GetDecal();
+				
+				decString path(decal.GetSkinPath());
+				if(path.GetLength() > 50){
+					path = decString("...") + path.GetRight(50);
+				}
+				
+				text.Format("%s%s",
+					decal.GetActive() ? "[A] " : decal.GetSelected() ? "[S] " : "",
+					path.GetString());
+				lines.InsertAt(text, 0);
+			}
+			break;
+			
+		case meWorldGuiParameters::eemNavSpace:
+			if(entry.GetNavigationSpace()){
+				const meNavigationSpace &navspace = *entry.GetNavigationSpace();
+				text.Format("%sNavSpace: %.1f m",
+					navspace.GetActive() ? "[A] " : navspace.GetSelected() ? "[S] " : "",
+					entry.GetDistance() * rayDistance);
+				lines.InsertAt(text, 0);
+			}
+			break;
+		}
+	}
+	
+	decString GetText() const{
+		return lines.Join("\n");
+	}
+	
+	void ReverseText(){
+		decStringList rev;
+		const int count = lines.GetCount();
+		int i;
+		for(i=count-1; i>=0; i--){
+			rev.Add(lines[i]);
+		}
+		lines = rev;
+	}
+};
+
+void meViewEditorSelect::pUpdateInfoBubble(int x, int y, bool singleElement){
+	if(GetDragLeftMouseButton() || GetDragRightMouseButton() || ! pCLBubbleInfo){
 		return;
 	}
-	if( GetElementMode() != meWorldGuiParameters::eemObject ){
-		return;
-	}
+	
+	const meWorldGuiParameters::eElementModes elementMode = GetElementMode();
 	
 	decLayerMask collisionCategory;
-	collisionCategory.SetBit( meWorld::eclmEditing );
+	collisionCategory.SetBit(meWorld::eclmEditing);
 	
 	decLayerMask collisionFilter;
-	collisionFilter.SetBit( meWorld::eclmObjects );
+	collisionFilter.SetBit(meWorld::eclmDecals);
+	collisionFilter.SetBit(meWorld::eclmObjects);
+	collisionFilter.SetBit(meWorld::eclmObjectShape);
+	collisionFilter.SetBit(meWorld::eclmAI);
+	
+	pCLBubbleInfo->SetCanSelectObjects(elementMode == meWorldGuiParameters::eemObject);
+	pCLBubbleInfo->SetCanSelectObjectShapes(elementMode == meWorldGuiParameters::eemObjectShape);
+	pCLBubbleInfo->SetCanSelectDecals(elementMode == meWorldGuiParameters::eemDecal);
+	pCLBubbleInfo->SetCanSelectNavSpaces(elementMode == meWorldGuiParameters::eemNavSpace);
+	
+	pCLBubbleInfo->SetCanHitObjects(elementMode == meWorldGuiParameters::eemObject);
+	pCLBubbleInfo->SetCanHitObjectShapes(elementMode == meWorldGuiParameters::eemObjectShape);
+	pCLBubbleInfo->SetCanHitDecals(elementMode == meWorldGuiParameters::eemDecal);
+	pCLBubbleInfo->SetCanHitNavSpaces(elementMode == meWorldGuiParameters::eemNavSpace);
 	
 	UpdateMatrices();
 	
-	pCLClosest->Reset();
-	
-	pCLClosest->SetTestObjects( true );
+	pCLBubbleInfo->Reset();
 	
 	meWorldGuiParameters &guiparams = GetWorldGuiParameters();
 	const decDVector rayPosition = GetMatrixView().GetPosition();
-	const decPoint size( GetViewWidth(), GetViewHeight() );
-	const decVector rayDirection = GetActiveCamera().GetDirectionFor(
-		size.x, size.y, x, y ) * guiparams.GetRectSelDistance();
-	RayTestCollision( pCLClosest, rayPosition, rayDirection,
-		decCollisionFilter( collisionCategory, collisionFilter ) );
+	const decPoint size(GetViewWidth(), GetViewHeight());
+	const decVector rayDirection(GetActiveCamera().GetDirectionFor(size.x, size.y, x, y)
+		* guiparams.GetRectSelDistance());
+	RayTestCollision(pCLBubbleInfo, rayPosition, rayDirection,
+		decCollisionFilter(collisionCategory, collisionFilter));
 	
-	if( pCLClosest->GetHasHit() ){
-		const meObject &object = *pCLClosest->GetHitObject();
-		decString text;
-		text.Format( "%s (%s)", object.GetClassName().GetString(), object.GetID().ToHexString().GetString() );
-		const decPoint textSize( pInfoBubbleText->GetFont()->TextSize( text ) );
-		
-		pInfoBubbleText->SetText( text );
-		pInfoBubbleText->SetSize( textSize );
-		pInfoBubble->GetCanvasContent()->SetSize( textSize );
-		
-		decPoint position = decPoint( x + 32, y );
-		meInfoBubble::ePlacement placement = meInfoBubble::epTopRight;
-		
-		if( position.x + textSize.x + 6 > size.x ){
-			position.x = x - 32;
-			placement = meInfoBubble::epTopLeft;
-		}
-		
-		if( position.y - textSize.y - 6 < 0 ){
-			position.y = y + 64;
-			placement = placement == meInfoBubble::epTopRight
-				? meInfoBubble::epBottomRight : meInfoBubble::epBottomLeft;
-		}
-		
-		pInfoBubble->ShowAt( position, placement );
+	meCLHitList &collected = pCLBubbleInfo->GetHitList();
+	if(collected.GetEntryCount() == 0){
+		pInfoBubble->Hide();
+		return;
+	}
+	
+	collected.SortByDistance();
+	
+	BuildBubbleTextVisitor visitor;
+	visitor.rayDistance = guiparams.GetRectSelDistance();
+	visitor.elementMode = elementMode;
+	visitor.rayDistance = (float)guiparams.GetRectSelDistance();
+	
+	if(singleElement){
+		visitor.operator()(*collected.GetEntryAt(0));
 		
 	}else{
-		pInfoBubble->Hide();
+		const int limit = 5;
+		collected.RemoveDuplicates();
+		
+		if(collected.GetEntryCount() <= limit){
+			collected.Visit(visitor);
+			
+		}else{
+			collected.Visit(visitor, 0, limit);
+			
+			decString text;
+			text.Format("... and %d more", collected.GetEntryCount() - limit);
+			visitor.lines.InsertAt(text, 0);
+		}
 	}
+	
+	pInfoBubbleText->SetText(visitor.GetText());
+	const decPoint textSize(pInfoBubbleText->GetFont()->TextSize(pInfoBubbleText->GetText(), pFontSize));
+	
+	pInfoBubbleText->SetSize(textSize);
+	pInfoBubble->GetCanvasContent()->SetSize(textSize);
+	
+	decPoint position = decPoint(x + 32, y);
+	meInfoBubble::ePlacement placement = meInfoBubble::epTopRight;
+	
+	if(position.x + textSize.x + 6 > size.x){
+		position.x = x - 32;
+		placement = meInfoBubble::epTopLeft;
+	}
+	
+	if(position.y - textSize.y - 6 < 0){
+		position.y = y + 64;
+		placement = placement == meInfoBubble::epTopRight
+			? meInfoBubble::epBottomRight : meInfoBubble::epBottomLeft;
+	}
+	
+	if(placement == meInfoBubble::epBottomLeft || placement == meInfoBubble::epBottomRight){
+		visitor.ReverseText();
+		pInfoBubbleText->SetText(visitor.GetText());
+	}
+	
+	pInfoBubble->ShowAt(position, placement);
 }
