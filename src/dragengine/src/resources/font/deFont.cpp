@@ -364,53 +364,21 @@ deFontSize *deFont::EnsureSizePrepared(int lineHeight){
 }
 
 
-decPoint deFont::TextSize( const decUnicodeString &text ) const{
+decPoint deFont::TextSize(const decUnicodeString &text, const deFontSize *size) const{
+	const int lineHeight = size ? size->GetLineHeight() : pLineHeight;
 	const int count = text.GetLength();
-	decPoint textSize( 0, pLineHeight );
-	int lineWidth = 0;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		const int character = text.GetAt( i );
-		
-		if( character == '\n' ){
-			textSize.y += pLineHeight;
-			lineWidth = 0;
-			
-		}else{
-			const deFontGlyph &glyph = GetGlyph( character );
-			const int extendEnd = glyph.GetWidth() - glyph.GetAdvance() - glyph.GetBearing();
-			lineWidth += glyph.GetAdvance();
-			if( lineWidth + extendEnd > textSize.x ){
-				textSize.x = lineWidth + extendEnd;
-			}
-		}
-	}
-	
-	return textSize;
-}
-
-decPoint deFont::TextSize( const char *text ) const{
-	return TextSize( decUnicodeString::NewFromUTF8( text ) );
-}
-
-
-decPoint deFont::TextSize(const decUnicodeString &text, const deFontSize &size) const{
-	const int count = text.GetLength();
-	decPoint textSize(0, size.GetLineHeight());
+	decPoint textSize(0, lineHeight);
 	int i, lineWidth = 0;
 	
 	for(i=0; i<count; i++){
 		const int character = text.GetAt(i);
 		
 		if(character == '\n'){
-			textSize.y += size.GetLineHeight();
+			textSize.y += lineHeight;
 			lineWidth = 0;
 			
 		}else{
-			const int index = GetGlyphIndex(character);
-			const deFontGlyph &glyph = index != -1 ? size.GetGlyphAt(index) : size.GetUndefinedGlyph();
-			
+			const deFontGlyph &glyph = GetGlyph(character, size);
 			const int extendEnd = glyph.GetWidth() - glyph.GetAdvance() - glyph.GetBearing();
 			lineWidth += glyph.GetAdvance();
 			if(lineWidth + extendEnd > textSize.x){
@@ -422,7 +390,7 @@ decPoint deFont::TextSize(const decUnicodeString &text, const deFontSize &size) 
 	return textSize;
 }
 
-decPoint deFont::TextSize(const char *text, const deFontSize &size) const{
+decPoint deFont::TextSize(const char *text, const deFontSize *size) const{
 	return TextSize(decUnicodeString::NewFromUTF8(text), size);
 }
 
