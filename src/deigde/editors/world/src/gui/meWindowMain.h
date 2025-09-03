@@ -75,6 +75,7 @@ private:
 	igdeIconReference pIconEditMove;
 	igdeIconReference pIconEditScale;
 	igdeIconReference pIconEditRotate;
+	igdeIconReference pIconEditRotateRandom;
 	igdeIconReference pIconEdit3DCursor;
 	igdeIconReference pIconEditHeightPaint;
 	igdeIconReference pIconEditMaskPaint;
@@ -134,6 +135,7 @@ private:
 	igdeActionReference pActionObjectRotateR45;
 	igdeActionReference pActionObjectRotateR90;
 	igdeActionReference pActionObjectRotate180;
+	igdeActionReference pActionObjectRotateRandom;
 	igdeActionReference pActionObjectDropToGround;
 	igdeActionReference pActionObjectSnapToGrid;
 	igdeActionReference pActionObjectCopyPositionX;
@@ -294,6 +296,7 @@ public:
 	inline igdeIcon *GetIconEditMove() const{ return pIconEditMove; }
 	inline igdeIcon *GetIconEditScale() const{ return pIconEditScale; }
 	inline igdeIcon *GetIconEditRotate() const{ return pIconEditRotate; }
+	inline igdeIcon *GetIconEditRotateRandom() const{ return pIconEditRotateRandom; }
 	inline igdeIcon *GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
 	inline igdeIcon *GetIconEditHeightPaint() const{ return pIconEditHeightPaint; }
 	inline igdeIcon *GetIconEditMaskPaint() const{ return pIconEditMaskPaint; }
@@ -318,6 +321,7 @@ public:
 	inline igdeAction *GetActionObjectRotateR45() const{ return pActionObjectRotateR45; }
 	inline igdeAction *GetActionObjectRotateR90() const{ return pActionObjectRotateR90; }
 	inline igdeAction *GetActionObjectRotate180() const{ return pActionObjectRotate180; }
+	inline igdeAction *GetActionObjectRotateRandom() const{ return pActionObjectRotateRandom; }
 	inline igdeAction *GetActionObjectDropToGround() const{ return pActionObjectDropToGround; }
 	inline igdeAction *GetActionObjectSnapToGrid() const{ return pActionObjectSnapToGrid; }
 	inline igdeAction *GetActionObjectCopyPositionX() const{ return pActionObjectCopyPositionX; }

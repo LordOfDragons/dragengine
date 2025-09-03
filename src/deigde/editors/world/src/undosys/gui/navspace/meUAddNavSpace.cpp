@@ -39,11 +39,11 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUAddNavSpace::meUAddNavSpace( meWorld *world, const decPoint3 &sector, meNavigationSpace *object ) :
+meUAddNavSpace::meUAddNavSpace( meWorld *world, const decPoint3 &sector, meNavigationSpace *navspace ) :
 pWorld( NULL ),
 pNavSpace( NULL )
 {
-	if( ! world || ! object ){
+	if( ! world || ! navspace ){
 		DETHROW( deeInvalidParam );
 	}
 	
@@ -52,8 +52,8 @@ pNavSpace( NULL )
 	pWorld = world;
 	world->AddReference();
 	
-	pNavSpace = object;
-	object->AddReference();
+	pNavSpace = navspace;
+	navspace->AddReference();
 }
 
 meUAddNavSpace::~meUAddNavSpace(){

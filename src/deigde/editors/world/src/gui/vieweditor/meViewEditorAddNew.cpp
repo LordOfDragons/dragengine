@@ -54,6 +54,7 @@
 #include <dragengine/resources/collider/deColliderManager.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
 #include <dragengine/resources/world/deWorld.h>
+#include <dragengine/logger/deLogger.h>
 
 
 
@@ -63,14 +64,14 @@
 // Constructor, destructor
 ////////////////////////////
 
-meViewEditorAddNew::meViewEditorAddNew( meView3D &view ) :
-meViewEditorNavigation( view ),
-pClosestElement( NULL ),
-pCLSnapPoint( NULL ),
-pFilterObjectsByClass( NULL ),
-pAddDecal( NULL ),
-pUndoAddObject( NULL ),
-pUndoAddNavSpace( NULL )
+meViewEditorAddNew::meViewEditorAddNew(meView3D &view) :
+meViewEditorNavigation(view),
+pClosestElement(nullptr),
+pCLSnapPoint(nullptr),
+pFilterObjectsByClass(nullptr),
+pAddDecal(nullptr),
+pUndoAddObject(nullptr),
+pUndoAddNavSpace(nullptr)
 {
 	pCLCollider.TakeOver( view.GetWindowMain().GetEngine()->GetColliderManager()->CreateColliderVolume() );
 	
@@ -124,39 +125,22 @@ void meViewEditorAddNew::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 	decDVector position;
 	decVector rotation;
 	
-	pUndoAddObject = NULL;
-	pUndoAddNavSpace = NULL;
+	pUndoAddObject = nullptr;
+	pUndoAddNavSpace = nullptr;
 	
 	if( pCLSnapPoint ){
 		delete pCLSnapPoint;
-		pCLSnapPoint = NULL;
+		pCLSnapPoint = nullptr;
 	}
 	
 	if( elementMode == meWorldGuiParameters::eemObject ){
-		if( pClosestElement ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		if( guiparams.GetBrowseClass().IsEmpty() ){
+		if(guiparams.GetBrowseClass().IsEmpty()){
 			return;
 		}
 		
-		// create closest element visitor
-		pClosestElement = new meCLClosestElement( world );
+		pCreateClosestElementVisitor();
 		
-		pFilterObjectsByClass = new meFilterObjectsByClass;
-		pFilterObjectsByClass->SetRejectGhosts( true );
-		//pFilterObjectsByClass->SetClassNamesFrom( guiparams.GetAddFilterObjectList() );
-		//pFilterObjectsByClass->SetMatchInclusive( guiparams.GetAddFilterObjectInclusive() );
-		
-		// TODO: the height terrain is currently hit even if there is no texture on
-		// it or it has a hole. the test has to be refined to avoid scoring a hit
-		// on the height terrain if there is no texture or a hole
-		pClosestElement->SetTestHeightTerrain( true );
-		pClosestElement->SetTestObjects( true );
-		pClosestElement->SetFilterObjects( pFilterObjectsByClass );
-		
-		meObject *object = NULL;
+		meObject *object = nullptr;
 		
 		try{
 			object = new meObject( world.GetEnvironment() );
@@ -170,10 +154,10 @@ void meViewEditorAddNew::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 			if( object ){
 				object->FreeReference();
 			}
-			pUndoAddObject = NULL;
+			pUndoAddObject = nullptr;
 			
 			delete pClosestElement;
-			pClosestElement = NULL;
+			pClosestElement = nullptr;
 			
 			LogException( e );
 			return;
@@ -206,36 +190,27 @@ void meViewEditorAddNew::OnLeftMouseButtonPress( int x, int y, bool shift, bool 
 		pUpdateUndo( shift, control );
 		
 	}if( elementMode == meWorldGuiParameters::eemNavSpace ){
-		meNavigationSpace *safeNavspace = NULL;
-		meNavigationSpace *navspace = NULL;
+		pCreateClosestElementVisitor();
+		
+		const meNavigationSpace::Ref navspace(meNavigationSpace::Ref::New(
+			new meNavigationSpace(world.GetEnvironment())));
 		
 		try{
-			navspace = new meNavigationSpace( world.GetEnvironment() );
+			pUndoAddNavSpace.TakeOver(new meUAddNavSpace(&world, decPoint3(), navspace));
+			pUndoAddNavSpace->Redo(); // from here on we only manipulate the object parameters
 			
-			pUndoAddNavSpace.TakeOver( new meUAddNavSpace( &world, decPoint3(), navspace ) );
-			safeNavspace = navspace;
-			
-			navspace->FreeReference();
-			navspace = NULL;
-			
-			pUndoAddNavSpace->Redo();
-			
-		}catch( const deException &e ){
-			if( navspace ){
-				navspace->FreeReference();
-			}
-			pUndoAddNavSpace = NULL;
-			
+		}catch(const deException &e){
+			pUndoAddNavSpace = nullptr;
 			LogException( e );
 			return;
 		}
 		
 		world.GetSelectionNavigationSpace().RemoveAll();
-		world.GetSelectionNavigationSpace().Add( safeNavspace );
-		world.GetSelectionNavigationSpace().SetActive( safeNavspace );
+		world.GetSelectionNavigationSpace().Add(navspace);
+		world.GetSelectionNavigationSpace().SetActive(navspace);
 		world.NotifyNavSpaceSelectionChanged();
 		
-		pUpdateUndo( shift, control );
+		pUpdateUndo(shift, control);
 	}
 }
 
@@ -244,27 +219,27 @@ void meViewEditorAddNew::OnLeftMouseButtonRelease( int x, int y, bool shift, boo
 	
 	if( pUndoAddNavSpace ){
 		GetWorld().GetUndoSystem()->Add( pUndoAddNavSpace, false );
-		pUndoAddNavSpace = NULL;
+		pUndoAddNavSpace = nullptr;
 	}
 	if( pUndoAddObject ){
 		GetWorld().GetUndoSystem()->Add( pUndoAddObject, false );
-		pUndoAddObject = NULL;
+		pUndoAddObject = nullptr;
 	}
 	
 	if( pClosestElement ){
 		delete pClosestElement;
-		pClosestElement = NULL;
+		pClosestElement = nullptr;
 	}
 	
 	if( pAddDecal ){
 		pAddDecal->Finish();
 		delete pAddDecal;
-		pAddDecal = NULL;
+		pAddDecal = nullptr;
 	}
 	
 	if( pCLSnapPoint ){
 		delete pCLSnapPoint;
-		pCLSnapPoint = NULL;
+		pCLSnapPoint = nullptr;
 	}
 }
 
@@ -274,12 +249,9 @@ void meViewEditorAddNew::OnMouseMove( int x, int y, bool shift, bool control ){
 	/*if( pUndoAddObject ){
 		pUndoAddObject->Undo(); // overkill
 	}*/
-	if( pUndoAddNavSpace ){
-		pUndoAddNavSpace->Undo();
-	}
 	
-	if( pClosestElement || pAddDecal ){
-		pUpdateUndo( shift, control );
+	if(pClosestElement || pAddDecal){
+		pUpdateUndo(shift, control);
 	}
 }
 
@@ -294,137 +266,191 @@ void meViewEditorAddNew::pUpdateUndo( bool shift, bool control ){
 	const decDVector rayPosition = camera.GetViewMatrix().GetPosition();
 	
 	if( elementMode == meWorldGuiParameters::eemObject ){
-		if( ! pUndoAddObject || ! ( ( meUAddObject& )( igdeUndo& )pUndoAddObject ).GetObject() ){
+		if(!pUndoAddObject || !((meUAddObject&)(igdeUndo&)pUndoAddObject).GetObject()){
 			return;
 		}
 		
-		meObject &undoObject = *( ( meUAddObject& )( igdeUndo& )pUndoAddObject ).GetObject();
-		bool applySnapping = true;
-		decDVector position;
-		decVector rotation;
+		meObject &undoObject = *((meUAddObject&)(igdeUndo&)pUndoAddObject).GetObject();
+		sCastIntoWorldParams params{};
+		params.originalMatrix = undoObject.GetObjectMatrix();
+		params.rayDirection = rayDirection;
+		params.rayPosition = rayPosition;
+		params.shift = shift;
+		params.control = control;
+		params.useSnapPoint = true;
+		pCastIntoWorld(params);
 		
-		if( ! pClosestElement || ! pCLSnapPoint ){
-			DETHROW( deeInvalidParam );
-		}
-		
-		if( control ){
-			rayDirection *= 3.0; // 3m
-			position = rayPosition + rayDirection;
-			
-		}else{
-			rayDirection *= 50.0; // 50m
-			
-			decLayerMask collisionCategory;
-			collisionCategory.SetBit( meWorld::eclmEditing );
-			
-			decLayerMask collisionFilter;
-			collisionFilter.SetBit( meWorld::eclmObjects );
-			collisionFilter.SetBit( meWorld::eclmHeightTerrains );
-			collisionFilter.SetBit( meWorld::eclmSnapPoint );
-			
-			pClosestElement->Reset();
-			pClosestElement->SetTestSnapPoints( pCLSnapPoint->IsSnappingEnabled() );
-			RayTestCollision( pClosestElement, rayPosition, rayDirection,
-				decCollisionFilter( collisionCategory, collisionFilter ) );
-			
-			if( pClosestElement->GetHitObject() ){
-				position = rayPosition + rayDirection * ( double )pClosestElement->GetHitDistance();
-				
-				if( shift ){
-					const decVector &normal = pClosestElement->GetHitNormal();
-					
-					rotation.x = acosf( normal.y ) / DEG2RAD;
-					rotation.y = atan2f( normal.x, -normal.z ) / DEG2RAD;
-					rotation.z = 0.0f;
-				}
-				
-			}else if( pClosestElement->GetHitSnapPoint() ){
-				const meObjectSnapPoint &hitSnapPoint = *pClosestElement->GetHitSnapPoint();
-				const igdeGDCSnapPoint &gdcSnapPoint = *hitSnapPoint.GetSnapPoint();
-				
-				const decDMatrix matrixTarget(
-					decDMatrix::CreateRT(
-						decDVector( gdcSnapPoint.GetRotation() * DEG2RAD ),
-						decDVector( gdcSnapPoint.GetPosition() ) )
-					* hitSnapPoint.GetObject()->GetObjectMatrix() );
-				
-				const decDMatrix matrixSource( undoObject.GetObjectMatrix() );
-				
-				const decDVector targetPosition( matrixTarget.GetPosition() );
-				const decDVector sourcePosition( matrixSource.GetPosition() );
-				
-				if( gdcSnapPoint.GetSnapToRotation() ){
-					const decDMatrix matrix( undoObject.GetObjectMatrix()
-						* decDMatrix::CreateTranslation( -sourcePosition )
-						* decDMatrix::CreateFromQuaternion(
-							matrixTarget.ToQuaternion() * matrixSource.ToQuaternion().Conjugate() )
-						* decDMatrix::CreateTranslation( targetPosition ) );
-					
-					position = matrix.GetPosition();
-					rotation = matrix.GetEulerAngles() / DEG2RAD;
-					
-				}else{
-					position = undoObject.GetPosition() + ( targetPosition - sourcePosition );
-				}
-				
-				applySnapping = false;
-				
-			}else{
-				rayDirection *= 3.0; // 3m
-				position = rayPosition + rayDirection;
-			}
-		}
-		
-		// update undo
-		undoObject.SetPosition( position );
-		undoObject.SetRotation( rotation );
+		undoObject.SetPosition(params.position);
+		undoObject.SetRotation(params.rotation);
 		//pUndoAddObject->RedoAction(); // overkill
 		
-		// snapping used only if no snap point is hit
-		if( applySnapping && pCLSnapPoint->IsSnappingEnabled() ){
-			pCLCollider->SetPosition( undoObject.GetPosition() );
-			pCLCollider->SetOrientation( decQuaternion::CreateFromEuler(
-				undoObject.GetRotation() * DEG2RAD ) );
-			
-			pCLSnapPoint->Reset();
-			ColliderTestCollision( pCLSnapPoint, pCLCollider );
-			
-			if( pCLSnapPoint->GetTargetSnapPoint() ){
-				if( pCLSnapPoint->GetTargetSnapPoint()->GetSnapToRotation() ){
-					const decDMatrix matrix( undoObject.GetObjectMatrix()
-						* pCLSnapPoint->CalcCorrectionMatrix() );
-					undoObject.SetPosition( matrix.GetPosition() );
-					undoObject.SetRotation( matrix.GetEulerAngles() / DEG2RAD );
-					
-				}else{
-					undoObject.SetPosition( undoObject.GetPosition()
-						+ pCLSnapPoint->CalcCorrectionMatrix().GetPosition() );
-				}
-			}
-		}
-		
-		// notify object geometry changed
 		GetWorld().NotifyObjectGeometryChanged( &undoObject );
 		
-	}else if( elementMode == meWorldGuiParameters::eemDecal ){
-		if( ! pAddDecal ){
-			DETHROW( deeInvalidParam );
+	}else if(elementMode == meWorldGuiParameters::eemNavSpace){
+		if(!pUndoAddNavSpace || !((meUAddNavSpace&)(igdeUndo&)pUndoAddNavSpace).GetNavSpace()){
+			return;
 		}
+		
+		meNavigationSpace &undoNavSpace = *((meUAddNavSpace&)(igdeUndo&)pUndoAddNavSpace).GetNavSpace();
+		sCastIntoWorldParams params{};
+		params.originalMatrix.SetRT(decDVector(undoNavSpace.GetOrientation() * DEG2RAD),
+			undoNavSpace.GetPosition());
+		params.rayDirection = rayDirection;
+		params.rayPosition = rayPosition;
+		params.shift = shift;
+		params.control = control;
+		params.useSnapPoint = false;
+		pCastIntoWorld(params);
+		
+		undoNavSpace.SetPosition(params.position);
+		undoNavSpace.SetOrientation(params.rotation);
+		
+		GetWorld().NotifyNavSpaceGeometryChanged(&undoNavSpace);
+		
+	}else if(elementMode == meWorldGuiParameters::eemDecal){
+		DEASSERT_NOTNULL(pAddDecal)
 		
 		rayDirection *= 50.0; // 50m
 		
-		pAddDecal->SetRay( rayPosition, rayDirection );
-		pAddDecal->SetAlignWithNormal( ! shift );
+		pAddDecal->SetRay(rayPosition, rayDirection);
+		pAddDecal->SetAlignWithNormal(!shift);
 		
 		decLayerMask collisionCategory;
-		collisionCategory.SetBit( meWorld::eclmEditing );
+		collisionCategory.SetBit(meWorld::eclmEditing);
 		
 		decLayerMask collisionFilter;
-		collisionFilter.SetBit( meWorld::eclmObjects );
-		collisionFilter.SetBit( meWorld::eclmHeightTerrains );
+		collisionFilter.SetBit(meWorld::eclmObjects);
+		collisionFilter.SetBit(meWorld::eclmHeightTerrains);
 		
 		pAddDecal->Reset();
-		RayTestCollision( pAddDecal, rayPosition, rayDirection, decCollisionFilter( collisionCategory, collisionFilter ) );
+		RayTestCollision(pAddDecal, rayPosition, rayDirection,
+			decCollisionFilter(collisionCategory, collisionFilter));
 		pAddDecal->RunAction();
+	}
+}
+
+void meViewEditorAddNew::pCreateClosestElementVisitor(){
+	DEASSERT_NULL(pClosestElement)
+	
+	pClosestElement = new meCLClosestElement(GetWorld());
+	
+	pFilterObjectsByClass = new meFilterObjectsByClass;
+	pFilterObjectsByClass->SetRejectGhosts(true);
+	//pFilterObjectsByClass->SetClassNamesFrom(guiparams.GetAddFilterObjectList());
+	//pFilterObjectsByClass->SetMatchInclusive(guiparams.GetAddFilterObjectInclusive());
+	
+	// TODO: the height terrain is currently hit even if there is no texture on
+	// it or it has a hole. the test has to be refined to avoid scoring a hit
+	// on the height terrain if there is no texture or a hole
+	pClosestElement->SetTestHeightTerrain( true );
+	pClosestElement->SetTestObjects( true );
+	pClosestElement->SetFilterObjects( pFilterObjectsByClass );
+}
+
+void meViewEditorAddNew::pCastIntoWorld(sCastIntoWorldParams &params){
+	DEASSERT_NOTNULL(pClosestElement)
+	
+	const meWorldGuiParameters &guiparams = GetWorldGuiParameters();
+	bool applySnapping = params.useSnapPoint;
+	
+	if(params.control){
+		params.rayDirection *= 3.0; // 3m
+		params.position = params.rayPosition + params.rayDirection;
+		
+	}else{
+		params.rayDirection *= 50.0; // 50m
+		
+		decLayerMask collisionCategory;
+		collisionCategory.SetBit(meWorld::eclmEditing);
+		
+		decLayerMask collisionFilter;
+		collisionFilter.SetBit(meWorld::eclmObjects);
+		collisionFilter.SetBit(meWorld::eclmHeightTerrains);
+		if(params.useSnapPoint){
+			collisionFilter.SetBit(meWorld::eclmSnapPoint);
+		}
+		
+		pClosestElement->Reset();
+		pClosestElement->SetTestSnapPoints(params.useSnapPoint
+			&& pCLCollider && pCLSnapPoint && pCLSnapPoint->IsSnappingEnabled());
+		
+		RayTestCollision(pClosestElement, params.rayPosition, params.rayDirection,
+			decCollisionFilter(collisionCategory, collisionFilter));
+		
+		if(pClosestElement->GetHitObject()){
+			params.position = params.rayPosition
+				+ params.rayDirection * (double)pClosestElement->GetHitDistance();
+			
+			decVector view(GetMatrixView().TransformView()),
+				up(params.shift ? pClosestElement->GetHitNormal() : decVector(0.0f, 1.0f, 0.0f));
+			
+			if(fabsf(up * view) > cosf(5.0f * DEG2RAD)){
+				up = GetMatrixView().TransformUp();
+			}
+			
+			view = (up % view) % up;
+			params.rotation = decMatrix::CreateVU(view, up).GetEulerAngles() * RAD2DEG;
+			
+		}else if(pClosestElement->GetHitSnapPoint()){
+			const meObjectSnapPoint &hitSnapPoint = *pClosestElement->GetHitSnapPoint();
+			const igdeGDCSnapPoint &gdcSnapPoint = *hitSnapPoint.GetSnapPoint();
+			
+			const decDMatrix matrixTarget(
+				decDMatrix::CreateRT(
+					decDVector(gdcSnapPoint.GetRotation() * DEG2RAD),
+					decDVector(gdcSnapPoint.GetPosition()))
+				* hitSnapPoint.GetObject()->GetObjectMatrix());
+			
+			const decDMatrix matrixSource(params.originalMatrix);
+			
+			const decDVector targetPosition(matrixTarget.GetPosition());
+			const decDVector sourcePosition(matrixSource.GetPosition());
+			
+			if(gdcSnapPoint.GetSnapToRotation()){
+				const decDMatrix matrix(params.originalMatrix
+					* decDMatrix::CreateTranslation(-sourcePosition)
+					* decDMatrix::CreateFromQuaternion(
+						matrixTarget.ToQuaternion() * matrixSource.ToQuaternion().Conjugate())
+					* decDMatrix::CreateTranslation(targetPosition));
+				
+				params.position = matrix.GetPosition();
+				params.rotation = matrix.GetEulerAngles() * RAD2DEG;
+				
+			}else{
+				params.position = params.originalMatrix.GetPosition()
+					+ (targetPosition - sourcePosition);
+			}
+			
+			applySnapping = false;
+			
+		}else{
+			params.rayDirection *= 3.0; // 3m
+			params.position = params.rayPosition + params.rayDirection;
+		}
+	}
+	
+	if(guiparams.GetAddRandomizeYAxis()){
+		params.rotation.y += decMath::random(-180.0f, 180.0f);
+	}
+	
+	// snapping used only if no snap point is hit
+	if(applySnapping && pCLSnapPoint && pCLSnapPoint->IsSnappingEnabled() && pCLCollider){
+		pCLCollider->SetPosition(params.originalMatrix.GetPosition());
+		pCLCollider->SetOrientation(params.originalMatrix.ToQuaternion());
+		
+		pCLSnapPoint->Reset();
+		ColliderTestCollision(pCLSnapPoint, pCLCollider);
+		
+		if(pCLSnapPoint->GetTargetSnapPoint()){
+			if(pCLSnapPoint->GetTargetSnapPoint()->GetSnapToRotation()){
+				const decDMatrix matrix(params.originalMatrix * pCLSnapPoint->CalcCorrectionMatrix());
+				params.position = matrix.GetPosition();
+				params.rotation = matrix.GetEulerAngles() * RAD2DEG;
+				
+			}else{
+				params.position = params.originalMatrix.GetPosition()
+					+ pCLSnapPoint->CalcCorrectionMatrix().GetPosition();
+			}
+		}
 	}
 }

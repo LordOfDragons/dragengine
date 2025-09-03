@@ -73,6 +73,7 @@
 #include "../undosys/properties/object/meUSetObjectRotation.h"
 #include "../undosys/properties/object/property/meUObjectAddProperty.h"
 #include "../undosys/properties/object/property/meUObjectSetProperty.h"
+#include "../undosys/properties/object/meUObjectRandomRotation.h"
 #include "../utils/meHelpers.h"
 #include "../meIGDEModule.h"
 #include "../worldedit.h"
@@ -1247,6 +1248,28 @@ public:
 	}
 };
 
+class cActionObjectRandomRotate : public cActionBase{
+	meWindowMain &pWindow;
+	const bool pRandomizeX, pRandomizeY, pRandomizeZ;
+public:
+	cActionObjectRandomRotate(meWindowMain &window, bool randomizeX, bool randomizeY,
+		bool randomizeZ, const char *text, igdeIcon *icon, const char *description,
+		deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, deInputEvent::esmNone,
+		deInputEvent::ekcUndefined, mnemonic), pWindow(window), pRandomizeX(randomizeX),
+		pRandomizeY(randomizeY), pRandomizeZ(randomizeZ){}
+	
+	virtual igdeUndo *OnAction(meWorld *world){
+		const meObjectList &listSelected = world->GetSelectionObject().GetSelected();
+		return listSelected.GetCount() != 0 ? new meUObjectRandomRotation(
+			world, listSelected, pRandomizeX, pRandomizeY, pRandomizeZ) : nullptr;
+	}
+	
+	virtual void Update(const meWorld &world){
+		SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 0);
+	}
+};
+
 
 class cActionObjectLightToggle : public cActionBase{
 public:
@@ -1707,6 +1730,7 @@ void meWindowMain::pLoadIcons(){
 	pIconEditMove.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_move.png" ) );
 	pIconEditScale.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_scale.png" ) );
 	pIconEditRotate.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_rotate.png" ) );
+	pIconEditRotateRandom.TakeOver( igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_rotate_random.png"));
 	pIconEdit3DCursor.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_3d_cursor.png" ) );
 	pIconEditMaskPaint.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_maskpaint.png" ) );
 	pIconEditHeightPaint.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_heightpaint.png" ) );
@@ -1826,6 +1850,9 @@ void meWindowMain::pCreateActions(){
 		decVector(0.0f, 1.0f, 0.0f), 180.0f,
 		"Turn around 180°", environment.GetStockIcon(igdeEnvironment::esiStrongDown),
 		"Rotate object by 180°", deInputEvent::ekcUndefined));
+	pActionObjectRotateRandom.TakeOver(new cActionObjectRandomRotate(*this, false, true, false,
+		"Random rotate Y axis", pIconEditRotateRandom,
+		"Random rotate object around Y axis", deInputEvent::ekcUndefined));
 	
 	pActionObjectDropToGround.TakeOver( new cActionObjectDropToGround( *this ) );
 	pActionObjectSnapToGrid.TakeOver( new cActionObjectSnapToGrid( *this ) );
@@ -1917,6 +1944,7 @@ void meWindowMain::pCreateActions(){
 	AddUpdateAction( pActionObjectRotateR45 );
 	AddUpdateAction( pActionObjectRotateR90 );
 	AddUpdateAction( pActionObjectRotate180 );
+	AddUpdateAction( pActionObjectRotateRandom );
 	AddUpdateAction( pActionObjectDropToGround );
 	AddUpdateAction( pActionObjectSnapToGrid );
 	AddUpdateAction( pActionObjectCopyPositionX );
@@ -2036,6 +2064,7 @@ void meWindowMain::pCreateToolBarObject(){
 	helper.ToolBarButton( pTBObject, pActionObjectRotateR45 );
 	helper.ToolBarButton( pTBObject, pActionObjectRotateR90 );
 	helper.ToolBarButton( pTBObject, pActionObjectRotate180 );
+	helper.ToolBarButton( pTBObject, pActionObjectRotateRandom );
 	
 	helper.ToolBarSeparator( pTBObject );
 	helper.ToolBarToggleButton( pTBObject, pActionObjectLightToggle );
@@ -2186,6 +2215,7 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeRotate, pActionObjectRotateR45 );
 			helper.MenuCommand( activeRotate, pActionObjectRotateR90 );
 			helper.MenuCommand( activeRotate, pActionObjectRotate180 );
+			helper.MenuCommand( activeRotate, pActionObjectRotateRandom );
 		
 		igdeMenuCascadeReference activeCopySelected;
 		activeCopySelected.TakeOver( new igdeMenuCascade( GetEnvironment(),

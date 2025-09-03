@@ -30,7 +30,7 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\clipboard\meCDProperties.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
+    <</ClInclude>/ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\clipboard\meClipboardDataObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -734,6 +734,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUSetObjectSize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUObjectRandomRotation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUndoDataObjectProperty.cpp">
@@ -1783,6 +1786,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUSetObjectSize.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUObjectRandomRotation.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUndoDataObjectProperty.h">

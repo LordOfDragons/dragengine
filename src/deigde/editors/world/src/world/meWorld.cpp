@@ -406,6 +406,9 @@ void meWorld::ClearScalingOfNonScaledElements(){
 ////////////
 
 void meWorld::AddObject( meObject *object ){
+	DEASSERT_NOTNULL(object)
+	DEASSERT_FALSE(pObjects.Has(object))
+	
 	pObjects.Add( object );
 	object->SetWorld( this );
 	
@@ -415,9 +418,8 @@ void meWorld::AddObject( meObject *object ){
 }
 
 void meWorld::RemoveObject( meObject *object ){
-	if( ! pObjects.Has( object ) ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(object)
+	DEASSERT_TRUE(pObjects.Has(object))
 	
 	pObjectIDMap.Remove( object->GetID().ToHexString() );
 	
@@ -483,15 +485,17 @@ meObject *meWorld::GetObjectWithID( const char *hexID ) const{
 ///////////
 
 void meWorld::AddDecal( meDecal *decal ){
+	DEASSERT_NOTNULL(decal)
+	DEASSERT_FALSE(pDecals.Has(decal))
+	
 	pDecals.Add( decal );
 	decal->SetWorld( this );
 	SetChanged( true );
 }
 
 void meWorld::RemoveDecal( meDecal *decal ){
-	if( ! pDecals.Has( decal ) ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(decal)
+	DEASSERT_TRUE(pDecals.Has(decal))
 	
 	decal->SetWorld( NULL );
 	pDecals.Remove( decal );
@@ -519,15 +523,22 @@ void meWorld::RemoveAllDecals(){
 // Navigation Spaces
 //////////////////////
 
-void meWorld::AddNavSpace( meNavigationSpace *navspace ){
-	pNavSpaces.Add( navspace );
-	navspace->SetWorld( this );
-	SetChanged( true );
+void meWorld::AddNavSpace(meNavigationSpace *navspace){
+	DEASSERT_NOTNULL(navspace)
+	DEASSERT_FALSE(pNavSpaces.Has(navspace))
+	
+	pNavSpaces.Add(navspace);
+	navspace->SetWorld(this);
+	SetChanged(true);
 }
 
-void meWorld::RemoveNavSpace( meNavigationSpace *navspace ){
-	pNavSpaces.Remove( navspace );
-	SetChanged( true );
+void meWorld::RemoveNavSpace(meNavigationSpace *navspace){
+	DEASSERT_NOTNULL(navspace)
+	DEASSERT_TRUE(pNavSpaces.Has(navspace))
+	
+	navspace->SetWorld(nullptr);
+	pNavSpaces.Remove(navspace);
+	SetChanged(true);
 }
 
 void meWorld::RemoveAllNavSpaces(){

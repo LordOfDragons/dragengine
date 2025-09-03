@@ -75,6 +75,7 @@ pRotationPivotCenter( erpcActive ),
 pAutoUpdateVegetation( false ),
 
 pAddFilterObjectInclusive( false ),
+pAddRandomizeYAxis(false),
 
 pRectSelDistance( 100.0f ),
 pRectSelDistanceStep( 1.0f ),
@@ -406,5 +407,14 @@ void meWorldGuiParameters::SetAddFilterObjectInclusive( bool inclusive ){
 	}
 	
 	pAddFilterObjectInclusive = inclusive;
+	pWorld.NotifyEditingChanged();
+}
+
+void meWorldGuiParameters::SetAddRandomizeYAxis(bool randomize){
+	if(randomize == pAddRandomizeYAxis){
+		return;
+	}
+	
+	pAddRandomizeYAxis = randomize;
 	pWorld.NotifyEditingChanged();
 }

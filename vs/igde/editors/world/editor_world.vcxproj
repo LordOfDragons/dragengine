@@ -279,6 +279,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUSetObjectPosition.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUSetObjectRotation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUSetObjectSize.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUObjectRandomRotation.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUndoDataObjectProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectAddProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectClonePropertiesToSelected.cpp" />
@@ -630,6 +631,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUSetObjectPosition.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUSetObjectRotation.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUSetObjectSize.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\meUObjectRandomRotation.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUndoDataObjectProperty.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectAddProperty.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectClonePropertiesToSelected.h" />
