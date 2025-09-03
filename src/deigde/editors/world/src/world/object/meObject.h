@@ -483,6 +483,7 @@ private:
 	bool pAnyGDClassHasAnyPartialVisOf( const igdeGDClass &gdclass, const igdeTagManager &tags ) const;
 	
 	void pUpdateIDGroupList( const igdeGDClass &gdclass, const decString &prefix );
+	bool pShowStateIsVisible();
 };
 
 #endif

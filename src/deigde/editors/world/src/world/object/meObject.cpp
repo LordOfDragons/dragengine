@@ -384,6 +384,7 @@ void meObject::SetWorld( meWorld *world ){
 	UpdateTriggerTargets();
 	pCreateSnapPoints();
 	pUpdateDDSNavSpaces();
+	UpdateDDSObjectShapes();
 	OnActiveCameraChanged();
 	
 	ShowStateChanged();
@@ -661,40 +662,45 @@ void meObject::SetID( const decUniqueID &id ){
 
 
 void meObject::UpdateDDSObjectShapes(){
-	const decStringList keys( pProperties.GetKeys() );
-	igdeCodecPropertyString codec;
-	
 	pDDSObjectShapes->RemoveAllShapes();
+	if(!pWorld){
+		return;
+	}
 	
+	const decStringList keys(pProperties.GetKeys());
 	const int keyCount = keys.GetCount();
+	igdeCodecPropertyString codec;
 	int i;
 	
-	for( i=0; i<keyCount; i++ ){
-		const decString &key = keys.GetAt( i );
+	for(i=0; i<keyCount; i++){
+		const decString &key = keys.GetAt(i);
+		if(!IsPropertyShapeOrShapeList(key)){
+			continue;
+		}
 		
-		if( IsPropertyShapeOrShapeList( key ) ){
-			if( ! pActive || pActiveProperty != key ){
-				decShapeList shapeList;
-				codec.DecodeShapeList( pProperties.GetAt( key ), shapeList );
-				
-				const int shapeCount = shapeList.GetCount();
-				decShape *shape = nullptr;
-				int j;
-				
-				try{
-					for( j=0; j<shapeCount; j++ ){
-						shape = shapeList.GetAt( j )->Copy();
-						pDDSObjectShapes->AddShape( shape );
-						shape = nullptr;
-					}
-					
-				}catch( const deException & ){
-					if( shape ){
-						delete shape;
-					}
-					throw;
-				}
+		if(pActive && pActiveProperty == key){
+			continue;
+		}
+		
+		decShapeList shapeList;
+		codec.DecodeShapeList(pProperties.GetAt(key), shapeList);
+		
+		const int shapeCount = shapeList.GetCount();
+		decShape *shape = nullptr;
+		int j;
+		
+		try{
+			for(j=0; j<shapeCount; j++){
+				shape = shapeList.GetAt(j)->Copy();
+				pDDSObjectShapes->AddShape(shape);
+				shape = nullptr;
 			}
+			
+		}catch(const deException &){
+			if(shape){
+				delete shape;
+			}
+			throw;
 		}
 	}
 }
@@ -892,21 +898,12 @@ void meObject::UpdateIDGroupList(){
 
 void meObject::ShowStateChanged(){
 	if( pWorld ){
+		const bool visible = pShowStateIsVisible();
+		
 		const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
 		const meWorldGuiParameters::eElementModes elementMode = guiParams.GetElementMode();
-		const bool modeObj = ( elementMode == meWorldGuiParameters::eemObject );
-		const bool modeObjShape = ( elementMode == meWorldGuiParameters::eemObjectShape );
-		const bool modeNavSpace = ( elementMode == meWorldGuiParameters::eemNavSpace );
-		
-		bool hiddenByTag = false;
-		if( pClassDef ){
-			hiddenByTag = pClassDef->GetHideTags().HasAnyOf( guiParams.GetTagsHideClass() );
-			
-			pWObject->SetPartiallyHidden( pAnyGDClassHasAnyPartialVisOf( *pClassDef, guiParams.GetTagsPartialHideClass() ) );
-			pUpdateComponent();
-		}
-		
-		const bool visible = pVisible && (pActive || pSelected) && modeObj && !hiddenByTag;
+		const bool modeObjShape = elementMode == meWorldGuiParameters::eemObjectShape;
+		const bool modeNavSpace = elementMode == meWorldGuiParameters::eemNavSpace;
 		
 		pDDSObject->SetVisible(visible);
 		pDDSLightAoE->SetVisible(false); // visible && pLight
@@ -2608,4 +2605,25 @@ void meObject::pUpdateIDGroupList( const igdeGDClass &gdclass, const decString &
 			pUpdateIDGroupList( *inherit.GetClass(), prefix + inherit.GetPropertyPrefix() );
 		}
 	}
+}
+
+bool meObject::pShowStateIsVisible(){
+	if(!pWorld){
+		return false;
+	}
+	
+	const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
+	const meWorldGuiParameters::eElementModes elementMode = guiParams.GetElementMode();
+	const bool modeObj = elementMode == meWorldGuiParameters::eemObject;
+	
+	bool hiddenByTag = false;
+	if(pClassDef){
+		hiddenByTag = pClassDef->GetHideTags().HasAnyOf(guiParams.GetTagsHideClass());
+		
+		pWObject->SetPartiallyHidden(pAnyGDClassHasAnyPartialVisOf(
+			*pClassDef, guiParams.GetTagsPartialHideClass()));
+		pUpdateComponent();
+	}
+	
+	return pVisible && (pActive || pSelected) && modeObj && !hiddenByTag;
 }

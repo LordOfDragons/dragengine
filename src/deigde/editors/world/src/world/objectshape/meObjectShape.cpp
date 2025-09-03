@@ -257,13 +257,17 @@ void meObjectShape::UpdateDDSColors(){
 
 
 void meObjectShape::ShowStateChanged(){
-	if( pWorld ){
-		const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
-		const meWorldGuiParameters::eElementModes elementMode = guiParams.GetElementMode();
-		const bool modeObjShape = ( elementMode == meWorldGuiParameters::eemObjectShape );
-		
-		pDDSShape->SetVisible( modeObjShape );
+	if(!pWorld){
+		return;
 	}
+	
+	const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
+	const meWorldGuiParameters::eElementModes elementMode = guiParams.GetElementMode();
+	const bool modeObjShape = elementMode == meWorldGuiParameters::eemObjectShape;
+	
+	pDDSShape->SetVisible(modeObjShape
+		|| guiParams.GetShowShapes()
+		|| guiParams.GetShowShapesSelected());
 }
 
 
