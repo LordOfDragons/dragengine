@@ -24,6 +24,13 @@
 void vertexShaderDefaultOutputs(){
 	vLayer = 0;
 	vHTMask = 1.0;
+	vTCColor = vec2(0.0);
+	vTCColorTintMask = vec2(0.0);
+	vTCNormal = vec2(0.0);
+	vTCReflectivity = vec2(0.0);
+	vTCEmissivity = vec2(0.0);
+	vTCRefractionDistort = vec2(0.0);
+	vTCAO = vec2(0.0);
 }
 
 
