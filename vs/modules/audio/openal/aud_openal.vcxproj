@@ -135,6 +135,7 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationQuality.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPMaxEnvSlots.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPLogLevel.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkin.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkinTexture.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPAuralizationQuality.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPEnableEFX.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPMaxEnvSlots.h" />
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPLogLevel.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkin.h" />
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalSkinTexture.h" />

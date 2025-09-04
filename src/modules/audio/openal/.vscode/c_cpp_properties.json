@@ -10,7 +10,8 @@
             "defines": [
                 "MODULE_VERSION=\"9999\"",
                 "MOD_ENTRY_POINT_ATTR=",
-                "WITH_INTERNAL_MODULE="
+                "WITH_INTERNAL_MODULE=",
+                "WITH_DEBUG"
             ],
             "compilerPath": "/usr/lib/llvm/18/bin/clang",
             "cStandard": "c17",

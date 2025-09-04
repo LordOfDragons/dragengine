@@ -33,7 +33,7 @@
  * in any source file requiring openal related functions or tokens. Once initialized pall
  * functions which are valid contain the driver provided function while pall others are NULL.
  */
-
+#include "alext.h"
 
 
 // Optional Extensions
@@ -83,23 +83,17 @@ extern LPALAUXILIARYEFFECTSLOTFV palAuxiliaryEffectSlotfv;
 // ALC_SOFT_HRTF
 //////////////////
 
-#define ALC_HRTF                                 0x1992
-#define ALC_HRTF_ID                              0x1996
-#define ALC_DONT_CARE                            0x0002
-#define ALC_HRTF_STATUS                          0x1993
-#define ALC_NUM_HRTF_SPECIFIERS                  0x1994
-#define ALC_HRTF_SPECIFIER                       0x1995
-#define ALC_HRTF_DISABLED                        0x0000
-#define ALC_HRTF_ENABLED                         0x0001
-#define ALC_HRTF_DENIED                          0x0002
-#define ALC_HRTF_REQUIRED                        0x0003
-#define ALC_HRTF_HEADPHONES_DETECTED             0x0004
-#define ALC_HRTF_UNSUPPORTED_FORMAT              0x0005
-
 typedef const ALCchar * (AL_APIENTRY *LPALCGETSTRINGI)(ALCdevice*, ALCenum, ALCsizei);
 typedef void (AL_APIENTRY *LPALCRESETDEVICE)(ALCdevice*, const ALCint*);
 
 extern LPALCGETSTRINGI palcGetStringi;
 extern LPALCRESETDEVICE palcResetDevice;
+
+
+// AL_EXT_debug
+/////////////////
+
+extern LPALDEBUGMESSAGECALLBACKEXT palDebugMessageCallback;
+extern LPALDEBUGMESSAGECONTROLEXT palDebugMessageControl;
 
 #endif

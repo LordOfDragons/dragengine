@@ -32,6 +32,7 @@
 #include "../audiothread/deoalAudioThread.h"
 #include "../audiothread/deoalATDebug.h"
 #include "../audiothread/deoalATLogger.h"
+#include "../audiothread/deoalDebugInfo.h"
 #include "../effect/deoalSharedEffectSlotManager.h"
 #include "../environment/deoalEnvProbe.h"
 #include "../environment/deoalEnvProbeList.h"
@@ -394,35 +395,35 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 
 
 void deoalAMicrophone::ProcessAudio(){
-	if( ! pActive ){
+	if(!pActive){
 		return;
 	}
 	
 	// update openal resources
-	if( pDirtyGeometry ){
+	if(pDirtyGeometry){
 		pDirtyGeometry = false;
 		
-		OAL_CHECK( pAudioThread, alListener3f( AL_POSITION,
-			( float )pPosition.x, ( float )pPosition.y, ( float )-pPosition.z ) );
+		OAL_CHECK(pAudioThread, alListener3f(AL_POSITION,
+			(float)pPosition.x, (float)pPosition.y, (float)-pPosition.z));
 		
-		const decMatrix matrix = decMatrix::CreateFromQuaternion( pOrientation );
-		const decVector up = matrix.TransformUp();
-		const decVector view = matrix.TransformView();
-		const ALfloat parameters[] = { view.x, view.y, -view.z, up.x, up.y, -up.z };
+		const decMatrix matrix(decMatrix::CreateFromQuaternion(pOrientation));
+		const decVector up(matrix.TransformUp());
+		const decVector view(matrix.TransformView());
+		const ALfloat parameters[] = {view.x, view.y, -view.z, up.x, up.y, -up.z};
 		
-		OAL_CHECK( pAudioThread, alListenerfv( AL_ORIENTATION, &parameters[ 0 ] ) );
+		OAL_CHECK(pAudioThread, alListenerfv(AL_ORIENTATION, &parameters[0]));
 		
-		OAL_CHECK( pAudioThread, alListener3f( AL_VELOCITY, pVelocity.x, pVelocity.y, -pVelocity.z ) );
+		OAL_CHECK(pAudioThread, alListener3f(AL_VELOCITY, pVelocity.x, pVelocity.y, -pVelocity.z));
 	}
 	
-	if( pDirtyGain ){
+	if(pDirtyGain){
 		pDirtyGain = false;
 		
-		OAL_CHECK( pAudioThread, alListenerf( AL_GAIN, pMuted ? 0.0f : pVolume ) );
+		OAL_CHECK(pAudioThread, alListenerf(AL_GAIN, pMuted ? 0.0f : pVolume));
 	}
 	
 	// prepare environment probe list
-	if( pEnvProbeList ){
+	if(pEnvProbeList){
 		pEnvProbeList->PrepareProcessAudio();
 	}
 	
@@ -434,19 +435,23 @@ void deoalAMicrophone::ProcessAudio(){
 		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->PrepareProcessAudio();
 	}
 	pInvalidateSpeakers.RemoveAll();
+	pAudioThread.GetDebugInfo().StoreTimeAudioThreadSpeakersUpdate();
 	
 	// process speakers stored in the world and this microphone
 	if( pParentWorld ){
 		pParentWorld->PrepareProcessAudio();
 	}
+	pAudioThread.GetDebugInfo().StoreTimeAudioThreadWorldProcess();
 	
 	count = pSpeakers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
 	}
+	pAudioThread.GetDebugInfo().StoreTimeAudioThreadSpeakersProcess();
 	
 	// process effects
 	pProcessEffects();
+	pAudioThread.GetDebugInfo().StoreTimeAudioThreadEffectsProcess();
 }
 
 void deoalAMicrophone::ProcessAudioFast(){

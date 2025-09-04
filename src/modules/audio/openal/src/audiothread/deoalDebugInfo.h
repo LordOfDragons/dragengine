@@ -50,7 +50,12 @@ private:
 	decTimeHistory pDebugTimeMainThreadWaitFinish;
 	decTimeHistory pDebugTimeMainThreadSynchronize;
 	decTimeHistory pDebugTimeAudioThread;
-	decTimeHistory pDebugTimeAudioThreadAudio;
+	decTimeHistory pDebugTimeAudioThreadPrepare;
+	decTimeHistory pDebugTimeAudioThreadProcess;
+	decTimeHistory pDebugTimeAudioThreadSpeakersUpdate;
+	decTimeHistory pDebugTimeAudioThreadWorldProcess;
+	decTimeHistory pDebugTimeAudioThreadSpeakersProcess;
+	decTimeHistory pDebugTimeAudioThreadEffectsProcess;
 	float pDebugTimeFrameLimiterMain;
 	float pDebugTimeFrameLimiterAudio;
 	float pDebugTimeFrameLimiterAudioEstimated;
@@ -58,11 +63,9 @@ private:
 	int pDebugFPSAudio;
 	int pDebugFPSAudioEstimated;
 	
-	decTimer pDebugTimerMainThread1;
-	decTimer pDebugTimerMainThread2;
+	decTimer pDebugTimerMainThread1, pDebugTimerMainThread2;
 	
-	decTimer pDebugTimerAudioThread1;
-	decTimer pDebugTimerAudioThread2;
+	decTimer pDebugTimerAudioThread1, pDebugTimerAudioThread2, pDebugTimerAudioThread3;
 	decTimer pDebugTimerRenderThread3;
 	
 	deDebugBlockInfo *pDIActiveMic;
@@ -96,8 +99,13 @@ public:
 	void StoreTimeThreadMainWaitFinish();
 	void StoreTimeThreadMainSynchronize();
 	void ResetTimersAudioThread();
-	void StoreTimeAudioThreadAudio();
 	void StoreTimeAudioThread();
+	void StoreTimeAudioThreadPrepare();
+	void StoreTimeAudioThreadProcess();
+	void StoreTimeAudioThreadSpeakersUpdate();
+	void StoreTimeAudioThreadWorldProcess();
+	void StoreTimeAudioThreadSpeakersProcess();
+	void StoreTimeAudioThreadEffectsProcess();
 	void StoreTimeFrameLimiter( const decTimeHistory &main, const decTimeHistory &audio,
 		const decTimeHistory &audioEstimated );
 	

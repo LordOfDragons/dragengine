@@ -76,3 +76,10 @@ LPALAUXILIARYEFFECTSLOTFV palAuxiliaryEffectSlotfv = NULL;
 
 LPALCGETSTRINGI palcGetStringi = NULL;
 LPALCRESETDEVICE palcResetDevice = NULL;
+
+
+// AL_EXT_debug
+/////////////////
+
+LPALDEBUGMESSAGECALLBACKEXT palDebugMessageCallback = nullptr;
+LPALDEBUGMESSAGECONTROLEXT palDebugMessageControl = nullptr;
