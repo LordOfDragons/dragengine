@@ -29,17 +29,12 @@
 #include <dragengine/dragengine_configuration.h>
 
 #ifdef OS_WEBWASM
-	#include <AL/al.h>
-	#include <AL/alc.h>
-	#include <AL/efx.h>
-	#define AL_API_NOEXCEPT
-	#define AL_API_NOEXCEPT17
-#else
-	#include "extensions/al.h"
-	#include "extensions/alc.h"
-	#include "extensions/efx.h"
+#define AL_DISABLE_NOEXCEPT
 #endif
 
+#include "extensions/al.h"
+#include "extensions/alc.h"
+#include "extensions/efx.h"
 #include "extensions/deoalExtResult.h"
 
 class deoalAudioThread;
