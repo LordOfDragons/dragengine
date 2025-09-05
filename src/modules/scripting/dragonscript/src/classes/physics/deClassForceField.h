@@ -96,6 +96,7 @@ private:
 		dsClass *clsShapeList;
 		dsClass *clsForceFieldType;
 		dsClass *clsForceFieldApplication;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -110,6 +111,7 @@ private:
 	DEF_NATFUNC( nfSetPosition );
 	DEF_NATFUNC( nfGetOrientation );
 	DEF_NATFUNC( nfSetOrientation );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfGetInfluenceArea );
 	DEF_NATFUNC( nfSetInfluenceArea );

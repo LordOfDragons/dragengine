@@ -112,6 +112,22 @@ class Speaker
 	func void setVelocity(Vector velocity)
 	end
 	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
+	
+	/**
+	 * \brief Parent microphone or \em null if not added to a microphone.
+	 * \version 1.29
+	 */
+	func Microphone getParentMicrophone()
+		return null
+	end
+	
 	
 	
 	/** \brief Speaker is muted. */

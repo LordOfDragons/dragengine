@@ -45,6 +45,7 @@
 #include "../world/deClassModel.h"
 #include "../world/deClassRig.h"
 #include "../world/deClassSkin.h"
+#include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -394,6 +395,17 @@ void deClassComponent::nfSetVisible::RunFunction( dsRunTime *rt, dsValue *myself
 	component->SetVisible( rt->GetValue( 0 )->GetBool() );
 }
 
+// func World getParentWorld()
+deClassComponent::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsCom, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
+
+void deClassComponent::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	deComponent &component = *(((sCompNatDat*)p_GetNativeData(myself))->component);
+	deClassComponent &clsComp = *((deClassComponent*)GetOwnerClass());
+	deClassWorld &clsWorld = *clsComp.GetScriptModule()->GetClassWorld();
+	clsWorld.PushWorld(rt, component.GetParentWorld());
+}
 
 
 // public func LayerMask getLayerMask()
@@ -1357,6 +1369,7 @@ void deClassComponent::CreateClassMembers( dsEngine *engine ){
 	init.clsOccM = pScrMgr->GetClassOcclusionMesh();
 	init.clsLayerMask = pScrMgr->GetClassLayerMask();
 	init.clsBlock = engine->GetClassBlock();
+	init.clsWorld = pScrMgr->GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -1373,6 +1386,7 @@ void deClassComponent::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfGetInverseMatrix( init ) );
 	AddFunction( new nfGetVisible( init ) );
 	AddFunction( new nfSetVisible( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfGetBoneCount( init ) );
 	AddFunction( new nfIndexOfBoneNamed( init ) );

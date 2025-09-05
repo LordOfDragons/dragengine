@@ -36,6 +36,14 @@ class Light
 	public func void setType( LightType type )
 	end
 	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
+	
 	
 	
 	/** \brief Position. */

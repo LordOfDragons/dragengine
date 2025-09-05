@@ -75,6 +75,14 @@ class Component
 	func void setVisible(bool visible)
 	end
 	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
+	
 	
 	
 	/** \brief Model or \em null if not set. */

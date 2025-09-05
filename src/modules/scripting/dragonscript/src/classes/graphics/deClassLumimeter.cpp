@@ -31,6 +31,7 @@
 #include "deClassLumimeter.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
+#include "../world/deClassWorld.h"
 #include "../graphics/deClassColor.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -206,7 +207,16 @@ void deClassLumimeter::nfSetConeExponent::RunFunction( dsRunTime *rt, dsValue *m
 	lumimeter->SetConeExponent( rt->GetValue( 0 )->GetFloat() );
 }
 
+// func World getParentWorld()
+deClassLumimeter::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsLM, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
 
+void deClassLumimeter::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	deLumimeter &lumimeter = *(((sLumimeterNatDat*)p_GetNativeData(myself))->lumimeter);
+	deClassWorld &clsWorld = *(((deClassLumimeter*)GetOwnerClass())->GetScriptModule()->GetClassWorld());
+	clsWorld.PushWorld(rt, lumimeter.GetParentWorld());
+}
 
 // Measuring
 //////////////
@@ -313,6 +323,7 @@ void deClassLumimeter::CreateClassMembers( dsEngine *engine ){
 	init.clsVec = pClsVec;
 	init.clsDVec = pClsDVec;
 	init.clsClr = pClsClr;
+	init.clsWorld = pScrMgr->GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -328,6 +339,7 @@ void deClassLumimeter::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetConeOuterAngle( init ) );
 	AddFunction( new nfGetConeExponent( init ) );
 	AddFunction( new nfSetConeExponent( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfMeasureLuminance( init ) );
 	AddFunction( new nfMeasureColor( init ) );

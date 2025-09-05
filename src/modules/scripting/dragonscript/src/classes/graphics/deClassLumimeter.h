@@ -73,6 +73,7 @@ private:
 	struct sInitData{
 		dsClass *clsLM, *clsVoid, *clsInt, *clsFlt, *clsBool, *clsObj;
 		dsClass *clsVec, *clsDVec, *clsClr;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -93,6 +94,7 @@ private:
 	DEF_NATFUNC( nfSetConeOuterAngle );
 	DEF_NATFUNC( nfGetConeExponent );
 	DEF_NATFUNC( nfSetConeExponent );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfMeasureLuminance );
 	DEF_NATFUNC( nfMeasureColor );

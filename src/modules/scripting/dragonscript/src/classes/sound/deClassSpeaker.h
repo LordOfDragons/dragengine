@@ -86,6 +86,8 @@ private:
 		dsClass *clsShapeList;
 		dsClass *clsSpeakerType;
 		dsClass *clsVideoPlayer;
+		dsClass *clsWorld;
+		dsClass *clsMicrophone;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -110,6 +112,8 @@ private:
 	DEF_NATFUNC( nfSetOrientation );
 	DEF_NATFUNC( nfGetVelocity );
 	DEF_NATFUNC( nfSetVelocity );
+	DEF_NATFUNC(nfGetParentWorld);
+	DEF_NATFUNC(nfGetParentMicrophone);
 	
 	DEF_NATFUNC( nfGetMuted );
 	DEF_NATFUNC( nfSetMuted );

@@ -33,6 +33,7 @@
 #include "../math/deClassQuaternion.h"
 #include "../physics/deClassCollisionFilter.h"
 #include "../utils/deClassShapeList.h"
+#include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -143,7 +144,17 @@ void deClassForceField::nfSetOrientation::RunFunction( dsRunTime *rt, dsValue *m
 	forcefield.SetOrientation( orientation );
 }
 
+// func World getParentWorld()
+deClassForceField::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsFF, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
 
+void deClassForceField::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deForceField &forcefield = *((sFFNatDat*)p_GetNativeData(myself))->forcefield;
+	const deScriptingDragonScript &ds = ((deClassForceField*)GetOwnerClass())->GetDS();
+	
+	ds.GetClassWorld()->PushWorld(rt, forcefield.GetParentWorld());
+}
 
 // public func ShapeList getInfluenceArea()
 deClassForceField::nfGetInfluenceArea::nfGetInfluenceArea( const sInitData &init ) : dsFunction( init.clsFF,
@@ -488,6 +499,7 @@ void deClassForceField::CreateClassMembers( dsEngine *engine ){
 	init.clsShapeList = pDS.GetClassShapeList();
 	init.clsForceFieldType = pClsForceFieldType;
 	init.clsForceFieldApplication = pClsForceFieldApplication;
+	init.clsWorld = pDS.GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -497,6 +509,7 @@ void deClassForceField::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetPosition( init ) );
 	AddFunction( new nfGetOrientation( init ) );
 	AddFunction( new nfSetOrientation( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfGetInfluenceArea( init ) );
 	AddFunction( new nfSetInfluenceArea( init ) );

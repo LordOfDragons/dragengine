@@ -67,6 +67,7 @@ private:
 		dsClass *clsClr, *clsVec, *clsDVec, *clsQuat, *clsShapeList;
 		dsClass *clsModel;
 		dsClass *clsMatrix;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -83,6 +84,7 @@ private:
 	DEF_NATFUNC( nfSetOrientation );
 	DEF_NATFUNC( nfGetScale );
 	DEF_NATFUNC( nfSetScale );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfGetVisible );
 	DEF_NATFUNC( nfSetVisible );
