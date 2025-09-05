@@ -148,29 +148,32 @@ void deoalAMicrophone::SetEnableAuralization( bool enable ){
 
 
 
-void deoalAMicrophone::SetActive( bool active ){
+void deoalAMicrophone::SetActive(bool active){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( active == pActive ){
+	if(active == pActive){
 		return;
 	}
 	
-	if( pActive ){
-		pEnableAttachedSpeakers( false );
-		pActiveSpeakers.EnableAll( false );
+	if(pActive){
+		pEnableAttachedSpeakers(false);
+		pActiveSpeakers.EnableAll(false);
 		pActiveSpeakers.RemoveAll();
 		
-		if( pParentWorld ){
-			pParentWorld->SetAllSpeakersEnabled( false );
+		if(pParentWorld){
+			pParentWorld->SetAllSpeakersEnabled(false);
 		}
 	}
 	
 	pActive = active;
 	
-	if( active && pParentWorld ){
-		pDirtyGeometry = true;
+	if(active){
 		pDirtyGain = true;
-		pEnableAttachedSpeakers( true );
+		pEnableAttachedSpeakers(true);
+		
+		if(pParentWorld){
+			pDirtyGeometry = true;
+		}
 	}
 }
 
@@ -187,28 +190,28 @@ deoalASpeaker *deoalAMicrophone::GetSpeakerAt( int index ) const{
 void deoalAMicrophone::AddSpeaker( deoalASpeaker *speaker ){
 	// WARNING Called during synchronization time from main thread.
 	
-	pInvalidateSpeakers.RemoveIfPresent( speaker );
-	pSpeakers.Add( speaker );
+	pInvalidateSpeakers.RemoveIfPresent(speaker);
+	pSpeakers.Add(speaker);
 	
-	speaker->SetPositionless( true );
-	speaker->SetEnabled( pActive );
+	speaker->SetPositionless(true);
+	speaker->SetEnabled(pActive);
+	speaker->SetParentMicrophone(this);
 }
 
 void deoalAMicrophone::RemoveSpeaker( deoalASpeaker *speaker ){
 	// WARNING Called during synchronization time from main thread.
 	
-	const int index = pSpeakers.IndexOf( speaker );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	const int index = pSpeakers.IndexOf(speaker);
+	DEASSERT_TRUE(index != -1)
+	
+	speaker->SetEnabled(false);
+	speaker->SetParentMicrophone(nullptr);
+	
+	if(pAudioThread.GetActiveMicrophone() == this){
+		InvalidateSpeaker(speaker);
 	}
 	
-	speaker->SetEnabled( false );
-	
-	if( pAudioThread.GetActiveMicrophone() == this ){
-		InvalidateSpeaker( speaker );
-	}
-	
-	pSpeakers.RemoveFrom( index );
+	pSpeakers.RemoveFrom(index);
 }
 
 void deoalAMicrophone::RemoveAllSpeakers(){
@@ -218,11 +221,12 @@ void deoalAMicrophone::RemoveAllSpeakers(){
 	const int count = pSpeakers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoalASpeaker * const speaker = ( deoalASpeaker* )pSpeakers.GetAt( i );
-		speaker->SetEnabled( false );
-		if( isActive ){
-			InvalidateSpeaker( speaker );
+	for(i=0; i<count; i++){
+		deoalASpeaker * const speaker = (deoalASpeaker*)pSpeakers.GetAt(i);
+		speaker->SetEnabled(false);
+		speaker->SetParentMicrophone(nullptr);
+		if(isActive){
+			InvalidateSpeaker(speaker);
 		}
 	}
 	
@@ -274,37 +278,40 @@ void deoalAMicrophone::FindActiveSpeakers(){
 
 
 
-void deoalAMicrophone::SetParentWorld( deoalAWorld *world ){
+void deoalAMicrophone::SetParentWorld(deoalAWorld *world){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( world == pParentWorld ){
+	if(world == pParentWorld){
 		return;
 	}
 	
 	// if the microphone is the active one disable all speakers. otherwise they
 	// will continue to play although they are in a different world
-	if( pActive ){
-		pEnableAttachedSpeakers( false );
-		pActiveSpeakers.EnableAll( false );
+	if(pActive){
+		// pEnableAttachedSpeakers(false); // these can still play it outside a world
+		pActiveSpeakers.EnableAll(false);
 	}
 	
 	pActiveSpeakers.RemoveAll();
 	
-	if( pEnvProbeList ){
+	if(pEnvProbeList){
 		delete pEnvProbeList;
-		pEnvProbeList = NULL;
+		pEnvProbeList = nullptr;
 	}
 	
-	if( pOctreeNode ){
-		pOctreeNode->RemoveMicrophone( this );
+	if(pOctreeNode){
+		pOctreeNode->RemoveMicrophone(this);
 	}
 	
 	pParentWorld = world;
 	
-	if( pActive && world ){
+	if(pActive){
 		// if the microphone is the active one enable all active speakers if added to a new world
-		pEnableAttachedSpeakers( true );
-		pActiveSpeakers.EnableAll( true );
+		// pEnableAttachedSpeakers(true); // not disabled above so do not enable here
+		
+		if(world){
+			pActiveSpeakers.EnableAll(true);
+		}
 	}
 }
 
@@ -630,6 +637,8 @@ void deoalAMicrophone::SetLLWorldNext( deoalAMicrophone *microphone ){
 //////////////////////
 
 void deoalAMicrophone::pCleanUp(){
+	RemoveAllSpeakers();
+	
 	pParentWorld = NULL;
 	pEnvProbe = NULL;
 	if( pEnvProbeList ){

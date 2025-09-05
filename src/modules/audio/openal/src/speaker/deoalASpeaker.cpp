@@ -592,36 +592,44 @@ void deoalASpeaker::SetFlag( bool flag ){
 	pFlag = flag;
 }
 
-void deoalASpeaker::SetParentWorld( deoalAWorld *world ){
+void deoalASpeaker::SetParentWorld(deoalAWorld *world){
 	// WARNING Called during synchronization time from main thread.
 	
-	DEASSERT_NULL( pParentMicrophone )
-	
-	if( world == pParentWorld ){
+	if(world == pParentWorld){
 		return;
 	}
 	
-	if( pOctreeNode ){
-		pOctreeNode->RemoveSpeaker( this );
+	DEASSERT_NULL_IF(world, pParentMicrophone)
+	
+	if(pOctreeNode){
+		pOctreeNode->RemoveSpeaker(this);
 	}
 	pRemoveFromSoundLevelMeters();
 	
 	pParentWorld = world;
 	
+	pDirtyPlayState = true;
+	pRestart = true;
+	
 	pEnsureEnvironment();
-	if( pEnvironment ){
-		pEnvironment->SetWorld( world );
+	if(pEnvironment){
+		pEnvironment->SetWorld(world);
 	}
 }
 
-void deoalASpeaker::SetParentMicrophone( deoalAMicrophone *microphone ){
+void deoalASpeaker::SetParentMicrophone(deoalAMicrophone *microphone){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( pParentWorld ){
-		DETHROW( deeInvalidParam );
+	if(microphone == pParentMicrophone){
+		return;
 	}
 	
+	DEASSERT_NULL_IF(microphone, pParentWorld)
+	
 	pParentMicrophone = microphone;
+	
+	pDirtyPlayState = true;
+	pRestart = true;
 }
 
 void deoalASpeaker::SetOctreeNode( deoalWorldOctree *node ){
@@ -1429,7 +1437,7 @@ void deoalASpeaker::pStopPlaySource(){
 	
 	DropSharedEffectSlot();
 	pAudioThread.GetSourceManager().UnbindSource( pSource );
-	pSource = NULL;
+	pSource = nullptr;
 	pQueueSampleOffset = 0;
 }
 
