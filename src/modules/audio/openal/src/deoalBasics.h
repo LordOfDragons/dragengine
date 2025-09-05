@@ -26,6 +26,11 @@
 #define _DEOALBASICS_H_
 
 
+#include <dragengine/dragengine_configuration.h>
+
+#ifdef OS_WASM
+#define AL_DISABLE_NOEXCEPT
+#endif
 
 #include "extensions/al.h"
 #include "extensions/alc.h"
