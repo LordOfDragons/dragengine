@@ -113,7 +113,7 @@ void sePropertyNodeText::UpdateFontSize(){
 	}
 	
 	try{
-		pFontSize = pFont->PrepareSize(pTextSize);
+		pFontSize = pFont->PrepareSize((int)(pTextSize + 0.5f));
 		
 	}catch(const deException &e){
 		GetProperty()->GetTexture()->GetSkin()->GetLogger()->LogException("Skin Editor", e);

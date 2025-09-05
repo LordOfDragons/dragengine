@@ -477,7 +477,7 @@ void deoglSCBuildConstructed::VisitText( deSkinPropertyNodeText &node ){
 	}
 	
 	const float textSize = node.GetFontSize();
-	const deFontSize * const size = font->EnsureSizePrepared(textSize);
+	const deFontSize * const size = font->EnsureSizePrepared((int)(textSize + 0.5f));
 	
 	const deImage * const image = (size ? size->GetImage() : font->GetImage());
 	if(!image){
