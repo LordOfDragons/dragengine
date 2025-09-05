@@ -28,7 +28,7 @@
 
 #include <dragengine/dragengine_configuration.h>
 
-#ifdef OS_WASM
+#ifdef OS_WEBWASM
 #define AL_DISABLE_NOEXCEPT
 #endif
 
