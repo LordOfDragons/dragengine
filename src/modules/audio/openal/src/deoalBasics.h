@@ -28,10 +28,6 @@
 
 #include <dragengine/dragengine_configuration.h>
 
-#ifdef OS_WEBWASM
-#define AL_DISABLE_NOEXCEPT
-#endif
-
 #include "extensions/al.h"
 #include "extensions/alc.h"
 #include "extensions/efx.h"
