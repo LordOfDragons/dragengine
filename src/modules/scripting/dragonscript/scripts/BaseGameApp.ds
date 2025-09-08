@@ -375,6 +375,7 @@ class BaseGameApp extends Game
 	var TranslationManager pTranslationManager
 	var InputProcessor pInputProcessor
 	var BehaviorFactoryList pBehaviorFactories
+	var AttachableBehaviorFactoryList pAttachableBehaviorFactories
 	var ElementClassList pElementClassList
 	var CommandManager pCommandManager
 	var ConsoleCommandList pConsoleCommands
@@ -554,6 +555,9 @@ class BaseGameApp extends Game
 		pBehaviorFactories = BehaviorFactoryList.new()
 		createAndAddBehaviorFactories()
 		
+		pAttachableBehaviorFactories = AttachableBehaviorFactoryList.new()
+		createAndAddAttachableBehaviorFactories()
+		
 		pElementClassList = ElementClassList.new()
 		createAndAddElementClasses()
 		pLoaders.getWorld().setElementClassList(pElementClassList)
@@ -576,6 +580,7 @@ class BaseGameApp extends Game
 		end
 		
 		pBehaviorFactories = null
+		pAttachableBehaviorFactories = null
 		
 		if pGameWorldLoader != null
 			cancelLoadGameWorld()
@@ -810,6 +815,14 @@ class BaseGameApp extends Game
 	 */
 	func BehaviorFactoryList getBehaviorFactories()
 		return pBehaviorFactories
+	end
+	
+	/**
+	 * \brief Attachable behavior factories.
+	 * \version 1.29
+	 */
+	func AttachableBehaviorFactoryList getAttachableBehaviorFactories()
+		return pAttachableBehaviorFactories
 	end
 	
 	/** \brief Element classes list. */
@@ -1272,6 +1285,18 @@ class BaseGameApp extends Game
 	 */
 	protected func void createAndAddBehaviorFactories()
 		BehaviorElementClass.sharedFactoryHelper.addAllFactories(pBehaviorFactories)
+	end
+	
+	/**
+	 * \brief Create attachable behavior factories adding them to the factory list.
+	 * \version 1.29
+	 * 
+	 * \ref #getAttachableBehaviorFactories() is used by \ref GenericBehaviorElementClass to set
+	 * the initial list of allowed factories. Default uses
+	 * \ref BehaviorFactoryHelper#addAllAttachableFactories() to populate the list.
+	 */
+	protected func void createAndAddAttachableBehaviorFactories()
+		BehaviorElementClass.sharedFactoryHelper.addAllAttachableFactories(pAttachableBehaviorFactories)
 	end
 	
 	/**

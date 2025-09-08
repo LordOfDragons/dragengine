@@ -257,6 +257,12 @@ void meWorldNotifier::ObjectActivePropertyChanged( meWorld*, meObject* ){
 void meWorldNotifier::ObjectAdded( meWorld*, meObject* ){
 }
 
+void meWorldNotifier::ObjectAttachBehaviorsChanged(meWorld*, meObject*){
+}
+
+void meWorldNotifier::ObjectActiveAttachBehaviorChanged(meWorld*, meObject*){
+}
+
 void meWorldNotifier::ObjectRemoved( meWorld*, meObject* ){
 }
 

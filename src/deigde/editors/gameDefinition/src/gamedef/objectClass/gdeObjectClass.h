@@ -78,23 +78,19 @@ public:
 private:
 	gdeGameDefinition *pGameDefinition;
 	
-	decString pName;
-	decString pDescription;
+	decString pName, pDescription;
 	eScaleModes pScaleMode;
 	
-	gdePropertyList pProperties;
-	gdePropertyList pTextureProperties;
+	gdePropertyList pProperties, pTextureProperties;
 	decStringDictionary pPropertyValues;
 	
 	decString pCategory;
-	decStringSet pHideTags;
-	decStringSet pPartialHideTags;
+	decStringSet pHideTags, pPartialHideTags;
 	
 	gdeOCInheritList pInherits;
 	decString pDefaultInheritPropertyPrefix;
 	
-	bool pIsGhost;
-	bool pCanInstantiate;
+	bool pIsGhost, pCanInstantiate, pIsAttachableBehavior;
 	int pInheritSubObjects;
 	
 	gdeOCBillboardList pBillboards;
@@ -441,6 +437,11 @@ public:
 	/** Set inherit sub objects. */
 	void SetInheritSubObjects( int filter );
 	
+	/** Object class is an attachable behavior. */
+	inline bool GetIsAttachableBehavior() const{ return pIsAttachableBehavior; }
+	
+	/** Set if object class is an attachable behavior. */
+	void SetIsAttachableBehavior(bool isAttachableBehavior);
 	
 	
 	/** Named property searching inheritance. */

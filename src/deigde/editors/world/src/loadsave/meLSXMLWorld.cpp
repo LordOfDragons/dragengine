@@ -219,7 +219,7 @@ void meLSXMLWorld::pWriteObject( decXmlWriter &writer, const meObject &object ){
 	const decDVector &position = object.GetPosition();
 	const decVector &rotation = object.GetRotation();
 	const decVector &scaling = object.GetScaling();
-	int t;
+	int i;
 	
 	writer.WriteOpeningTagStart( "object" );
 	writer.WriteAttributeString( "id", object.GetID().ToHexString() );
@@ -251,12 +251,18 @@ void meLSXMLWorld::pWriteObject( decXmlWriter &writer, const meObject &object ){
 	
 	pWriteProperties( writer, object.GetProperties() );
 	
-	for( t=0; t<textureCount; t++ ){
-		pWriteObjectTexture( writer, *object.GetTextureAt( t ) );
+	for( i=0; i<textureCount; i++ ){
+		pWriteObjectTexture( writer, *object.GetTextureAt( i ) );
 	}
 	
 	if( object.GetAttachedTo() ){
 		writer.WriteDataTagString( "attachTo", object.GetAttachedTo()->GetID().ToHexString() );
+	}
+	
+	const decStringList &attachBehaviors = object.GetAttachBehaviors();
+	const int attachBehaviorCount = attachBehaviors.GetCount();
+	for(i=0; i<attachBehaviorCount; i++){
+		writer.WriteDataTagString("attachBehavior", attachBehaviors.GetAt(i));
 	}
 	
 	writer.WriteClosingTag( "object" );

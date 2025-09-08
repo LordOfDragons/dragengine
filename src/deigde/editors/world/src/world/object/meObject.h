@@ -143,7 +143,9 @@ private:
 	decVector pSize;
 	decVector pScaling;
 	decStringDictionary pProperties;
+	decStringList pAttachBehaviors;
 	decString pActiveProperty;
+	int pActiveAttachBehavior;
 	decUniqueID pID;
 	bool pSelected;
 	bool pActive;
@@ -447,6 +449,23 @@ public:
 	
 	/** \brief Property is a shape or shape list property. */
 	bool IsPropertyShapeOrShapeList( const char *property ) const;
+	/*@}*/
+	
+	
+	
+	/** \name Attach behaviors */
+	/*@{*/
+	/** \brief Attach behaviors. */
+	inline const decStringList &GetAttachBehaviors() const{ return pAttachBehaviors; }
+	
+	/** \brief Set attach behaviors. */
+	void SetAttachBehaviors(const decStringList &list);
+	
+	/** \brief Active attach behavior. */
+	inline int GetActiveAttachBehavior() const{ return pActiveAttachBehavior; }
+	
+	/** \brief Set active attach behavior. */
+	void SetActiveAttachBehavior(int attachBehavior);
 	/*@}*/
 	
 private:

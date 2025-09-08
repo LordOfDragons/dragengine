@@ -267,6 +267,9 @@ class LoadWorld extends BaseXmlLoader
 			elif tagName.equals("attachTo")
 				stubElement.setAttachTo(UniqueID.newFromHexString(element.getFirstCData()))
 				
+			elif tagName.equals("attachBehavior")
+				stubElement.addAttachableBehavior(element.getFirstCData())
+				
 			else
 				logUnknownTag(element)
 				//throw EInvalidParam.new()

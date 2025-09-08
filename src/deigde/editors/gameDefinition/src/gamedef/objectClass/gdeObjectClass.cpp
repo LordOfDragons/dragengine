@@ -65,6 +65,7 @@ pScaleMode( esmUniform ),
 
 pIsGhost( false ),
 pCanInstantiate( true ),
+pIsAttachableBehavior(false),
 pInheritSubObjects( igdeGDClass::FilterSubObjectsAll ){
 }
 
@@ -82,6 +83,7 @@ pPartialHideTags( objectClass.pPartialHideTags ),
 
 pIsGhost( objectClass.pIsGhost ),
 pCanInstantiate( objectClass.pCanInstantiate ),
+pIsAttachableBehavior(objectClass.pIsAttachableBehavior),
 pInheritSubObjects( objectClass.pInheritSubObjects )
 {
 	deObjectReference objRef;
@@ -603,6 +605,17 @@ void gdeObjectClass::SetInheritSubObjects( int filter ){
 	}
 }
 
+void gdeObjectClass::SetIsAttachableBehavior(bool isAttachableBehavior){
+	if(pIsAttachableBehavior == isAttachableBehavior){
+		return;
+	}
+	
+	pIsAttachableBehavior = isAttachableBehavior;
+	
+	if(pGameDefinition){
+		pGameDefinition->NotifyObjectClassChanged(this);
+	}
+}
 
 
 bool gdeObjectClass::DeepGetNamedProperty( const char *name, const gdeObjectClass* &objectClass,

@@ -52,6 +52,7 @@
 #include "../../../undosys/objectClass/gdeUOCPropertyValuesFromSubObjects.h"
 #include "../../../undosys/objectClass/gdeUOCToggleIsGhost.h"
 #include "../../../undosys/objectClass/gdeUOCToggleCanInstantiate.h"
+#include "../../../undosys/objectClass/gdeUOCToggleIsAttachableBehavior.h"
 #include "../../../undosys/objectClass/gdeUOCSetInheritSubObjects.h"
 #include "../../../undosys/objectClass/property/gdeUOCPropertyAdd.h"
 #include "../../../undosys/objectClass/property/gdeUOCPropertyRemove.h"
@@ -296,6 +297,18 @@ public:
 	}
 	
 	virtual void Update(){ /* empty on purpose! */ }
+};
+
+class cActionIsAttachableBehavior : public cBaseAction {
+public:
+	cActionIsAttachableBehavior(gdeWPSObjectClass &panel) : cBaseAction(panel,
+		"Attachable Behavior", nullptr, "Object is an attachable behavior"){}
+	
+	igdeUndo *OnActionObjectClass(gdeObjectClass *objectClass) override{
+		return new gdeUOCToggleIsAttachableBehavior(objectClass);
+	}
+	
+	void Update() override{ /* empty on purpose! */ }
 };
 
 class cActionInheritSubObjects : public cBaseAction {
@@ -1157,6 +1170,7 @@ pGameDefinition( NULL )
 	
 	helper.CheckBox( groupBox, pChkIsGhost, new cActionIsGhost( *this ), true );
 	helper.CheckBox( groupBox, pChkCanInstantiate, new cActionCanInstantiate( *this ), true );
+	helper.CheckBox(groupBox, pChkIsAttachableBehavior, new cActionIsAttachableBehavior(*this), true);
 	
 	helper.FormLineStretchFirst( groupBox, "Category: ", "Category", frameLine );
 	helper.ComboBoxFilter( frameLine, true, "Category", pCBCategory, new cComboCategory( *this ) );
@@ -1455,6 +1469,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 		pCBScaleMode->SetSelectionWithData( ( void* )( intptr_t )objectClass->GetScaleMode() );
 		pChkIsGhost->SetChecked( objectClass->GetIsGhost() );
 		pChkCanInstantiate->SetChecked( objectClass->GetCanInstantiate() );
+		pChkIsAttachableBehavior->SetChecked(objectClass->GetIsAttachableBehavior());
 		pChkInheritSOBillboards->SetChecked( (iso & igdeGDClass::efsoBillboards ) != 0 );
 		pChkInheritSOComponents->SetChecked( (iso & igdeGDClass::efsoComponents ) != 0 );
 		pChkInheritSOLights->SetChecked( (iso & igdeGDClass::efsoLights ) != 0 );
@@ -1481,6 +1496,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 		pCBScaleMode->SetSelectionWithData( ( void* )( intptr_t )gdeObjectClass::esmFixed );
 		pChkIsGhost->SetChecked( false );
 		pChkCanInstantiate->SetChecked( true );
+		pChkIsAttachableBehavior->SetChecked(false);
 		pChkInheritSOBillboards->SetChecked( true );
 		pChkInheritSOComponents->SetChecked( true );
 		pChkInheritSOLights->SetChecked( true );
@@ -1507,6 +1523,7 @@ void gdeWPSObjectClass::UpdateObjectClass(){
 	pCBScaleMode->SetEnabled( enabled );
 	pChkIsGhost->SetEnabled( enabled );
 	pChkCanInstantiate->SetEnabled( enabled );
+	pChkIsAttachableBehavior->SetEnabled(enabled);
 	pChkInheritSOBillboards->SetEnabled( enabled );
 	pChkInheritSOComponents->SetEnabled( enabled );
 	pChkInheritSOLights->SetEnabled( enabled );

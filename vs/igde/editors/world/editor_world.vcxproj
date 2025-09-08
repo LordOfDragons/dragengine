@@ -288,6 +288,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectRemoveProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectSetProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectSetProperty.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\attachBehavior\meUObjectSetAttachBehaviors.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\meUndoDataObjectTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\meUObjectAddTexture.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\meUObjectAddUsedTextures.cpp" />
@@ -640,6 +641,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectRemoveProperty.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectSetProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\property\meUObjectSetProperty.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\attachBehavior\meUObjectSetAttachBehaviors.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\meUndoDataObjectTexture.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\meUObjectAddTexture.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\meUObjectAddUsedTextures.h" />

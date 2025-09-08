@@ -71,6 +71,7 @@ igdeGDClass::igdeGDClass( const char *name ){
 	pHasCamera = false;
 	pIsGhost = false;
 	pCanInstantiate = true;
+	pIsAttachableBehavior = false;
 	pInheritSubObjects = FilterSubObjectsAll;
 	
 	pPreviewImage = NULL;
@@ -104,6 +105,7 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 		pHasCamera = gdclass.pHasCamera;
 		pIsGhost = gdclass.pIsGhost;
 		pCanInstantiate = gdclass.pCanInstantiate;
+		pIsAttachableBehavior = gdclass.pIsAttachableBehavior;
 		pInheritSubObjects = gdclass.pInheritSubObjects;
 		
 		pCategory = gdclass.pCategory;
@@ -182,6 +184,10 @@ void igdeGDClass::SetIsGhost( bool isGhost ){
 
 void igdeGDClass::SetCanInstantiate( bool canInstantiate ){
 	pCanInstantiate = canInstantiate;
+}
+
+void igdeGDClass::SetIsAttachableBehavior(bool isAttachableBehavior){
+	pIsAttachableBehavior = isAttachableBehavior;
 }
 
 void igdeGDClass::SetCategory( const char *category ){

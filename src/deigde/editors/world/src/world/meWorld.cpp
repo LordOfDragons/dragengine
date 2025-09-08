@@ -1424,6 +1424,24 @@ void meWorld::NotifyObjectActivePropertyChanged( meObject *object ){
 	}
 }
 
+void meWorld::NotifyObjectAttachBehaviorsChanged(meObject *object){
+	DEASSERT_NOTNULL(object)
+	
+	int i;
+	for(i=0; i<pNotifierCount; i++){
+		pNotifiers[i]->ObjectAttachBehaviorsChanged(this, object);
+	}
+}
+
+void meWorld::NotifyObjectActiveAttachBehaviorChanged(meObject *object){
+	DEASSERT_NOTNULL(object)
+	
+	int i;
+	for(i=0; i<pNotifierCount; i++){
+		pNotifiers[i]->ObjectActiveAttachBehaviorChanged(this, object);
+	}
+}
+
 void meWorld::NotifyObjectAdded( meObject *object ){
 	if( ! object ) DETHROW( deeInvalidParam );
 	int n;

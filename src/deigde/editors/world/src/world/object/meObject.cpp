@@ -172,6 +172,7 @@ texCoordTransform( componentTexture.GetTransform() ){
 ////////////////////////////
 
 meObject::meObject( igdeEnvironment *environment ) :
+pActiveAttachBehavior(-1),
 pColliderOwner( this ),
 pWOAsyncFinished( *this )
 {
@@ -1696,6 +1697,37 @@ bool meObject::IsPropertyShapeOrShapeList( const char *property ) const{
 	}
 	
 	return false;
+}
+
+
+
+// Attach behaviors
+/////////////////////
+
+void meObject::SetAttachBehaviors(const decStringList &list){
+	pAttachBehaviors = list;
+	
+	pActiveAttachBehavior = pAttachBehaviors.GetCount() == 0 ? -1 : 0;
+	
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyObjectAttachBehaviorsChanged(this);
+		pWorld->NotifyObjectActiveAttachBehaviorChanged(this);
+	}
+}
+
+void meObject::SetActiveAttachBehavior(int attachBehavior){
+	attachBehavior = decMath::clamp(attachBehavior, -1, pAttachBehaviors.GetCount() - 1);
+	
+	if(pActiveAttachBehavior == attachBehavior){
+		return;
+	}
+	
+	pActiveAttachBehavior = attachBehavior;
+	
+	if(pWorld){
+		pWorld->NotifyObjectActiveAttachBehaviorChanged(this);
+	}
 }
 
 

@@ -75,10 +75,8 @@ class BehaviorElementClass extends ElementClass
 	
 	
 	
-	var Array pBehaviors
-	var Array pPrepareStubBehaviors
-	var Array pPreventCreationBehaviors
-	var Dictionary pBehaviorFactories
+	var Array pBehaviors, pPrepareStubBehaviors, pPreventCreationBehaviors
+	var Dictionary pBehaviorFactories, pAttachableBehaviorFactories
 	var Array pXmlBehaviorsInfo
 	var Dictionary pBehaviorIdMap
 	
@@ -104,6 +102,7 @@ class BehaviorElementClass extends ElementClass
 		pPrepareStubBehaviors = Array.new()
 		pPreventCreationBehaviors = Array.new()
 		pBehaviorFactories = Dictionary.new()
+		pAttachableBehaviorFactories = Dictionary.new()
 		pXmlBehaviorsInfo = Array.new()
 	end
 	
@@ -120,6 +119,7 @@ class BehaviorElementClass extends ElementClass
 		pPrepareStubBehaviors = null
 		pPreventCreationBehaviors = null
 		pBehaviorFactories = null
+		pAttachableBehaviorFactories = null
 		
 		super.dispose()
 	end
@@ -394,6 +394,73 @@ class BehaviorElementClass extends ElementClass
 	 */
 	func void forEachXmlBehaviorInfo(Block ablock)
 		pXmlBehaviorsInfo.forEach(ablock)
+	end
+	
+	
+	
+	/**
+	 * \brief Add attachable behavior factory replacing duplicate if present.
+	 * \version 1.29
+	 */
+	func void addAttachableBehaviorFactory(AttachableBehaviorFactory factory)
+		if factory == null
+			throw ENullPointer.new()
+		end
+		pAttachableBehaviorFactories.setAt(factory.factoryId(), factory)
+	end
+	
+	/**
+	 * \brief Add attachable behavior factories replacing duplicates if present.
+	 * \version 1.29
+	 */
+	func void addAttachableBehaviorFactories(AttachableBehaviorFactoryList factories)
+		factories.forEach(block BehaviorFactory each
+			pAttachableBehaviorFactories.setAt(each.factoryId(), each)
+		end)
+	end
+	
+	/**
+	 * \brief Remove attachable behavior factory if present.
+	 * \version 1.29
+	 */
+	func void removeAttachableBehaviorFactory(String id)
+		pAttachableBehaviorFactories.removeIfExisting(id)
+	end
+	
+	/**
+	 * \brief Remove all attachable behavior factories.
+	 * \version 1.29
+	 */
+	func void removeAllAttachableBehaviorFactories()
+		pAttachableBehaviorFactories.removeAll()
+	end
+	
+	/**
+	 * \brief Add all attachable behavior factories present in the DragonScript module.
+	 * \version 1.29
+	 * 
+	 * Add \ref BaseGameApp#getAttachableBehaviorFactories().
+	 */
+	func void addDefaultAttachableBehaviorFactories()
+		addAttachableBehaviorFactories(BaseGameApp.getApp().getAttachableBehaviorFactories())
+	end
+	
+	/**
+	 * \brief Attachable behavior factory with identifier or null if absent.
+	 * \version 1.29
+	 */
+	func AttachableBehaviorFactory getAttachableBehaviorFactoryWithId(String id)
+		return pAttachableBehaviorFactories.getAt(id, null) cast AttachableBehaviorFactory
+	end
+	
+	/**
+	 * \brief Visit attachable behavior factories.
+	 * \version 1.29
+	 * 
+	 * Block receives as only argument \ref AttachableBehaviorFactory.
+	 */
+	func void forEachAttachableBehaviorFactory(Block ablock)
+		pAttachableBehaviorFactories.forEachValue(ablock)
 	end
 	
 	

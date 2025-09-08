@@ -302,6 +302,7 @@ void meLoadXMLWorldTask::pLoadWorldEditor( const decXmlElementTag &root ){
 }
 
 void meLoadXMLWorldTask::pLoadObject( const decXmlElementTag &root, meObject &object ){
+	decStringList attachBehaviors;
 	const char *name;
 	int i;
 	
@@ -360,12 +361,17 @@ void meLoadXMLWorldTask::pLoadObject( const decXmlElementTag &root, meObject &ob
 		}else if( strcmp( tag->GetName(), "attachTo" ) == 0 ){
 			object.SetAttachedToID( GetCDataString( *tag ) );
 			
+		}else if(tag->GetName() == "attachBehavior"){
+			attachBehaviors.Add(GetCDataString(*tag));
+			
 		}else{
 			pLSSys->GetWindowMain()->GetLogger()->LogWarnFormat( LOGSOURCE,
 				"world.sector.object(%i:%i): Unknown Tag %s, ignoring",
 				tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString() );
 		}
 	}
+	
+	object.SetAttachBehaviors(attachBehaviors);
 }
 
 void meLoadXMLWorldTask::pLoadObjectTexture( const decXmlElementTag &root, meObjectTexture &texture ){

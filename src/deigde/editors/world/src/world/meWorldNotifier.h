@@ -213,6 +213,13 @@ public:
 	virtual void ObjectPropertiesChanged( meWorld *world, meObject *object );
 	/** Object active property changed. */
 	virtual void ObjectActivePropertyChanged( meWorld *world, meObject *object );
+	
+	/** Object attach behaviors changed. */
+	virtual void ObjectAttachBehaviorsChanged(meWorld *world, meObject *object);
+	
+	/** Object active attach behavior changed. */
+	virtual void ObjectActiveAttachBehaviorChanged(meWorld *world, meObject *object);
+	
 	/** Object added. */
 	virtual void ObjectAdded( meWorld *world, meObject *object );
 	/** Object removed. */

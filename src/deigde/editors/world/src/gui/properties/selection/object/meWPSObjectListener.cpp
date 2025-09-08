@@ -71,6 +71,7 @@ void meWPSObjectListener::ObjectSelectionChanged( meWorld *world ){
 	pPanel.UpdateGeometry();
 	pPanel.UpdatePropertyKeys();
 	pPanel.UpdateProperties();
+	pPanel.UpdateAttachBehaviors();
 	pPanel.UpdateTextureList();
 	pPanel.UpdateIdentifierLists();
 	pPanel.UpdateLight();
@@ -134,6 +135,24 @@ void meWPSObjectListener::ObjectActivePropertyChanged( meWorld*, meObject *objec
 	}
 	
 	pPanel.SelectActiveProperty();
+}
+
+void meWPSObjectListener::ObjectAttachBehaviorsChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
+		return;
+	}
+	
+	pPanel.UpdatePropertyKeys();
+	pPanel.UpdateProperties();
+	pPanel.UpdateAttachBehaviors();
+}
+
+void meWPSObjectListener::ObjectActiveAttachBehaviorChanged(meWorld*, meObject *object){
+	if(!object->GetActive()){
+		return;
+	}
+	
+	pPanel.SelectActiveAttachBehavior();
 }
 
 void meWPSObjectListener::ObjectTextureCountChanged( meWorld*, meObject *object ){

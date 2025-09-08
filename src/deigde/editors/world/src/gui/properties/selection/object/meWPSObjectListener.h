@@ -47,7 +47,7 @@ public:
 	meWPSObjectListener( meWPSObject &panel );
 	
 	/** \brief Clean up listener. */
-	virtual ~meWPSObjectListener();
+	~meWPSObjectListener() override;
 	/*@}*/
 	
 	
@@ -55,43 +55,50 @@ public:
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Trigger table changed. */
-	virtual void TriggerTableChanged( meWorld *world );
+	void TriggerTableChanged( meWorld *world ) override;
 	
 	
 	
 	/** \brief Object selection changed. */
-	virtual void ObjectSelectionChanged( meWorld *world );
+	void ObjectSelectionChanged( meWorld *world ) override;
 	
 	/** \brief Object changed. */
-	virtual void ObjectChanged( meWorld *world, meObject *object );
+	void ObjectChanged( meWorld *world, meObject *object ) override;
 	
 	/** \brief Object class changed. */
-	virtual void ObjectClassChanged( meWorld *world, meObject *object );
+	void ObjectClassChanged( meWorld *world, meObject *object ) override;
 	
 	/** \brief Object geometry changed. */
-	virtual void ObjectGeometryChanged( meWorld *world, meObject *object );
+	void ObjectGeometryChanged( meWorld *world, meObject *object ) override;
 	
 	/** \brief Object properties changed. */
-	virtual void ObjectPropertiesChanged( meWorld *world, meObject *object );
+	void ObjectPropertiesChanged( meWorld *world, meObject *object ) override;
 	
 	/** \brief Object active property changed. */
-	virtual void ObjectActivePropertyChanged( meWorld *world, meObject *object );
+	void ObjectActivePropertyChanged( meWorld *world, meObject *object ) override;
+	
+	/** Object attach behaviors changed. */
+	void ObjectAttachBehaviorsChanged(meWorld *world, meObject *object) override;
+	
+	/** Object active attach behavior changed. */
+	void ObjectActiveAttachBehaviorChanged(meWorld *world, meObject *object) override;
 	
 	/** \brief Object texture count changed. */
-	virtual void ObjectTextureCountChanged( meWorld *world, meObject *object );
+	void ObjectTextureCountChanged( meWorld *world, meObject *object ) override;
 	
 	/** \brief Object active texture changed. */
-	virtual void ObjectActiveTextureChanged( meWorld *world, meObject *object );
+	void ObjectActiveTextureChanged( meWorld *world, meObject *object ) override;
 	
 	/** \brief Object texture changed. */
-	virtual void ObjectTextureChanged( meWorld *world, meObject *object, meObjectTexture *texture );
+	void ObjectTextureChanged( meWorld *world, meObject *object, meObjectTexture *texture ) override;
 	
 	/** \brief Object texture properties changed. */
-	virtual void ObjectTexturePropertiesChanged( meWorld *world, meObject *object, meObjectTexture *texture );
+	void ObjectTexturePropertiesChanged( meWorld *world, meObject *object, meObjectTexture *texture ) override;
 	
 	/** \brief Object texture active property changed. */
-	virtual void ObjectTextureActivePropertyChanged( meWorld *world, meObject *object, meObjectTexture *texture );
+	void ObjectTextureActivePropertyChanged( meWorld *world, meObject *object, meObjectTexture *texture ) override;
 	/*@}*/
 };
 
 #endif
+

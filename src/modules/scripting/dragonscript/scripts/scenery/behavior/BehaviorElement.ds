@@ -115,6 +115,15 @@ class BehaviorElement extends Element
 			each.postInit(stub)
 		end)
 		pPostInitInstances.removeAll()
+		
+		var BehaviorElementClass eclass = getClass() cast BehaviorElementClass
+		stub.forEachAttachableBehavior(block String each
+			var AttachableBehaviorFactory factory = eclass.getAttachableBehaviorFactoryWithId(each)
+			if factory == null
+				throw EInvalidParam.new("Attachable behavior factory not found: " + each)
+			end
+			addAttachableBehavior(factory.createAttachableBehavior(this))
+		end)
 	end
 	
 	

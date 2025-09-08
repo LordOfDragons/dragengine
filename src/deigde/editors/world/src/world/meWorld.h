@@ -650,6 +650,13 @@ public:
 	void NotifyObjectPropertiesChanged( meObject *object );
 	/** Notifies all that a object active property changed. */
 	void NotifyObjectActivePropertyChanged( meObject *object );
+	
+	/** Notify all object attach behaviors changed. */
+	void NotifyObjectAttachBehaviorsChanged(meObject *object);
+	
+	/** Notify all object active attach behavior changed. */
+	void NotifyObjectActiveAttachBehaviorChanged(meObject *object);
+	
 	/** Notifies all that an object has been added. */
 	void NotifyObjectAdded( meObject *object );
 	/** Notifies all that an object has been removed. */
