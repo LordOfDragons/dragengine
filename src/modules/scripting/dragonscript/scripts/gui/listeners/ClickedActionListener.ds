@@ -47,20 +47,27 @@ pin Dragengine.Utils
  * using setMultiClickTimeout(). Successful multi click is detected if all required
  * clicks occure at most getMultiClickTimeout() seconds apart and are located at most
  * getRange() compared to the position of the first click.
+ * 
+ * \par Version 1.29
+ * 
+ * \ref #getPosition() returns the clicked position only while tracking. After releasing
+ * the mouse button it is cleared. Hence during \ref #onAction() it is not available.
+ * Using \ref #getClickedPosition() the last tracked position can be queried from inside
+ * \ref #onAction() if this information is required.
  */
 abstract class ClickedActionListener extends DefaultMouseListener
 	/** \brief Multi-click reset timer. */
-	public class ResetMultiClickTimer extends Timer
-		private var WeakReference pListener
+	class ResetMultiClickTimer extends Timer
+		var WeakReference pListener
 		
-		public func new(ClickedActionListener listener) super(listener.getMultiClickTimeout(), false)
+		func new(ClickedActionListener listener) super(listener.getMultiClickTimeout(), false)
 			if listener == null
 				throw ENullPointer.new("listener")
 			end
 			pListener = WeakReference.new(listener)
 		end
 		
-		public func void fire()
+		func void fire()
 			var ClickedActionListener listener = pListener.get() cast ClickedActionListener
 			if listener != null
 				listener.resetMultiClickDetection()
@@ -69,21 +76,17 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	end
 	
 	
-	
-	private var int pButton
-	private var int pRange
-	private var Point pPosition
-	private var int pMultiClickCount
-	private var float pMultiClickTimeout
-	private var int pClickedCount
-	private var ResetMultiClickTimer pResetMultiClickTimer
-	
+	var int pButton, pRange
+	var Point pPosition, pClickedPosition
+	var int pMultiClickCount, pClickedCount
+	var float pMultiClickTimeout
+	var ResetMultiClickTimer pResetMultiClickTimer
 	
 	
 	/**
 	 * \brief Create mouse listener tracking left mouse button and range of 5 pixels.
 	 */
-	public func new() this(InputEventMouseButton.left, 5)
+	func new() this(InputEventMouseButton.left, 5)
 	end
 	
 	/**
@@ -92,7 +95,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * \param range Range in pixels the mouse is allowed to move to fire the action.
 	 * \throws EInvalidParam range is less than 0.
 	 */
-	public func new(int trackButton, int range)
+	func new(int trackButton, int range)
 		if range < 0
 			throw EInvalidParam.new("range < 0")
 		end
@@ -107,17 +110,17 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	
 	
 	/** \brief Mouse button to track. */
-	public func int getButton()
+	func int getButton()
 		return pButton
 	end
 	
 	/** \brief Range in pixels the mouse is allowed to move to fire the action. */
-	public func int getRange()
+	func int getRange()
 		return pRange
 	end
 	
 	/** \brief Mouse position at button press time or null if not tracked. */
-	public func Point getPosition()
+	func Point getPosition()
 		return pPosition
 	end
 	
@@ -130,7 +133,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * \brief Count of multi clicks before fire action.
 	 * \version 1.7
 	 */
-	public func int getMultiClickCount()
+	func int getMultiClickCount()
 		return pMultiClickCount
 	end
 	
@@ -139,7 +142,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * \version 1.7
 	 * \throws EInvalidParam count is less than 1
 	 */
-	public func void setMultiClickCount(int count)
+	func void setMultiClickCount(int count)
 		if count < 1
 			throw EInvalidParam.new("count < 1")
 		end
@@ -150,7 +153,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * \brief Maximum time in seconds between clicks to count as multi-click.
 	 * \version 1.7
 	 */
-	public func float getMultiClickTimeout()
+	func float getMultiClickTimeout()
 		return pMultiClickTimeout
 	end
 	
@@ -158,7 +161,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * \brief Set maximum time in seconds between clicks to count as multi-click.
 	 * \version 1.7
 	 */
-	public func void setMultiClickTimeout(float time)
+	func void setMultiClickTimeout(float time)
 		pMultiClickTimeout = DEMath.max(time, 0.0)
 	end
 	
@@ -166,7 +169,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * \brief Count of multi-clicks detected so far.
 	 * \version 1.7
 	 */
-	public func int getClickedCount()
+	func int getClickedCount()
 		return pClickedCount
 	end
 	
@@ -176,7 +179,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * 
 	 * Called by internal multi-click reset timer.
 	 */
-	public func void resetMultiClickDetection()
+	func void resetMultiClickDetection()
 		if pResetMultiClickTimer != null
 			pResetMultiClickTimer.giveUp()
 			pResetMultiClickTimer = null
@@ -186,6 +189,13 @@ abstract class ClickedActionListener extends DefaultMouseListener
 		pPosition = null
 	end
 	
+	/**
+	 * \brief Clicked position or null.
+	 * \version 1.29
+	 */
+	func Point getClickedPosition()
+		return pClickedPosition
+	end
 	
 	
 	/**
@@ -193,7 +203,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * 
 	 * Starts tracking if button matches the track button
 	 */
-	public func void onButtonPress(MouseEvent event)
+	func void onButtonPress(MouseEvent event)
 		if event.getButton() != pButton
 			resetMultiClickDetection()
 			return
@@ -210,7 +220,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 		end
 		
 		if pClickedCount == 0
-			pPosition = position
+			pClickedPosition = pPosition = position
 		end
 		
 		pClickedCount++
@@ -230,7 +240,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * 
 	 * Check track position and disable tracking if moved outside range.
 	 */
-	public func void onMouseMove(MouseEvent event)
+	func void onMouseMove(MouseEvent event)
 		if pPosition == null
 			return
 		end
@@ -250,7 +260,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * 
 	 * If button matches tracking button and tracking is active perform action.
 	 */
-	public func void onButtonRelease(MouseEvent event)
+	func void onButtonRelease(MouseEvent event)
 		if pPosition == null or event.getButton() != pButton or pClickedCount != pMultiClickCount
 			return
 		end
@@ -269,8 +279,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	 * \ref #getPosition() for this since this position is relative to whatever widget
 	 * caused the mouse events to be send and it is cleared before calling onAction.
 	 */
-	abstract public func void onAction()
-	
+	abstract func void onAction()
 	
 	
 	/**
