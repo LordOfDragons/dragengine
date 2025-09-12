@@ -52,9 +52,8 @@ pin Dragengine.Utils
  * 
  * \ref #getPosition() returns the clicked position in desktop space only while tracking.
  * After releasing the mouse button it is cleared. Hence during \ref #onAction() it is
- * not available. Using \ref #getClickedPosition() or \ref #getClickedPositionDesktop()
- * the last tracked position (widget or desktop space) can be queried from inside
- * \ref #onAction().
+ * not available. Using \ref #getClickedPosition() the last tracked event position can
+ * be queried from inside \ref #onAction().
  */
 abstract class ClickedActionListener extends DefaultMouseListener
 	/** \brief Multi-click reset timer. */
@@ -78,7 +77,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	
 	
 	var int pButton, pRange
-	var Point pPosition, pClickedPosition, pClickedPositionDesktop
+	var Point pPosition, pClickedPosition
 	var int pMultiClickCount, pClickedCount
 	var float pMultiClickTimeout
 	var ResetMultiClickTimer pResetMultiClickTimer
@@ -191,21 +190,11 @@ abstract class ClickedActionListener extends DefaultMouseListener
 	end
 	
 	/**
-	 * \brief Clicked position in widget space or null.
+	 * \brief Last clicked event position.
 	 * \version 1.29
 	 */
 	func Point getClickedPosition()
 		return pClickedPosition
-	end
-	
-	/**
-	 * \brief Clicked position in desktop space or null.
-	 * \version 1.29
-	 * 
-	 * If desktop is not available returns the same position as \ref #getClickedPosition().
-	 */
-	func Point getClickedPositionDesktop()
-		return pClickedPositionDesktop
 	end
 	
 	
@@ -231,7 +220,7 @@ abstract class ClickedActionListener extends DefaultMouseListener
 		end
 		
 		if pClickedCount == 0
-			pClickedPositionDesktop = pPosition = position
+			pPosition = position
 			pClickedPosition = event.getPosition()
 		end
 		
