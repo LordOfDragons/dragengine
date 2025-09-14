@@ -65,7 +65,7 @@ To compile and install run
 
     scons
 
-By default the build tries to find as many dependency libraries as possiible in
+By default the build tries to find as many dependency libraries as possible in
 the host system. Not found libraries are compiled from in-tree sourced under "extern".
 You can force building certain libraries either in-tree or from system by setting the
 respective with_system_* parameter to 'yes' (to force using the library from host
@@ -102,7 +102,8 @@ To clear only archive files run
 
     scons -c archive
 
-Clearing only removes files not directories. This is the way SCons behaves.
+Clearing only removes files not directories. Clearing clears also all direct and
+indirect dependencies of the targets. This is the way SCons behaves.
 
 When running SCons as user it is recommended to use "prefix" parameter to define
 the installation directory otherwise installing files fails with permission
@@ -120,48 +121,67 @@ See the __debian__ branch for an example of how this is used.
 
 # Build Dependencies
 
+These dependencies are required to build all targets:
+
 - Git Lfs
-- SCons 2.5.1+
+- SCons 3+
 - Python 3.5+
 - GCC 8+
-- CMake (for in-tree building of external software)
-- libtool (for in-tree building of external software)
-- gperf (for in-tree building of external software)
+- CMake
+- autoconf
+- libtool
+- gperf
+- nasm
+- patchelf
+- glslang-tools
 
+These dependencies (headers and link libraries, aka development files) allow using
+system libraries. If missing in-tree builds are used:
+- libdscript: https://github.com/LordOfDragons/dragonscript
+- libx11
+- libxrandr
+- libgl
+- libxi
+- libpulse
+- libasound2
+- portaudio19
+- libxft
+- libjpeg
+- libopenal
+- libogg
+- libvorbis
+- libtheora
+- libhidapi
+- libopenhmd
+- libevdev
+- libsoundtouch
+- libwebp
+- libwebm
+- libvpx
+- libopenvr
+- libfreetype
+
+Under Debian based distros (Ubuntu for example) using this command line installs all
+packages required to build the game engine using as many system libraries as possible:
+
+    apt install scons libdscript-dev cmake autoconf libtool nasm libx11-dev \
+        libxrandr-dev libgl-dev libxi-dev libpulse-dev libasound2-dev \
+        portaudio19-dev, libxft-dev, libjpeg-dev, libopenal-dev libogg-dev \
+        libvorbis-dev libtheora-dev libhidapi-dev libopenhmd-dev patchelf \
+        libevdev-dev libsoundtouch-dev libwebp-dev libwebm-dev libvpx-dev \
+        libopenvr-dev glslang-tools libfreetype-dev
 
 # Building Windows
 
-Install MinGW 64-Bit cross-compiler for your system or use a docker image with it.
+Install Visual Studio Community Edition. Then open the solution file "vs/dragengine.sln".
+You can then launch the build of the entire solution. NuGet pulls the necesdsary
+packages. External dependencies are contained inside the source and automatically
+unpacked for you.
 
-To build use the same commands as under the "Building Linux" section but append
-"tools=mingw64" to the command line like this:
+Only 64-bit Release builds are officially supported.
 
-    scons tools=mingw64 archive
-
-Always use a build target otherwise scons tries to install into your linux system
-using windows path names.
-
-The "build_windows.sh" script is a little helper.
-
-To build the windows installers you need a docker image supporting the InnoSetup
-compiler. You can build the docker image yourself using the
-"windowsSetupCompiler.dockerfile" docker file:
-
-    docker build --file=windowsSetupCompiler.dockerfile --tag=compile-windows-installer .
-
-To build the installer first build the archives using
-
-    scons tools=mingw64 archive
-
-Then change into the "installer/windows" directory and run
-
-    ./create_installer.sh
-
-The installer is now located inside "installer/windows/build"
-
-It should be possible to build the sources also on a windows machine using Windows
-MinGW-64. VisualStudio compile is not supported officially.
-
+Cross-Compiling using SCons is no more officially supported. Build on a Windows machine instead.
+See https://lordofdragons.github.io/dragengine/building/windows for cross-compiling.
 
 # Run in "Local Directory Mode"
 
