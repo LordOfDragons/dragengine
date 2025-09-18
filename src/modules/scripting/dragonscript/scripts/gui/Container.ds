@@ -527,6 +527,49 @@ class Container extends Widget
 		return prevFocusWidget()
 	end
 	
+	func Widget closestFocusWidget(Point origin, float angle)
+		if not getEnabled() or not getVisible()
+			return null
+		end
+		
+		if getCanFocus()
+			return this
+		end
+		
+		var int i, count = pChildren.getCount()
+		var float bestScore = 1000, angleDiff, dist, score
+		var Widget bestWidget, widget
+		var Vector2 direction
+		
+		for i = 0 to count
+			widget = pChildren.getAt(i) cast Widget
+			widget = widget.closestFocusWidget(origin - widget.getPosition(), angle)
+			if widget == null or widget.getHasFocus()
+				continue
+			end
+			
+			direction = Vector2.new(widget.getRelativePosition(this) + widget.getSize() / 2 - origin)
+			
+			angleDiff = DEMath.fabs(DEMath.normalize(\
+				DEMath.atan2(-direction.getX(), -direction.getY()) - angle, -180, 180))
+			dist = direction.getLength()
+			
+			if angleDiff > 85 or dist < 5
+				continue
+			end
+			
+			score = dist / 100 + angleDiff / 45
+			// score = DEMath.linearStep(angleDiff, 0, 85, 1, 0) * DEMath.linearStep(dist, 0, 1000, 1, 0)
+			
+			if score < bestScore
+				bestWidget = widget
+				bestScore = score
+			end
+		end
+		
+		return bestWidget
+	end
+	
 	/** Move widget from one position to another. */
 	func void moveWidget(Widget widget, int newPosition)
 		var int index = pChildren.indexOf(widget)

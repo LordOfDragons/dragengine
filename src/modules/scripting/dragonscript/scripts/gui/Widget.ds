@@ -81,13 +81,8 @@ class Widget
 	
 	var Container pParent
 	var Border pBorder
-	var Point pPosition
-	var Point pSize
-	var Point pMinSize
-	var bool pVisible
-	var bool pEnabled
-	var bool pHasFocus
-	var bool pCanFocus
+	var Point pPosition, pSize, pMinSize
+	var bool pVisible, pEnabled, pHasFocus, pCanFocus
 	var Color pTextColor
 	var float pTransparency
 	var Font pFont
@@ -95,13 +90,8 @@ class Widget
 	
 	var TexMatrix2 pTransformation
 	
-	var Array pKeyListeners
-	var Array pMouseListeners
-	var Array pDragListeners
-	var Array pFocusListeners
-	var Array pWidgetListeners
-	var Array pStateChangeListeners
-	var Array pGamepadListeners
+	var Array pKeyListeners, pMouseListeners, pDragListeners, pFocusListeners, pWidgetListeners,\
+		pStateChangeListeners, pGamepadListeners
 	
 	var MousePointerFactory pMousePointer
 	
@@ -111,9 +101,7 @@ class Widget
 	var RepeatKeyEventTimer pRepeatEventTimer
 	var FrameUpdater pFrameUpdater
 	
-	var CanvasView pCanvasWidget
-	var CanvasView pCanvasBackground
-	var CanvasView pCanvasContent
+	var CanvasView pCanvasWidget, pCanvasBackground, pCanvasContent
 	var CanvasCreator pBackgroundCanvasCreator
 	
 	var WidgetDesigner pDesigner
@@ -122,13 +110,8 @@ class Widget
 	
 	var BorderSize pPadding
 	
-	var bool pProtectBackgroundCanvasCreator
-	var bool pProtectBorder
-	var bool pProtectPadding
-	var bool pProtectFont
-	var bool pProtectTextColor
-	var bool pProtectMinimumSize
-	var bool pProtectMousePointer
+	var bool pProtectBackgroundCanvasCreator, pProtectBorder, pProtectPadding, pProtectFont,\
+		pProtectTextColor, pProtectMinimumSize, pProtectMousePointer
 	
 	var Object pToolTip
 	
@@ -136,8 +119,7 @@ class Widget
 	
 	var TranslationManager pTranslationManager
 	
-	var bool pBlockLayoutParent
-	var bool pHasBlockedLayoutParent
+	var bool pBlockLayoutParent, pHasBlockedLayoutParent
 	
 	
 	
@@ -2078,6 +2060,48 @@ class Widget
 			return null
 		end
 		return pParent.prevFocusWidgetAfter(this)
+	end
+	
+	/**
+	 * \brief Find closest widget in direction that can grab the focus.
+	 * \version 1.29
+	 * \param origin Origin in widget coordinates.
+	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
+	 *              0 angle is straight up.
+	 * 
+	 * Returns this if enabled and can focus otherwise null.
+	 * 
+	 * Usually only \ref Desktop or subclass thereof implement this function. Implement this
+	 * function if your widget has special logic where to send the focus next.
+	 */
+	func Widget closestFocusWidget(Point origin, float angle)
+		return pEnabled and pCanFocus if this else null
+	end
+	
+	/**
+	 * \brief Focus closest widget in direction that can grab the focus.
+	 * \version 1.29
+	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
+	 *              0 angle is straight up.
+	 * 
+	 * Calls \ref Desktop#focusClosestWidgetDesktop(Point,angle) on \ref #getDesktop() if available.
+	 */
+	func void focusClosestWidget(float angle)
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.focusClosestWidgetDesktop(angle)
+		end
+	end
+	
+	/**
+	 * \brief Focus mouse location in widget coordinates.
+	 * \version 1.29
+	 * 
+	 * Used by \ref Desktop#focusClosestWidget() to place the mouse position on the widget.
+	 * Returns position close to the lower right corner reduce obscuring content.
+	 */
+	func Point getFocusMouseLocation()
+		return Point.new(DEMath.max(pSize.getX() - 20, 0), DEMath.max(pSize.getY() - 5, 0))
 	end
 	
 	/**

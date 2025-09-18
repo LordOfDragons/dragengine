@@ -745,6 +745,51 @@ class Desktop extends Container
 		end
 	end
 	
+	/**
+	 * \brief Focus closest widget in direction that can grab the focus.
+	 * \version 1.29
+	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
+	 *              0 angle is straight up.
+	 * 
+	 * Calls \ref Desktop#focusClosestWidget(Point,angle) on \ref #getDesktop() if available.
+	 * Uses either focus widget center or mouse location as origin.
+	 */
+	func void focusClosestWidgetDesktop(float angle)
+		var Widget focusWidget = getFocusWidget()
+		var Point origin
+		
+		if focusWidget != null
+			origin = focusWidget.getDesktopPosition() + focusWidget.getSize() / 2
+			
+		else
+			origin = pMouseLocation
+		end
+		
+		var Widget next = super.closestFocusWidget(origin, angle)
+		if next == null
+			return
+		end
+		
+		next.grabFocus()
+		
+		focusWidget = getFocusWidget()
+		if focusWidget == null
+			return
+		end
+		
+		setMouseLocation(focusWidget.getDesktopPosition() + focusWidget.getFocusMouseLocation())
+	end
+	
+	func void focusClosestWidget(float angle)
+		var Widget focusWidget = getFocusWidget()
+		if focusWidget != null
+			focusWidget.focusClosestWidget(angle)
+			
+		else
+			super.focusClosestWidget(angle)
+		end
+	end
+	
 	
 	
 	/** Request to focus the specified widget. */
