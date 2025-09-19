@@ -741,29 +741,25 @@ class TextArea extends TextWidget implements RangeModelListener
 	func void focusClosestWidget(float angle)
 		if angle < -135 or angle > 135
 			if not pCursorPos.isAtEnd()
-				onKeyPress(KeyEvent.new(this, KeyEvent.idKeyPressed, InputEventKey.arrowDown, 0, 0, -1, -1))
-				onKeyRelease(KeyEvent.new(this, KeyEvent.idKeyReleased, InputEventKey.arrowDown, 0, 0, -1, -1))
+				simulateKeyPress(InputEventKey.arrowDown)
 				return
 			end
 			
 		elif angle < -45
 			if not pCursorPos.isAtEnd()
-				onKeyPress(KeyEvent.new(this, KeyEvent.idKeyPressed, InputEventKey.arrowRight, 0, 0, -1, -1))
-				onKeyRelease(KeyEvent.new(this, KeyEvent.idKeyReleased, InputEventKey.arrowRight, 0, 0, -1, -1))
+				simulateKeyPress(InputEventKey.arrowRight)
 				return
 			end
 			
 		elif angle > 45
 			if not pCursorPos.isAtStart()
-				onKeyPress(KeyEvent.new(this, KeyEvent.idKeyPressed, InputEventKey.arrowLeft, 0, 0, -1, -1))
-				onKeyRelease(KeyEvent.new(this, KeyEvent.idKeyReleased, InputEventKey.arrowLeft, 0, 0, -1, -1))
+				simulateKeyPress(InputEventKey.arrowLeft)
 				return
 			end
 			
 		else
 			if not pCursorPos.isAtStart()
-				onKeyPress(KeyEvent.new(this, KeyEvent.idKeyPressed, InputEventKey.arrowUp, 0, 0, -1, -1))
-				onKeyRelease(KeyEvent.new(this, KeyEvent.idKeyReleased, InputEventKey.arrowUp, 0, 0, -1, -1))
+				simulateKeyPress(InputEventKey.arrowUp)
 				return
 			end
 		end

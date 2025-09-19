@@ -49,16 +49,16 @@ class Slider extends Container implements RangeModelListener
 		protected var Slider pSlider
 		protected var bool pIsWheelAction
 		
-		public func new(Slider slider)
+		func new(Slider slider)
 			pSlider = slider
 		end
 		
-		public func new(Slider slider, bool isWheelAction)
+		func new(Slider slider, bool isWheelAction)
 			pSlider = slider
 			pIsWheelAction = isWheelAction
 		end
 		
-		public func void onAction(ActionEvent event)
+		func void onAction(ActionEvent event)
 			var RangeModel model = pSlider.getModel()
 			
 			if increaseValue()
@@ -84,10 +84,10 @@ class Slider extends Container implements RangeModelListener
 	
 	/** \brief Action slide up action. */
 	class ActionSlideUp extends ActionSlide
-		public func new(Slider slider) super(slider)
+		func new(Slider slider) super(slider)
 		end
 		
-		public func new(Slider slider, bool isWheelAction) super(slider, isWheelAction)
+		func new(Slider slider, bool isWheelAction) super(slider, isWheelAction)
 		end
 		
 		protected func bool increaseValue()
@@ -97,10 +97,10 @@ class Slider extends Container implements RangeModelListener
 	
 	/** \brief Action slide down action. */
 	class ActionSlideDown extends ActionSlide
-		public func new(Slider slider) super(slider)
+		func new(Slider slider) super(slider)
 		end
 		
-		public func new(Slider slider, bool isWheelAction) super(slider, isWheelAction)
+		func new(Slider slider, bool isWheelAction) super(slider, isWheelAction)
 		end
 		
 		protected func bool increaseValue()
@@ -110,13 +110,13 @@ class Slider extends Container implements RangeModelListener
 	
 	/** \brief Action slide page up action. */
 	class ActionSlidePageUp extends DefaultActionListener
-		private var Slider pSlider
+		var Slider pSlider
 		
-		public func new(Slider slider)
+		func new(Slider slider)
 			pSlider = slider
 		end
 		
-		public func void onAction(ActionEvent event)
+		func void onAction(ActionEvent event)
 			var RangeModel model = pSlider.getModel()
 			model.setValue(model.getValue() + DEMath.max(model.getPageSize(), 1))
 		end
@@ -124,13 +124,13 @@ class Slider extends Container implements RangeModelListener
 	
 	/** \brief Action slide page down action. */
 	class ActionSlidePageDown extends DefaultActionListener
-		private var Slider pSlider
+		var Slider pSlider
 		
-		public func new(Slider slider)
+		func new(Slider slider)
 			pSlider = slider
 		end
 		
-		public func void onAction(ActionEvent event)
+		func void onAction(ActionEvent event)
 			var RangeModel model = pSlider.getModel()
 			model.setValue(model.getValue() - DEMath.max(model.getPageSize(), 1))
 		end
@@ -138,14 +138,14 @@ class Slider extends Container implements RangeModelListener
 	
 	/** \brief Drag knob mouse listener. */
 	class DragKnobMouseListener extends DefaultMouseListener
-		private var Slider pSlider
-		private var Point pOffset
+		var Slider pSlider
+		var Point pOffset
 		
-		public func new(Slider slider)
+		func new(Slider slider)
 			pSlider = slider
 		end
 		
-		public func void onButtonPress(MouseEvent event)
+		func void onButtonPress(MouseEvent event)
 			if event.getButton() == InputEventMouseButton.left
 				var Widget knob = event.getSource() cast Widget
 				pOffset = knob.getSize() / 2 - event.getPosition()
@@ -153,14 +153,14 @@ class Slider extends Container implements RangeModelListener
 			end
 		end
 		
-		public func void onButtonRelease(MouseEvent event)
+		func void onButtonRelease(MouseEvent event)
 			if event.getButton() == InputEventMouseButton.left
 				(event.getSource() cast Widget).releaseMouse()
 				pOffset = null
 			end
 		end
 		
-		public func void onMouseMove(MouseEvent event)
+		func void onMouseMove(MouseEvent event)
 			if pOffset != null
 				var Widget knob = event.getSource() cast Widget
 				pSlider.getModel().setValue(pSlider.getKnobValue(\
@@ -171,13 +171,13 @@ class Slider extends Container implements RangeModelListener
 	
 	/** \brief Knob key listener. */
 	class KnobKeyListener extends DefaultKeyListener
-		private var Slider pSlider
+		var Slider pSlider
 		
-		public func new(Slider slider)
+		func new(Slider slider)
 			pSlider = slider
 		end
 		
-		public func void onKeyPress(KeyEvent event)
+		func void onKeyPress(KeyEvent event)
 			select event.getKeyCode()
 			case InputEventKey.arrowUp, InputEventKey.arrowRight
 				var RangeModel model = pSlider.getModel()
@@ -220,10 +220,10 @@ class Slider extends Container implements RangeModelListener
 		protected var Widget pWidgetBar
 		protected var Widget pWidgetKnob
 		
-		public func new()
+		func new()
 		end
 		
-		public func void addWidget(Widget widget, Object settings)
+		func void addWidget(Widget widget, Object settings)
 			if widget == null
 				throw ENullPointer.new("widget")
 			end
@@ -237,7 +237,7 @@ class Slider extends Container implements RangeModelListener
 			end
 		end
 		
-		public func void removeWidget(Widget widget)
+		func void removeWidget(Widget widget)
 			if widget == pWidgetBar
 				pWidgetBar = null
 			end
@@ -246,7 +246,7 @@ class Slider extends Container implements RangeModelListener
 			end
 		end
 		
-		public func void doLayout(Container container)
+		func void doLayout(Container container)
 			var Slider slider = container cast Slider
 			var int sliderSize = slider.getSliderSize()
 			var BorderSize padding = slider.getPadding()
@@ -270,7 +270,7 @@ class Slider extends Container implements RangeModelListener
 			end
 		end
 		
-		public func Point getMinimumSize(Container container)
+		func Point getMinimumSize(Container container)
 			var Slider slider = container cast Slider
 			if slider.getOrientation() == Orientation.horizontal
 				return Point.new(0, slider.getSliderSize())
@@ -279,11 +279,11 @@ class Slider extends Container implements RangeModelListener
 			end
 		end
 		
-		public func Point getMinimumSizeForWidth(Container container, int width)
+		func Point getMinimumSizeForWidth(Container container, int width)
 			return getMinimumSize(container)
 		end
 		
-		public func Point getMinimumSizeForHeight(Container container, int height)
+		func Point getMinimumSizeForHeight(Container container, int height)
 			return getMinimumSize(container)
 		end
 	end
@@ -294,23 +294,23 @@ class Slider extends Container implements RangeModelListener
 	
 	
 	
-	private var Orientation pOrientation
-	private var RangeModel pModel
-	private var int pSliderSize
-	private var int pKnobOffset
-	private var int pTickSize
-	private var float pSmallTickCountRatio
-	private var RepeatActionTimer pRepeatSlideTimer
-	private var Widget pWidgetBar
-	private var Widget pWidgetKnob
-	private var bool pReverseWheel
-	private var bool pShowTicks
-	private var RectArea pSlideArea
+	var Orientation pOrientation
+	var RangeModel pModel
+	var int pSliderSize
+	var int pKnobOffset
+	var int pTickSize
+	var float pSmallTickCountRatio
+	var RepeatActionTimer pRepeatSlideTimer
+	var Widget pWidgetBar
+	var Widget pWidgetKnob
+	var bool pReverseWheel
+	var bool pShowTicks
+	var RectArea pSlideArea
 	
 	
 	
 	/** \brief Create slide widget. */
-	public func new(Orientation orientation)
+	func new(Orientation orientation)
 		pModel = DefaultRangeModel.new()
 		pModel.addListener(this)
 		pReverseWheel = false
@@ -334,12 +334,12 @@ class Slider extends Container implements RangeModelListener
 	end
 	
 	/** \brief Create slide bar widget with model. */
-	public func new(Orientation orientation, RangeModel model) this(orientation)
+	func new(Orientation orientation, RangeModel model) this(orientation)
 		setModel(model)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		stopRepeatSlideTimer()
 		pModel.removeListener(this)
 		pModel = null
@@ -352,12 +352,12 @@ class Slider extends Container implements RangeModelListener
 	
 	
 	/** \brief Orientation. */
-	public func Orientation getOrientation()
+	func Orientation getOrientation()
 		return pOrientation
 	end
 	
 	/** \brief Set orientation. */
-	public func void setOrientation(Orientation orientation)
+	func void setOrientation(Orientation orientation)
 		if pOrientation == orientation
 			return
 		end
@@ -368,12 +368,12 @@ class Slider extends Container implements RangeModelListener
 	end
 	
 	/** \brief Range model. */
-	public func RangeModel getModel()
+	func RangeModel getModel()
 		return pModel
 	end
 	
 	/** \brief Set range model. */
-	public func void setModel(RangeModel model)
+	func void setModel(RangeModel model)
 		if model == null
 			throw ENullPointer.new("model")
 		end
@@ -394,7 +394,7 @@ class Slider extends Container implements RangeModelListener
 	 * 
 	 * If false wheeling up decreases the range model. If true increases the range model.
 	 */
-	public func bool getReverseWheel()
+	func bool getReverseWheel()
 		return pReverseWheel
 	end
 	
@@ -403,7 +403,7 @@ class Slider extends Container implements RangeModelListener
 	 * 
 	 * If false wheeling up decreases the range model. If true increases the range model.
 	 */
-	public func void setReverseWheel(bool reverseWheel)
+	func void setReverseWheel(bool reverseWheel)
 		pReverseWheel = reverseWheel
 	end
 	
@@ -414,7 +414,7 @@ class Slider extends Container implements RangeModelListener
 	 * page size step with small ticks for each value step. If the density is too large
 	 * tick count is reduced.
 	 */
-	public func bool getShowTicks()
+	func bool getShowTicks()
 		return pShowTicks
 	end
 	
@@ -425,7 +425,7 @@ class Slider extends Container implements RangeModelListener
 	 * page size step with small ticks for each value step. If the density is too large
 	 * tick count is reduced.
 	 */
-	public func void setShowTicks(bool showTicks)
+	func void setShowTicks(bool showTicks)
 		if showTicks == pShowTicks
 			return
 		end
@@ -440,7 +440,7 @@ class Slider extends Container implements RangeModelListener
 	 * Value is in the range from 0 to 1. Model page size is multiplied by this value to
 	 * get the count of small ticks to show.
 	 */
-	public func float getSmallTickCountRatio()
+	func float getSmallTickCountRatio()
 		return pSmallTickCountRatio
 	end
 	
@@ -450,7 +450,7 @@ class Slider extends Container implements RangeModelListener
 	 * Value is in the range from 0 to 1. Model page size is multiplied by this value to
 	 * get the count of small ticks to show.
 	 */
-	public func void setSmallTickCountRatio(float ratio)
+	func void setSmallTickCountRatio(float ratio)
 		ratio = DEMath.clamp(ratio, 0.0, 1.0)
 		if DEMath.fabs(ratio - pSmallTickCountRatio) < 0.001
 			return
@@ -465,7 +465,7 @@ class Slider extends Container implements RangeModelListener
 	 * 
 	 * Stored value from designer.
 	 */
-	public func int getSliderSize()
+	func int getSliderSize()
 		return pSliderSize
 	end
 	
@@ -474,7 +474,7 @@ class Slider extends Container implements RangeModelListener
 	 * 
 	 * Stored value from designer.
 	 */
-	public func int getKnobOffset()
+	func int getKnobOffset()
 		return pKnobOffset
 	end
 	
@@ -483,17 +483,17 @@ class Slider extends Container implements RangeModelListener
 	 * 
 	 * Stored value from designer.
 	 */
-	public func int getTickSize()
+	func int getTickSize()
 		return pTickSize
 	end
 	
 	/** \brief Bar widget. */
-	public func Widget getWidgetBar()
+	func Widget getWidgetBar()
 		return pWidgetBar
 	end
 	
 	/** \brief Knob widget. */
-	public func Widget getWidgetKnob()
+	func Widget getWidgetKnob()
 		return pWidgetKnob
 	end
 	
@@ -503,30 +503,30 @@ class Slider extends Container implements RangeModelListener
 	 * Send if the outer range properties like minimum value, maximum
 	 * value or page size has changed.
 	 */
-	public func void rangeChanged(RangeModel rangeModel)
+	func void rangeChanged(RangeModel rangeModel)
 		repositionKnob()
 	end
 	
 	/** Send if the value has changed. */
-	public func void valueChanged(RangeModel rangeModel)
+	func void valueChanged(RangeModel rangeModel)
 		repositionKnob()
 	end
 	
 	
 	
 	/** Notification that the gui theme changed. */
-	public func void onGuiThemeChanged()
+	func void onGuiThemeChanged()
 		super.onGuiThemeChanged()
 		createContent()
 	end
 	
 	/** \brief Designer changed. */
-	public func void onDesignerChanged()
+	func void onDesignerChanged()
 		createContent()
 	end
 	
 	/** \brief Size changed. */
-	public func void onResize(WidgetEvent event)
+	func void onResize(WidgetEvent event)
 		pSlideArea = null
 		super.onResize(event)
 	end
@@ -534,7 +534,7 @@ class Slider extends Container implements RangeModelListener
 	
 	
 	/** Mouse button has been pressed. */
-	public func void onButtonPress(MouseEvent event)
+	func void onButtonPress(MouseEvent event)
 		super.onButtonPress(event)
 		
 		if event.getSource() != pWidgetBar
@@ -573,7 +573,7 @@ class Slider extends Container implements RangeModelListener
 	end
 	
 	/** Mouse button has been released. */
-	public func void onButtonRelease(MouseEvent event)
+	func void onButtonRelease(MouseEvent event)
 		super.onButtonRelease(event)
 		
 		if event.getButton() == InputEventMouseButton.left
@@ -607,7 +607,7 @@ class Slider extends Container implements RangeModelListener
 	 * Y coordinate center of slider. For vertical slider returns Y coordinate of top
 	 * and bottom slide end point and X coordinate center of slider.
 	 */
-	public func RectArea getSlideArea()
+	func RectArea getSlideArea()
 		if pSlideArea == null
 			var Point size = getContainerSize()
 			var BorderSize padding = getPadding()
@@ -626,7 +626,7 @@ class Slider extends Container implements RangeModelListener
 	end
 	
 	/** \brief Knob position matching model value. */
-	public func Point getKnobPosition(int value)
+	func Point getKnobPosition(int value)
 		if pWidgetKnob == null
 			return Point.new()
 		end
@@ -649,7 +649,7 @@ class Slider extends Container implements RangeModelListener
 	end
 	
 	/** \brief Closest model value matching knob position. */
-	public func int getKnobValue(Point position)
+	func int getKnobValue(Point position)
 		if position == null
 			throw ENullPointer.new("position")
 		end
@@ -672,14 +672,14 @@ class Slider extends Container implements RangeModelListener
 	end
 	
 	/** \brief Reposition knob to match current model value. */
-	public func void repositionKnob()
+	func void repositionKnob()
 		if pWidgetKnob != null
 			pWidgetKnob.setPosition(getKnobPosition(pModel.getValue()) - pWidgetKnob.getSize() / 2)
 		end
 	end
 	
 	/** \brief Layout widget. */
-	public func void doLayout()
+	func void doLayout()
 		super.doLayout()
 		
 		if not getBlockLayout()
@@ -688,12 +688,31 @@ class Slider extends Container implements RangeModelListener
 	end
 	
 	/** \brief Set if widget is enabled. */
-	public func void setEnabled(bool enabled)
+	func void setEnabled(bool enabled)
 		super.setEnabled(enabled)
 		
 		if pWidgetKnob != null
 			pWidgetKnob.setEnabled(enabled)
 		end
+	end
+	
+	
+	
+	func void focusClosestWidget(float angle)
+		if angle < -45 or angle > 135
+			if pModel.getValue() < pModel.getMaximum()
+				simulateKeyPress(InputEventKey.arrowRight)
+				return
+			end
+			
+		else
+			if pModel.getValue() > pModel.getMinimum()
+				simulateKeyPress(InputEventKey.arrowLeft)
+				return
+			end
+		end
+		
+		super.focusClosestWidget(angle)
 	end
 	
 	

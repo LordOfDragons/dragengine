@@ -381,6 +381,25 @@ class ScrollBar extends Container implements RangeModelListener
 	
 	
 	
+	func void focusClosestWidget(float angle)
+		if angle < -45 or angle > 135
+			if pModel.getValue() < pModel.getMaximum()
+				simulateKeyPress(InputEventKey.arrowRight)
+				return
+			end
+			
+		else
+			if pModel.getValue() > pModel.getMinimum()
+				simulateKeyPress(InputEventKey.arrowLeft)
+				return
+			end
+		end
+		
+		super.focusClosestWidget(angle)
+	end
+	
+	
+	
 	/**
 	 * Send if the outer range properties like minimum value, maximum
 	 * value or page size has changed.
