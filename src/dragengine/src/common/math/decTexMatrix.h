@@ -77,6 +77,33 @@ public:
 	
 	/** \brief Create shear matrix. */
 	static decTexMatrix CreateShear( const decVector2 &shear );
+	
+	/** \brief Create scale-translation matrix. */
+	static decTexMatrix CreateST( float su, float sv, float tu, float tv );
+	
+	/** \brief Create scale-translation matrix. */
+	static decTexMatrix CreateST( const decVector2 &scaling, const decVector2 &translation );
+	
+	/** \brief Create rotation-translation matrix. */
+	static decTexMatrix CreateRT(float rotation, float tu, float tv);
+	
+	/** \brief Create rotation-translation matrix. */
+	static decTexMatrix CreateRT(float rotation, const decVector2 &translation);
+	
+	/** \brief Create scale-rotation-translation matrix. */
+	static decTexMatrix CreateSRT( float su, float sv, float rotation, float tu, float tv );
+	
+	/** \brief Create scale-rotation-translation matrix. */
+	static decTexMatrix CreateSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	
+	/** \brief Create center scale-rotation-translation matrix. */
+	static decTexMatrix CreateCenterSRT( float su, float sv, float rotation, float tu, float tv );
+	
+	/** \brief Create center scale-rotation-translation matrix. */
+	static decTexMatrix CreateCenterSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	
+	/** \brief Create center rotation matrix. */
+	static decTexMatrix CreateCenterRotation( float rotation );
 	/*@}*/
 	
 	
@@ -85,6 +112,54 @@ public:
 	/*@{*/
 	/** \brief Set matrix to the identity matrix. */
 	void SetIdentity();
+	
+	/** \brief Set translation matrix. */
+	void SetTranslation( float u, float v );
+	
+	/** \brief Set translation matrix. */
+	void SetTranslation( const decVector2 &translation );
+	
+	/** \brief Set scaling matrix. */
+	void SetScale( float su, float sv );
+	
+	/** \brief Set scaling matrix. */
+	void SetScale( const decVector2 &scaling );
+	
+	/** \brief Set rotation matrix. */
+	void SetRotation( float rotation );
+	
+	/** \brief Set shear matrix. */
+	void SetShear( float shearU, float shearV );
+	
+	/** \brief Set shear matrix. */
+	void SetShear( const decVector2 &shear );
+	
+	/** \brief Set scale-translation matrix. */
+	void SetST( float su, float sv, float tu, float tv );
+	
+	/** \brief Set scale-translation matrix. */
+	void SetST( const decVector2 &scaling, const decVector2 &translation );
+	
+	/** \brief Set scale-rotation-translation matrix. */
+	void SetSRT( float su, float sv, float rotation, float tu, float tv );
+	
+	/** \brief Set scale-rotation-translation matrix. */
+	void SetSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	
+	/** \brief Set rotation-translation matrix. */
+	void SetRT(float rotation, float tu, float tv);
+	
+	/** \brief Set rotation-translation matrix. */
+	void SetRT(float rotation, const decVector2 &translation);
+	
+	/** \brief Set scale-rotation-translation matrix. */
+	void SetCenterSRT( float su, float sv, float rotation, float tu, float tv );
+	
+	/** \brief Set center scale-rotation-translation matrix. */
+	void SetCenterSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	
+	/** \brief Set center rotation matrix. */
+	void SetCenterRotation(float rotation);
 	
 	/** \brief Matrix is cell wise equal to anither one in respect to a threshold. */
 	bool IsEqualTo( const decTexMatrix &matrix, float threshold = TEXEL_THRESHOLD ) const;
@@ -97,6 +172,66 @@ public:
 	
 	/** \brief Convert to 3x2 texture matrix dropping the last row. */
 	decTexMatrix2 ToTexMatrix2() const;
+	
+	/**
+	 * \brief Transforms a normal by this matrix.
+	 * 
+	 * This is the same as transforming the normal by only the rotation part of it.
+	 */
+	decVector2 TransformNormal(const decVector2 &normal) const;
+	
+	/**
+	 * \brief Position of the matrix.
+	 * 
+	 * This is the same as transforming the vector (0,0) by this matrix but faster.
+	 */
+	decVector2 GetPosition() const;
+	
+	/** \brief Calculate rotation producing this matrix. */
+	float GetRotationAngle() const;
+	
+	/**
+	 * \brief Scaling of the matrix.
+	 * 
+	 * This works only if the matrix is the product of translations, rotations and scaling.
+	 * The returned scaling is always positive.
+	 */
+	decVector2 GetScale() const;
+	
+	/**
+	 * \brief Right vector of this matrix.
+	 * 
+	 * This is the same as transforing the vector (1,0) by this matrix but faster.
+	 */
+	decVector2 TransformRight() const;
+	
+	/**
+	 * \brief Up vector of this matrix.
+	 * 
+	 * This is the same as transforing the vector (0,1) by this matrix but faster.
+	 */
+	decVector2 TransformUp() const;
+	
+	/**
+	 * \brief Rotation part of the matrix.
+	 * 
+	 * The result is a 3x3 identity matrix with the upper left 2x2 copied from this matrix.
+	 */
+	decTexMatrix GetRotationMatrix() const;
+	
+	/**
+	 * \brief Normalize matrix.
+	 * 
+	 * Modifies matrix with scaling removed.
+	 */
+	void Normalize();
+	
+	/**
+	 * \brief Normalize matrix.
+	 * 
+	 * Returns matrix with scaling removed.
+	 */
+	decTexMatrix Normalized() const;
 	/*@}*/
 	
 	

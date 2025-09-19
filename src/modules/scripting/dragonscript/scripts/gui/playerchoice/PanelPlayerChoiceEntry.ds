@@ -62,6 +62,7 @@ class PanelPlayerChoiceEntry extends Panel
 		runWhileBlockingLayout(block
 			setLayout(CentrizedBoxLayout.new(LayoutAxis.x, 5))
 			setCanFocus(true)
+			setCanFocusDirectional(true)
 			setStateChangeNotifyChildren(true)
 			
 			if image != null

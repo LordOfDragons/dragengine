@@ -54,8 +54,6 @@ class MenuBarItem extends Container
 		pIcon = icon
 		
 		runWhileBlockingLayout(block
-			setCanFocus(false)
-			
 			setLayout(BorderLayout.new(5))
 			setStateChangeNotifyChildren(true)
 			

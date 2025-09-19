@@ -460,6 +460,27 @@ class Desktop extends Container
 		warpMouseIn(widget, widget.getSize() / 2)
 	end
 	
+	/**
+	 * \brief Warp mouse pointer on widget using directional focus location.
+	 * \version 1.29
+	 */
+	func void warpMouseFocusLocation(Widget widget)
+		warpMouseIn(widget, widget.getFocusMouseLocation())
+	end
+	
+	/**
+	 * \brief Warp mouse pointer on focus widget using directional focus location.
+	 * \version 1.29
+	 * 
+	 * Does nothing if focus widget is not present.
+	 */
+	func void warpMouseFocusLocation()
+		var Widget focusWidget = getFocusWidget()
+		if focusWidget != null
+			warpMouseFocusLocation(focusWidget)
+		end
+	end
+	
 	/** \brief Active mouse pointer factory or \em null. */
 	func MousePointerFactory getActiveMousePointer()
 		return pActiveMousePointer
@@ -772,22 +793,29 @@ class Desktop extends Container
 		
 		next.grabFocus()
 		
-		focusWidget = getFocusWidget()
-		if focusWidget == null
-			return
+		if pWindowVirtualKeyboard != null
+			// hide virtual keyboard. this is done to avoid directional focus change to switch
+			// to virtual keyboard while navigating to the desired widget. user is required
+			// to explicitely activate the virtual keyboard when using directional navigation
+			pWindowVirtualKeyboard.popdown()
 		end
 		
-		setMouseLocation(focusWidget.getDesktopPosition() + focusWidget.getFocusMouseLocation())
+		warpMouseFocusLocation()
 	end
 	
 	func void focusClosestWidget(float angle)
+		if pWindowVirtualKeyboard != null and pWindowVirtualKeyboard.getVisible()
+			pWindowVirtualKeyboard.focusClosestWidget(angle)
+			return
+		end
+		
 		var Widget focusWidget = getFocusWidget()
 		if focusWidget != null
 			focusWidget.focusClosestWidget(angle)
-			
-		else
-			super.focusClosestWidget(angle)
+			return
 		end
+		
+		super.focusClosestWidget(angle)
 	end
 	
 	

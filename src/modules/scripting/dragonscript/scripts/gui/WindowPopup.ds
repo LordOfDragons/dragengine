@@ -55,8 +55,6 @@ class WindowPopup extends Window
 		runWhileBlockingLayout(block
 			pCloseOnPopDown = true
 			setVisible(false)
-			setEnabled(true)
-			setCanFocus(false)
 			setCanReorder(false)
 			setCanActivate(false)
 			setCanMove(false)

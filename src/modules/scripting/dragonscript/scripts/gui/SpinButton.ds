@@ -44,49 +44,49 @@ class SpinButton extends Container implements RangeModelListener
 	/** Direction button state change listener. */
 	class DirectionButtonStateListener extends DefaultStateChangeListener
 		/** Spin action. */
-		private var ActionListener pActionSpin
+		var ActionListener pActionSpin
 		
 		/** Repeat spin timer */
-		private var RepeatActionTimer pRepeatSpinTimer
+		var RepeatActionTimer pRepeatSpinTimer
 		
 		/** Create direction button. */
-		public func new( ActionListener spinAction )
-			this.pActionSpin = spinAction
+		func new( ActionListener spinAction )
+			pActionSpin = spinAction
 		end
 		
 		/** \brief Widget changed state. */
-		public func void onStateChanged( StateChangeEvent event )
+		func void onStateChanged( StateChangeEvent event )
 			if ( event.getSource() cast Button ).getPressed()
-				if this.pRepeatSpinTimer == null
-					this.pRepeatSpinTimer = RepeatActionTimer.new( this.pActionSpin, event.getSource(), 0 )
-					this.pRepeatSpinTimer.sendEvent()
+				if pRepeatSpinTimer == null
+					pRepeatSpinTimer = RepeatActionTimer.new( pActionSpin, event.getSource(), 0 )
+					pRepeatSpinTimer.sendEvent()
 				end
 				
 			else
-				if this.pRepeatSpinTimer != null
-					this.pRepeatSpinTimer.giveUp()
-					this.pRepeatSpinTimer = null
+				if pRepeatSpinTimer != null
+					pRepeatSpinTimer.giveUp()
+					pRepeatSpinTimer = null
 				end
 			end
 		end
 		
 		/** \brief Dispose of listener. */
-		public func void dispose()
-			if this.pRepeatSpinTimer != null
-				this.pRepeatSpinTimer.giveUp()
-				this.pRepeatSpinTimer = null
+		func void dispose()
+			if pRepeatSpinTimer != null
+				pRepeatSpinTimer.giveUp()
+				pRepeatSpinTimer = null
 			end
 		end
 	end
 	
 	/** Action spin up action. */
 	class ActionSpinUp extends DefaultActionListener
-		private var SpinButton pSpinButton
-		public func new( SpinButton spinButton )
-			this.pSpinButton = spinButton
+		var SpinButton pSpinButton
+		func new( SpinButton spinButton )
+			pSpinButton = spinButton
 		end
-		public func void onAction( ActionEvent event )
-			var RangeModel model = this.pSpinButton.getModel()
+		func void onAction( ActionEvent event )
+			var RangeModel model = pSpinButton.getModel()
 			
 			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
 				model.setValue( model.getValue() + model.getPageSize() )
@@ -99,12 +99,12 @@ class SpinButton extends Container implements RangeModelListener
 	
 	/** Action spin down action. */
 	class ActionSpinDown extends DefaultActionListener
-		private var SpinButton pSpinButton
-		public func new( SpinButton spinButton )
-			this.pSpinButton = spinButton
+		var SpinButton pSpinButton
+		func new( SpinButton spinButton )
+			pSpinButton = spinButton
 		end
-		public func void onAction( ActionEvent event )
-			var RangeModel model = this.pSpinButton.getModel()
+		func void onAction( ActionEvent event )
+			var RangeModel model = pSpinButton.getModel()
 			
 			if ( event.getModifiers() & ModifiableEvent.shift ) == ModifiableEvent.shift
 				model.setValue( model.getValue() - model.getPageSize() )
@@ -118,52 +118,52 @@ class SpinButton extends Container implements RangeModelListener
 	
 	
 	/** Range Model */
-	private var RangeModel pModel
+	var RangeModel pModel
 	
 	/** Up direction button. */
-	private var Widget pButtonUp
+	var Widget pButtonUp
 	
 	/** Down direction button. */
-	private var Widget pButtonDown
+	var Widget pButtonDown
 	
 	/** \brief Button state listeners to clean up upon dispose. */
-	private var Array pDisposeButtonStateListeners
+	var Array pDisposeButtonStateListeners
 	
 	
 	
 	/** Create spin button widget. */
-	public func new() this( DefaultRangeModel.new() )
+	func new() this( DefaultRangeModel.new() )
 	end
 	
 	/** Create spin button widget. */
-	public func new( RangeModel model )
-		this.pDisposeButtonStateListeners = Array.new()
+	func new( RangeModel model )
+		pDisposeButtonStateListeners = Array.new()
 		
-		this.setDesignerSelector( "SpinButton" )
+		setDesignerSelector( "SpinButton" )
 		
-		this.addMouseListener( WheelActionMouseListener.new( \
+		addMouseListener( WheelActionMouseListener.new( \
 			ActionSpinUp.new( this ), ActionSpinDown.new( this ) ) )
 		
-		this.pModel = model
-		this.pModel.addListener( this )
+		pModel = model
+		pModel.addListener( this )
 		
-		this.createContent()
-		this.enableDirectionButtons()
+		createContent()
+		enableDirectionButtons()
 	end
 	
 	/** Dispose of widget. */
-	public func void dispose()
-		if this.pDisposeButtonStateListeners != null
-			this.pDisposeButtonStateListeners.forEach( block DirectionButtonStateListener each
+	func void dispose()
+		if pDisposeButtonStateListeners != null
+			pDisposeButtonStateListeners.forEach( block DirectionButtonStateListener each
 				each.dispose()
 			end )
-			this.pDisposeButtonStateListeners = null
+			pDisposeButtonStateListeners = null
 		end
-		this.pButtonUp = null
-		this.pButtonDown = null
-		if this.pModel != null
-			this.pModel.removeListener( this )
-			this.pModel = null
+		pButtonUp = null
+		pButtonDown = null
+		if pModel != null
+			pModel.removeListener( this )
+			pModel = null
 		end
 		
 		super.dispose()
@@ -172,25 +172,25 @@ class SpinButton extends Container implements RangeModelListener
 	
 	
 	/** Range model. */
-	public func RangeModel getModel()
-		return this.pModel
+	func RangeModel getModel()
+		return pModel
 	end
 	
 	/** Set range model. */
-	public func void setModel( RangeModel model )
+	func void setModel( RangeModel model )
 		if model == null
 			throw EInvalidParam.new()
 		end
 		
-		if model == this.pModel
+		if model == pModel
 			return
 		end
 		
-		this.pModel.removeListener( this )
-		this.pModel = model
-		this.pModel.addListener( this )
+		pModel.removeListener( this )
+		pModel = model
+		pModel.addListener( this )
 		
-		this.enableDirectionButtons()
+		enableDirectionButtons()
 	end
 	
 	
@@ -199,42 +199,42 @@ class SpinButton extends Container implements RangeModelListener
 	 * Send if the outer range properties like minimum value,
 	 * maximum value or page size has changed.
 	 */
-	public func void rangeChanged( RangeModel rangeModel )
-		this.enableDirectionButtons()
+	func void rangeChanged( RangeModel rangeModel )
+		enableDirectionButtons()
 	end
 	
 	/** Send if the value has changed. */
-	public func void valueChanged( RangeModel rangeModel )
-		this.enableDirectionButtons()
+	func void valueChanged( RangeModel rangeModel )
+		enableDirectionButtons()
 	end
 	
 	
 	
 	/** \brief Remove all widgets. */
-	public func void removeAllWidgets()
+	func void removeAllWidgets()
 		super.removeAllWidgets()
 		
-		if this.pDisposeButtonStateListeners != null
-			this.pDisposeButtonStateListeners.forEach( block DirectionButtonStateListener each
+		if pDisposeButtonStateListeners != null
+			pDisposeButtonStateListeners.forEach( block DirectionButtonStateListener each
 				each.dispose()
 			end )
-			this.pDisposeButtonStateListeners.removeAll()
+			pDisposeButtonStateListeners.removeAll()
 		end
 	end
 	
 	
 	
 	/** Notification that the gui theme changed. */
-	public func void onGuiThemeChanged()
-		this.createContent()
-		this.enableDirectionButtons()
+	func void onGuiThemeChanged()
+		createContent()
+		enableDirectionButtons()
 		
 		super.onGuiThemeChanged() // does doLayout
 	end
 	
 	/** \brief Designer changed. */
-	public func void onDesignerChanged()
-		this.createContent()
+	func void onDesignerChanged()
+		createContent()
 	end
 	
 	
@@ -256,67 +256,67 @@ class SpinButton extends Container implements RangeModelListener
 	
 	
 	/** Create content widgets. */
-	public func void createContent()
-		if this.getGuiTheme() == null
-			this.pButtonUp = null
-			this.pButtonDown = null
-			this.removeAllWidgets()
+	func void createContent()
+		if getGuiTheme() == null
+			pButtonUp = null
+			pButtonDown = null
+			removeAllWidgets()
 			return
 		end
 		
-		var SpinButtonDesigner designer = this.getDesigner() cast SpinButtonDesigner
+		var SpinButtonDesigner designer = getDesigner() cast SpinButtonDesigner
 		
-		this.runWhileBlockingLayout( block
+		runWhileBlockingLayout( block
 			// clear minimum size
-			this.setMinimumSize( null )
+			setMinimumSize( null )
 			
 			// remove all widgets
-			this.pButtonUp = null
-			this.pButtonDown = null
-			this.removeAllWidgets()
+			pButtonUp = null
+			pButtonDown = null
+			removeAllWidgets()
 			
 			// set fixed width
-			//this.setMinimumSize( Point.new( designer.spinButtonSize( this ), 0 ) )
+			//setMinimumSize( Point.new( designer.spinButtonSize( this ), 0 ) )
 			
 			// set layout to box layout
-			this.setLayout( BoxLayout.new( LayoutAxis.y ) )
+			setLayout( BoxLayout.new( LayoutAxis.y ) )
 			
 			// create shared wheel action mouse listener
 			var MouseListener wheelListener = WheelActionMouseListener.new( \
 				ActionSpinUp.new( this ), ActionSpinDown.new( this ) )
 			
 			// create direction buttons
-			this.pButtonUp = designer.createButtonUp( this )
-			this.pButtonUp.setCanFocus( false )
-			this.pButtonUp.addMouseListener( wheelListener )
+			pButtonUp = designer.createButtonUp( this )
+			pButtonUp.setCanFocus(false)
+			pButtonUp.addMouseListener( wheelListener )
 			var DirectionButtonStateListener stateListener = \
 				DirectionButtonStateListener.new( ActionSpinUp.new( this ) )
-			this.pDisposeButtonStateListeners.add( stateListener )
-			this.pButtonUp.addStateChangeListener( stateListener )
-			this.addWidget( this.pButtonUp )
+			pDisposeButtonStateListeners.add( stateListener )
+			pButtonUp.addStateChangeListener( stateListener )
+			addWidget( pButtonUp )
 			
-			this.pButtonDown = designer.createButtonDown( this )
-			this.pButtonDown.setCanFocus( false )
-			this.pButtonDown.addMouseListener( wheelListener )
+			pButtonDown = designer.createButtonDown( this )
+			pButtonDown.setCanFocus(false)
+			pButtonDown.addMouseListener( wheelListener )
 			stateListener = DirectionButtonStateListener.new( ActionSpinDown.new( this ) )
-			this.pDisposeButtonStateListeners.add( stateListener )
-			this.pButtonDown.addStateChangeListener( stateListener )
-			this.addWidget( this.pButtonDown )
+			pDisposeButtonStateListeners.add( stateListener )
+			pButtonDown.addStateChangeListener( stateListener )
+			addWidget( pButtonDown )
 		end )
 		
-		this.doLayoutIfBlocked()
+		doLayoutIfBlocked()
 		
 		// set fixed width
-		this.setMinimumSize( Point.new( designer.spinButtonSize( this ), this.getMinimumSize().getY() ) )
+		setMinimumSize( Point.new( designer.spinButtonSize( this ), getMinimumSize().getY() ) )
 	end
 	
 	/** Enable direction buttons depending on the model value. */
-	public func void enableDirectionButtons()
-		if this.pButtonUp != null
-			this.pButtonUp.setEnabled( this.pModel.getValue() < this.pModel.getMaximum() )
+	func void enableDirectionButtons()
+		if pButtonUp != null
+			pButtonUp.setEnabled( pModel.getValue() < pModel.getMaximum() )
 		end
-		if this.pButtonDown != null
-			this.pButtonDown.setEnabled( this.pModel.getValue() > this.pModel.getMinimum() )
+		if pButtonDown != null
+			pButtonDown.setEnabled( pModel.getValue() > pModel.getMinimum() )
 		end
 	end
 end

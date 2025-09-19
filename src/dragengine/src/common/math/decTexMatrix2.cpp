@@ -185,6 +185,16 @@ decTexMatrix2 decTexMatrix2::CreateSRT( float su, float sv, float rotation, floa
 	return m;
 }
 
+decTexMatrix2 decTexMatrix2::CreateRT(float rotation, const decVector2 &translation){
+	return CreateRT(rotation, translation.x, translation.y);
+}
+
+decTexMatrix2 decTexMatrix2::CreateRT(float rotation, float tu, float tv){
+	decTexMatrix2 m;
+	m.SetRT(rotation, tu, tv);
+	return m;
+}
+
 decTexMatrix2 decTexMatrix2::CreateSRT( const decVector2 &scaling, float rotation, const decVector2 &translation ){
 	decTexMatrix2 m;
 	const float rsin = sinf( rotation );
@@ -340,6 +350,22 @@ void decTexMatrix2::SetST( const decVector2 &scaling, const decVector2 &translat
 	a21 = 0.0f;
 	a22 = scaling.y;
 	a23 = translation.y;
+}
+
+void decTexMatrix2::SetRT(float rotation, float tu, float tv){
+	const float rsin = sinf(rotation);
+	const float rcos = cosf(rotation);
+	
+	a11 = rcos;
+	a12 = -rsin;
+	a13 = tu;
+	a21 = rsin;
+	a22 = rcos;
+	a23 = tv;
+}
+
+void decTexMatrix2::SetRT(float rotation, const decVector2 &translation){
+	SetRT(rotation, translation.x, translation.y);
 }
 
 void decTexMatrix2::SetSRT( float su, float sv, float rotation, float tu, float tv ){

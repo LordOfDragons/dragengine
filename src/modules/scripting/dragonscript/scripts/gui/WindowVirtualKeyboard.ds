@@ -156,7 +156,6 @@ class WindowVirtualKeyboard extends Window
 		
 		runWhileBlockingLayout(block
 			setVisible(false)
-			setCanFocus(false)
 			setCanReorder(false)
 			setCanMove(false)
 			setCanResize(false)
@@ -269,11 +268,66 @@ class WindowVirtualKeyboard extends Window
 	 * Hides window.
 	 */
 	func void popdown()
+		if not getVisible()
+			return
+		end
+		
 		setVisible(false)
 		setKeyboardLayoutPanel(null)
 		pInputWidget = null
 	end
 	
+	func Widget findFocusableWidget()
+		return null
+	end
+	
+	/**
+	 * \brief Focus default directional navigation widget.
+	 * \version 1.29
+	 */
+	func void focusDefaultDirectional()
+		var Desktop desktop = getDesktop()
+		if desktop == null
+			return
+		end
+		
+		var Widget widget = getWidgetClosestTo(getSize() / 2)
+		if widget == null or widget == this
+			return
+		end
+		
+		widget.grabFocus()
+		desktop.warpMouseFocusLocation(widget)
+	end
+	
+	/**
+	 * \brief Focus closest widget in direction.
+	 * \version 1.29
+	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
+	 *              0 angle is straight up.
+	 */
+	func void focusClosestWidget(float angle)
+		var Desktop desktop = getDesktop()
+		if desktop == null
+			return
+		end
+		
+		var Point origin = getLocalMouseLocation()
+		if isPointInside(origin)
+			var Widget widget = getWidgetClosestTo(origin)
+			origin = widget.getRelativePosition(this) + widget.getSize() / 2
+			
+		else
+			origin = getSize() / 2
+		end
+		
+		var Widget next = closestFocusWidget(origin, angle)
+		if next == null
+			return
+		end
+		
+		desktop.warpMouseFocusLocation(next)
+	end
 	
 	
 	/** \brief Send key pressed event to input widget if present. */
@@ -285,8 +339,7 @@ class WindowVirtualKeyboard extends Window
 		// we could use "this" as source to indicate where the event originates from.
 		// this though prevents the key repetition from working since this is only started
 		// if the event originates from the input widget itself
-		pInputWidget.sendEvent(KeyEvent.new(pInputWidget, KeyEvent.idKeyPressed, \
-			keyCode, InputEventModifier.none, keyChar, -1, keyCode))
+		pInputWidget.simulateKeyPress(keyCode, keyChar)
 	end
 	
 	/** \brief Send key released event to input widget if present. */
@@ -295,8 +348,7 @@ class WindowVirtualKeyboard extends Window
 			return
 		end
 		
-		pInputWidget.sendEvent(KeyEvent.new(pInputWidget, KeyEvent.idKeyReleased,\
-			keyCode, InputEventModifier.none, keyChar, -1, keyCode))
+		pInputWidget.simulateKeyRelease(keyCode, keyChar)
 	end
 	
 	
@@ -570,6 +622,7 @@ class WindowVirtualKeyboard extends Window
 	/** \brief Create virtual key widget. */
 	protected func Widget createVirtualKey(int keyCode, int keyChar, String text, String designerSuffix)
 		var Label label = Label.new(text, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		label.setCanFocusDirectional(true)
 		label.addMouseListener(VirtualKeyType.new(this, label, keyCode, keyChar, keyChar))
 		return label
 	end
@@ -578,6 +631,7 @@ class WindowVirtualKeyboard extends Window
 	protected func Widget createVirtualKey(int keyCode, int keyChar, String text,\
 	int shiftedKeyChar, String shiftedText, String designerSuffix)
 		var Label label = Label.new(text, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		label.setCanFocusDirectional(true)
 		label.addMouseListener(VirtualKeyType.new(this, label, keyCode, keyChar, shiftedKeyChar))
 		pModelShift.addListener(RenameShiftToggle.new(label.getModel(), text, shiftedText))
 		return label
@@ -586,6 +640,7 @@ class WindowVirtualKeyboard extends Window
 	/** \brief Create virtual key widget. */
 	protected func Widget createVirtualKey(int keyCode, int keyChar, Image image, String designerSuffix)
 		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		display.setCanFocusDirectional(true)
 		display.addMouseListener(VirtualKeyType.new(this, display, keyCode, keyChar, keyChar))
 		return display
 	end
@@ -596,6 +651,7 @@ class WindowVirtualKeyboard extends Window
 	 */
 	protected func Widget createVirtualKeyHide(Image image, String designerSuffix)
 		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		display.setCanFocusDirectional(true)
 		display.addMouseListener(HideVirtualKeyboard.new(this, display))
 		return display
 	end

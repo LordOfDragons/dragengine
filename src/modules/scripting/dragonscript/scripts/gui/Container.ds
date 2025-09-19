@@ -288,7 +288,6 @@ class Container extends Widget
 		return pChildren.has(widget)
 	end
 	
-	/** \brief Widget at coordinates or \em null if not found. */
 	func Widget getWidgetAt(Point position)
 		if not isPointInside(position)
 			return null
@@ -310,6 +309,32 @@ class Container extends Widget
 		end
 		
 		return this
+	end
+	
+	func Widget getWidgetClosestTo(Point position)
+		var int i, count = pChildren.getCount()
+		var Widget widget, bestWidget
+		var float dist, bestDist = 10000
+		
+		for i = 0 to count
+			widget = pChildren.getAt(i) cast Widget
+			if not widget.getVisible()
+				continue
+			end
+			
+			widget = widget.getWidgetClosestTo(position - widget.getPosition())
+			if widget == null
+				continue
+			end
+			
+			dist = Vector2.new(widget.getRelativePosition(this) + widget.getSize() / 2 - position).getLength()
+			if dist < bestDist
+				bestWidget = widget
+				bestDist = dist
+			end
+		end
+		
+		return bestWidget
 	end
 	
 	/** Adds a widget to this container using default settings. */
@@ -536,10 +561,13 @@ class Container extends Widget
 			return this
 		end
 		
+		var Vector2 angleDir = Vector2.new(-DEMath.sin(angle), -DEMath.cos(angle))
+		var Vector2 angleRotDir = Vector2.new(angleDir.getY(), -angleDir.getX())
+		
 		var int i, count = pChildren.getCount()
-		var float bestScore = 1000, angleDiff, dist, score
+		var float bestDist = 10000, dist, t1, t2, d1, d2, d3, d4
 		var Widget bestWidget, widget
-		var Vector2 direction
+		var Vector2 c1, c2, c3, c4
 		
 		for i = 0 to count
 			widget = pChildren.getAt(i) cast Widget
@@ -548,22 +576,42 @@ class Container extends Widget
 				continue
 			end
 			
-			direction = Vector2.new(widget.getRelativePosition(this) + widget.getSize() / 2 - origin)
+			d1 = d2 = d3 = d4 = 10000
 			
-			angleDiff = DEMath.fabs(DEMath.normalize(\
-				DEMath.atan2(-direction.getX(), -direction.getY()) - angle, -180, 180))
-			dist = direction.getLength()
+			c1 = Vector2.new(widget.getRelativePosition(this) - origin)
+			c3 = c1 + Vector2.new(widget.getSize())
+			c2 = Vector2.new(c3.getX(), c1.getY())
+			c4 = Vector2.new(c1.getX(), c3.getY())
 			
-			if angleDiff > 85 or dist < 5
-				continue
+			t1 = angleRotDir * c1
+			t2 = angleRotDir * c2
+			if (t1 < -0.25 and t2 > 0.25) or (t2 < -0.25 and t1 > 0.25)
+				d1 = angleDir * c1.mix(c2, -t1 / (t2 - t1))
 			end
 			
-			score = dist / 100 + angleDiff / 45
-			// score = DEMath.linearStep(angleDiff, 0, 85, 1, 0) * DEMath.linearStep(dist, 0, 1000, 1, 0)
+			t1 = angleRotDir * c2
+			t2 = angleRotDir * c3
+			if (t1 < -0.25 and t2 > 0.25) or (t2 < -0.25 and t1 > 0.25)
+				d2 = angleDir * c2.mix(c3, -t1 / (t2 - t1))
+			end
 			
-			if score < bestScore
+			t1 = angleRotDir * c3
+			t2 = angleRotDir * c4
+			if (t1 < -0.25 and t2 > 0.25) or (t2 < -0.25 and t1 > 0.25)
+				d3 = angleDir * c3.mix(c4, -t1 / (t2 - t1))
+			end
+			
+			t1 = angleRotDir * c4
+			t2 = angleRotDir * c1
+			if (t1 < -0.25 and t2 > 0.25) or (t2 < -0.25 and t1 > 0.25)
+				d4 = angleDir * c4.mix(c1, -t1 / (t2 - t1))
+			end
+			
+			dist = DEMath.min(d1, DEMath.min(d2, DEMath.min(d3, d4)))
+			
+			if dist > 0.5 and dist < bestDist
 				bestWidget = widget
-				bestScore = score
+				bestDist = dist
 			end
 		end
 		

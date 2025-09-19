@@ -61,6 +61,7 @@ class Button extends Container
 			setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
 			setDesignerSelector("Button")
 			setCanFocus(true)
+			setCanFocusDirectional(true)
 			setStateChangeNotifyChildren(true)
 			
 			createContentWidgets()

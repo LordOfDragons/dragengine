@@ -135,6 +135,7 @@ class TextField extends TextWidget
 		
 		setDesignerSelector("TextField")
 		setCanFocus(true)
+		setCanFocusDirectional(true)
 		setActionOnEnter(true)
 		setAddTabToText(false)
 		
@@ -423,7 +424,6 @@ class TextField extends TextWidget
 		super.onFocusReceived(event)
 		setSelectionAll()
 		updateCanvasText()
-		popupVirtualKeyboard()
 	end
 	
 	/** \brief Widget lost focus. */
@@ -650,18 +650,41 @@ class TextField extends TextWidget
 	func void focusClosestWidget(float angle)
 		if angle < -45 and angle > -135
 			if not pCursorPos.isAtEnd()
-				simulateKeyPress(InputEventKey.arrowRight)
+				simulateKeyPressRelease(InputEventKey.arrowRight, 0)
+				desktopWarpMouseFocusLocation()
 				return
 			end
 			
 		elif angle > 45 and angle < 135
 			if not pCursorPos.isAtStart()
-				simulateKeyPress(InputEventKey.arrowLeft)
+				simulateKeyPressRelease(InputEventKey.arrowLeft, 0)
+				desktopWarpMouseFocusLocation()
 				return
 			end
 		end
 		
-		super.focusClosestWidget(angle)
+		if not isCapturingMouse()
+			super.focusClosestWidget(angle)
+		end
+	end
+	
+	func Point getFocusMouseLocation()
+		var Font font = getFont()
+		if font == null
+			return super.getFocusMouseLocation()
+		end
+		
+		var int width = getWidth() - 1 - getPadding().getWidth()
+		var int height = getHeight() - 1 - getPadding().getHeight()
+		var int charHeight = font.getSize()
+		var int realHeight = charHeight //+ 3
+		
+		var int x = getPadding().getLeft() + (measureAdvance(pFirstChar.getPosition(),\
+			pCursorPos.getPosition(), font) cast int) + 1
+		
+		var int y = getPadding().getTop() + (height - realHeight) / 2 + charHeight * 2 / 3
+		
+		return Point.new(DEMath.clamp(x, 0, width - 1), DEMath.clamp(y, 0, height - 1))
 	end
 	
 	
@@ -674,7 +697,6 @@ class TextField extends TextWidget
 		case InputEventMouseButton.left
 			setCursorPositionNear(event.getPosition())
 			pOldCursorPos = UTF8Navigator.new(pCursorPos)
-			popupVirtualKeyboard()
 			captureMouse()
 			
 		case InputEventMouseButton.right
@@ -694,6 +716,7 @@ class TextField extends TextWidget
 				pOldCursorPos = null
 				releaseMouse()
 			end
+			popupVirtualKeyboard()
 		end
 	end
 	
@@ -821,6 +844,14 @@ class TextField extends TextWidget
 			
 			insertText(UnicodeString.new(character).toUTF8())
 		end
+	end
+	
+	func void onGamepadButtonPressed(GamepadEvent event)
+		if event.getCode() == 1
+			popdownVirtualKeyboard()
+		end
+		
+		super.onGamepadButtonPressed(event)
 	end
 	
 	/** \brief GUI theme changed. */

@@ -257,6 +257,7 @@ class ComboBox extends Container implements ListModelListener
 	/** \brief Create combo box widget. */
 	func new(ListModel model, ListElementRenderer renderer)
 		setCanFocus(true) // this is not working correctly. needs fixing
+		setCanFocusDirectional(true)
 		
 		pSelFromEditorOnDropDown = true
 // 		pFirstDropDown = true

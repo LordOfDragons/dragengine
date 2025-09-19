@@ -95,6 +95,8 @@ private:
 	DEF_NATFUNC( nfNewST2 );
 	DEF_NATFUNC( nfNewSRT );
 	DEF_NATFUNC( nfNewSRT2 );
+	DEF_NATFUNC(nfNewRT);
+	DEF_NATFUNC(nfNewRT2);
 	DEF_NATFUNC( nfNewCenterSRT );
 	DEF_NATFUNC( nfNewCenterSRT2 );
 	DEF_NATFUNC( nfNewCenterRotation );

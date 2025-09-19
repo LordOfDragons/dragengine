@@ -256,14 +256,10 @@ class ScrollBar extends Container implements RangeModelListener
 		
 		pModel = DefaultRangeModel.new()
 		pModel.addListener(this)
-		pHideIfEmpty = false
-		pDragArea = 0
-		pReverseWheel = false
 		
 		setDesignerSelector("ScrollBar")
 		
 		setOrientation(orientation)
-		setCanFocus(false)
 		
 		createContent()
 		enableDirectionButtons()
@@ -384,13 +380,13 @@ class ScrollBar extends Container implements RangeModelListener
 	func void focusClosestWidget(float angle)
 		if angle < -45 or angle > 135
 			if pModel.getValue() < pModel.getMaximum()
-				simulateKeyPress(InputEventKey.arrowRight)
+				simulateKeyPressRelease(InputEventKey.arrowRight, 0)
 				return
 			end
 			
 		else
 			if pModel.getValue() > pModel.getMinimum()
-				simulateKeyPress(InputEventKey.arrowLeft)
+				simulateKeyPressRelease(InputEventKey.arrowLeft, 0)
 				return
 			end
 		end
@@ -662,6 +658,7 @@ class ScrollBar extends Container implements RangeModelListener
 		// create knob widget
 		pWidgetKnob = designer.createKnob(this)
 		pWidgetKnob.setCanFocus(false)
+		pWidgetKnob.setCanFocusDirectional(false)
 		pWidgetKnob.addMouseListener(DragKnobMouseListener.new(this))
 		pWidgetKnob.addMouseListener(wheelListener)
 		pWidgetFrame.addWidget(pWidgetKnob)

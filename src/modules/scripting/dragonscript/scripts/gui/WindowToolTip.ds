@@ -42,7 +42,6 @@ class WindowToolTip extends Window
 	func new()
 		runWhileBlockingLayout(block
 			setVisible(false)
-			setCanFocus(false)
 			setCanReorder(false)
 			setCanActivate(false)
 			setCanMove(false)

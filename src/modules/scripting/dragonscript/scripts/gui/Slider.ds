@@ -313,7 +313,6 @@ class Slider extends Container implements RangeModelListener
 	func new(Orientation orientation)
 		pModel = DefaultRangeModel.new()
 		pModel.addListener(this)
-		pReverseWheel = false
 		pShowTicks = true
 		pSliderSize = 24
 		pKnobOffset = 12
@@ -324,7 +323,6 @@ class Slider extends Container implements RangeModelListener
 			setDesignerSelector("Slider")
 			
 			setOrientation(orientation)
-			setCanFocus(false)
 			
 			createContent()
 			
@@ -701,13 +699,13 @@ class Slider extends Container implements RangeModelListener
 	func void focusClosestWidget(float angle)
 		if angle < -45 or angle > 135
 			if pModel.getValue() < pModel.getMaximum()
-				simulateKeyPress(InputEventKey.arrowRight)
+				simulateKeyPressRelease(InputEventKey.arrowRight, 0)
 				return
 			end
 			
 		else
 			if pModel.getValue() > pModel.getMinimum()
-				simulateKeyPress(InputEventKey.arrowLeft)
+				simulateKeyPressRelease(InputEventKey.arrowLeft, 0)
 				return
 			end
 		end
@@ -752,6 +750,7 @@ class Slider extends Container implements RangeModelListener
 			// knob widget
 			pWidgetKnob = designer.createKnob(this)
 			pWidgetKnob.setCanFocus(true)
+			pWidgetKnob.setCanFocusDirectional(true)
 			pWidgetKnob.addMouseListener(DragKnobMouseListener.new(this))
 			pWidgetKnob.addMouseListener(wheelListener)
 			pWidgetKnob.addKeyListener(KnobKeyListener.new(this))

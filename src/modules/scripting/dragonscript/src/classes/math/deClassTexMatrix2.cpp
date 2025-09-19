@@ -248,6 +248,41 @@ void deClassTexMatrix2::nfNewSRT2::RunFunction( dsRunTime *rt, dsValue *myself )
 	clsTexMatrix2.PushTexMatrix( rt, decTexMatrix2::CreateSRT( scalingU, scalingV, rotation * DEG2RAD, translationU, translationV ) );
 }
 
+// static func TexMatrix newRT(float rotation, Vector2 translation)
+deClassTexMatrix2::nfNewRT::nfNewRT(const sInitData &init) :
+dsFunction(init.clsTexMat, "newRT", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
+	p_AddParameter(init.clsFlt); // rotation
+	p_AddParameter(init.clsVec2); // translation
+}
+void deClassTexMatrix2::nfNewRT::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassTexMatrix2 &clsTexMatrix2 = *((deClassTexMatrix2*)GetOwnerClass());
+	const deClassVector2 &clsVector2 = *clsTexMatrix2.GetDS().GetClassVector2();
+	
+	const float rotation = rt->GetValue(0)->GetFloat();
+	const decVector2 &translation = clsVector2.GetVector2(rt->GetValue(1)->GetRealObject());
+	
+	clsTexMatrix2.PushTexMatrix(rt, decTexMatrix2::CreateRT(rotation * DEG2RAD, translation));
+}
+
+// static func TexMatrix newRT(float rotation, float translationU, float translationV)
+deClassTexMatrix2::nfNewRT2::nfNewRT2(const sInitData &init) :
+dsFunction(init.clsTexMat, "newRT", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat){
+	p_AddParameter(init.clsFlt); // rotation
+	p_AddParameter(init.clsFlt); // translationU
+	p_AddParameter(init.clsFlt); // translationV
+}
+void deClassTexMatrix2::nfNewRT2::RunFunction(dsRunTime *rt, dsValue *myself){
+	deClassTexMatrix2 &clsTexMatrix2 = *((deClassTexMatrix2*)GetOwnerClass());
+	const float rotation = rt->GetValue(0)->GetFloat();
+	const float translationU = rt->GetValue(1)->GetFloat();
+	const float translationV = rt->GetValue(2)->GetFloat();
+	
+	clsTexMatrix2.PushTexMatrix(rt, decTexMatrix2::CreateRT(
+		rotation * DEG2RAD, translationU, translationV));
+}
+
 // public static func TexMatrix newCenterSRT( Vector2 scaling, float rotation, Vector2 translation )
 deClassTexMatrix2::nfNewCenterSRT::nfNewCenterSRT( const sInitData &init ) : dsFunction( init.clsTexMat,
 "newCenterSRT", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_STATIC | DSTM_NATIVE, init.clsTexMat ){
@@ -700,6 +735,8 @@ void deClassTexMatrix2::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfNewST2( init ) );
 	AddFunction( new nfNewSRT( init ) );
 	AddFunction( new nfNewSRT2( init ) );
+	AddFunction(new nfNewRT(init));
+	AddFunction(new nfNewRT2(init));
 	AddFunction( new nfNewCenterSRT( init ) );
 	AddFunction( new nfNewCenterSRT2( init ) );
 	AddFunction( new nfNewCenterRotation( init ) );
