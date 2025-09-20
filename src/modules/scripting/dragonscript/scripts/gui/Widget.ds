@@ -2101,17 +2101,15 @@ class Widget
 	end
 	
 	/**
-	 * \brief Focus closest widget in direction that can grab the focus.
+	 * \brief Focus widget in direction that can grab the focus.
 	 * \version 1.29
-	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
-	 *              0 angle is straight up.
-	 * 
-	 * Calls \ref Desktop#focusClosestWidgetDesktop(Point,angle) on \ref #getDesktop() if available.
+	 * \param direction Direction as \ref InputEventKey#arrowLeft, \ref InputEventKey#arrowRight,
+	 *                  \ref InputEventKey#arrowUp or \ref InputEventKey#arrowDown.
 	 */
-	func void focusClosestWidget(float angle)
+	func void focusDirectional(int direction)
 		var Window window = getWindow()
 		if window != null
-			window.focusClosestWidgetInside(angle)
+			window.focusDirectionalInside(direction)
 		end
 	end
 	
@@ -2119,8 +2117,7 @@ class Widget
 	 * \brief Focus mouse location in widget coordinates.
 	 * \version 1.29
 	 * 
-	 * Used by \ref Desktop#focusClosestWidget() to place the mouse position on the widget.
-	 * Returns position close to the lower right corner reduce obscuring content.
+	 * Used for directional focus change.
 	 */
 	func Point getFocusMouseLocation()
 		return Point.new(DEMath.max(pSize.getX() - 5, 0), DEMath.max(pSize.getY() - 5, 0))
@@ -2136,6 +2133,19 @@ class Widget
 		var Desktop desktop = getDesktop()
 		if desktop != null
 			desktop.warpMouseFocusLocation()
+		end
+	end
+	
+	/**
+	 * \brief Warp mouse to focus location on this widget.
+	 * \version 1.29
+	 * 
+	 * Does nothing if desktop is not present.
+	 */
+	func void desktopWarpMouseFocusHere()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.warpMouseFocusLocation(this)
 		end
 	end
 	

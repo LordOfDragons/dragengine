@@ -368,7 +368,7 @@ void deClassPoint::nfOpDivide::RunFunction( dsRunTime *RT, dsValue *This ){
 
 // public func int *( Point point )
 deClassPoint::nfOpMultiply::nfOpMultiply( const sInitData &init ) : dsFunction( init.clsPt,
-"*", DSFT_OPERATOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsPt ){
+"*", DSFT_OPERATOR, DSTM_PUBLIC | DSTM_NATIVE, init.clsInt ){
 	p_AddParameter( init.clsPt ); // point
 }
 void deClassPoint::nfOpMultiply::RunFunction( dsRunTime *rt, dsValue *myself ){

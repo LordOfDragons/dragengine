@@ -647,24 +647,25 @@ class TextField extends TextWidget
 	
 	
 	
-	func void focusClosestWidget(float angle)
-		if angle < -45 and angle > -135
+	func void focusDirectional(int direction)
+		select direction
+		case InputEventKey.arrowRight
 			if not pCursorPos.isAtEnd()
 				simulateKeyPressRelease(InputEventKey.arrowRight, 0)
-				desktopWarpMouseFocusLocation()
+				desktopWarpMouseFocusHere()
 				return
 			end
 			
-		elif angle > 45 and angle < 135
+		case InputEventKey.arrowLeft
 			if not pCursorPos.isAtStart()
 				simulateKeyPressRelease(InputEventKey.arrowLeft, 0)
-				desktopWarpMouseFocusLocation()
+				desktopWarpMouseFocusHere()
 				return
 			end
 		end
 		
 		if not isCapturingMouse()
-			super.focusClosestWidget(angle)
+			super.focusDirectional(direction)
 		end
 	end
 	

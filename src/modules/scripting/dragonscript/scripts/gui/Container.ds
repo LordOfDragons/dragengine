@@ -550,13 +550,13 @@ class Container extends Widget
 	end
 	
 	/**
-	 * \brief Focus closest widget in direction that can grab the focus.
+	 * \brief Focus widget in direction that can grab the focus.
 	 * \version 1.29
-	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
-	 *              0 angle is straight up.
+	 * \param direction Direction as \ref InputEventKey#arrowLeft, \ref InputEventKey#arrowRight,
+	 *                  \ref InputEventKey#arrowUp or \ref InputEventKey#arrowDown.
 	 */
-	func void focusClosestWidgetInside(float angle)
-		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(angle)
+	func void focusDirectionalInside(int direction)
+		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(direction)
 		var Widget widget = getHoverWidget()
 		var Point origin
 		

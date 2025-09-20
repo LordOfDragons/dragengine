@@ -286,13 +286,7 @@ class WindowVirtualKeyboard extends Window
 		end
 	end
 	
-	/**
-	 * \brief Focus closest widget in direction.
-	 * \version 1.29
-	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
-	 *              0 angle is straight up.
-	 */
-	func void focusClosestWidget(float angle)
+	func void focusDirectional(int direction)
 		var Desktop desktop = getDesktop()
 		if desktop == null
 			return
@@ -303,7 +297,7 @@ class WindowVirtualKeyboard extends Window
 			origin = getSize() / 2
 		end
 		
-		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(angle)
+		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(direction)
 		var Widget widget = getWidgetAt(origin)
 		if widget != null
 			origin = widget.getRelativePosition(this) + widget.getSize() / 2

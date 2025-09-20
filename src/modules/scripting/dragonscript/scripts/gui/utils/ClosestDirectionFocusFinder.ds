@@ -31,21 +31,40 @@ pin Dragengine.Scenery
  * \version 1.29
  */
 class ClosestDirectionFocusFinder
-	protected var Vector2 pAngleDir, pAngleRotDir
+	protected var Point pForwardDir, pSideDir
 	protected var Array pIgnoreWidgets
-	protected var float pHitDistance, pNearestForwardDistance, pNearestSideDistance
+	protected var int pHitDistance, pNearestForwardDistance, pNearestSideDistance
 	protected var Widget pBestHitWidget, pBestNearestWidget
-	protected var float pBestHitDistance, pBestNearestForwardDistance, pBestNearestSideDistance
+	protected var int pBestHitDistance, pBestNearestForwardDistance, pBestNearestSideDistance
 	
 	
 	/**
 	 * \brief Create finder for search direction.
-	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
-	 *              0 angle is straight up.
+	 * \param direction Direction as \ref InputEventKey#arrowLeft, \ref InputEventKey#arrowRight,
+	 *                  \ref InputEventKey#arrowUp or \ref InputEventKey#arrowDown.
 	 */
-	func new(float angle)
-		pAngleDir = Vector2.new(-DEMath.sin(angle), -DEMath.cos(angle))
-		pAngleRotDir = Vector2.new(pAngleDir.getY(), -pAngleDir.getX())
+	func new(int direction)
+		select direction
+		case InputEventKey.arrowUp:
+			pForwardDir = Point.new(0, -1)
+			pSideDir = Point.new(1, 0)
+			
+		case InputEventKey.arrowDown:
+			pForwardDir = Point.new(0, 1)
+			pSideDir = Point.new(1, 0)
+			
+		case InputEventKey.arrowLeft:
+			pForwardDir = Point.new(-1, 0)
+			pSideDir = Point.new(0, 1)
+			
+		case InputEventKey.arrowRight:
+			pForwardDir = Point.new(1, 0)
+			pSideDir = Point.new(0, 1)
+			
+		else
+			throw EInvalidParam.new("direction")
+		end
+		
 		pIgnoreWidgets = Array.new()
 		pBestHitDistance = pBestNearestForwardDistance = pBestNearestSideDistance = 10000
 	end
@@ -95,10 +114,10 @@ class ClosestDirectionFocusFinder
 			return
 		end
 		
-		var Vector2 c1 = Vector2.new(position)
-		var Vector2 c3 = c1 + Vector2.new(size)
-		var Vector2 c2 = Vector2.new(c3.getX(), c1.getY())
-		var Vector2 c4 = Vector2.new(c1.getX(), c3.getY())
+		var Point c1 = position
+		var Point c3 = c1 + size
+		var Point c2 = Point.new(c3.getX(), c1.getY())
+		var Point c4 = Point.new(c1.getX(), c3.getY())
 		
 		pHitDistance = pNearestForwardDistance = pNearestSideDistance = 10000
 		
@@ -107,7 +126,7 @@ class ClosestDirectionFocusFinder
 		processCorner(c3, c4)
 		processCorner(c4, c1)
 		
-		if pNearestSideDistance == 0 if pHitDistance > 0.5 else pNearestForwardDistance > 0.5
+		if pNearestSideDistance == 0 if pHitDistance > 0 else pNearestForwardDistance > 0
 			BaseGameApp.getApp().getConsole().addMessage("  CHECK: " + Array.newWith(widget, widget.getDesktopBoundary(), pHitDistance, pNearestForwardDistance, pNearestSideDistance, true))
 			challengeBest(widget)
 			
@@ -123,7 +142,7 @@ class ClosestDirectionFocusFinder
 	end
 	
 	/** \brief Best hit distance in pixels. */
-	func float getBestHitDistance()
+	func int getBestHitDistance()
 		return pBestHitDistance
 	end
 	
@@ -134,12 +153,12 @@ class ClosestDirectionFocusFinder
 	end
 	
 	/** \brief Best nearest forward distance in pixels. */
-	func float getBestNearestForwardDistance()
+	func int getBestNearestForwardDistance()
 		return pBestNearestForwardDistance
 	end
 	
 	/** \brief Best nearest side distance in pixels. */
-	func float getBestNearestSideDistance()
+	func int getBestNearestSideDistance()
 		return pBestNearestSideDistance
 	end
 	
@@ -151,7 +170,7 @@ class ClosestDirectionFocusFinder
 			pBestNearestWidget, pBestNearestWidget != null if pBestNearestWidget.getDesktopBoundary() else null, pBestNearestSideDistance))
 		
 		if pBestHitWidget != null and pBestNearestWidget != null
-			if pBestHitDistance < pBestNearestForwardDistance + 5.5
+			if pBestHitDistance < pBestNearestForwardDistance + 5
 				return pBestHitWidget
 				
 			else
@@ -168,29 +187,30 @@ class ClosestDirectionFocusFinder
 	
 	
 	/** \brief Process corner. */
-	protected func void processCorner(Vector2 a, Vector2 b)
-		var float t1 = pAngleRotDir * a
-		var float t2 = pAngleRotDir * b
+	protected func void processCorner(Point a, Point b)
+		var int t1 = pSideDir * a
+		var int t2 = pSideDir * b
 		
-		if (t1 < -0.25 and t2 > 0.25) or (t2 < -0.25 and t1 > 0.25)
-			pHitDistance = DEMath.min(pHitDistance, pAngleDir * a.mix(b, -t1 / (t2 - t1)))
+		if (t1 < 0 and t2 > 0) or (t2 < 0 and t1 > 0)
+			var Point p = a + (b - a) * -t1 / (t2 - t1)
+			pHitDistance = DEMath.min(pHitDistance, pForwardDir * p)
 			pNearestForwardDistance = pNearestSideDistance = 0
 			
 		elif pNearestSideDistance != 0
-			if t1 < pNearestSideDistance - 1.5
-				pNearestForwardDistance = pAngleDir * a
+			if t1 < pNearestSideDistance - 1
+				pNearestForwardDistance = pForwardDir * a
 				pNearestSideDistance = t1
 				
-			elif t1 < pNearestSideDistance + 1.5
-				pNearestForwardDistance = DEMath.min(pNearestForwardDistance, pAngleDir * a)
+			elif t1 < pNearestSideDistance + 1
+				pNearestForwardDistance = DEMath.min(pNearestForwardDistance, pForwardDir * a)
 			end
 			
-			if t2 < pNearestSideDistance - 1.5
-				pNearestForwardDistance = pAngleDir * b
+			if t2 < pNearestSideDistance - 1
+				pNearestForwardDistance = pForwardDir * b
 				pNearestSideDistance = t2
 				
-			elif t2 < pNearestSideDistance + 1.5
-				pNearestForwardDistance = DEMath.min(pNearestForwardDistance, pAngleDir * b)
+			elif t2 < pNearestSideDistance + 1
+				pNearestForwardDistance = DEMath.min(pNearestForwardDistance, pForwardDir * b)
 			end
 		end
 	end
@@ -203,7 +223,7 @@ class ClosestDirectionFocusFinder
 				pBestHitDistance = pHitDistance
 			end
 			
-		elif DEMath.fabs(pNearestForwardDistance - pBestNearestForwardDistance) < 4.5
+		elif DEMath.fabs(pNearestForwardDistance - pBestNearestForwardDistance) < 5
 			if pNearestSideDistance < pBestNearestSideDistance
 				pBestNearestWidget = widget
 				pBestNearestForwardDistance = pNearestForwardDistance

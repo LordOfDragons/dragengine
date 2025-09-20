@@ -706,17 +706,18 @@ class Slider extends Container implements RangeModelListener
 		end
 	end
 	
-	func void focusClosestWidget(float angle)
+	func void focusDirectional(int direction)
 		if pWidgetKnob == null or not pWidgetKnob.isCapturingMouse()
-			super.focusClosestWidget(angle)
+			super.focusDirectional(direction)
 			return
 		end
 		
 		if pOrientation == Orientation.horizontal
-			if angle > -135 and angle < -45
+			select direction
+			case InputEventKey.arrowRight
 				pModel.setValue(pModel.getValue() + pModel.getIncrement())
 				
-			elif angle > 45 and angle < 135
+			case InputEventKey.arrowLeft
 				pModel.setValue(pModel.getValue() - pModel.getIncrement())
 				
 			else
@@ -724,10 +725,11 @@ class Slider extends Container implements RangeModelListener
 			end
 			
 		else
-			if angle > 135 or angle < -135
+			select direction
+			case InputEventKey.arrowDown
 				pModel.setValue(pModel.getValue() - pModel.getIncrement())
 				
-			elif angle > -45 and angle < 45
+			case InputEventKey.arrowUp
 				pModel.setValue(pModel.getValue() + pModel.getIncrement())
 				
 			else
@@ -735,10 +737,7 @@ class Slider extends Container implements RangeModelListener
 			end
 		end
 		
-		var Desktop desktop = getDesktop()
-		if desktop != null
-			desktop.warpMouseFocusLocation(this)
-		end
+		desktopWarpMouseFocusHere()
 	end
 	
 	

@@ -766,9 +766,9 @@ class Desktop extends Container
 		end
 	end
 	
-	func void focusClosestWidget(float angle)
+	func void focusDirectional(int direction)
 		if pWindowVirtualKeyboard != null and pWindowVirtualKeyboard.getVisible()
-			pWindowVirtualKeyboard.focusClosestWidget(angle)
+			pWindowVirtualKeyboard.focusDirectional(direction)
 			return
 		end
 		
@@ -787,11 +787,11 @@ class Desktop extends Container
 			widget = widget.getParent()
 		end
 		if widget != null and widget.hasParent(window)
-			widget.focusClosestWidget(angle)
+			widget.focusDirectional(direction)
 			return
 		end
 		
-		window.focusClosestWidgetInside(angle)
+		window.focusDirectionalInside(direction)
 	end
 	
 	
