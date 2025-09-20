@@ -66,7 +66,7 @@ class ClosestDirectionFocusFinder
 		end
 		
 		pIgnoreWidgets = Array.new()
-		pBestHitDistance = pBestNearestForwardDistance = pBestNearestSideDistance = 10000
+		reset()
 	end
 	
 	
@@ -99,6 +99,13 @@ class ClosestDirectionFocusFinder
 		return pIgnoreWidgets.has(widget)
 	end
 	
+	
+	/** \brief Reset finder. */
+	func void reset()
+		pBestHitWidget = null
+		pBestNearestWidget = null
+		pBestHitDistance = pBestNearestForwardDistance = pBestNearestSideDistance = 10000
+	end
 	
 	/**
 	 * \brief Process widget.
@@ -170,12 +177,15 @@ class ClosestDirectionFocusFinder
 			pBestNearestWidget, pBestNearestWidget != null if pBestNearestWidget.getDesktopBoundary() else null, pBestNearestSideDistance))
 		
 		if pBestHitWidget != null and pBestNearestWidget != null
+			/*
 			if pBestHitDistance < pBestNearestForwardDistance + 5
 				return pBestHitWidget
 				
 			else
 				return pBestNearestWidget
 			end
+			*/
+			return pBestHitWidget
 			
 		elif pBestHitWidget != null
 			return pBestHitWidget

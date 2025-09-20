@@ -576,11 +576,7 @@ class Container extends Widget
 		end
 		
 		widget.grabFocus()
-		
-		var Desktop desktop = getDesktop()
-		if desktop != null
-			desktop.warpMouseFocusLocation(widget)
-		end
+		widget.desktopWarpMouseFocusHere()
 	end
 	
 	/** Move widget from one position to another. */

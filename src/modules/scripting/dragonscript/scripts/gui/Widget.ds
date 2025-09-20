@@ -2108,8 +2108,41 @@ class Widget
 	 */
 	func void focusDirectional(int direction)
 		var Window window = getWindow()
+		/*
 		if window != null
 			window.focusDirectionalInside(direction)
+		end
+		*/
+		
+		var Container parent = pParent
+		if parent == null
+			return
+		end
+		
+		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(direction)
+		finder.addIgnoreWidget(this)
+		
+		var Point origin = pPosition + pSize / 2
+		var Widget widget
+		
+		while parent != null
+			finder.reset()
+			parent.collectClosestFocusWidget(finder, origin)
+			
+			widget = finder.getBestWidget()
+			if widget != null
+				widget.grabFocus()
+				widget.desktopWarpMouseFocusHere()
+				return
+			end
+			
+			if parent == window
+				return
+			end
+			
+			origin = origin + parent.getPosition()
+			finder.addIgnoreWidget(parent)
+			parent = parent.getParent()
 		end
 	end
 	
