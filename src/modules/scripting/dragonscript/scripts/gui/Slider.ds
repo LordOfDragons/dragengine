@@ -323,6 +323,7 @@ class Slider extends Container implements RangeModelListener
 			setDesignerSelector("Slider")
 			
 			setOrientation(orientation)
+			setCanFocusDirectional(true)
 			
 			createContent()
 			
@@ -696,21 +697,48 @@ class Slider extends Container implements RangeModelListener
 	
 	
 	
+	func Point getFocusMouseLocation()
+		if pWidgetKnob != null
+			return pWidgetKnob.getRelativePosition(this) + pWidgetKnob.getSize() / 2
+			
+		else
+			return super.getFocusMouseLocation()
+		end
+	end
+	
 	func void focusClosestWidget(float angle)
-		if angle < -45 or angle > 135
-			if pModel.getValue() < pModel.getMaximum()
-				simulateKeyPressRelease(InputEventKey.arrowRight, 0)
+		if pWidgetKnob == null or not pWidgetKnob.isCapturingMouse()
+			super.focusClosestWidget(angle)
+			return
+		end
+		
+		if pOrientation == Orientation.horizontal
+			if angle > -135 and angle < -45
+				pModel.setValue(pModel.getValue() + pModel.getIncrement())
+				
+			elif angle > 45 and angle < 135
+				pModel.setValue(pModel.getValue() - pModel.getIncrement())
+				
+			else
 				return
 			end
 			
 		else
-			if pModel.getValue() > pModel.getMinimum()
-				simulateKeyPressRelease(InputEventKey.arrowLeft, 0)
+			if angle > 135 or angle < -135
+				pModel.setValue(pModel.getValue() - pModel.getIncrement())
+				
+			elif angle > -45 and angle < 45
+				pModel.setValue(pModel.getValue() + pModel.getIncrement())
+				
+			else
 				return
 			end
 		end
 		
-		super.focusClosestWidget(angle)
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.warpMouseFocusLocation(this)
+		end
 	end
 	
 	
@@ -750,7 +778,7 @@ class Slider extends Container implements RangeModelListener
 			// knob widget
 			pWidgetKnob = designer.createKnob(this)
 			pWidgetKnob.setCanFocus(true)
-			pWidgetKnob.setCanFocusDirectional(true)
+			pWidgetKnob.setCanFocusDirectional(false)
 			pWidgetKnob.addMouseListener(DragKnobMouseListener.new(this))
 			pWidgetKnob.addMouseListener(wheelListener)
 			pWidgetKnob.addKeyListener(KnobKeyListener.new(this))

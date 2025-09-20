@@ -444,4 +444,8 @@ class Button extends Container
 		end)
 		pWidgetImage.layoutParentIfBlocked()
 	end
+	
+	func Point getFocusMouseLocation()
+		return Point.new(DEMath.max(getWidth() * 3 / 4, 0), DEMath.max(getHeight() - 5, 0))
+	end
 end

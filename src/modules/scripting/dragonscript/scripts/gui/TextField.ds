@@ -848,7 +848,7 @@ class TextField extends TextWidget
 	
 	func void onGamepadButtonPressed(GamepadEvent event)
 		if event.getCode() == 1
-			popdownVirtualKeyboard()
+			popdownVirtualKeyboardDirectional()
 		end
 		
 		super.onGamepadButtonPressed(event)

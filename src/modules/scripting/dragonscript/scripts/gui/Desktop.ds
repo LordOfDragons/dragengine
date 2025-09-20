@@ -766,56 +766,32 @@ class Desktop extends Container
 		end
 	end
 	
-	/**
-	 * \brief Focus closest widget in direction that can grab the focus.
-	 * \version 1.29
-	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
-	 *              0 angle is straight up.
-	 * 
-	 * Calls \ref Desktop#focusClosestWidget(Point,angle) on \ref #getDesktop() if available.
-	 * Uses either focus widget center or mouse location as origin.
-	 */
-	func void focusClosestWidgetDesktop(float angle)
-		var Widget focusWidget = getFocusWidget()
-		var Point origin
-		
-		if focusWidget != null
-			origin = focusWidget.getDesktopPosition() + focusWidget.getSize() / 2
-			
-		else
-			origin = pMouseLocation
-		end
-		
-		var Widget next = super.closestFocusWidget(origin, angle)
-		if next == null
-			return
-		end
-		
-		next.grabFocus()
-		
-		if pWindowVirtualKeyboard != null
-			// hide virtual keyboard. this is done to avoid directional focus change to switch
-			// to virtual keyboard while navigating to the desired widget. user is required
-			// to explicitely activate the virtual keyboard when using directional navigation
-			pWindowVirtualKeyboard.popdown()
-		end
-		
-		warpMouseFocusLocation()
-	end
-	
 	func void focusClosestWidget(float angle)
 		if pWindowVirtualKeyboard != null and pWindowVirtualKeyboard.getVisible()
 			pWindowVirtualKeyboard.focusClosestWidget(angle)
 			return
 		end
 		
-		var Widget focusWidget = getFocusWidget()
-		if focusWidget != null
-			focusWidget.focusClosestWidget(angle)
+		var Window window = getActiveWindow()
+		if window == null
+			focusActiveWidgetOfFirstUsableWindow()
+			window = getActiveWindow()
+			
+			if window == null
+				return
+			end
+		end
+		
+		var Widget widget = getHoverWidget()
+		while widget != null and not widget.getCanFocusDirectional()
+			widget = widget.getParent()
+		end
+		if widget != null and widget.hasParent(window)
+			widget.focusClosestWidget(angle)
 			return
 		end
 		
-		super.focusClosestWidget(angle)
+		window.focusClosestWidgetInside(angle)
 	end
 	
 	

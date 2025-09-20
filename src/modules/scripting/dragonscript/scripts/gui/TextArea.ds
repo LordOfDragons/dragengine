@@ -855,7 +855,7 @@ class TextArea extends TextWidget implements RangeModelListener
 	
 	func void onGamepadButtonPressed(GamepadEvent event)
 		if event.getCode() == 1
-			popdownVirtualKeyboard()
+			popdownVirtualKeyboardDirectional()
 		end
 		
 		super.onGamepadButtonPressed(event)

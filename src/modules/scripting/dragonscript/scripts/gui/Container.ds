@@ -311,32 +311,6 @@ class Container extends Widget
 		return this
 	end
 	
-	func Widget getWidgetClosestTo(Point position)
-		var int i, count = pChildren.getCount()
-		var Widget widget, bestWidget
-		var float dist, bestDist = 10000
-		
-		for i = 0 to count
-			widget = pChildren.getAt(i) cast Widget
-			if not widget.getVisible()
-				continue
-			end
-			
-			widget = widget.getWidgetClosestTo(position - widget.getPosition())
-			if widget == null
-				continue
-			end
-			
-			dist = Vector2.new(widget.getRelativePosition(this) + widget.getSize() / 2 - position).getLength()
-			if dist < bestDist
-				bestWidget = widget
-				bestDist = dist
-			end
-		end
-		
-		return bestWidget
-	end
-	
 	/** Adds a widget to this container using default settings. */
 	func void addWidget(Widget widget)
 		addWidget(widget, null)
@@ -552,70 +526,61 @@ class Container extends Widget
 		return prevFocusWidget()
 	end
 	
-	func Widget closestFocusWidget(Point origin, float angle)
-		if not getEnabled() or not getVisible()
-			return null
+	/**
+	 * \brief Find closest focus widget for directional navigation.
+	 * \version 1.29
+	 * \param finder Finder to add candidate widgets.
+	 * \param origin Origin in widget coordinates.
+	 */
+	func void collectClosestFocusWidget(ClosestDirectionFocusFinder finder, Point origin)
+		if not getEnabled() or not getVisible() or finder.hasIgnoreWidget(this)
+			return
 		end
 		
-		if getCanFocus()
-			return this
+		if getCanFocusDirectional()
+			finder.processWidget(this, -origin, getSize())
+			return
 		end
 		
-		var Vector2 angleDir = Vector2.new(-DEMath.sin(angle), -DEMath.cos(angle))
-		var Vector2 angleRotDir = Vector2.new(angleDir.getY(), -angleDir.getX())
+		forEachWidget(block Widget each
+			if each.getVisible()
+				each.collectClosestFocusWidget(finder, origin - each.getPosition())
+			end
+		end)
+	end
+	
+	/**
+	 * \brief Focus closest widget in direction that can grab the focus.
+	 * \version 1.29
+	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
+	 *              0 angle is straight up.
+	 */
+	func void focusClosestWidgetInside(float angle)
+		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(angle)
+		var Widget widget = getHoverWidget()
+		var Point origin
 		
-		var int i, count = pChildren.getCount()
-		var float bestDist = 10000, dist, t1, t2, d1, d2, d3, d4
-		var Widget bestWidget, widget
-		var Vector2 c1, c2, c3, c4
-		
-		for i = 0 to count
-			widget = pChildren.getAt(i) cast Widget
-			widget = widget.closestFocusWidget(origin - widget.getPosition(), angle)
-			if widget == null or widget.getHasFocus()
-				continue
-			end
+		if widget != null and widget.hasParent(this)
+			origin = widget.getRelativePosition(this) + widget.getSize() / 2
+			finder.addIgnoreWidgetFocusable(widget)
 			
-			d1 = d2 = d3 = d4 = 10000
-			
-			c1 = Vector2.new(widget.getRelativePosition(this) - origin)
-			c3 = c1 + Vector2.new(widget.getSize())
-			c2 = Vector2.new(c3.getX(), c1.getY())
-			c4 = Vector2.new(c1.getX(), c3.getY())
-			
-			t1 = angleRotDir * c1
-			t2 = angleRotDir * c2
-			if (t1 < -0.25 and t2 > 0.25) or (t2 < -0.25 and t1 > 0.25)
-				d1 = angleDir * c1.mix(c2, -t1 / (t2 - t1))
-			end
-			
-			t1 = angleRotDir * c2
-			t2 = angleRotDir * c3
-			if (t1 < -0.25 and t2 > 0.25) or (t2 < -0.25 and t1 > 0.25)
-				d2 = angleDir * c2.mix(c3, -t1 / (t2 - t1))
-			end
-			
-			t1 = angleRotDir * c3
-			t2 = angleRotDir * c4
-			if (t1 < -0.25 and t2 > 0.25) or (t2 < -0.25 and t1 > 0.25)
-				d3 = angleDir * c3.mix(c4, -t1 / (t2 - t1))
-			end
-			
-			t1 = angleRotDir * c4
-			t2 = angleRotDir * c1
-			if (t1 < -0.25 and t2 > 0.25) or (t2 < -0.25 and t1 > 0.25)
-				d4 = angleDir * c4.mix(c1, -t1 / (t2 - t1))
-			end
-			
-			dist = DEMath.min(d1, DEMath.min(d2, DEMath.min(d3, d4)))
-			
-			if dist > 0.5 and dist < bestDist
-				bestWidget = widget
-				bestDist = dist
-			end
+		else
+			origin = getLocalMouseLocation()
 		end
 		
-		return bestWidget
+		collectClosestFocusWidget(finder, origin)
+		
+		widget = finder.getBestWidget()
+		if widget == null
+			return
+		end
+		
+		widget.grabFocus()
+		
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.warpMouseFocusLocation(widget)
+		end
 	end
 	
 	/** Move widget from one position to another. */

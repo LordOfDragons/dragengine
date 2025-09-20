@@ -482,12 +482,12 @@ class Widget
 		setSize(Point.new(pSize.getX(), height))
 	end
 	
-	/** \brief Rectangulare boundary of the widget. */
+	/** \brief Rectangular boundary of the widget. */
 	func RectArea getBoundary()
 		return RectArea.new(pPosition, pSize)
 	end
 	
-	/** \brief Rectangulare boundary of the widget including border. */
+	/** \brief Rectangular boundary of the widget including border. */
 	func RectArea getBoundaryWithBorder()
 		if pBorder == null
 			return getBoundary()
@@ -498,7 +498,7 @@ class Widget
 	end
 	
 	/**
-	 * \brief Rectangulare boundary of widget relative to parent.
+	 * \brief Rectangular boundary of widget relative to parent.
 	 * \version 1.29
 	 */
 	func RectArea getRelativeBoundary(Container parent)
@@ -506,7 +506,7 @@ class Widget
 	end
 	
 	/**
-	 * \brief Rectangulare boundary of widget including border relative to parent.
+	 * \brief Rectangular boundary of widget including border relative to parent.
 	 */
 	func RectArea getRelativeBoundaryWithBorder(Container parent)
 		if pBorder == null
@@ -518,6 +518,26 @@ class Widget
 			- Point.new(size.getLeft(), size.getTop()), pSize + size.getSize())
 	end
 	
+	/**
+	 * \brief Rectangular boundary of widget relative to desktop.
+	 * \version 1.29
+	 */
+	func RectArea getDesktopBoundary()
+		return RectArea.new(getDesktopPosition(), pSize)
+	end
+	
+	/**
+	 * \brief Rectangular boundary of widget including border relative to parent.
+	 */
+	func RectArea getDesktopBoundaryWithBorder()
+		if pBorder == null
+			return getDesktopBoundary()
+		end
+		
+		var BorderSize size = pBorder.getBorderSize()
+		return RectArea.new(getDesktopPosition()\
+			- Point.new(size.getLeft(), size.getTop()), pSize + size.getSize())
+	end
 	
 	
 	/** Retrieve the minimal size of widget. */
@@ -2018,11 +2038,6 @@ class Widget
 		return isPointInside(position) if this else null
 	end
 	
-	/** \brief Widget closest to coordinates or \em null if not found. */
-	func Widget getWidgetClosestTo(Point position)
-		return this
-	end
-	
 	
 	
 	/** Makes the widget grab the focus if possible. */
@@ -2074,19 +2089,15 @@ class Widget
 	end
 	
 	/**
-	 * \brief Find closest widget in direction that can grab the focus.
+	 * \brief Find closest focus widget for directional navigation.
 	 * \version 1.29
+	 * \param finder Finder to add candidate widgets.
 	 * \param origin Origin in widget coordinates.
-	 * \param angle Counter clock wise angle in degrees in the range from -180 to 180.
-	 *              0 angle is straight up.
-	 * 
-	 * Returns this if enabled and can focus otherwise null.
-	 * 
-	 * Usually only \ref Desktop or subclass thereof implement this function. Implement this
-	 * function if your widget has special logic where to send the focus next.
 	 */
-	func Widget closestFocusWidget(Point origin, float angle)
-		return pEnabled and (pCanFocus or pCanFocusDirectional) if this else null
+	func void collectClosestFocusWidget(ClosestDirectionFocusFinder finder, Point origin)
+		if pEnabled and pVisible and pCanFocusDirectional
+			finder.processWidget(this, -origin, pSize)
+		end
 	end
 	
 	/**
@@ -2098,9 +2109,9 @@ class Widget
 	 * Calls \ref Desktop#focusClosestWidgetDesktop(Point,angle) on \ref #getDesktop() if available.
 	 */
 	func void focusClosestWidget(float angle)
-		var Desktop desktop = getDesktop()
-		if desktop != null
-			desktop.focusClosestWidgetDesktop(angle)
+		var Window window = getWindow()
+		if window != null
+			window.focusClosestWidgetInside(angle)
 		end
 	end
 	
@@ -2112,7 +2123,7 @@ class Widget
 	 * Returns position close to the lower right corner reduce obscuring content.
 	 */
 	func Point getFocusMouseLocation()
-		return Point.new(DEMath.max(pSize.getX() - 20, 0), DEMath.max(pSize.getY() - 5, 0))
+		return Point.new(DEMath.max(pSize.getX() - 5, 0), DEMath.max(pSize.getY() - 5, 0))
 	end
 	
 	/**
@@ -2497,6 +2508,20 @@ class Widget
 		vk.popdown()
 	end
 	
+	/**
+	 * \brief Popdown virtual keyboard if Desktop has one assigned and direction focus widget.
+	 * \version 1.29
+	 * 
+	 * Does nothing if the virtual keyboard is shown and not assigned to this widget.
+	 */
+	func void popdownVirtualKeyboardDirectional()
+		popdownVirtualKeyboard()
+		
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.warpMouseFocusLocation(this)
+		end
+	end
 	
 	
 	/**

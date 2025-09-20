@@ -139,15 +139,9 @@ class WindowVirtualKeyboard extends Window
 	end
 	
 	
-	
 	var Widget pInputWidget
-	var Panel pKeyboardLayoutPanel
-	
-	var Panel pKeyboardLayoutDefaultPanel
-	var Panel pKeyboardLayoutNumericPanel
-	
+	var Panel pKeyboardLayoutPanel, pKeyboardLayoutDefaultPanel, pKeyboardLayoutNumericPanel
 	var DefaultToggleModel pModelShift
-	
 	
 	
 	/** \brief Create window. */
@@ -287,17 +281,9 @@ class WindowVirtualKeyboard extends Window
 	 */
 	func void focusDefaultDirectional()
 		var Desktop desktop = getDesktop()
-		if desktop == null
-			return
+		if desktop != null
+			desktop.warpCenterMouseIn(this)
 		end
-		
-		var Widget widget = getWidgetClosestTo(getSize() / 2)
-		if widget == null or widget == this
-			return
-		end
-		
-		widget.grabFocus()
-		desktop.warpMouseFocusLocation(widget)
 	end
 	
 	/**
@@ -313,20 +299,25 @@ class WindowVirtualKeyboard extends Window
 		end
 		
 		var Point origin = getLocalMouseLocation()
-		if isPointInside(origin)
-			var Widget widget = getWidgetClosestTo(origin)
-			origin = widget.getRelativePosition(this) + widget.getSize() / 2
-			
-		else
+		if not isPointInside(origin)
 			origin = getSize() / 2
 		end
 		
-		var Widget next = closestFocusWidget(origin, angle)
-		if next == null
+		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(angle)
+		var Widget widget = getWidgetAt(origin)
+		if widget != null
+			origin = widget.getRelativePosition(this) + widget.getSize() / 2
+			finder.addIgnoreWidgetFocusable(widget)
+		end
+		
+		collectClosestFocusWidget(finder, origin)
+		
+		widget = finder.getBestWidget()
+		if widget == null
 			return
 		end
 		
-		desktop.warpMouseFocusLocation(next)
+		desktop.warpMouseFocusLocation(widget)
 	end
 	
 	
@@ -363,6 +354,9 @@ class WindowVirtualKeyboard extends Window
 	 * the underlaying window.
 	 */
 	func void grabFocus()
+	end
+	
+	func void requestGrabFocus(Widget widget)
 	end
 	
 	

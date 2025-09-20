@@ -260,6 +260,7 @@ class ScrollBar extends Container implements RangeModelListener
 		setDesignerSelector("ScrollBar")
 		
 		setOrientation(orientation)
+		setCanFocusDirectional(true)
 		
 		createContent()
 		enableDirectionButtons()
@@ -377,21 +378,48 @@ class ScrollBar extends Container implements RangeModelListener
 	
 	
 	
+	func Point getFocusMouseLocation()
+		if pWidgetKnob != null
+			return pWidgetKnob.getRelativePosition(this) + pWidgetKnob.getSize() / 2
+			
+		else
+			return super.getFocusMouseLocation()
+		end
+	end
+	
 	func void focusClosestWidget(float angle)
-		if angle < -45 or angle > 135
-			if pModel.getValue() < pModel.getMaximum()
-				simulateKeyPressRelease(InputEventKey.arrowRight, 0)
+		if pWidgetKnob == null or not pWidgetKnob.isCapturingMouse()
+			super.focusClosestWidget(angle)
+			return
+		end
+		
+		if pOrientation == Orientation.horizontal
+			if angle > -135 and angle < -45
+				pModel.setValue(pModel.getValue() + pModel.getIncrement())
+				
+			elif angle > 45 and angle < 135
+				pModel.setValue(pModel.getValue() - pModel.getIncrement())
+				
+			else
 				return
 			end
 			
 		else
-			if pModel.getValue() > pModel.getMinimum()
-				simulateKeyPressRelease(InputEventKey.arrowLeft, 0)
+			if angle > 135 or angle < -135
+				pModel.setValue(pModel.getValue() + pModel.getIncrement())
+				
+			elif angle > -45 and angle < 45
+				pModel.setValue(pModel.getValue() - pModel.getIncrement())
+				
+			else
 				return
 			end
 		end
 		
-		super.focusClosestWidget(angle)
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.warpMouseFocusLocation(this)
+		end
 	end
 	
 	
@@ -627,6 +655,7 @@ class ScrollBar extends Container implements RangeModelListener
 		// create left or up arrow button
 		pButtonLeftUp = designer.createButtonLeftUp(this)
 		pButtonLeftUp.setCanFocus(false)
+		pButtonLeftUp.setCanFocusDirectional(false)
 		pButtonLeftUp.addMouseListener(wheelListener)
 		var ScrollButtonStateListener scrollListener = \
 			ScrollButtonStateListener.new(ActionScrollUpLeft.new(this, false))
@@ -643,6 +672,7 @@ class ScrollBar extends Container implements RangeModelListener
 		// create right or down arrow button
 		pButtonRightDown = designer.createButtonRightDown(this)
 		pButtonRightDown.setCanFocus(false)
+		pButtonRightDown.setCanFocusDirectional(false)
 		pButtonRightDown.addMouseListener(wheelListener)
 		scrollListener = ScrollButtonStateListener.new(ActionScrollDownRight.new(this, false))
 		pDisposeScrollButtonStateListeners.add(scrollListener)
