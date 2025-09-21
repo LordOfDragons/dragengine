@@ -542,6 +542,7 @@ class Container extends Widget
 			return
 		end
 		
+		// BaseGameApp.getApp().getConsole().addMessage("CONTAINER: " + Array.newWith(this, getDesktopBoundary(), origin))
 		forEachWidget(block Widget each
 			if each.getVisible()
 				each.collectClosestFocusWidget(finder, origin - each.getPosition())
@@ -556,26 +557,33 @@ class Container extends Widget
 	 *                  \ref InputEventKey#arrowUp or \ref InputEventKey#arrowDown.
 	 */
 	func void focusDirectionalInside(int direction)
-		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(direction)
+		var ClosestDirectionFocusFinder finder
 		var Widget widget = getHoverWidget()
 		var Point origin
 		
 		if widget != null and widget.hasParent(this)
-			origin = widget.getRelativePosition(this) + widget.getSize() / 2
+			var Point size = widget.getSize()
+			origin = widget.getRelativePosition(this) + size / 2
+			finder = ClosestDirectionFocusFinder.new(direction, -size / 2, size)
 			finder.addIgnoreWidgetFocusable(widget)
 			
 		else
 			origin = getLocalMouseLocation()
+			finder = ClosestDirectionFocusFinder.new(direction, Point.new(), Point.new())
 		end
 		
+		// BaseGameApp.getApp().getConsole().addMessage("BEGIN TOP: " + Array.newWith(this, getDesktopBoundary(), origin, direction, finder.getOriginBox()))
 		collectClosestFocusWidget(finder, origin)
 		
 		widget = finder.getBestWidget()
 		if widget == null
+			// BaseGameApp.getApp().getConsole().addMessage("    REJECT")
 			return
 		end
 		
+		// BaseGameApp.getApp().getConsole().addMessage("    ACCEPT: " + Array.newWith(widget, widget.getDesktopBoundary(), widget.getVisibleDesktopBoundary(), isChildVisibleOnDesktop(widget)))
 		widget.grabFocus()
+		widget.ensureVisible()
 		widget.desktopWarpMouseFocusHere()
 	end
 	
@@ -588,7 +596,6 @@ class Container extends Widget
 		
 		doLayout()
 	end
-	
 	
 	
 	/** Returns the minimal size calculated by our layout object for this widget. */
@@ -724,49 +731,63 @@ class Container extends Widget
 	 */
 	func bool requestCaptureMouse(Widget widget)
 		var Container parent = getParent()
-		if parent != null
-			return parent.requestCaptureMouse(widget)
-		end
-		return true
+		return parent == null or parent.requestCaptureMouse(widget)
 	end
 	
 	/** Request to release mouse capture. Returns true  if the request has been accepted. */
 	func bool requestReleaseMouse(Widget widget)
 		var Container parent = getParent()
-		if parent != null
-			return parent.requestReleaseMouse(widget)
-		end
-		return true
+		return parent == null or parent.requestReleaseMouse(widget)
 	end
 	
 	/** Determines if the container allows child widgets to grab the focus. */
 	func bool allowsChildGrabFocus()
 		var Container parent = getParent()
-		if not getEnabled() or not getVisible() or parent == null
-			return false
-		end
-		return parent.allowsChildGrabFocus()
+		return getEnabled() and getVisible() and parent != null and parent.allowsChildGrabFocus()
+	end
+	
+	/**
+	 * \brief Request to capture directional navigation for the specified widget.
+	 * \returns true if the request has been accepted.
+	 */
+	func bool requestCaptureDirectional(Widget widget)
+		var Container parent = getParent()
+		return parent == null or parent.requestCaptureDirectional(widget)
+	end
+	
+	/**
+	 * \brief Request to release directional navigation capture.
+	 * \returns true if the request has been accepted.
+	 */
+	func bool requestReleaseDirectional(Widget widget)
+		var Container parent = getParent()
+		return parent == null or parent.requestReleaseDirectional(widget)
 	end
 	
 	
-	
 	/**
-	 * Determines if the given child widget is visible. This check if the
-	 * widget is visible and that the widget boundaries lie inside the
-	 * viewable area of the container.
+	 * \brief Child widget is visible.
+	 * 
+	 * Checks if the widget is visible and that the widget boundaries lie inside the viewable
+	 * area of the container.
 	 */
 	func bool isChildVisible(Widget child)
 		if not child.getVisible()
 			return false
 		end
 		
-		var Point childPosition = child.getPosition()
-		
-		if (childPosition + child.getSize()).isAtMost(0) or childPosition >= getSize()
-			return false
-		end
-		
-		return true
+		var Point position = child.getPosition()
+		return (position + child.getSize()).isAtLeast(1) and position < getSize()
+	end
+	
+	/**
+	 * \brief Child widget is visible on desktop.
+	 * \version 1.29
+	 * 
+	 * Checks if the desktop visible widget boundary is visible on the desktop.
+	 */
+	func bool isChildVisibleOnDesktop(Widget child)
+		return child.getVisible() and not child.getVisibleDesktopBoundary().isZeroWidthOrHeight()
 	end
 	
 	/** \brief Focus widget is inside container somewhere. */

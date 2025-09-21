@@ -165,9 +165,15 @@ class ComboBox extends Container implements ListModelListener
 		end
 		
 		func void popdown()
+			var bool directional = isCapturingDirectional()
 			super.popdown()
+			
 			pComboBox.rollUp()
 			pComboBox.onStateChanged(StateChangeEvent.new(this, StateChangeEvent.idStateChanged))
+			
+			if directional
+				pComboBox.desktopWarpMouseFocusHere()
+			end
 		end
 		
 		func void sendEvent(Event event)
@@ -1091,5 +1097,13 @@ class ComboBox extends Container implements ListModelListener
 		end
 		
 		dropDown()
+	end
+	
+	
+	func void onGamepadButtonPressed(GamepadEvent event)
+		if event.getCode() == 1
+			rollUp()
+		end
+		super.onGamepadButtonPressed(event)
 	end
 end

@@ -31,39 +31,46 @@ pin Dragengine.Scenery
  * \version 1.29
  */
 class ClosestDirectionFocusFinder
-	protected var Point pForwardDir, pSideDir
+	protected var Point pDirY, pDirX
+	protected var RectArea pOriginBox
 	protected var Array pIgnoreWidgets
-	protected var int pHitDistance, pNearestForwardDistance, pNearestSideDistance
+	protected var RectArea pHitBox, pNearestBox
 	protected var Widget pBestHitWidget, pBestNearestWidget
-	protected var int pBestHitDistance, pBestNearestForwardDistance, pBestNearestSideDistance
+	protected var RectArea pBestHitBox, pBestNearestBox
+	protected var int pBestHitX, pHitX, pBestNearestX, pNearestX
 	
 	
 	/**
 	 * \brief Create finder for search direction.
 	 * \param direction Direction as \ref InputEventKey#arrowLeft, \ref InputEventKey#arrowRight,
 	 *                  \ref InputEventKey#arrowUp or \ref InputEventKey#arrowDown.
+	 * \param position Position of origin widget relative to origin.
+	 * \param size Size of origin widget.
 	 */
-	func new(int direction)
+	func new(int direction, Point position, Point size)
 		select direction
 		case InputEventKey.arrowUp:
-			pForwardDir = Point.new(0, -1)
-			pSideDir = Point.new(1, 0)
+			pDirY = Point.new(0, -1)
+			pDirX = Point.new(1, 0)
 			
 		case InputEventKey.arrowDown:
-			pForwardDir = Point.new(0, 1)
-			pSideDir = Point.new(1, 0)
+			pDirY = Point.new(0, 1)
+			pDirX = Point.new(1, 0)
 			
 		case InputEventKey.arrowLeft:
-			pForwardDir = Point.new(-1, 0)
-			pSideDir = Point.new(0, 1)
+			pDirY = Point.new(-1, 0)
+			pDirX = Point.new(0, 1)
 			
 		case InputEventKey.arrowRight:
-			pForwardDir = Point.new(1, 0)
-			pSideDir = Point.new(0, 1)
+			pDirY = Point.new(1, 0)
+			pDirX = Point.new(0, 1)
 			
 		else
 			throw EInvalidParam.new("direction")
 		end
+		
+		var Point p2 = position + size
+		pOriginBox = RectArea.new(pDirX * position, pDirY * position, pDirX * p2, pDirY * p2).orientate()
 		
 		pIgnoreWidgets = Array.new()
 		reset()
@@ -104,7 +111,7 @@ class ClosestDirectionFocusFinder
 	func void reset()
 		pBestHitWidget = null
 		pBestNearestWidget = null
-		pBestHitDistance = pBestNearestForwardDistance = pBestNearestSideDistance = 10000
+		pBestHitBox = pBestNearestBox = null
 	end
 	
 	/**
@@ -121,25 +128,36 @@ class ClosestDirectionFocusFinder
 			return
 		end
 		
-		var Point c1 = position
-		var Point c3 = c1 + size
-		var Point c2 = Point.new(c3.getX(), c1.getY())
-		var Point c4 = Point.new(c1.getX(), c3.getY())
+		pHitBox = pNearestBox = null
+		pHitX = pNearestX = 0
 		
-		pHitDistance = pNearestForwardDistance = pNearestSideDistance = 10000
+		var Point p2 = position + size
+		var RectArea box = RectArea.new(pDirX * position, pDirY * position, pDirX * p2, pDirY * p2).orientate()
 		
-		processCorner(c1, c2)
-		processCorner(c2, c3)
-		processCorner(c3, c4)
-		processCorner(c4, c1)
+		if /*box.isInsideX(0)*/ box.isOverlappingX(pOriginBox)
+			pHitBox = box
+			if not box.isInsideX(0)
+				pHitX = DEMath.min(DEMath.abs(box.getX1()), DEMath.abs(box.getX2()))
+			end
+			
+		else
+			pNearestBox = box
+			pNearestX = DEMath.min(DEMath.abs(box.getX1()), DEMath.abs(box.getX2()))
+		end
 		
-		if pNearestSideDistance == 0 if pHitDistance > 0 else pNearestForwardDistance > 0
-			BaseGameApp.getApp().getConsole().addMessage("  CHECK: " + Array.newWith(widget, widget.getDesktopBoundary(), pHitDistance, pNearestForwardDistance, pNearestSideDistance, true))
+		if box.getY1() > 0
+			// BaseGameApp.getApp().getConsole().addMessage("  CHECK: " + Array.newWith(widget, widget.getDesktopBoundary(), pHitBox, pHitX, pNearestBox, pNearestX, true))
 			challengeBest(widget)
 			
 		else
-			BaseGameApp.getApp().getConsole().addMessage("  CHECK: " + Array.newWith(widget, widget.getDesktopBoundary(), pHitDistance, pNearestForwardDistance, pNearestSideDistance, false))
+			// BaseGameApp.getApp().getConsole().addMessage("  CHECK: " + Array.newWith(widget, widget.getDesktopBoundary(), pHitBox, pHitX, pNearestBox, pNearestX, false))
 		end
+	end
+	
+	
+	/** \brief Origin box. */
+	func RectArea getOriginBox()
+		return pOriginBox
 	end
 	
 	
@@ -148,9 +166,14 @@ class ClosestDirectionFocusFinder
 		return pBestHitWidget
 	end
 	
-	/** \brief Best hit distance in pixels. */
-	func int getBestHitDistance()
-		return pBestHitDistance
+	/** \brief Best hit box or null. */
+	func RectArea getBestHitBox()
+		return pBestHitBox
+	end
+	
+	/** \brief Best hit box distance along X axis in pixels. */
+	func int getBestHitX()
+		return pBestHitX
 	end
 	
 	
@@ -159,26 +182,28 @@ class ClosestDirectionFocusFinder
 		return pBestNearestWidget
 	end
 	
-	/** \brief Best nearest forward distance in pixels. */
-	func int getBestNearestForwardDistance()
-		return pBestNearestForwardDistance
+	/** \brief Best nearest box. */
+	func RectArea getBestNearestBox()
+		return pBestNearestBox
 	end
 	
-	/** \brief Best nearest side distance in pixels. */
-	func int getBestNearestSideDistance()
-		return pBestNearestSideDistance
+	/** \brief Best nearest box distance along X axis in pixels. */
+	func int getBestNearestX()
+		return pBestNearestX
 	end
 	
 	
 	/** \brief Best widget to use. */
 	func Widget getBestWidget()
+		/*
 		BaseGameApp.getApp().getConsole().addMessage("  BEST: " + Array.newWith(\
-			pBestHitWidget, pBestHitWidget != null if pBestHitWidget.getDesktopBoundary() else null, pBestHitDistance,\
-			pBestNearestWidget, pBestNearestWidget != null if pBestNearestWidget.getDesktopBoundary() else null, pBestNearestSideDistance))
+			pBestHitWidget, pBestHitWidget != null if pBestHitWidget.getDesktopBoundary() else null, pBestHitBox,\
+			pBestNearestWidget, pBestNearestWidget != null if pBestNearestWidget.getDesktopBoundary() else null, pBestNearestBox, pBestNearestX))
+		*/
 		
 		if pBestHitWidget != null and pBestNearestWidget != null
 			/*
-			if pBestHitDistance < pBestNearestForwardDistance + 5
+			if pBestHitBox.getY1() < pBestNearestBox.getY1() + 5
 				return pBestHitWidget
 				
 			else
@@ -196,60 +221,57 @@ class ClosestDirectionFocusFinder
 	end
 	
 	
-	/** \brief Process corner. */
-	protected func void processCorner(Point a, Point b)
-		var int t1 = pSideDir * a
-		var int t2 = pSideDir * b
-		
-		if (t1 < 0 and t2 > 0) or (t2 < 0 and t1 > 0)
-			var Point p = a + (b - a) * -t1 / (t2 - t1)
-			pHitDistance = DEMath.min(pHitDistance, pForwardDir * p)
-			pNearestForwardDistance = pNearestSideDistance = 0
-			
-		elif pNearestSideDistance != 0
-			if t1 < pNearestSideDistance - 1
-				pNearestForwardDistance = pForwardDir * a
-				pNearestSideDistance = t1
-				
-			elif t1 < pNearestSideDistance + 1
-				pNearestForwardDistance = DEMath.min(pNearestForwardDistance, pForwardDir * a)
-			end
-			
-			if t2 < pNearestSideDistance - 1
-				pNearestForwardDistance = pForwardDir * b
-				pNearestSideDistance = t2
-				
-			elif t2 < pNearestSideDistance + 1
-				pNearestForwardDistance = DEMath.min(pNearestForwardDistance, pForwardDir * b)
-			end
-		end
-	end
-	
 	/** \brief Compare processed widget against best widget and keep the winner. */
 	protected func void challengeBest(Widget widget)
-		if pNearestSideDistance == 0
-			if pHitDistance < pBestHitDistance
-				pBestHitWidget = widget
-				pBestHitDistance = pHitDistance
+		var bool replace
+		
+		if pHitBox != null
+			if pBestHitBox == null
+				replace = true
+				
+			elif DEMath.abs(pHitBox.getY1() - pBestHitBox.getY1()) < 5
+				if pHitX < pBestHitX
+					replace = true
+				end
+				
+			else
+				if pHitBox.getY1() < pBestHitBox.getY1()
+					replace = true
+				end
 			end
 			
-		elif DEMath.fabs(pNearestForwardDistance - pBestNearestForwardDistance) < 5
-			if pNearestSideDistance < pBestNearestSideDistance
-				pBestNearestWidget = widget
-				pBestNearestForwardDistance = pNearestForwardDistance
-				pBestNearestSideDistance = pNearestSideDistance
+			if replace
+				pBestHitWidget = widget
+				pBestHitBox = pHitBox
+				pBestHitX = pHitX
 			end
 			
 		else
-			if pNearestForwardDistance < pBestNearestForwardDistance
+			if pBestNearestBox == null
+				replace = true
+				
+			elif DEMath.abs(pNearestBox.getY1() - pBestNearestBox.getY1()) < 5
+				if pNearestX < pBestNearestX
+					replace = true
+				end
+				
+			else
+				if pNearestBox.getY1() < pBestNearestBox.getY1()
+					replace = true
+				end
+			end
+			
+			if replace
 				pBestNearestWidget = widget
-				pBestNearestForwardDistance = pNearestForwardDistance
-				pBestNearestSideDistance = pNearestSideDistance
+				pBestNearestBox = pNearestBox
+				pBestNearestX = pNearestX
 			end
 		end
 		
+		/*
 		BaseGameApp.getApp().getConsole().addMessage("  CHALLENGE: " + Array.newWith(\
-			pBestHitWidget, pBestHitWidget != null if pBestHitWidget.getDesktopBoundary() else null, pBestHitDistance,\
-			pBestNearestWidget, pBestNearestWidget != null if pBestNearestWidget.getDesktopBoundary() else null, pBestNearestSideDistance))
+			pBestHitWidget, pBestHitWidget != null if pBestHitWidget.getDesktopBoundary() else null, pBestHitBox,\
+			pBestNearestWidget, pBestNearestWidget != null if pBestNearestWidget.getDesktopBoundary() else null, pBestNearestBox, pBestNearestX))
+		*/
 	end
 end

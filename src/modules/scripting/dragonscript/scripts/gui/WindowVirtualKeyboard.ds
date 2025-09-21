@@ -254,6 +254,7 @@ class WindowVirtualKeyboard extends Window
 		setPosition(calculatePopupPosition(inputWidget))
 		setVisible(true)
 		moveToTop()
+		captureDirectional()
 	end
 	
 	/**
@@ -266,6 +267,7 @@ class WindowVirtualKeyboard extends Window
 			return
 		end
 		
+		releaseDirectional()
 		setVisible(false)
 		setKeyboardLayoutPanel(null)
 		pInputWidget = null
@@ -297,21 +299,40 @@ class WindowVirtualKeyboard extends Window
 			origin = getSize() / 2
 		end
 		
-		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(direction)
 		var Widget widget = getWidgetAt(origin)
 		if widget != null
-			origin = widget.getRelativePosition(this) + widget.getSize() / 2
-			finder.addIgnoreWidgetFocusable(widget)
+			widget.desktopWarpMouseFocusHere()
+			widget.focusDirectional(direction)
+			
+		else
+			return
 		end
 		
+		/*
+		var ClosestDirectionFocusFinder finder
+		var Widget widget = getWidgetAt(origin)
+		if widget != null
+			var Point size = widget.getSize()
+			origin = widget.getRelativePosition(this) + size / 2
+			finder = ClosestDirectionFocusFinder.new(direction, -size / 2, size)
+			finder.addIgnoreWidgetFocusable(widget)
+			
+		else
+			finder = ClosestDirectionFocusFinder.new(direction, Point.new(), Point.new())
+		end
+		
+		BaseGameApp.getApp().getConsole().addMessage("BEGIN TOP VKEY: " + Array.newWith(this, getDesktopBoundary(), origin, direction, widget, widget != null if widget.getDesktopBoundary() else null))
 		collectClosestFocusWidget(finder, origin)
 		
 		widget = finder.getBestWidget()
 		if widget == null
+			BaseGameApp.getApp().getConsole().addMessage("    REJECT VKEY")
 			return
 		end
 		
+		BaseGameApp.getApp().getConsole().addMessage("    ACCEPT VKEY: " + Array.newWith(widget, widget.getDesktopBoundary()))
 		desktop.warpMouseFocusLocation(widget)
+		*/
 	end
 	
 	

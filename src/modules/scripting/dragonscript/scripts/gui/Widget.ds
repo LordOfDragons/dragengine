@@ -539,6 +539,50 @@ class Widget
 			- Point.new(size.getLeft(), size.getTop()), pSize + size.getSize())
 	end
 	
+	/**
+	 * \brief Visible widget boundary relative to parent coordinate system.
+	 * \version 1.29
+	 */
+	func RectArea getVisibleRelativeBoundary(Container parent)
+		var RectArea boundary = getRelativeBoundary(parent)
+		if pParent != null and pParent != parent
+			boundary = pParent.getVisibleRelativeBoundary(parent).intersect(boundary)
+		end
+		return boundary
+	end
+	
+	/**
+	 * \brief Visible widget boundary in desktop coordinates.
+	 * \version 1.29
+	 * 
+	 * Clips \ref #getBoundary() to the visible area of all parent containers.
+	 */
+	func RectArea getVisibleDesktopBoundary()
+		var RectArea boundary = getDesktopBoundary()
+		if pParent != null
+			boundary = pParent.getVisibleDesktopBoundary().intersect(boundary)
+		end
+		return boundary
+	end
+	
+	/**
+	 * \brief Ensure widget is fully visible on desktop if possible.
+	 * \version 1.29
+	 */
+	func void ensureVisible()
+		ensureVisible(getBoundary())
+	end
+	
+	/**
+	 * \brief Ensure boundary is visible on desktop if possible.
+	 * \version 1.29
+	 */
+	func void ensureVisible(RectArea boundary)
+		var Container parent = getParent()
+		if parent != null
+			parent.ensureVisible(boundary.move(getPosition()))
+		end
+	end
 	
 	/** Retrieve the minimal size of widget. */
 	func Point getMinimumSize()
@@ -2119,19 +2163,23 @@ class Widget
 			return
 		end
 		
-		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(direction)
-		finder.addIgnoreWidget(this)
-		
 		var Point origin = pPosition + pSize / 2
 		var Widget widget
 		
+		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(direction, -pSize / 2, pSize)
+		finder.addIgnoreWidget(this)
+		
+		// BaseGameApp.getApp().getConsole().addMessage("BEGIN WIDGET: " + Array.newWith(this, getDesktopBoundary(), origin, direction))
 		while parent != null
+			// BaseGameApp.getApp().getConsole().addMessage("  LOOP: " + Array.newWith(parent, parent.getDesktopBoundary()))
 			finder.reset()
 			parent.collectClosestFocusWidget(finder, origin)
 			
 			widget = finder.getBestWidget()
 			if widget != null
+				// BaseGameApp.getApp().getConsole().addMessage("    ACCEPT: " + Array.newWith(widget, widget.getDesktopBoundary()))
 				widget.grabFocus()
+				widget.ensureVisible()
 				widget.desktopWarpMouseFocusHere()
 				return
 			end
@@ -2193,20 +2241,16 @@ class Widget
 	
 	/** Captures the mouse if not already captured by another widget. */
 	func void captureMouse()
-		if pParent == null
-			return
+		if pParent != null
+			pParent.requestCaptureMouse(this)
 		end
-		
-		pParent.requestCaptureMouse(this)
 	end
 	
 	/** Release mouse capture. */
 	func void releaseMouse()
-		if pParent == null
-			return
+		if pParent != null
+			pParent.requestReleaseMouse(this)
 		end
-		
-		pParent.requestReleaseMouse(this)
 	end
 	
 	/**
@@ -2225,6 +2269,41 @@ class Widget
 		return getMouseCaptureWidget() == this
 	end
 	
+	/**
+	 * \brief Captures directional navigation if not already captured by another widget.
+	 * \version 1.29
+	 */
+	func void captureDirectional()
+		if pParent != null
+			pParent.requestCaptureDirectional(this)
+		end
+	end
+
+	/**
+	 * \brief Release directional navigation capture.
+	 * \version 1.29
+	 */
+	func void releaseDirectional()
+		if pParent != null
+			pParent.requestReleaseDirectional(this)
+		end
+	end
+
+	/**
+	 * \brief Widget having captured directional navigation.
+	 * \version 1.29
+	 */
+	func Widget getDirectionalCaptureWidget()
+		return pParent != null if pParent.getDirectionalCaptureWidget() else null
+	end
+
+	/**
+	 * \brief Widget is capturing directional navigation.
+	 * \version 1.29
+	 */
+	func bool isCapturingDirectional()
+		return getDirectionalCaptureWidget() == this
+	end
 	
 	/**
 	 * Retrieves the window or null if this widget is not part of a
@@ -2559,11 +2638,7 @@ class Widget
 	 */
 	func void popdownVirtualKeyboardDirectional()
 		popdownVirtualKeyboard()
-		
-		var Desktop desktop = getDesktop()
-		if desktop != null
-			desktop.warpMouseFocusLocation(this)
-		end
+		desktopWarpMouseFocusHere()
 	end
 	
 	

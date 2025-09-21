@@ -51,7 +51,7 @@ class WindowPopup extends Window
 	 * 
 	 * Window is initially hidden.
 	 */
-	public func new()
+	func new()
 		runWhileBlockingLayout(block
 			pCloseOnPopDown = true
 			setVisible(false)
@@ -69,7 +69,7 @@ class WindowPopup extends Window
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		pHoverWidget = null
 		super.dispose()
 	end
@@ -77,12 +77,12 @@ class WindowPopup extends Window
 	
 	
 	/** \brief Close on popdown. */
-	public func bool getCloseOnPopDown()
+	func bool getCloseOnPopDown()
 		return pCloseOnPopDown
 	end
 	
 	/** \brief Set close on popdown. */
-	public func void setCloseOnPopDown(bool closeOnPopDown)
+	func void setCloseOnPopDown(bool closeOnPopDown)
 		pCloseOnPopDown = closeOnPopDown
 	end
 	
@@ -92,7 +92,7 @@ class WindowPopup extends Window
 	 * \brief Pop up window.
 	 * \details Shows the window at the top and grabs mouse and keyboard input.
 	 */
-	public func void popup(Point position)
+	func void popup(Point position)
 		popupInside(position, RectArea.new(Point.new(), getDesktop().getContainerSize() - Point.new(1, 1)))
 	end
 	
@@ -100,7 +100,7 @@ class WindowPopup extends Window
 	 * \brief Pop up window at desktop coordinates.
 	 * \details Shows the window at the top and grabs mouse and keyboard input.
 	 */
-	public func void popup(int x, int y)
+	func void popup(int x, int y)
 		popup(Point.new(x, y))
 	end
 	
@@ -108,12 +108,13 @@ class WindowPopup extends Window
 	 * \brief Pop up window not clipping outside area.
 	 * \details Shows the window at the top and grabs mouse and keyboard input.
 	 */
-	public func void popupInside(Point position, RectArea boundary)
+	func void popupInside(Point position, RectArea boundary)
 		fitToContent()
 		setPosition(boundary.grow(-getSize()).clamp(position))
 		setVisible(true)
 		moveToTop()
 		captureMouse()
+		captureDirectional()
 		grabFocus()
 	end
 	
@@ -122,8 +123,9 @@ class WindowPopup extends Window
 	 * \details Release mouse and hide window. If close on popdown is \em true
 	 *          close() is called too.
 	 */
-	public func void popdown()
+	func void popdown()
 		setVisible(false)
+		releaseDirectional()
 		releaseMouse()
 		
 		if pCloseOnPopDown
@@ -134,7 +136,7 @@ class WindowPopup extends Window
 	
 	
 	/** \brief Widget the mouse hovers above or \em null. */
-	public func Widget getHoverWidget()
+	func Widget getHoverWidget()
 		if pHoverWidget != null
 			if pHoverWidget.getParent() == null or not pHoverWidget.getVisible()
 				pHoverWidget = null
@@ -183,7 +185,7 @@ class WindowPopup extends Window
 	 * 
 	 * Call if the hover widget is removed from the desktop.
 	 */
-	public func void updateHoverWidget()
+	func void updateHoverWidget()
 		var Desktop desktop = getDesktop()
 		if desktop != null
 			var Widget widget = getWidgetAt(desktop.getMouseLocation() - getScreenPosition())
@@ -202,9 +204,32 @@ class WindowPopup extends Window
 	end
 	
 	
+	func void focusDirectional(int direction)
+		var Widget widget = getHoverWidget()
+		while widget != null and not widget.getCanFocusDirectional()
+			widget = widget.getParent()
+		end
+		
+		if widget != null and widget.hasParent(this)
+			widget.focusDirectional(direction)
+			return
+		end
+		
+		var Point origin = getLocalMouseLocation()
+		if not isPointInside(origin)
+			origin = getSize() / 2
+		end
+		
+		widget = getWidgetAt(origin)
+		if widget != null
+			widget.desktopWarpMouseFocusHere()
+			widget.focusDirectional(direction)
+		end
+	end
+	
 	
 	/** \brief Send event to the widget. */
-	public func void sendEvent(Event event)
+	func void sendEvent(Event event)
 		// event from child widget bubbling up
 		if event.getSource() != this
 			return
@@ -293,7 +318,7 @@ class WindowPopup extends Window
 	 * the first focusable widget. This avoids popup windows stealing focus from
 	 * the underlaying window.
 	 */
-	public func void grabFocus()
+	func void grabFocus()
 	end
 	
 	/**
@@ -305,9 +330,10 @@ class WindowPopup extends Window
 	 * to capture the mouse himself using an MouseListener on the child
 	 * widget releasing the mouse.
 	 */
-	public func bool requestReleaseMouse(Widget widget)
+	func bool requestReleaseMouse(Widget widget)
 		if super.requestReleaseMouse(widget)
 			captureMouse()
+			captureDirectional()
 			return true
 			
 		else
@@ -316,7 +342,7 @@ class WindowPopup extends Window
 	end
 	
 	/** \brief Release mouse capture. */
-	public func void releaseMouse()
+	func void releaseMouse()
 		clearHoverWidget()
 		super.releaseMouse()
 	end
@@ -329,7 +355,15 @@ class WindowPopup extends Window
 	 * Default implementation returns true if the mouse position is outside the window.
 	 * Subclass can overwrite this method to extend this behavior.
 	 */
-	public func bool requiresPopdown(MouseEvent event)
+	func bool requiresPopdown(MouseEvent event)
 		return not isPointInside(event.getPosition())
+	end
+	
+	
+	func void onGamepadButtonPressed(GamepadEvent event)
+		if event.getCode() == 1
+			popdownVirtualKeyboardDirectional()
+		end
+		super.onGamepadButtonPressed(event)
 	end
 end

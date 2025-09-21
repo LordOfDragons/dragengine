@@ -30,79 +30,68 @@ namespace Dragengine.Gui
  * Immutable object storing the size of borders around a rectangular area.
  */
 fixed class BorderSize
-	/** Size in pixels of the left border. */
-	private var int pLeft
-	/** Size in pixels of the top border. */
-	private var int pTop
-	/** Size in pixels of the right border. */
-	private var int pRight
-	/** Size in pixels of the bottom border. */
-	private var int pBottom
+	var int pLeft, pTop, pRight, pBottom
 	
 	
 	
 	/** Creates a border size object with 0 pixel borders. */
-	public func new()
-		this.pLeft = 0
-		this.pTop = 0
-		this.pRight = 0
-		this.pBottom = 0
+	func new()
 	end
 	
-	/** \brief Create border size object with identical size all around. */
-	public func new( int size )
-		this.pLeft = size
-		this.pTop = size
-		this.pRight = size
-		this.pBottom = size
+	/**\brief Create border size object with identical size all around. */
+	func new(int size)
+		pLeft = size
+		pTop = size
+		pRight = size
+		pBottom = size
 	end
 	
 	/** Creates a border size object with the given border sizes in pixels. */
-	public func new( int left, int top, int right, int bottom )
-		this.pLeft = left
-		this.pTop = top
-		this.pRight = right
-		this.pBottom = bottom
+	func new(int left, int top, int right, int bottom)
+		pLeft = left
+		pTop = top
+		pRight = right
+		pBottom = bottom
 	end
 	
 	/** Creates a copy of a border size object. */
-	public func new( BorderSize borderSize )
-		this.pLeft = borderSize.pLeft
-		this.pTop = borderSize.pTop
-		this.pRight = borderSize.pRight
-		this.pBottom = borderSize.pBottom
+	func new(BorderSize borderSize)
+		pLeft = borderSize.pLeft
+		pTop = borderSize.pTop
+		pRight = borderSize.pRight
+		pBottom = borderSize.pBottom
 	end
 	
 	
 	
 	/** Retrieves the size in pixels of the left border. */
-	public func int getLeft()
-		return this.pLeft
+	func int getLeft()
+		return pLeft
 	end
 	
 	/** Retrieves the size in pixels of the top border. */
-	public func int getTop()
-		return this.pTop
+	func int getTop()
+		return pTop
 	end
 	
 	/** Retrieves the size in pixels of the right border. */
-	public func int getRight()
-		return this.pRight
+	func int getRight()
+		return pRight
 	end
 	
 	/** Retrieves the size in pixels of the bottom border. */
-	public func int getBottom()
-		return this.pBottom
+	func int getBottom()
+		return pBottom
 	end
 	
 	/** Retrieves the total width of the left and right border added together. */
-	public func int getWidth()
-		return this.pLeft + this.pRight
+	func int getWidth()
+		return pLeft + pRight
 	end
 	
 	/** Retrieves the total height of the top and bottom border added together. */
-	public func int getHeight()
-		return this.pTop + this.pBottom
+	func int getHeight()
+		return pTop + pBottom
 	end
 	
 	/**
@@ -110,39 +99,71 @@ fixed class BorderSize
 	 * is the sum of the left and right border. The y coordinate is the sum of the
 	 * top and bottom borders.
 	 */
-	public func Point getSize()
-		return Point.new( this.pLeft + this.pRight, this.pTop + this.pBottom )
+	func Point getSize()
+		return Point.new(pLeft + pRight, pTop + pBottom)
+	end
+	
+	/**
+	 * \brief Left and top border as Point.
+	 * \version 1.29
+	 */
+	func Point getLeftTop()
+		return Point.new(pLeft, pTop)
+	end
+	
+	/**
+	 * \brief Right and top border as Point.
+	 * \version 1.29
+	 */
+	func Point getRightTop()
+		return Point.new(pRight, pTop)
+	end
+	
+	/**
+	 * \brief Left and bottom border as Point.
+	 * \version 1.29
+	 */
+	func Point getLeftBottom()
+		return Point.new(pLeft, pBottom)
+	end
+	
+	/**
+	 * \brief Right and bottom border as Point.
+	 * \version 1.29
+	 */
+	func Point getRightBottom()
+		return Point.new(pRight, pBottom)
 	end
 	
 	/** Returns the border size enlarged by another border size object. */
-	public func BorderSize enlarge( int left, int top, int right, int bottom )
-		return new( this.pLeft + left, this.pTop + top, this.pRight + right, this.pBottom + bottom )
+	func BorderSize enlarge(int left, int top, int right, int bottom)
+		return new(pLeft + left, pTop + top, pRight + right, pBottom + bottom)
 	end
 	
 	/** Returns the border size enlarged by another border size object. */
-	public func BorderSize enlarge( BorderSize borderSize )
-		return new( this.pLeft + borderSize.pLeft, this.pTop + borderSize.pTop, \
-			this.pRight + borderSize.pRight, this.pBottom + borderSize.pBottom )
+	func BorderSize enlarge(BorderSize borderSize)
+		return new(pLeft + borderSize.pLeft, pTop + borderSize.pTop,\
+			pRight + borderSize.pRight, pBottom + borderSize.pBottom)
 	end
 	
-	/** \brief Border size shrunk by another border size object. */
-	public func BorderSize shrink( int left, int top, int right, int bottom )
-		return new( this.pLeft - left, this.pTop - top, this.pRight - right, this.pBottom - bottom )
+	/**\brief Border size shrunk by another border size object. */
+	func BorderSize shrink(int left, int top, int right, int bottom)
+		return new(pLeft - left, pTop - top, pRight - right, pBottom - bottom)
 	end
 	
-	/** \brief Border size shrunk by another border size object. */
-	public func BorderSize shrink( BorderSize borderSize )
-		return new( this.pLeft - borderSize.pLeft, this.pTop - borderSize.pTop, \
-			this.pRight - borderSize.pRight, this.pBottom - borderSize.pBottom )
+	/**\brief Border size shrunk by another border size object. */
+	func BorderSize shrink(BorderSize borderSize)
+		return new(pLeft - borderSize.pLeft, pTop - borderSize.pTop,\
+			pRight - borderSize.pRight, pBottom - borderSize.pBottom)
 	end
 	
 	/** Test if two border size objects are equal. */
-	public func bool equals( Object other )
+	func bool equals(Object other)
 		if other castable BorderSize
 			var BorderSize borderSize = other cast BorderSize
 			
-			return this.pLeft == borderSize.pLeft and this.pTop == borderSize.pTop and \
-				this.pRight == borderSize.pRight and this.pBottom == borderSize.pBottom
+			return pLeft == borderSize.pLeft and pTop == borderSize.pTop and\
+				pRight == borderSize.pRight and pBottom == borderSize.pBottom
 		end
 		
 		return false
@@ -150,20 +171,20 @@ fixed class BorderSize
 	
 	
 	
-	/** \brief Border size enlarged by another border size object. */
-	public func BorderSize +( BorderSize borderSize )
-		return this.enlarge( borderSize )
+	/**\brief Border size enlarged by another border size object. */
+	func BorderSize +(BorderSize borderSize)
+		return enlarge(borderSize)
 	end
 	
-	/** \brief Border size shrunk by another border size object. */
-	public func BorderSize -( BorderSize borderSize )
-		return this.shrink( borderSize )
+	/**\brief Border size shrunk by another border size object. */
+	func BorderSize -(BorderSize borderSize)
+		return shrink(borderSize)
 	end
 	
 	
 	
 	/** String representation. */
-	public func String toString()
-		return "(" + this.pLeft + "," + this.pTop + "," + this.pRight + "," + this.pBottom + ")"
+	func String toString()
+		return "(" + pLeft + "," + pTop + "," + pRight + "," + pBottom + ")"
 	end
 end

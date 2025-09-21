@@ -27,6 +27,7 @@ namespace Dragengine.Gui
 
 pin Dragengine.Gui.Events
 pin Dragengine.Gui.Layouts
+pin Dragengine.Scenery
 
 
 /**
@@ -73,20 +74,18 @@ class ScrollPanel extends Panel
 	
 	
 	
-	private var ScrollBar pHorzScroll
-	private var ScrollBar pVertScroll
-	private var Policy pHorzScrollPolicy
-	private var Policy pVertScrollPolicy
-	private var Widget pContent
+	var ScrollBar pHorzScroll, pVertScroll
+	var Policy pHorzScrollPolicy, pVertScrollPolicy
+	var Widget pContent
 	
 	
 	
 	/** \brief Create scroll panel. */
-	public func new() this(Policy.needed, Policy.needed)
+	func new() this(Policy.needed, Policy.needed)
 	end
 	
 	/** \brief Create scroll panel with scrollbar policies. */
-	public func new(Policy horizontalPolicy, Policy verticalPolicy)
+	func new(Policy horizontalPolicy, Policy verticalPolicy)
 		runWhileBlockingLayout(block
 			setLayout(ScrollPanelLayout.new())
 			
@@ -109,18 +108,18 @@ class ScrollPanel extends Panel
 	end
 	
 	/** \brief Create scroll panel with content widget. */
-	public func new(Widget content) this(Policy.needed, Policy.needed)
+	func new(Widget content) this(Policy.needed, Policy.needed)
 		setContent(content)
 	end
 	
 	/** \brief Create scroll panel with content widget and scroll policies. */
-	public func new(Widget content, Policy horizontalPolicy, Policy verticalPolicy) \
+	func new(Widget content, Policy horizontalPolicy, Policy verticalPolicy) \
 	this(horizontalPolicy, verticalPolicy)
 		setContent(content)
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		pContent = null
 		pVertScroll = null
 		pHorzScroll = null
@@ -131,12 +130,12 @@ class ScrollPanel extends Panel
 	
 	
 	/** \brief Horizontal scrollbar policy. */
-	public func Policy getHorizontalScrollPolicy()
+	func Policy getHorizontalScrollPolicy()
 		return pHorzScrollPolicy
 	end
 	
 	/** \brief Set horizontal scrollbar policy. */
-	public func void setHorizontalScrollPolicy(Policy policy)
+	func void setHorizontalScrollPolicy(Policy policy)
 		if policy == pHorzScrollPolicy
 			return
 		end
@@ -146,12 +145,12 @@ class ScrollPanel extends Panel
 	end
 	
 	/** \brief Vertical scrollbar policy. */
-	public func Policy getVerticalScrollPolicy()
+	func Policy getVerticalScrollPolicy()
 		return pVertScrollPolicy
 	end
 	
 	/** \brief Set vertical scrollbar policy. */
-	public func void setVerticalScrollPolicy(Policy policy)
+	func void setVerticalScrollPolicy(Policy policy)
 		if policy == pVertScrollPolicy
 			return
 		end
@@ -163,12 +162,12 @@ class ScrollPanel extends Panel
 	
 	
 	/** \brief Content widget or \em null if not existing. */
-	public func Widget getContent()
+	func Widget getContent()
 		return pContent
 	end
 	
 	/** \brief Set content widget or \em null to remove it. */
-	public func void setContent(Widget content)
+	func void setContent(Widget content)
 		if content == pContent
 			return
 		end
@@ -209,19 +208,40 @@ class ScrollPanel extends Panel
 	
 	
 	/** \brief Horizontal scrollbar. */
-	public func ScrollBar getHorizontalScrollBar()
+	func ScrollBar getHorizontalScrollBar()
 		return pHorzScroll
 	end
 	
 	/** \brief Vertical scrollbar. */
-	public func ScrollBar getVerticalScrollBar()
+	func ScrollBar getVerticalScrollBar()
 		return pVertScroll
+	end
+	
+	
+	func void ensureVisible(RectArea boundary)
+		if pContent == null
+			return
+		end
+		
+		var Point position = pContent.getPosition()
+		
+		var BorderSize padding = getPadding()
+		var Point move = (boundary.getPosition() - padding.getLeftTop()).smallest(Point.new())\
+			+ (boundary.getBottomRight() - (getSize() - padding.getRightBottom())).largest(Point.new())
+		
+		var RangeModel modelHorz = pHorzScroll.getModel()
+		var RangeModel modelVert = pVertScroll.getModel()
+		
+		modelHorz.setValue(modelHorz.getValue() + move.getX())
+		modelVert.setValue(modelVert.getValue() + move.getY())
+		
+		super.ensureVisible(boundary.move(pContent.getPosition() - position))
 	end
 	
 	
 	
 	/** \brief Lay out widgets using the set layout. */
-	public func void doLayout()
+	func void doLayout()
 		if getBlockLayout()
 			return
 		end
@@ -247,7 +267,7 @@ class ScrollPanel extends Panel
 	
 	
 	/** \brief Mouse wheel has moved. */
-	public func void onMouseWheel(MouseEvent event)
+	func void onMouseWheel(MouseEvent event)
 		var int y = event.getPosition().getY()
 		if y == 0
 			super.onMouseWheel(event)
