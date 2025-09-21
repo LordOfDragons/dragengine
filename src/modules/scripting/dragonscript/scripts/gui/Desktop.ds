@@ -789,7 +789,7 @@ class Desktop extends Container
 		while widget != null and not widget.getCanFocusDirectional()
 			widget = widget.getParent()
 		end
-		if widget != null and widget.hasParent(window)
+		if widget != null and (widget == window or widget.hasParent(window))
 			// BaseGameApp.getApp().getConsole().addMessage("USE HOVER: " + Array.newWith(widget, widget.getDesktopBoundary()))
 			widget.focusDirectional(direction)
 			return

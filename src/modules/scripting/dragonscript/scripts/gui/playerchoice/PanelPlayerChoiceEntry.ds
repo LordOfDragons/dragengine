@@ -135,13 +135,16 @@ class PanelPlayerChoiceEntry extends Panel
 	end
 	
 	
-	
 	/**
 	 * \brief Fire button press action.
 	 * \version 1.20
 	 */
 	func void fireAction(int modifiers)
 		pAction.onAction(ActionEvent.new(this, ActionEvent.idAction, 0))
+	end
+	
+	func Point getFocusMouseLocation()
+		return Point.new(DEMath.max(getWidth() * 3 / 4, 0), DEMath.max(getHeight() - 5, 0))
 	end
 	
 	

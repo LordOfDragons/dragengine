@@ -73,7 +73,6 @@ class ClosestDirectionFocusFinder
 		pOriginBox = RectArea.new(pDirX * position, pDirY * position, pDirX * p2, pDirY * p2).orientate()
 		
 		pIgnoreWidgets = Array.new()
-		reset()
 	end
 	
 	
