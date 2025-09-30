@@ -279,6 +279,17 @@
 	</xs:complexType>
 	
 	
+	<xs:simpleType name='import'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Import styles and nodes from another styled text definition using pelative or absolute path.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
+	
+	
 	<xs:complexType name='styledText'>
 		<xs:annotation>
 			<xs:documentation><![CDATA[
@@ -306,6 +317,7 @@
 			<xs:element name='text' type='text'/>
 			<xs:element name='image' type='image'/>
 			<xs:element name='video' type='video'/>
+			<xs:element name='import' type='import'/>
 		</xs:choice>
 	</xs:complexType>
 	
