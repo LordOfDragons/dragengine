@@ -193,7 +193,7 @@ class StyledTextDefinition
 	 * Only appends styles and nodes. Appended content is shared.
 	 */
 	func void import(StyledTextDefinition definition)
-		definition.pStyles.setAll(definition.pStyles)
+		pStyles.setAll(definition.pStyles)
 		pNodes.addAll(definition.pNodes)
 	end
 	
