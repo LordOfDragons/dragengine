@@ -202,9 +202,9 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 		var STDStyle.Align alignment = nodeStyle.getAlignment()
 		var int lineSpacing = nodeStyle.getLineSpacing()
 		
-		if spanCount == 0
+		/*if spanCount == 0
 			return
-		end
+		end*/
 		
 		if this.pPageInProgress == null
 			this.beginNewPage()
@@ -559,6 +559,16 @@ class StyledTextConverter extends DefaultSTDNodeVisitor
 			end )
 			
 			this.pCurPIPPosY += textLineHeight + lineSpacing
+			
+		elif spanCount == 0
+			var int lineHeight = nodeStyle.getFont().getSize()
+			
+			if newPageCheck and pCurPIPPosY + lineHeight > pMaxPIPPosY
+				beginNewPage()
+				
+			else
+				pCurPIPPosY += lineHeight + lineSpacing
+			end
 		end
 		
 		// add the bottom margin
