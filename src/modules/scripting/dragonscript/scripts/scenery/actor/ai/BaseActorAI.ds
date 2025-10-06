@@ -79,7 +79,7 @@ class BaseActorAI implements Persistable
 	
 	
 	
-	/** \brief Actor owning the action. */
+	/** \brief Actor owning the action or null. */
 	func BehaviorElement getActor()
 		return actor
 	end
@@ -264,11 +264,17 @@ class BaseActorAI implements Persistable
 	/**
 	 * \brief Logging prefix.
 	 * 
-	 * Returns string in the form "<actor-class>/<ai-class>".
+	 * Returns string in the form "<actor-class>/<ai-class>" or "null/<ai-class>"
+	 * if deactivated or disposed.
 	 */
 	func String loggingPrefix()
-		return actor.getClass().getClassname().splitExact('.').getAt(-1).toString() \
-			+ "/" + className().splitExact('.').getAt(-1)
+		if actor != null
+			return actor.getClass().getClassname().splitExact('.').getAt(-1).toString() \
+				+ "/" + className().splitExact('.').getAt(-1)
+			
+		else
+			return "<null>/" + className().splitExact('.').getAt(-1)
+		end
 	end
 	
 	
