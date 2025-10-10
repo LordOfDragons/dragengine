@@ -407,7 +407,8 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * Parses command using CommandLineParser into Array of String and calls evaluateCondition()
 	 */
 	func bool conditionGameCommand(String command)
-		return evaluateCondition(pCommandParser.parseCommand(command))
+		return evaluateCondition(pCommandParser.parseCommand(\
+			pCommandTagResolver.resolveTags(command, this)))
 	end
 	
 	/**

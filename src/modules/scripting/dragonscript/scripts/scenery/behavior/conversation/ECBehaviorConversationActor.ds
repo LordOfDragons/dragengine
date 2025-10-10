@@ -1082,7 +1082,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		/** \brief Evaluate condition send by the conversation script. */
 		func bool evaluateCondition(String command)
-			return evaluateCondition(pCommandParser.parseCommand(command))
+			return evaluateCondition(pCommandParser.parseCommand(\
+				pCommandTagResolver.resolveTags(command, this)))
 		end
 		
 		func bool evaluateCondition(Array arguments)
