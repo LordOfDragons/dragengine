@@ -165,7 +165,7 @@ class ComboBox extends Container implements ListModelListener
 		end
 		
 		func void popdown()
-			var bool directional = isCapturingDirectional()
+			var bool directional = isCapturingDirectional() and hasReceivedDirectional()
 			super.popdown()
 			
 			pComboBox.rollUp()

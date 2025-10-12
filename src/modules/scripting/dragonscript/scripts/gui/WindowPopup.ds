@@ -41,8 +41,8 @@ pin Dragengine.Gui.Decorations
  * Supports designing using designer selector "WindowPopup".
  */
 class WindowPopup extends Window
-	private var bool pCloseOnPopDown
-	private var Widget pHoverWidget
+	var bool pCloseOnPopDown, pReceivedDirectional
+	var Widget pHoverWidget
 	
 	
 	
@@ -204,6 +204,11 @@ class WindowPopup extends Window
 	end
 	
 	
+	/** \brief Popup has received directional input at least once. */
+	func bool hasReceivedDirectional()
+		return pReceivedDirectional
+	end
+	
 	func void focusDirectional(int direction)
 		var Widget widget = getHoverWidget()
 		while widget != null and not widget.getCanFocusDirectional()
@@ -225,6 +230,8 @@ class WindowPopup extends Window
 			widget.desktopWarpMouseFocusHere()
 			widget.focusDirectional(direction)
 		end
+		
+		pReceivedDirectional = true
 	end
 	
 	

@@ -52,14 +52,10 @@ pin Dragengine.Scenery
  * without the need to alter the instance itself.
  */
 class Desktop extends Container
-	var Widget pFocusWidget
-	var Widget pFocusInProgress
+	var Widget pFocusWidget, pFocusInProgress, pHoverWidget, pCaptureWidget, pDirectionalCaptureWidget
 	
-	var Widget pHoverWidget
 	var Window pTrackDecoration
 	var Decoration.Area pTrackDecorationAreaHover
-	
-	var Widget pCaptureWidget, pDirectionalCaptureWidget
 	
 	var Point pMouseLocation
 	var MousePointerFactory pActiveMousePointer
