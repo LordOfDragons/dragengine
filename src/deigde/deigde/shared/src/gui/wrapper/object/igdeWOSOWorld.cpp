@@ -133,8 +133,8 @@ hasTCTransform(false){
 // ChildObject
 ////////////////
 
-igdeWOSOWorld::ChildObject::ChildObject(igdeWObject &wrapper) :
-pWrapper(wrapper){
+igdeWOSOWorld::ChildObject::ChildObject(igdeEnvironment &environment) :
+pWrapper(igdeWObject::Ref::New(new igdeWObject(environment))){
 }
 
 int igdeWOSOWorld::ChildObject::GetTextureCount() const{
@@ -169,13 +169,14 @@ void igdeWOSOWorld::ChildObject::AddTexture(const ChildObjectTexture::Ref &textu
 
 igdeWOSOWorld::LoadXmlWorld::LoadXmlWorld(igdeWOSOWorld &owner) :
 igdeBaseXML(owner.GetEnvironment().GetLogger(), LOGSOURCE),
-pOwner(owner){
+pOwner(owner),
+pEnvironment(owner.GetEnvironment()){
 }
 
 void igdeWOSOWorld::LoadXmlWorld::LoadWorld(const decString &path){
 	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New(new decXmlDocument));
 	
-	decXmlParser(GetLogger()).ParseXml(decBaseFileReader::Ref::New(pOwner.GetEnvironment().
+	decXmlParser(GetLogger()).ParseXml(decBaseFileReader::Ref::New(pEnvironment.
 		GetFileSystemGame()->OpenFileForReading(decPath::CreatePathUnix(path))), xmlDoc);
 	
 	xmlDoc->StripComments();
@@ -199,7 +200,7 @@ void igdeWOSOWorld::LoadXmlWorld::pReadWorld(const decXmlElementTag &root){
 		
 		const decString &tagName = tag->GetName();
 		if(tagName == "object"){
-			const ChildObject::Ref object(ChildObject::Ref::New(new ChildObject(pOwner.GetWrapper())));
+			const ChildObject::Ref object(ChildObject::Ref::New(new ChildObject(pEnvironment)));
 			pReadObject(*tag, object);
 			pOwner.AddChildObject(object);
 		}
@@ -341,7 +342,7 @@ void igdeWOSOWorld::ChildAsyncFinished::LoadFinished(igdeWObject &wrapper, bool 
 	int i;
 	for(i=0; i<count; i++){
 		ChildObject &child = pOwner.GetChildObjectAt(i);
-		if(&child.GetWrapper() == &wrapper){
+		if(child.GetWrapper() == &wrapper){
 			pOwner.ChildObjectFinishedAsyncLoad(child);
 			return;
 		}
@@ -353,7 +354,7 @@ void igdeWOSOWorld::ChildAsyncFinished::ExtendsChanged(igdeWObject &wrapper){
 	int i;
 	for(i=0; i<count; i++){
 		ChildObject &child = pOwner.GetChildObjectAt(i);
-		if(&child.GetWrapper() == &wrapper){
+		if(child.GetWrapper() == &wrapper){
 			pOwner.ChildObjectExtendsChanged(child);
 			return;
 		}
@@ -403,7 +404,7 @@ void igdeWOSOWorld::UpdateVisibility(){
 	const int count = pChildObjects.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		((ChildObject*)pChildObjects.GetAt(i))->GetWrapper().SetVisible(visible);
+		((ChildObject*)pChildObjects.GetAt(i))->GetWrapper()->SetVisible(visible);
 	}
 }
 
@@ -474,7 +475,7 @@ void igdeWOSOWorld::ColliderUserPointerChanged(){
 	
 	for(i=0; i<count; i++){
 		ChildObject &object = *((ChildObject*)pChildObjects.GetAt(i));
-		object.GetWrapper().SetColliderUserPointer(userPointer);
+		object.GetWrapper()->SetColliderUserPointer(userPointer);
 	}
 }
 
@@ -559,7 +560,7 @@ bool igdeWOSOWorld::IsContentVisible(){
 	const int count = pChildObjects.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		if(((ChildObject*)pChildObjects.GetAt(i))->GetWrapper().IsAnyContentVisible()){
+		if(((ChildObject*)pChildObjects.GetAt(i))->GetWrapper()->IsAnyContentVisible()){
 			return true;
 		}
 	}

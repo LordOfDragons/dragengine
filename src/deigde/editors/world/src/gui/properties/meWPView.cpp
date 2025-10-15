@@ -399,7 +399,7 @@ public:
 		const decVector &vector = editVector->GetVector();
 		if(world && !world->GetLimitBoxMaxExtend().IsEqualTo(vector)){
 			world->GetUndoSystem()->Add(igdeUndo::Ref::New(
-				new meUViewSetLimitBoxExtends(world, world->GetLimitBoxMaxExtend(), vector)));
+				new meUViewSetLimitBoxExtends(world, world->GetLimitBoxMinExtend(), vector)));
 		}
 	}
 };

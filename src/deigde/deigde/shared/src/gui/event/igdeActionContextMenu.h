@@ -43,6 +43,11 @@ class igdeMenuCascade;
  * context menu is supposed to be shown this action becomes a no-op.
  */
 class DE_DLL_EXPORT igdeActionContextMenu : public igdeAction{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeActionContextMenu> Ref;
+	
+	
 private:
 	igdeWidgetReference pWidget;
 	
