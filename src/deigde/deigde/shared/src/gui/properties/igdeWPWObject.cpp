@@ -96,21 +96,31 @@ class cTextClass : public igdeTextFieldListener{
 	igdeWPWObject &pPanel;
 	
 public:
-	cTextClass( igdeWPWObject &panel ) : pPanel( panel ){ }
+	cTextClass(igdeWPWObject &panel) : pPanel(panel){}
 	
-	virtual void OnTextChanged( igdeTextField *textField ){
-		if( ! pPanel.GetObject() ){
+	void OnTextChanged(igdeTextField *textField) override{
+		if(!pPanel.GetObject()){
 			return;
 		}
 		
 		igdeWObject &object = *pPanel.GetObject();
 		igdeGDClass * const oldGDClass = object.GetGDClass();
-		
-		object.SetGDClassName( textField->GetText() );
-		
-		if( object.GetGDClass() != oldGDClass ){
-			pPanel.OnAction();
+		igdeGDClass * const newGDClass = pPanel.GetEnvironment().GetGameProject()->
+			GetGameDefinition()->GetClassManager()->GetNamed(textField->GetText());
+		if(newGDClass == oldGDClass){
+			return;
 		}
+		
+		if(pPanel.GetUndoSystem()){
+			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
+				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			undo->SetGDClassNew(newGDClass);
+			pPanel.GetUndoSystem()->Add(undo);
+			
+		}else{
+			object.SetGDClass(newGDClass);
+		}
+		pPanel.OnAction();
 	}
 };
 
@@ -118,83 +128,202 @@ class cActionSelectClass : public cBaseAction{
 	igdeTextField &pTextField;
 	
 public:
-	cActionSelectClass( igdeWPWObject &panel, igdeTextField &textField ) :
-	cBaseAction( panel, "...", "Brings up a dialog to select the object class." ),
-	pTextField( textField ){ }
+	cActionSelectClass(igdeWPWObject &panel, igdeTextField &textField) :
+	cBaseAction(panel, "...", "Brings up a dialog to select the object class."),
+	pTextField(textField){}
 	
-	virtual void OnAction( igdeWObject &object ){
+	void OnAction(igdeWObject &object) override{
 		igdeGDClass *gdClass = object.GetGDClass();
-		if( igdeDialogBrowserObjectClass::SelectObjectClass( &pPanel, gdClass ) ){
-			object.SetGDClassName( gdClass->GetName() );
-			pTextField.SetText( gdClass->GetName() );
-			pPanel.OnAction();
+		if(!igdeDialogBrowserObjectClass::SelectObjectClass(&pPanel, gdClass)){
+			return;
 		}
+		
+		pTextField.SetText(gdClass->GetName());
+		
+		if(gdClass == object.GetGDClass()){
+			return;
+		}
+		
+		if(pPanel.GetUndoSystem()){
+			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
+				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			undo->SetGDClassNew(gdClass);
+			pPanel.GetUndoSystem()->Add(undo);
+			
+		}else{
+			object.SetGDClass(gdClass);
+		}
+		pPanel.OnAction();
 	}
 };
 
 
 class cEditPosition : public cBaseEditVector{
 public:
-	cEditPosition( igdeWPWObject &panel ) : cBaseEditVector( panel ){ }
+	cEditPosition(igdeWPWObject &panel) : cBaseEditVector(panel){}
 	
-	virtual void OnVectorChanged( igdeWObject &object, const decVector &vector ){
-		if( ! object.GetPosition().IsEqualTo( vector ) ){
-			object.SetPosition( vector );
-			pPanel.OnAction();
+	void OnVectorChanged(igdeWObject &object, const decVector &vector) override{
+		if(object.GetPosition().IsEqualTo(vector)){
+			return;
 		}
+		
+		if(pPanel.GetUndoSystem()){
+			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
+				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			undo->SetPositionNew(vector);
+			pPanel.GetUndoSystem()->Add(undo);
+			
+		}else{
+			object.SetPosition(vector);
+		}
+		pPanel.OnAction();
 	}
 };
 
 class cEditOrientation : public cBaseEditVector{
 public:
-	cEditOrientation( igdeWPWObject &panel ) : cBaseEditVector( panel ){ }
+	cEditOrientation(igdeWPWObject &panel) : cBaseEditVector(panel){}
 	
-	virtual void OnVectorChanged( igdeWObject &object, const decVector &vector ){
-		const decQuaternion orientation( decQuaternion::CreateFromEuler( vector * DEG2RAD ) );
-		if( ! object.GetOrientation().IsEqualTo( orientation ) ){
-			object.SetOrientation( orientation );
-			pPanel.OnAction();
+	void OnVectorChanged(igdeWObject &object, const decVector &vector) override{
+		const decQuaternion orientation(decQuaternion::CreateFromEuler(vector * DEG2RAD));
+		if(object.GetOrientation().IsEqualTo(orientation)){
+			return;
 		}
+		
+		if(pPanel.GetUndoSystem()){
+			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
+				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			undo->SetOrientationNew(orientation);
+			pPanel.GetUndoSystem()->Add(undo);
+			
+		}else{
+			object.SetOrientation(orientation);
+		}
+		pPanel.OnAction();
 	}
 };
 
 class cEditScaling : public cBaseEditVector{
 public:
-	cEditScaling( igdeWPWObject &panel ) : cBaseEditVector( panel ){ }
+	cEditScaling(igdeWPWObject &panel) : cBaseEditVector(panel){}
 	
-	virtual void OnVectorChanged( igdeWObject &object, const decVector &vector ){
-		if( ! object.GetScaling().IsEqualTo( vector ) ){
-			object.SetScaling( vector );
-			pPanel.OnAction();
+	void OnVectorChanged(igdeWObject &object, const decVector &vector) override{
+		if(object.GetScaling().IsEqualTo(vector)){
+			return;
 		}
+		
+		if(pPanel.GetUndoSystem()){
+			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
+				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			undo->SetScalingNew(vector);
+			pPanel.GetUndoSystem()->Add(undo);
+			
+		}else{
+			object.SetScaling(vector);
+		}
+		pPanel.OnAction();
 	}
 };
 
 
 class cCheckVisible : public cBaseAction{
 public:
-	cCheckVisible( igdeWPWObject &panel ) :
-	cBaseAction( panel, "Visible", "Object is visible" ){ }
+	cCheckVisible(igdeWPWObject &panel) : cBaseAction(panel, "Visible", "Object is visible"){}
 	
-	virtual void OnAction( igdeWObject &object ){
-		object.SetVisible( ! object.GetVisible() );
+	void OnAction(igdeWObject &object) override{
+		if(pPanel.GetUndoSystem()){
+			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
+				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			undo->SetVisibleNew(!object.GetVisible());
+			pPanel.GetUndoSystem()->Add(undo);
+			
+		}else{
+			object.SetVisible(!object.GetVisible());
+		}
 		pPanel.OnAction();
 	}
 };
 
 class cCheckDynamicCollider : public cBaseAction{
 public:
-	cCheckDynamicCollider( igdeWPWObject &panel ) :
-	cBaseAction( panel, "Dynamic Collider", "Object is attached using a dynamic collider" ){ }
+	cCheckDynamicCollider(igdeWPWObject &panel) :
+	cBaseAction(panel, "Dynamic Collider", "Object is attached using a dynamic collider"){}
 	
-	virtual void OnAction( igdeWObject &object ){
-		object.SetDynamicCollider( ! object.GetDynamicCollider() );
+	void OnAction(igdeWObject &object) override{
+		if(pPanel.GetUndoSystem()){
+			const igdeWPWObject::UndoChanges::Ref undo = igdeWPWObject::UndoChanges::Ref::New(
+				new igdeWPWObject::UndoChanges(pPanel.GetObject()));
+			undo->SetDynamicColliderNew(!object.GetDynamicCollider());
+			pPanel.GetUndoSystem()->Add(undo);
+			
+		}else{
+			object.SetDynamicCollider(!object.GetDynamicCollider());
+		}
 		pPanel.OnAction();
 	}
 };
 
 }
 
+
+
+// Class igdeWPWObject::UndoChanges
+/////////////////////////////////////
+
+igdeWPWObject::UndoChanges::UndoChanges(igdeWObject *object) :
+pObject(object)
+{
+	DEASSERT_NOTNULL(object)
+	
+	pGDClassNew = pGDClassOld = object->GetGDClass();
+	pPositionNew = pPositionOld = object->GetPosition();
+	pOrientationNew = pOrientationOld = object->GetOrientation();
+	pScalingNew = pScalingOld = object->GetScaling();
+	pVisibleNew = pVisibleOld = object->GetVisible();
+	pDynamicColliderNew = pDynamicColliderOld = object->GetDynamicCollider();
+}
+
+void igdeWPWObject::UndoChanges::SetGDClassNew(igdeGDClass *gdClass){
+	pGDClassNew = gdClass;
+}
+
+void igdeWPWObject::UndoChanges::SetPositionNew(const decDVector &position){
+	pPositionNew = position;
+}
+
+void igdeWPWObject::UndoChanges::SetOrientationNew(const decQuaternion &orientation){
+	pOrientationNew = orientation;
+}
+
+void igdeWPWObject::UndoChanges::SetScalingNew(const decVector &scaling){
+	pScalingNew = scaling;
+}
+
+void igdeWPWObject::UndoChanges::SetVisibleNew(bool visible){
+	pVisibleNew = visible;
+}
+
+void igdeWPWObject::UndoChanges::SetDynamicColliderNew(bool dynamicCollider){
+	pDynamicColliderNew = dynamicCollider;
+}
+
+void igdeWPWObject::UndoChanges::Undo(){
+	pObject->SetGDClass(pGDClassOld);
+	pObject->SetPosition(pPositionOld);
+	pObject->SetOrientation(pOrientationOld);
+	pObject->SetScaling(pScalingOld);
+	pObject->SetVisible(pVisibleOld);
+	pObject->SetDynamicCollider(pDynamicColliderOld);
+}
+
+void igdeWPWObject::UndoChanges::Redo(){
+	pObject->SetGDClass(pGDClassNew);
+	pObject->SetPosition(pPositionNew);
+	pObject->SetOrientation(pOrientationNew);
+	pObject->SetScaling(pScalingNew);
+	pObject->SetVisible(pVisibleNew);
+	pObject->SetDynamicCollider(pDynamicColliderNew);
+}
 
 
 // Class igdeWPWObject
@@ -205,14 +334,16 @@ public:
 
 igdeWPWObject::igdeWPWObject( igdeEnvironment &environment ) :
 igdeContainerFlow( environment, igdeContainerFlow::eaY ),
-pObject( NULL )
+pObject(nullptr),
+pUndoSystem(nullptr)
 {
 	pCreateContent();
 }
 
 igdeWPWObject::igdeWPWObject( igdeEnvironment &environment, igdeAction *action ) :
 igdeContainerFlow( environment, igdeContainerFlow::eaY ),
-pObject( NULL )
+pObject(nullptr),
+pUndoSystem(nullptr)
 {
 	pCreateContent();
 	SetAction( action );
@@ -220,7 +351,7 @@ pObject( NULL )
 
 igdeWPWObject::~igdeWPWObject(){
 	DestroyNativeWidget();
-	SetAction( NULL );
+	SetAction(nullptr);
 }
 
 
@@ -234,7 +365,7 @@ void igdeWPWObject::SetObject( igdeWObject *object ){
 	}
 	
 	pObject = object;
-	UpdateObjectWrapper();
+	UpdateObject();
 }
 
 void igdeWPWObject::UpdateObject(){
@@ -247,7 +378,7 @@ void igdeWPWObject::UpdateObject(){
 		}
 		
 		pEditPosition->SetVector( pObject->GetPosition() );
-		pEditOrientation->SetVector( pObject->GetOrientation().GetEulerAngles() / DEG2RAD );
+		pEditOrientation->SetVector( pObject->GetOrientation().GetEulerAngles() * RAD2DEG );
 		pEditScaling->SetVector( pObject->GetScaling() );
 		pChkVisible->SetChecked( pObject->GetVisible() );
 		pChkDynamicCollider->SetChecked( pObject->GetDynamicCollider() );
@@ -261,7 +392,7 @@ void igdeWPWObject::UpdateObject(){
 		pChkDynamicCollider->SetChecked( false );
 	}
 	
-	const bool enabled = pObject != NULL;
+	const bool enabled = pObject;
 	pEditClass->SetEnabled( enabled );
 	pEditPosition->SetEnabled( enabled );
 	pEditOrientation->SetEnabled( enabled );
@@ -288,6 +419,11 @@ void igdeWPWObject::SetAction( igdeAction *action ){
 		OnParameterChanged( action );
 	}
 }
+
+void igdeWPWObject::SetUndoSystem(igdeUndoSystem *undoSystem){
+	pUndoSystem = undoSystem;
+}
+
 
 void igdeWPWObject::OnAction(){
 	if( pAction ){

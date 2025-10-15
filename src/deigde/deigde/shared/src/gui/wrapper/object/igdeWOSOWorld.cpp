@@ -133,8 +133,8 @@ hasTCTransform(false){
 // ChildObject
 ////////////////
 
-igdeWOSOWorld::ChildObject::ChildObject(igdeEnvironment &environment) :
-pWrapper(environment){
+igdeWOSOWorld::ChildObject::ChildObject(igdeWObject &wrapper) :
+pWrapper(wrapper){
 }
 
 int igdeWOSOWorld::ChildObject::GetTextureCount() const{
@@ -169,16 +169,14 @@ void igdeWOSOWorld::ChildObject::AddTexture(const ChildObjectTexture::Ref &textu
 
 igdeWOSOWorld::LoadXmlWorld::LoadXmlWorld(igdeWOSOWorld &owner) :
 igdeBaseXML(owner.GetEnvironment().GetLogger(), LOGSOURCE),
-pOwner(owner),
-pEnvironment(owner.GetEnvironment()){
+pOwner(owner){
 }
 
 void igdeWOSOWorld::LoadXmlWorld::LoadWorld(const decString &path){
 	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New(new decXmlDocument));
 	
-	decXmlParser(GetLogger()).ParseXml(decBaseFileReader::Ref::New(
-		pEnvironment.GetFileSystemGame()->OpenFileForReading(decPath::CreatePathUnix(path))),
-		xmlDoc);
+	decXmlParser(GetLogger()).ParseXml(decBaseFileReader::Ref::New(pOwner.GetEnvironment().
+		GetFileSystemGame()->OpenFileForReading(decPath::CreatePathUnix(path))), xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
@@ -201,7 +199,7 @@ void igdeWOSOWorld::LoadXmlWorld::pReadWorld(const decXmlElementTag &root){
 		
 		const decString &tagName = tag->GetName();
 		if(tagName == "object"){
-			const ChildObject::Ref object(ChildObject::Ref::New(new ChildObject(pEnvironment)));
+			const ChildObject::Ref object(ChildObject::Ref::New(new ChildObject(pOwner.GetWrapper())));
 			pReadObject(*tag, object);
 			pOwner.AddChildObject(object);
 		}
@@ -280,7 +278,7 @@ ChildObject &object, ChildObjectTexture &texture){
 			decColor color;
 			ReadColor(*tag, color);
 			
-			texture.dynamicSkin.TakeOver(pEnvironment.GetEngineController()->
+			texture.dynamicSkin.TakeOver(pOwner.GetEnvironment().GetEngineController()->
 				GetEngine()->GetDynamicSkinManager()->CreateDynamicSkin());
 			
 			deDSRenderableColor * const renderable = new deDSRenderableColor("tint");

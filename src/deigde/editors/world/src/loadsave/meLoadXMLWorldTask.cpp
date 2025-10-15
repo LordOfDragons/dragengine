@@ -293,10 +293,81 @@ void meLoadXMLWorldTask::pLoadWorldEditor( const decXmlElementTag &root ){
 			
 			pWorld->GetSky()->SetControllerValue( index, GetCDataFloat( *tag ) );
 			
+		}else if(tagName == "backgroundObject"){
+			pLoadWorldEditorBackgroundObject(*tag);
+			
+		}else if(tagName == "limitBox"){
+			pLoadWorldEditorLimitBox(*tag);
+			
 		}else{
 			pLSSys->GetWindowMain()->GetLogger()->LogWarnFormat( LOGSOURCE,
 				"world.worldEditor(%i:%i): Unknown Tag %s, ignoring",
 				tag->GetLineNumber(), tag->GetPositionNumber(), tagName.GetString() );
+		}
+	}
+}
+
+void meLoadXMLWorldTask::pLoadWorldEditorBackgroundObject(const decXmlElementTag &root){
+	igdeWObject &bgObject = *pWorld->GetBgObject();
+	const int count = root.GetElementCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		const decString &tagName = tag->GetName();
+		
+		if(tagName == "class"){
+			bgObject.SetGDClassName(GetCDataString(*tag));
+			
+		}else if(tagName == "position"){
+			bgObject.SetPosition(decDVector(GetAttributeDouble(*tag, "x"),
+				GetAttributeDouble(*tag, "y"), GetAttributeDouble(*tag, "z")));
+			
+		}else if(tagName == "rotation"){
+			bgObject.SetOrientation(decQuaternion::CreateFromEuler(
+				GetAttributeFloat(*tag, "x") * DEG2RAD, GetAttributeFloat(*tag, "y") * DEG2RAD,
+				GetAttributeFloat(*tag, "z") * DEG2RAD));
+			
+		}else if(tagName == "scaling"){
+			bgObject.SetScaling(decVector(GetAttributeFloat(*tag, "x"),
+				GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+			
+		}else{
+			pLSSys->GetWindowMain()->GetLogger()->LogWarnFormat(LOGSOURCE,
+				"world.worldEditor.backgroundObject(%d:%d): Unknown Tag %s, ignoring",
+				tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString());
+		}
+	}
+}
+
+void meLoadXMLWorldTask::pLoadWorldEditorLimitBox(const decXmlElementTag &root){
+	const int count = root.GetElementCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
+			continue;
+		}
+		
+		const decString &tagName = tag->GetName();
+		
+		if(tagName == "minExtend"){
+			pWorld->SetLimitBoxMinExtend(decVector(GetAttributeFloat(*tag, "x"),
+				GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+			
+		}else if(tagName == "maxExtend"){
+			pWorld->SetLimitBoxMaxExtend(decVector(GetAttributeFloat(*tag, "x"),
+				GetAttributeFloat(*tag, "y"), GetAttributeFloat(*tag, "z")));
+			
+		}else{
+			pLSSys->GetWindowMain()->GetLogger()->LogWarnFormat(LOGSOURCE,
+				"world.worldEditor.limitBox(%d:%d): Unknown Tag %s, ignoring",
+				tag->GetLineNumber(), tag->GetPositionNumber(), tag->GetName().GetString());
 		}
 	}
 }

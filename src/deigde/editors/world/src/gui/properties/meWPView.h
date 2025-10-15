@@ -26,10 +26,12 @@
 #define _MEWPVIEW_H_
 
 #include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/composed/igdeToggleTagsReference.h>
+#include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/properties/igdeWPSkyReference.h>
 #include <deigde/gui/properties/igdeWPWObjectReference.h>
@@ -80,6 +82,9 @@ private:
 	
 	igdeCheckBoxReference pChkEnableAuralization;
 	
+	igdeEditVectorReference pEditLimitBoxMinExtend, pEditLimitBoxMaxExtend;
+	igdeButtonReference pBtnLimitBoxMenu;
+	
 	bool pPreventUpdateCamera;
 	
 	
@@ -123,6 +128,9 @@ public:
 	
 	/** Update background object. */
 	void UpdateBgObject();
+	
+	/** Update limit box. */
+	void UpdateLimitBox();
 	
 	/** \brief Update active camera. */
 	void UpdateCamera();

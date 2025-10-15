@@ -96,7 +96,6 @@ pLoadSaveSystem( loadSaveSystem )
 	pDDEmitter = NULL;
 	
 	pSky = NULL;
-	pEnvObject = NULL;
 	
 	pEngEmitter = NULL;
 	pEngEmitterInstance = NULL;
@@ -137,7 +136,7 @@ pLoadSaveSystem( loadSaveSystem )
 		pSky->SetWorld( pEngWorld );
 		
 		// create the environment wrapper object
-		pEnvObject = new igdeWObject( *environment );
+		pEnvObject.TakeOver(new igdeWObject(*environment));
 		pEnvObject->SetWorld( pEngWorld );
 		pEnvObject->SetPosition( decDVector( 0.0, 0.0, 0.0 ) );
 		
@@ -780,9 +779,7 @@ void peeEmitter::pCleanUp(){
 	if( pSky ){
 		delete pSky;
 	}
-	if( pEnvObject ){
-		delete pEnvObject;
-	}
+	pEnvObject = nullptr;
 	
 	pListeners.RemoveAll();
 	

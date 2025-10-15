@@ -52,7 +52,6 @@ class meWorld;
 class igdeEnvironment;
 class igdeWCoordSysArrows;
 class igdeWDebugDrawerShape;
-class igdeWObject;
 class igdeGameDefinition;
 
 class deCollider;
@@ -109,7 +108,7 @@ private:
 	igdeWDebugDrawerShapeList pDDSListNavSpaces;
 	igdeWCoordSysArrows *pDDSCoordSysArrows;
 	
-	igdeWObject *pWObject;
+	igdeWObject::Ref pWObject;
 	decObjectList pWOTextures;
 	deComponent *pEngComponentBroken;
 	deColliderVolume *pColDetCollider;
@@ -172,7 +171,7 @@ public:
 	/** \brief Retrieves the environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the object wrapper. */
-	inline igdeWObject *GetObjectWrapper() const{ return pWObject; }
+	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pWObject; }
 	/** \brief Retrieves the collision detection collider. */
 	inline deColliderVolume *GetColDetCollider() const{ return pColDetCollider; }
 	

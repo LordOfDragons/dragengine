@@ -25,13 +25,13 @@
 #ifndef _CEPROP_H_
 #define _CEPROP_H_
 
+#include <deigde/gui/wrapper/igdeWObject.h>
+
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
 
 class ceConversation;
-
-class igdeWObject;
 
 
 
@@ -42,7 +42,7 @@ class ceProp : public deObject{
 private:
 	ceConversation *pConversation;
 	
-	igdeWObject *pObjectWrapper;
+	igdeWObject::Ref pObjectWrapper;
 	
 	decString pName;
 	decString pObjectClass;
@@ -88,7 +88,7 @@ public:
 	void SetVisible( bool visible );
 	
 	/** \brief Retrieves the object wrapper. */
-	inline igdeWObject *GetObjectWrapper() const{ return pObjectWrapper; }
+	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pObjectWrapper; }
 	/*@}*/
 	
 private:

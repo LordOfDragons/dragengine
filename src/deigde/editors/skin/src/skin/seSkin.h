@@ -30,6 +30,7 @@
 #include "mapped/seMappedList.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectSet.h>
@@ -42,7 +43,6 @@ class sePropertyNode;
 class seSkinListener;
 
 class igdeWSky;
-class igdeWObject;
 class igdeCamera;
 
 class deAnimator;
@@ -76,7 +76,7 @@ private:
 	deWorld *pEngWorld;
 	
 	igdeWSky *pSky;
-	igdeWObject *pEnvObject;
+	igdeWObject::Ref pEnvObject;
 	
 	deSkin *pEngSkin;
 	deComponent *pEngComponent;
@@ -133,7 +133,7 @@ public:
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
-	inline igdeWObject *GetEnvObject() const{ return pEnvObject; }
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the engine component. */
 	inline deComponent *GetEngineComponent() const{ return pEngComponent; }

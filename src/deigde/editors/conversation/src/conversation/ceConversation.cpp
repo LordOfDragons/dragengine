@@ -102,7 +102,6 @@ ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEnt
 	deEngine * const engine = GetEngine();
 	
 	pSky = nullptr;
-	pEnvObject = nullptr;
 	
 	pEngMicrophone = nullptr;
 	pEngSpeakerVAPreview = nullptr;
@@ -194,7 +193,7 @@ ceConversation::ceConversation( igdeEnvironment *environment ) : igdeEditableEnt
 		pSky->SetWorld( pEngWorld );
 		
 		// create the environment wrapper object
-		pEnvObject = new igdeWObject( *environment );
+		pEnvObject.TakeOver(new igdeWObject(*environment));
 		pEnvObject->SetWorld( pEngWorld );
 		pEnvObject->SetPosition( decDVector( 0.0, 0.0, 0.0 ) );
 		
@@ -1710,9 +1709,7 @@ void ceConversation::pCleanUp(){
 	if( pSky ){
 		delete pSky;
 	}
-	if( pEnvObject ){
-		delete pEnvObject;
-	}
+	pEnvObject = nullptr;
 	RemoveAllProps();
 	
 	if( pEngSpeakerVAPreview && pEngMicrophone ){

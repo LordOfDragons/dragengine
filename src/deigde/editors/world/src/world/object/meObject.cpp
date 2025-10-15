@@ -192,7 +192,6 @@ pWOAsyncFinished( *this )
 	pDDSObjectShapes = nullptr;
 	pDDSCoordSysArrows = nullptr;
 	
-	pWObject = nullptr;
 	pEngComponentBroken = nullptr;
 	pColDetCollider = nullptr;
 	pCamera = nullptr;
@@ -218,7 +217,7 @@ pWOAsyncFinished( *this )
 	pAttachedTo = nullptr;
 	
 	try{
-		pWObject = new igdeWObject( *environment );
+		pWObject.TakeOver(new igdeWObject(*environment));
 		
 		// collision filter
 		decLayerMask collisionCategory;
@@ -510,7 +509,7 @@ void meObject::SetPosition( const decDVector &position ){
 	}
 	
 	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	
 	pPosition = position;
 	
@@ -528,7 +527,7 @@ void meObject::SetPosition( const decDVector &position ){
 	pRepositionCamera();
 	UpdateNavPathTest();
 	
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
@@ -540,7 +539,7 @@ void meObject::SetSize( const decVector &size ){
 	}
 	
 	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	
 	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
 	
@@ -555,7 +554,7 @@ void meObject::SetSize( const decVector &size ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
@@ -567,7 +566,7 @@ void meObject::SetScaling( const decVector &scaling ){
 	}
 	
 	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	
 	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
 	
@@ -583,7 +582,7 @@ void meObject::SetScaling( const decVector &scaling ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
@@ -595,7 +594,7 @@ void meObject::SetSizeAndScaling( const decVector &size, const decVector &scalin
 	}
 	
 	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	
 	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
 	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
@@ -610,7 +609,7 @@ void meObject::SetSizeAndScaling( const decVector &size, const decVector &scalin
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
@@ -624,7 +623,7 @@ void meObject::SetRotation( const decVector &rotation ){
 	const decQuaternion orientation = decQuaternion::CreateFromEuler( rotation * DEG2RAD );
 	
 	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	
 	pRotation = rotation;
 	
@@ -642,7 +641,7 @@ void meObject::SetRotation( const decVector &rotation ){
 	pRepositionCamera();
 	UpdateNavPathTest();
 	
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
@@ -977,7 +976,7 @@ void meObject::WOAsyncFinished(){
 	
 	if( pWorld ){
 		meCLInvalidateDecals invalidateDecals(*pWorld);
-		invalidateDecals.Collect(*pWObject);
+		invalidateDecals.Collect(pWObject);
 		invalidateDecals.InvalidateDecals();
 	}
 }
@@ -1915,9 +1914,7 @@ void meObject::pCleanUp(){
 	if( pEngComponentBroken ){
 		pEngComponentBroken->FreeReference();
 	}
-	if( pWObject ){
-		delete pWObject;
-	}
+	pWObject = nullptr;
 	
 	if( pCamera ){
 		delete pCamera;

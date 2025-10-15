@@ -28,11 +28,14 @@
 #include <deigde/triggersystem/igdeTriggerTargetList.h>
 #include <deigde/triggersystem/igdeTriggerExpressionParser.h>
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
+#include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/utils/decUniqueID.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 #include "meMusic.h"
 #include "object/meObjectList.h"
@@ -81,7 +84,6 @@ class meWindowMain;
 
 class igdeEnvironment;
 class igdeWSky;
-class igdeWObject;
 
 class deForceField;
 
@@ -163,8 +165,9 @@ private:
 	deWorld *pDEWorld;
 	deColliderVolume *pEngColCollider;
 	igdeWSky *pSky;
-	igdeWObject *pBgObject;
+	igdeWObject::Ref pBgObject;
 	deMicrophone *pEngMicrophone;
+	decVector pLimitBoxMinExtend, pLimitBoxMaxExtend;
 	
 	deForceField *pEngForceField;
 	
@@ -210,6 +213,9 @@ private:
 	
 	decUniqueID pNextObjectID;
 	
+	deDebugDrawer::Ref pDDLimitBox;
+	igdeWDebugDrawerShape pDDSLimitBox;
+	
 	meWorldNotifier **pNotifiers;
 	int pNotifierCount;
 	int pNotifierSize;
@@ -238,9 +244,16 @@ public:
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Background object wrapper. */
-	inline igdeWObject *GetBgObject() const{ return pBgObject; }
+	inline const igdeWObject::Ref &GetBgObject() const{ return pBgObject; }
 	/** Retrieves the microphone. */
 	inline deMicrophone *GetMicrophone() const{ return pEngMicrophone; }
+	
+	/** Limit box extends. */
+	inline const decVector &GetLimitBoxMinExtend() const{ return pLimitBoxMinExtend; }
+	inline const decVector &GetLimitBoxMaxExtend() const{ return pLimitBoxMaxExtend; }
+	void SetLimitBoxMinExtend(const decVector &minExtend);
+	void SetLimitBoxMaxExtend(const decVector &maxExtend);
+	void SetLimitBoxExtends(const decVector &minExtend, const decVector &maxExtend);
 	
 	/** Retrieves the height terrain. */
 	inline meHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
@@ -525,6 +538,10 @@ public:
 	void NotifyModeChanged();
 	/** Notifies all that the background object changed. */
 	void NotifyBgObjectChanged();
+	
+	/** Notify all limit box changed. */
+	void NotifyLimitBoxChanged();
+	
 	/** Notifies all that the changed or saved state changed. */
 	virtual void NotifyStateChanged();
 	/** Notifies all that the undos changed. */
@@ -724,6 +741,7 @@ private:
 	void pCleanUp();
 	void pUpdateAmbientLight();
 	void pShowStateChanged();
+	void pUpdateDDLimitBox();
 };
 
 // end of include only once

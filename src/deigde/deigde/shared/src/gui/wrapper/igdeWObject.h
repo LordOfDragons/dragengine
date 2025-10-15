@@ -65,8 +65,11 @@ class deBaseScriptingCollider;
  * - Render Environment Map Mask: 2 (Bit 1 set)
  * - Audio: 4 (Bit 2 set)
  */
-class DE_DLL_EXPORT igdeWObject{
+class DE_DLL_EXPORT igdeWObject : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWObject> Ref;
+	
 	/** \brief Asynchronous loading finished. */
 	class DE_DLL_EXPORT cAsyncLoadFinished{
 	public:
@@ -155,12 +158,14 @@ public:
 	/** \brief Create wrapper. */
 	igdeWObject( igdeEnvironment &environment );
 	
+protected:
 	/** \brief Clean up wrapper. */
-	~igdeWObject();
+	virtual ~igdeWObject();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */

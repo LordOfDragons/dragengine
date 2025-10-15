@@ -28,11 +28,11 @@
 #include "../collisions/reCLRigSimulation.h"
 
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
 
-class igdeWObject;
 class reRigConstraintDof;
 class igdeGameDefinition;
 class igdeEnvironment;
@@ -128,7 +128,7 @@ private:
 	int pComponentTextureCount;
 	
 	igdeWSky *pSky;
-	igdeWObject *pEnvObject;
+	igdeWObject::Ref pEnvObject;
 	
 	deRig *pEngRig;
 	bool pPoseChanged;
@@ -394,7 +394,7 @@ public:
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
-	inline igdeWObject *GetEnvObject() const{ return pEnvObject; }
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	/*@}*/
 	
 	/** @name Editing */

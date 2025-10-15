@@ -217,12 +217,24 @@
 			"path": "src/deigde/editors/gameDefinition"
 		},
 		{
+			"name": "Editor: Particle Emitter",
+			"path": "src/deigde/editors/particleEmitter"
+		},
+		{
 			"name": "Editor: Project",
 			"path": "src/deigde/editors/project"
 		},
 		{
+			"name": "Editor: Rig",
+			"path": "src/deigde/editors/rigeditor"
+		},
+		{
 			"name": "Editor: Skin",
 			"path": "src/deigde/editors/skin"
+		},
+		{
+			"name": "Editor: Sky",
+			"path": "src/deigde/editors/sky"
 		},
 		{
 			"name": "Editor: World",

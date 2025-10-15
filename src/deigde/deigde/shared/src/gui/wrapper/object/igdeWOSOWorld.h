@@ -90,7 +90,7 @@ public:
 		typedef deTObjectReference<ChildObject> Ref;
 		
 	private:
-		igdeWObject pWrapper;
+		igdeWObject &pWrapper;
 		decObjectOrderedSet pTextures;
 		
 	public:
@@ -98,7 +98,7 @@ public:
 		decDMatrix originalMatrix;
 		
 		/** \brief Create child object. */
-		ChildObject(igdeEnvironment &environment);
+		ChildObject(igdeWObject &environment);
 		
 		/** \brief Object wrapper. */
 		inline igdeWObject &GetWrapper(){ return pWrapper; }
@@ -124,7 +124,6 @@ private:
 	class LoadXmlWorld : public igdeBaseXML{
 	private:
 		igdeWOSOWorld &pOwner;
-		igdeEnvironment &pEnvironment;
 		
 	public:
 		decObjectOrderedSet objects;

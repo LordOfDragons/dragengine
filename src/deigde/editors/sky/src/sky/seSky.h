@@ -27,6 +27,7 @@
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
 
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/math/decMath.h>
@@ -40,7 +41,6 @@ class seBody;
 class seSkyListener;
 
 class igdeCamera;
-class igdeWObject;
 
 class deDebugDrawer;
 class deLogger;
@@ -60,7 +60,7 @@ private:
 	deSkyInstance *pEngSkyInstance;
 	bool pNeedsRebuildSky;
 	
-	igdeWObject *pEnvObject;
+	igdeWObject::Ref pEnvObject;
 	igdeCamera *pCamera;
 	
 	deDebugDrawer *pDDHorizon;
@@ -110,7 +110,7 @@ public:
 	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
 	/** \brief Environment wrapper object. */
-	inline igdeWObject *GetEnvObject() const{ return pEnvObject; }
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** \brief Horizon debug drawer. */
 	inline deDebugDrawer *GetDDHorizon(){ return pDDHorizon; }

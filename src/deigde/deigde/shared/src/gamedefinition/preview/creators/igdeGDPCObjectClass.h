@@ -56,9 +56,8 @@ private:
 	deWorldReference pWorld;
 	deCameraReference pCamera;
 	deLightReference pLight;
-	igdeWObject *pObject;
+	igdeWObject::Ref pObject;
 	igdeWSky *pSky;
-	igdeWObject *pEnvObject;
 	deCanvasRenderWorldReference pCanvasRenderWorld;
 	
 	cAsyncFinished pAsyncFinished;

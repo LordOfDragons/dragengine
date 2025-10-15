@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,45 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#ifndef _MEUVIEWSETLIMITBOXEXTENDS_H_
+#define _MEUVIEWSETLIMITBOXEXTENDS_H_
 
-#include "igdeUndo.h"
+#include <deigde/undo/igdeUndo.h>
+#include <dragengine/common/math/decMath.h>
 
-#include <dragengine/common/exceptions.h>
-
-
-
-// Class igdeUndo
-///////////////////
-
-// Constructor, destructor
-////////////////////////////
-
-igdeUndo::igdeUndo() :
-pMemoryConsumption( 0 ){
-}
+#include "../../../world/meWorld.h"
 
 
+/**
+ * Undo action view set limit box extends.
+ */
+class meUViewSetLimitBoxExtends : public igdeUndo{
+private:
+	meWorld::Ref pWorld;
+	decVector pOldMin, pNewMin, pOldMax, pNewMax;
+	
+	
+public:
+	/** \name Constructors and Destructors */
+	/*@{*/
+	/** Create undo object. */
+	meUViewSetLimitBoxExtends(meWorld *world, const decVector &newMin, const decVector &newMax);
+	
+protected:
+	/** Clean up undo object. */
+	~meUViewSetLimitBoxExtends() override = default;
+	/*@}*/
+	
+	
+public:
+	/** \name Management */
+	/*@{*/
+	/** Undo action. */
+	void Undo() override;
+	
+	/** Redo action. */
+	void Redo() override;
+	/*@}*/
+};
 
-// Management
-///////////////
-
-void igdeUndo::SetShortInfo( const char *info ){
-	pShortInfo = info;
-}
-
-void igdeUndo::SetLongInfo( const char *info ){
-	pLongInfo = info;
-}
-
-void igdeUndo::SetMemoryConsumption( int bytes ){
-	if( bytes < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	pMemoryConsumption = bytes;
-}
+#endif

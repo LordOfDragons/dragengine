@@ -49,6 +49,9 @@ void meWorldNotifier::SkyChanged( meWorld* ){
 void meWorldNotifier::BgObjectChanged( meWorld* ){
 }
 
+void meWorldNotifier::LimitBoxChanged(meWorld*){
+}
+
 void meWorldNotifier::ModeChanged( meWorld* ){
 }
 

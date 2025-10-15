@@ -135,7 +135,7 @@ void seWPView::SetSky( seSky *sky ){
 		return;
 	}
 	
-	pWPEnvObject->SetObjectWrapper( NULL );
+	pWPEnvObject->SetObject(nullptr);
 	pWPCamera->SetCamera( NULL );
 	
 	if( pSky ){
@@ -151,7 +151,7 @@ void seWPView::SetSky( seSky *sky ){
 		sky->AddReference();
 		
 		pWPCamera->SetCamera( sky->GetCamera() );
-		pWPEnvObject->SetObjectWrapper( sky->GetEnvObject() );
+		pWPEnvObject->SetObject(sky->GetEnvObject());
 	}
 	
 	UpdateView();
@@ -165,7 +165,7 @@ void seWPView::UpdateView(){
 }
 
 void seWPView::UpdateEnvObject(){
-	pWPEnvObject->UpdateObjectWrapper();
+	pWPEnvObject->UpdateObject();
 }
 
 void seWPView::UpdateCamera(){

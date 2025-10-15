@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (C) 2024, DragonDreams GmbH (info@dragondreams.ch)
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,39 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "igdeUndo.h"
+#include "meUViewSetLimitBoxExtends.h"
 
 #include <dragengine/common/exceptions.h>
 
 
-
-// Class igdeUndo
-///////////////////
+// Class meUViewSetLimitBoxExtends
+////////////////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-igdeUndo::igdeUndo() :
-pMemoryConsumption( 0 ){
+meUViewSetLimitBoxExtends::meUViewSetLimitBoxExtends(meWorld *world,
+	const decVector &newMin, const decVector &newMax) :
+pWorld(world),
+pNewMin(newMin),
+pNewMax(newMax)
+{
+	DEASSERT_NOTNULL(world)
+	
+	SetShortInfo("View set limit box extends");
+	
+	pOldMin = world->GetLimitBoxMinExtend();
+	pOldMax = world->GetLimitBoxMaxExtend();
 }
-
 
 
 // Management
 ///////////////
 
-void igdeUndo::SetShortInfo( const char *info ){
-	pShortInfo = info;
+void meUViewSetLimitBoxExtends::Undo(){
+	pWorld->SetLimitBoxExtends(pOldMin, pOldMax);
 }
 
-void igdeUndo::SetLongInfo( const char *info ){
-	pLongInfo = info;
-}
-
-void igdeUndo::SetMemoryConsumption( int bytes ){
-	if( bytes < 0 ){
-		DETHROW( deeInvalidParam );
-	}
-	pMemoryConsumption = bytes;
+void meUViewSetLimitBoxExtends::Redo(){
+	pWorld->SetLimitBoxExtends(pNewMin, pNewMax);
 }
