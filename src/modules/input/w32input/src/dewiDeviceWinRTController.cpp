@@ -179,6 +179,70 @@ pBatteryReport({})
 		AddAxis( axis );
 	}
 
+	// add arrow keys as first switch
+	dewiDeviceAxis::Ref axisDPadX(dewiDeviceAxis::Ref::New(new dewiDeviceAxis(module)));
+	axisDPadX->SetIndex(GetAxisCount());
+	axisDPadX->SetAbsolute(true);
+	axisDPadX->SetMinimum(-1);
+	axisDPadX->SetMaximum(1);
+	axisDPadX->SetType(deInputDeviceAxis::eatHat);
+	axisDPadX->SetDisplayImages("stickX");
+	axisDPadX->SetID("dpadx");
+	axisDPadX->SetName("DPad X");
+
+	dewiDeviceAxis::Ref axisDPadY(dewiDeviceAxis::Ref::New(new dewiDeviceAxis(module)));
+	axisDPadY->SetIndex(GetAxisCount() + 1);
+	axisDPadY->SetAbsolute(true);
+	axisDPadY->SetMinimum(-1);
+	axisDPadY->SetMaximum(1);
+	axisDPadY->SetType(deInputDeviceAxis::eatHat);
+	axisDPadY->SetDisplayImages("stickY");
+	axisDPadY->SetID("dpady");
+	axisDPadY->SetName("DPad Y");
+
+	count = controller.ButtonCount();
+
+	for(i=0; i<count; i++){
+		switch(controller.GetButtonLabel(i)){
+		case wrgi::GameControllerButtonLabel::XboxUp:
+		case wrgi::GameControllerButtonLabel::Up:
+			axisDPadY->SetWinRTReadingButtonNegative(i);
+			break;
+
+		case wrgi::GameControllerButtonLabel::XboxDown:
+		case wrgi::GameControllerButtonLabel::Down:
+			axisDPadY->SetWinRTReadingButtonPositive(i);
+			break;
+
+		case wrgi::GameControllerButtonLabel::XboxLeft:
+		case wrgi::GameControllerButtonLabel::Left:
+			axisDPadX->SetWinRTReadingButtonNegative(i);
+			break;
+
+		case wrgi::GameControllerButtonLabel::XboxRight:
+		case wrgi::GameControllerButtonLabel::Right:
+			axisDPadX->SetWinRTReadingButtonPositive(i);
+			break;
+			
+		default:
+			break;
+		}
+	}
+
+	if(axisDPadX->GetWinRTReadingButtonPositive() != -1 && axisDPadX->GetWinRTReadingButtonNegative() != -1){
+		AddAxis(axisDPadX);
+
+	}else{
+		axisDPadX = nullptr;
+	}
+
+	if(axisDPadY->GetWinRTReadingButtonPositive() != -1 && axisDPadY->GetWinRTReadingButtonNegative() != -1){
+		AddAxis(axisDPadY);
+
+	}else{
+		axisDPadY = nullptr;
+	}
+
 	// add switches
 	count = controller.SwitchCount();
 
@@ -261,6 +325,10 @@ pBatteryReport({})
 
 		case wrgi::GameControllerButtonLabel::XboxUp:
 		case wrgi::GameControllerButtonLabel::Up:
+			if(axisDPadY){
+				continue;
+			}
+
 			button->SetName( "Up" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
@@ -270,6 +338,10 @@ pBatteryReport({})
 
 		case wrgi::GameControllerButtonLabel::XboxDown:
 		case wrgi::GameControllerButtonLabel::Down:
+			if(axisDPadY){
+				continue;
+			}
+
 			button->SetName( "Down" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
@@ -279,6 +351,10 @@ pBatteryReport({})
 
 		case wrgi::GameControllerButtonLabel::XboxLeft:
 		case wrgi::GameControllerButtonLabel::Left:
+			if(axisDPadX){
+				continue;
+			}
+
 			button->SetName( "Left" );
 			button->SetType( deInputDeviceButton::ebtGeneric );
 			button->SetDisplayImages( "button" );
@@ -288,11 +364,15 @@ pBatteryReport({})
 
 		case wrgi::GameControllerButtonLabel::XboxRight:
 		case wrgi::GameControllerButtonLabel::Right:
-			button->SetName( "Right" );
-			button->SetType( deInputDeviceButton::ebtGeneric );
-			button->SetDisplayImages( "button" );
-			button->SetID( "baright" );
-			button->SetDisplayText( "Right" );
+			if(axisDPadX){
+				continue;
+			}
+
+			button->SetName("Right");
+			button->SetType(deInputDeviceButton::ebtGeneric);
+			button->SetDisplayImages("button");
+			button->SetID("baright");
+			button->SetDisplayText("Right");
 			break;
 
 		case wrgi::GameControllerButtonLabel::XboxA:
