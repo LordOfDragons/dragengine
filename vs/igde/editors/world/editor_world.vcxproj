@@ -307,6 +307,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\property\meUObjTexRemoveProperty.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\property\meUObjTexSetProperties.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\property\meUObjTexSetProperty.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\view\meUViewSetLimitBoxExtends.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\meUWorldSetGravity.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\meUWorldSetSize.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldAddProperty.cpp" />
@@ -660,6 +661,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\property\meUObjTexRemoveProperty.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\property\meUObjTexSetProperties.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\object\texture\property\meUObjTexSetProperty.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\view\meUViewSetLimitBoxExtends.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\meUWorldSetGravity.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\meUWorldSetSize.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\world\src\undosys\properties\world\property\meUWorldAddProperty.h" />
