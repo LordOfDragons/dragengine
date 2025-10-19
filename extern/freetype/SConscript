@@ -50,9 +50,14 @@ libs.extend(parent_targets['lib_libpng']['libs'])
 parent_report['use system freetype'] = 'yes' if hasSystemFreetype else 'no'
 
 if hasSystemFreetype:
+	# freetype does bad things with the header path causing build to fail.
+	# we have to ugly hack around this to get somewhere. why do people do
+	# such crap in the first place?
+	cpppath = [os.popen(command).read('pkg-config --cflags freetype2').decode('utf-8')[2:]]
+	
 	parent_targets['lib_freetype'] = {
 		'name' : 'Internal FreeType library',
-		'cpppath' : [],
+		'cpppath' : cpppath,
 		'libpath' : [],
 		'libs' : libs,
 		'runtimelibs' : [],
