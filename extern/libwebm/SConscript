@@ -58,6 +58,8 @@ def libwebmBuild(target, source, env):
 	script = createScriptHeader(env)
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
 	
+	script.append('export CMAKE_POLICY_VERSION_MINIMUM=3.5\n')
+	
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
 	
