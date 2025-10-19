@@ -25,7 +25,7 @@
 #ifndef _DEFTMODULE_H_
 #define _DEFTMODULE_H_
 
-#include <freetype2/ft2build.h>
+#include <ft2build.h>
 #include FT_FREETYPE_H
 
 #include <dragengine/systems/modules/font/deBaseFontModule.h>
