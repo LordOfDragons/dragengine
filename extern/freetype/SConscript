@@ -37,7 +37,7 @@ hasSystemFreetype = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_freetype'] != TernaryVariableNo:
 	hasSystemFreetype = conf.CheckLibWithHeader(libLinkName,
-		['stdio.h', 'stdlib.h', 'ft2build.h'], 'c++',
+		['stdio.h', 'stdlib.h', 'freetype2/ft2build.h'], 'c++',
 		call='FT_Library l; FT_Open_Face(l, nullptr, 0, nullptr);')
 conf.Finish()
 
@@ -198,7 +198,7 @@ else:
 
 parent_targets['lib_freetype'] = {
 	'name' : 'Internal FreeType library',
-	'cpppath' : [envLibrary.Dir('include/freetype2')],
+	'cpppath' : [envLibrary.Dir('include'), envLibrary.Dir('include/freetype2')],
 	'libpath' : [envLibrary.Dir('lib')],
 	'libs' : libs,
 	'runtimelibs' : runtimelibs,
