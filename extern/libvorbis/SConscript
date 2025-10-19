@@ -40,7 +40,7 @@ hasSystemVorbis = False
 conf = envLibrary.Configure()
 if envLibrary[ 'with_system_libvorbis' ] != TernaryVariableNo:
 	hasSystemVorbis = conf.CheckLibWithHeader( libLinkName,
-		'vorbis/vorbisfile.h', 'c++', 'ov_info(0, -1);' )
+		'vorbis/vorbisfile.h', 'c++', call='ov_info(0, -1);' )
 conf.Finish()
 
 if not hasSystemVorbis and envLibrary[ 'with_system_libvorbis' ] == TernaryVariableYes:

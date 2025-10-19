@@ -32,7 +32,7 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), '
 hasSystemOGG = False
 conf = envLibrary.Configure()
 if envLibrary[ 'with_system_libogg' ] != TernaryVariableNo:
-	hasSystemOGG = conf.CheckLibWithHeader( libLinkName, 'ogg/ogg.h', 'c++', 'ogg_sync_init(0);' )
+	hasSystemOGG = conf.CheckLibWithHeader(libLinkName, 'ogg/ogg.h', 'c++', call='ogg_sync_init(0);')
 conf.Finish()
 
 if not hasSystemOGG and envLibrary[ 'with_system_libogg' ] == TernaryVariableYes:

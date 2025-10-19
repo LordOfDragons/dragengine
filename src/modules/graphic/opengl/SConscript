@@ -20,7 +20,7 @@ if envModule['build_graphics_opengl'] != TernaryVariableNo:
 	conf = envModule.Configure()
 	
 	if envModule['with_opengl'] != TernaryVariableNo:
-		hasOpenGL = conf.CheckLibWithHeader('GL', 'GL/gl.h', 'c++', 'glEnable(0);')
+		hasOpenGL = conf.CheckLibWithHeader('GL', 'GL/gl.h', 'c++', call='glEnable(0);')
 		if hasOpenGL:
 			buildModule = True
 			envModule.Append(CXXFLAGS = '-DHAS_LIB_OPENGL')
@@ -30,7 +30,7 @@ if envModule['build_graphics_opengl'] != TernaryVariableNo:
 			buildModule = True
 		
 		if not hasOpenGL:
-			hasOpenGL = conf.CheckLibWithHeader('opengl32', 'GL/gl.h', 'c++', 'glEnable(0);')
+			hasOpenGL = conf.CheckLibWithHeader('opengl32', 'GL/gl.h', 'c++', call='glEnable(0);')
 			if hasOpenGL:
 				buildModule = True
 				envModule.Append(CXXFLAGS = '-DHAS_LIB_OPENGL')
@@ -42,7 +42,7 @@ if envModule['build_graphics_opengl'] != TernaryVariableNo:
 		
 		if hasOpenGL:
 			if envModule['OSPosix'] or envModule['OSMacOS']:
-				hasFuncProc = conf.CheckLibWithHeader('GL', 'GL/glx.h', 'c++', 'glXGetProcAddress(NULL);')
+				hasFuncProc = conf.CheckLibWithHeader('GL', 'GL/glx.h', 'c++', call='glXGetProcAddress(NULL);')
 				if hasFuncProc:
 					envModule.Append(CXXFLAGS = '-DHAS_OGL_GETPROC')
 		

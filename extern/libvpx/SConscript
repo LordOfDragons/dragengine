@@ -33,7 +33,7 @@ hasSystemVpx = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_libvpx'] != TernaryVariableNo:
 	hasSystemVpx = conf.CheckLibWithHeader(libLinkName,
-		'vpx/vpx_decoder.h', 'c++', 'vpx_codec_dec_init_ver(0, 0, 0, 0, 0);')
+		'vpx/vpx_decoder.h', 'c++', call='vpx_codec_dec_init_ver(0, 0, 0, 0, 0);')
 conf.Finish()
 
 if not hasSystemVpx and envLibrary['with_system_libvpx'] == TernaryVariableYes:

@@ -37,8 +37,8 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), '
 hasSystemEvdev = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_libevdev'] != TernaryVariableNo:
-	hasSystemEvdev = conf.CheckLibWithHeader(
-		libLinkName, 'libevdev-1.0/libevdev/libevdev.h', 'c++', 'libevdev_has_event_type(0,0);')
+	hasSystemEvdev = conf.CheckLibWithHeader(libLinkName,
+		'libevdev-1.0/libevdev/libevdev.h', 'c++', call='libevdev_has_event_type(0,0);')
 conf.Finish()
 
 if not hasSystemEvdev and envLibrary['with_system_libevdev'] == TernaryVariableYes:

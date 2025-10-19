@@ -29,7 +29,7 @@ hasSystemWebm = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_libwebm'] != TernaryVariableNo:
 	hasSystemWebm = conf.CheckLibWithHeader(libLinkName,
-		'webm/webm_parser.h', 'c++', 'webm::WebmParser p();')
+		'webm/webm_parser.h', 'c++', call='webm::WebmParser p();')
 conf.Finish()
 
 if not hasSystemWebm and envLibrary['with_system_libwebm'] == TernaryVariableYes:

@@ -27,7 +27,8 @@ if envModule[ 'build_script_python' ] != TernaryVariableNo:
 	if envModule[ 'with_python' ] != TernaryVariableNo:
 		testlibs = [ '3.5', '3.4', '3.4m', '3.3' ] #, '2.7', '2.6.', '2.5' ]
 		for l in testlibs:
-			hasPython = conf.CheckLibWithHeader( 'python{}'.format( l ), 'python{}/Python.h'.format( l ), 'c', 'Py_Initialize();' )
+			hasPython = conf.CheckLibWithHeader('python{}'.format(l),
+				'python{}/Python.h'.format(l), 'c', call='Py_Initialize();')
 			if hasPython:
 				buildModule = True
 				envModule.Append( CXXFLAGS = '-DHAS_LIB_PYTHON' )

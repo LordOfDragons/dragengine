@@ -16,7 +16,7 @@ if parent_env['OSPosix'] and envModule['build_input_x'] != TernaryVariableNo:
 	conf = envModule.Configure()
 	
 	if envModule['with_x'] != TernaryVariableNo:
-		hasX = conf.CheckLibWithHeader('X11', 'X11/Xlib.h', 'c++', 'XOpenDisplay(NULL);')
+		hasX = conf.CheckLibWithHeader('X11', 'X11/Xlib.h', 'c++', call='XOpenDisplay(NULL);')
 		if hasX:
 			buildModule = True
 			envModule.Append(CXXFLAGS = '-DHAS_LIB_X11')
@@ -24,7 +24,7 @@ if parent_env['OSPosix'] and envModule['build_input_x'] != TernaryVariableNo:
 		elif envModule['with_x'] == TernaryVariableYes:
 			Exit('Requested to use X Window System but Xlib.h or libX11 could not be found or is not usable.')
 		
-		hasXi = conf.CheckLibWithHeader('Xi', 'X11/extensions/XInput.h', 'c++', ' XListInputDevices(0,0);')
+		hasXi = conf.CheckLibWithHeader('Xi', 'X11/extensions/XInput.h', 'c++', call='XListInputDevices(0,0);')
 		if hasXi:
 			buildModule = buildModule and True
 			envModule.Append(CXXFLAGS = '-DHAS_LIB_XI')
@@ -37,7 +37,7 @@ if parent_env['OSPosix'] and envModule['build_input_x'] != TernaryVariableNo:
 			appendLibrary(envModule, parent_targets['lib_libevdev'], libs)
 		else:
 			hasEvdev = conf.CheckLibWithHeader('evdev', 'libevdev-1.0/libevdev/libevdev.h',
-				'c++', ' libevdev_get_driver_version(0);')
+				'c++', call='libevdev_get_driver_version(0);')
 			if hasEvdev:
 				buildModule = buildModule and True
 				envModule.Append(CXXFLAGS = '-DHAS_LIB_EVDEV')

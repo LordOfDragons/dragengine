@@ -42,7 +42,7 @@ hasSystemOpenXR = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_openxr'] != TernaryVariableNo:
 	hasSystemOpenXR = conf.CheckLibWithHeader(libLinkName,
-		'openxr/openxr.h', 'c++', 'xrCreateInstance(nullptr,nullptr);')
+		'openxr/openxr.h', 'c++', call='xrCreateInstance(nullptr,nullptr);')
 conf.Finish()
 
 if not hasSystemOpenXR and envLibrary['with_system_openxr'] == TernaryVariableYes:

@@ -38,7 +38,7 @@ conf = envLibrary.Configure()
 if envLibrary['with_system_freetype'] != TernaryVariableNo:
 	hasSystemFreetype = conf.CheckLibWithHeader(libLinkName,
 		['stdio.h', 'stdlib.h', 'ft2build.h'], 'c++',
-		'FT_Library l; FT_Open_Face(l, nullptr, 0, nullptr);')
+		call='FT_Library l; FT_Open_Face(l, nullptr, 0, nullptr);')
 conf.Finish()
 
 if not hasSystemFreetype and envLibrary['with_system_freetype'] == TernaryVariableYes:

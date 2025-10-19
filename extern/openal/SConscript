@@ -38,7 +38,7 @@ hasSystemOpenAL = False
 
 conf = envLibrary.Configure()
 if envLibrary['with_system_openal'] != TernaryVariableNo:
-	hasSystemOpenAL = conf.CheckLibWithHeader(libLinkName, 'AL/al.h', 'c++', 'alEnable(0);')
+	hasSystemOpenAL = conf.CheckLibWithHeader(libLinkName, 'AL/al.h', 'c++', call='alEnable(0);')
 conf.Finish()
 
 if not hasSystemOpenAL and envLibrary['with_system_openal'] == TernaryVariableYes:

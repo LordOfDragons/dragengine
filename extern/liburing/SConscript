@@ -31,7 +31,7 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), '
 hasSystemUring = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_liburing'] != TernaryVariableNo:
-	hasSystemUring = conf.CheckLibWithHeader(libLinkName, 'liburing.h', 'c++', 'io_uring_get_probe();')
+	hasSystemUring = conf.CheckLibWithHeader(libLinkName, 'liburing.h', 'c++', call='io_uring_get_probe();')
 conf.Finish()
 
 if not hasSystemUring and envLibrary['with_system_liburing'] == TernaryVariableYes:

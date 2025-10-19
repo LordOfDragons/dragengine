@@ -32,7 +32,7 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), '
 hasSystemPng = False
 conf = envLibrary.Configure()
 if envLibrary[ 'with_system_libpng' ] != TernaryVariableNo:
-	hasSystemPng = conf.CheckLibWithHeader( libLinkName, 'png.h', 'c++', 'png_access_version_number();' )
+	hasSystemPng = conf.CheckLibWithHeader(libLinkName, 'png.h', 'c++', call='png_access_version_number();')
 conf.Finish()
 
 if not hasSystemPng and envLibrary[ 'with_system_libpng' ] == TernaryVariableYes:

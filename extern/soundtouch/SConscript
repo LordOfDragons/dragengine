@@ -36,7 +36,7 @@ hasSystemSoundTouch = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_soundtouch'] != TernaryVariableNo:
 	hasSystemSoundTouch = conf.CheckLibWithHeader(libLinkName,
-		'soundtouch/SoundTouch.h', 'c++', 'soundtouch::SoundTouch::getVersionString();')
+		'soundtouch/SoundTouch.h', 'c++', call='soundtouch::SoundTouch::getVersionString();')
 conf.Finish()
 
 if not hasSystemSoundTouch and envLibrary['with_system_soundtouch'] == TernaryVariableYes:

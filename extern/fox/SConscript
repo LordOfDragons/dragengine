@@ -41,7 +41,7 @@ hasSystemFOX = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_fox'] != TernaryVariableNo:
 	hasSystemFOX = conf.CheckLibWithHeader(libLinkName,
-		'fox-{}/fx.h'.format(libFOXVersion), 'c++', 'FX::isUTF8(0x32);')
+		'fox-{}/fx.h'.format(libFOXVersion), 'c++', call='FX::isUTF8(0x32);')
 conf.Finish()
 
 if not hasSystemFOX and envLibrary['with_system_fox'] == TernaryVariableYes:

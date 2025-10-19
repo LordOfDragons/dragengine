@@ -42,7 +42,7 @@ hasSystemOpenVR = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_openvr'] != TernaryVariableNo:
 	hasSystemOpenVR = conf.CheckLibWithHeader(libLinkName,
-		'openvr/openvr.h', 'c++', 'vr::VR_IsRuntimeInstalled();')
+		'openvr/openvr.h', 'c++', call='vr::VR_IsRuntimeInstalled();')
 conf.Finish()
 
 if not hasSystemOpenVR and envLibrary['with_system_openvr'] == TernaryVariableYes:

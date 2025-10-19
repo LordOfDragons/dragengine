@@ -46,7 +46,7 @@ conf = envLibrary.Configure()
 if envLibrary['with_system_libjpeg'] != TernaryVariableNo:
 	hasSystemJPEG = conf.CheckLibWithHeader(libLinkName,
 		['stdio.h', 'stdlib.h', 'jpeglib.h'], 'c++',
-		'jpeg_read_header(NULL, TRUE);')
+		call='jpeg_read_header(NULL, TRUE);')
 conf.Finish()
 
 if not hasSystemJPEG and envLibrary['with_system_libjpeg'] == TernaryVariableYes:

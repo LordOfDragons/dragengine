@@ -43,8 +43,8 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper(
 hasSystemVorbis = False
 conf = envLibrary.Configure()
 if envLibrary[ 'with_system_libtheora' ] != TernaryVariableNo:
-	hasSystemVorbis = conf.CheckLibWithHeader( libLinkName,
-		'theora/codec.h', 'c++', 'th_version_number();' )
+	hasSystemVorbis = conf.CheckLibWithHeader(libLinkName,
+		'theora/codec.h', 'c++', call='th_version_number();')
 conf.Finish()
 
 if not hasSystemVorbis and envLibrary[ 'with_system_libtheora' ] == TernaryVariableYes:
