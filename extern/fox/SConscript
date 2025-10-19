@@ -105,7 +105,8 @@ def foxBuild(target, source, env):
 	script.append('autoreconf -fi || exit 1')
 	
 	for p in env['POST_PATCHES']:
-		script.append('patch -F 3 -p1 <{} || exit 1'.format(p.srcnode().abspath))
+		#script.append('patch -F 3 -p1 <{} || exit 1'.format(p.srcnode().abspath))
+		script.append('sed -i -f "{}" aclocal.m4 configure'.format(p.srcnode().abspath))
 	
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
 	
@@ -169,7 +170,8 @@ globFiles(envLibrary, 'patches/{}'.format(foxSrcVersion), '*.patch', patches, re
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 postPatches = [] # create with 'diff -rupN original_sources patches_sources'
-globFiles(envLibrary, 'postPatches/{}'.format(foxSrcVersion), '*.patch', postPatches, recursive=False)
+#globFiles(envLibrary, 'postPatches/{}'.format(foxSrcVersion), '*.patch', postPatches, recursive=False)
+globFiles(envLibrary, 'postPatches/{}'.format(foxSrcVersion), '*.sed', postPatches, recursive=False)
 envLibrary.Append(POST_PATCHES = [envLibrary.File(x) for x in sorted(postPatches)])
 
 if buildStaticLinking:
