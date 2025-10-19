@@ -29,6 +29,13 @@ else:
 # fetching is always allowed
 nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'freetype', 'lib_freetype_fetch')
 
+# freetype does bad things with the header path causing build to fail.
+# we have to ugly hack around this to get somewhere. why do people do
+# such crap in the first place?
+restore = envLibrary['CPPPATH']
+cpppath = [os.popen('pkg-config --cflags freetype2').read()[2:]]
+envLibrary.Append(CPPPATH = cpppath)
+
 # check if system freetype is present.
 # NOTE some OS have compilers causing errors on the check below because "true" is used.
 #      the error looks like "cannot convert bool to boolean". to prevent this "TRUE" is
@@ -36,19 +43,12 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'f
 hasSystemFreetype = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_freetype'] != TernaryVariableNo:
-	# freetype does bad things with the header path causing build to fail.
-	# we have to ugly hack around this to get somewhere. why do people do
-	# such crap in the first place?
-	restore = envLibrary['CPPPATH']
-	cpppath = [os.popen('pkg-config --cflags freetype2').read()[2:]]
-	envLibrary.Append(CPPPATH = cpppath)
-	
 	hasSystemFreetype = conf.CheckLibWithHeader(libLinkName,
 		['stdio.h', 'stdlib.h', 'ft2build.h'], 'c++',
 		call='FT_Library l; FT_Open_Face(l, nullptr, 0, nullptr);')
-	
-	envLibrary.Replace(CPPPATH = restore)
 conf.Finish()
+
+envLibrary.Replace(CPPPATH = restore)
 
 if not hasSystemFreetype and envLibrary['with_system_freetype'] == TernaryVariableYes:
 	Exit('Requested to use system freetype but no usable freetype found.')
