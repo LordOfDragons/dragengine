@@ -68,6 +68,8 @@ def modioBuild(target, source, env):
 	
 	script = createScriptHeader(env, deps=deps, cppflags=cppflags, cflags=cppflags)
 	
+	script.append('export CMAKE_POLICY_VERSION_MINIMUM=3.5\n')
+	
 	# modio cmake scripts seem to only look at CXXFLAGS not CPPFLAGS
 	script.append('export CXXFLAGS="$CPPFLAGS"')
 	
