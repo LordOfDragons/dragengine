@@ -171,6 +171,14 @@ packages required to build the game engine using as many system libraries as pos
         libevdev-dev libsoundtouch-dev libwebp-dev libwebm-dev libvpx-dev \
         libopenvr-dev glslang-tools libfreetype-dev
 
+For Arch based distros using this command line installs all packages required to build
+the game engine using as many system libraries as possible:
+
+    pacman -S gcc scons cmake autoconf libtool nasm libx11 libxrandr libglvnd \
+        libxi libxft libjpeg openal libogg libvorbis libtheora hidapi patchelf \
+        libevdev soundtouch libwebp libvpx glslang freetype2 patch automake \
+        make libpng pkgconfig
+
 # Building Windows
 
 Install Visual Studio Community Edition. Then open the solution file "vs/dragengine.sln".
