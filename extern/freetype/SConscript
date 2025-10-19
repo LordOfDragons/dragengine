@@ -1,5 +1,6 @@
 import os
 import sys
+import shlex
 import SCons
 
 from SConsCommon import *
@@ -37,7 +38,7 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'f
 # freetype does bad things with the header path causing build to fail.
 # we have to ugly hack around this to get somewhere. why do people do
 # such crap in the first place?
-output = os.popen('pkg-config --cflags freetype2').read()
+output = os.popen('pkg-config --cflags-only-I freetype2').read()
 if output.endswith('\n'):
 	output = output[:-1]
 
@@ -50,7 +51,7 @@ if envLibrary['with_system_freetype'] != TernaryVariableNo:
 		call='FT_Library l; FT_Open_Face(l, nullptr, 0, nullptr);')
 	"""
 	if output:
-		cpppath = [output[2:]]
+		cpppath = [x[2:] for x in shlex.split(output)]
 		hasSystemFreetype = True
 		conf.CheckLibWithHeader(libLinkName, ['stdio.h', 'stdlib.h'], 'c++', call='')
 
