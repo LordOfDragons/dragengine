@@ -209,6 +209,42 @@ jobs:
           cd ..
           rm -rf repackage
       
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      
+      - name: Sign Artifacts
+        run: |
+          files=(
+            install-dragengine-${{ github.event.inputs.version }}-linux64.sh,
+            install-dragengine-dev-${{ github.event.inputs.version }}-linux64.sh,
+            dragengine-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            dragengine-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            install-deigde-${{ github.event.inputs.version }}-linux64.sh,
+            install-deigde-dev-${{ github.event.inputs.version }}-linux64.sh,
+            deigde-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            deigde-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2,
+            install-dragengine-${{ github.event.inputs.version }}-windows64.exe,
+            install-dragengine-sdk-${{ github.event.inputs.version }}-windows64.exe,
+            dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip,
+            install-deigde-${{ github.event.inputs.version }}-windows64.exe,
+            install-deigde-sdk-${{ github.event.inputs.version }}-windows64.exe,
+            deigde-sdk-${{ github.event.inputs.version }}-windows64.zip,
+            blender-addon-dragengine-${{ github.event.inputs.version }}.zip,
+            dragengine-live-${{ github.event.inputs.version }}.zip,
+            install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
+            install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh
+            )
+          for file in "${files[@]}"; do
+            gpg2 --personal-digest-preferences SHA512 --armor --yes --detach-sign \
+              --local-user A58A91BCA5C3B2C34CD57ACB8040F88D27F1D0AA \
+              --output "${file}.asc" $file
+          done
+      
       - name: Upload Artifacts
         uses: ncipollo/release-action@v1
         with:
@@ -258,6 +294,8 @@ jobs:
             - dragengine-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2
             - deigde-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2
             
+            GPG signatures for all files are included as .asc files.
+            
             Example projects to learn developing with the Drag[en]gine Game Engine can be found on the Wiki (https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde:exampleprojects) and in the DEExamples repository (https://github.com/LordOfDragons/deexamples).
           artifacts: >
             install-dragengine-${{ github.event.inputs.version }}-linux64.sh,
@@ -279,7 +317,8 @@ jobs:
             blender-addon-dragengine-${{ github.event.inputs.version }}.zip,
             dragengine-live-${{ github.event.inputs.version }}.zip,
             install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
-            install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh
+            install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh,
+            *.asc
     
   upgrade_stable:
     needs: [upload]
