@@ -179,7 +179,6 @@ the game engine using as many system libraries as possible:
         libevdev soundtouch libwebp libvpx glslang freetype2 patch automake \
         make libpng pkgconfig
 
-
 # Building Windows
 
 Install Visual Studio Community Edition. Then open the solution file "vs/dragengine.sln".
