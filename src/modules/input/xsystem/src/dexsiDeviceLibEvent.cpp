@@ -394,7 +394,7 @@ pEvdevMapKeys( NULL )
 			
 			if( j == vTableAbsolutAxisCount ){
 				axis->SetType( deInputDeviceAxis::eatGeneric );
-				axis->SetDisplayImages( "axis" );
+				axis->SetDisplayImages( "stick" );
 				
 				string.Format( "aa%d", nextGeneric++ );
 				axis->SetID( string );
