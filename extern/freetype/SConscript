@@ -45,15 +45,16 @@ if output.endswith('\n'):
 hasSystemFreetype = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_freetype'] != TernaryVariableNo:
+	hasSystemFreetype = conf.CheckLib(libLinkName, 'FT_Open_Face', None, 'c++')
 	"""
 	hasSystemFreetype = conf.CheckLibWithHeader(libLinkName,
 		['stdio.h', 'stdlib.h', 'ft2build.h'], 'c++',
 		call='FT_Library l; FT_Open_Face(l, nullptr, 0, nullptr);')
 	"""
-	if output:
+	if hasSystemFreetype and output:
 		cpppath = [x[2:] for x in shlex.split(output)]
-		hasSystemFreetype = True
-		conf.CheckLibWithHeader(libLinkName, ['stdio.h', 'stdlib.h'], 'c++', call='')
+		#hasSystemFreetype = True
+		#conf.CheckLibWithHeader(libLinkName, ['stdio.h', 'stdlib.h'], 'c++', call='')
 
 conf.Finish()
 
