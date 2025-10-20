@@ -220,6 +220,42 @@ jobs:
           cd ..
           rm -rf repackage
       
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      
+      - name: Sign Artifacts
+        run: |
+          files=(
+            install-dragengine-nightly-linux64.sh
+            install-dragengine-dev-nightly-linux64.sh
+            dragengine-nightly-linux64.tar.bz2
+            dragengine-dbg-nightly-linux64.tar.bz2
+            dragengine-dev-nightly-linux64.tar.bz2
+            install-deigde-nightly-linux64.sh
+            install-deigde-dev-nightly-linux64.sh
+            deigde-nightly-linux64.tar.bz2
+            deigde-dbg-nightly-linux64.tar.bz2
+            deigde-dev-nightly-linux64.tar.bz2
+            install-dragengine-nightly-windows64.exe
+            install-dragengine-sdk-nightly-windows64.exe
+            dragengine-sdk-nightly-windows64.zip
+            install-deigde-nightly-windows64.exe
+            install-deigde-sdk-nightly-windows64.exe
+            deigde-sdk-nightly-windows64.zip
+            blender-addon-dragengine-9999.zip
+            dragengine-live-nightly.zip
+            install-dragengine-ci-nightly-linux64.sh
+            install-deigde-ci-nightly-linux64.sh
+            )
+          for file in "${files[@]}"; do
+            gpg2 --personal-digest-preferences SHA512 --armor --yes --detach-sign \
+              --local-user A58A91BCA5C3B2C34CD57ACB8040F88D27F1D0AA \
+              --output "${file}.asc" $file
+          done
+      
       - name: Update git tag
         run: |
           git tag -f nightly
@@ -264,3 +300,4 @@ jobs:
             dragengine-live-nightly.zip
             install-dragengine-ci-nightly-linux64.sh
             install-deigde-ci-nightly-linux64.sh
+            *.asc
