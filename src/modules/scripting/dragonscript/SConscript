@@ -185,11 +185,11 @@ if parent_targets['lib_dragonscript']['runtimedatadir']:
 if envModule['OSPosix'] and not envModule['OSBeOS']:
 	pathDataDir = envModule.subst('$datadir')
 	filename = os.path.join(pathDataDir, 'katepart5', 'syntax', 'dragonscript.xml')
-	install.append(envModule.InstallAs(filename, 'kate_syntax/dragonscript.xml'))
+	installIgde.append(envModule.InstallAs(filename, 'kate_syntax/dragonscript.xml'))
 	archiveIGDE[filename] = envModule.File('kate_syntax/dragonscript.xml').srcnode()
 	
 	filename = os.path.join(pathDataDir, 'mime', 'packages', 'dragonscript-dragonscript.xml')
-	install.append(envModule.InstallAs(filename, 'dragonscript-mimetype.xml'))
+	installIgde.append(envModule.InstallAs(filename, 'dragonscript-mimetype.xml'))
 	archiveIGDE[filename] = envModule.File('dragonscript-mimetype.xml').srcnode()
 
 targetInstall = envModule.Alias('scr_dragonscript', install)
