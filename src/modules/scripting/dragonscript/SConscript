@@ -59,6 +59,7 @@ globFiles(envModule, 'igde/templates', '*', igdeTemplates)
 igdeTemplates = [x for x in igdeTemplates if 'project.code-workspace' not in x]
 
 install = []
+installIgde = []
 archive = {}
 archiveIGDE = {}
 assetEngine = {}
@@ -160,14 +161,14 @@ for s in igdeGameDefs:
 	
 	filename = os.path.join(pathIGDEShared, 'gamedefs', s.split('/')[-1])
 	
-	install.append(envModule.InstallAs(filename, modifiedFile))
+	installIgde.append(envModule.InstallAs(filename, modifiedFile))
 	archiveIGDE[filename] = modifiedFile[0]
 
 for s in igdeTemplates:
 	node = envModule.File(s)
 	filename = os.path.join(pathIGDEShared, 'templates', *(s.split('/')[2:]))
 	
-	install.append(envModule.InstallAs(filename, node))
+	installIgde.append(envModule.InstallAs(filename, node))
 	archiveIGDE[filename] = node.srcnode()
 
 if parent_targets['lib_dragonscript']['runtimedatadir']:
@@ -192,6 +193,7 @@ if envModule['OSPosix'] and not envModule['OSBeOS']:
 	archiveIGDE[filename] = envModule.File('dragonscript-mimetype.xml').srcnode()
 
 targetInstall = envModule.Alias('scr_dragonscript', install)
+targetInstallIgde = envModule.Alias('scr_dragonscript_igde', installIgde)
 
 # source directory required for special commands
 srcdir = Dir('.').srcnode().abspath
@@ -227,8 +229,9 @@ buildCloc = envModule.Alias('scr_dragonscript_cloc', buildClocBare)
 parent_targets['scr_dragonscript'] = {
 	'name' : 'DragonScript Script Module',
 	'build' : targetBuild,
-	'install' : targetInstall,
+	'install' : [targetInstall, targetInstallIgde],
 	'install-engine-runtime' : targetInstall,
+	'install-igde-runtime' : targetInstallIgde,
 	'archive-engine' : archive,
 	'archive-igde' : archiveIGDE,
 	'asset-engine' : assetEngine,
