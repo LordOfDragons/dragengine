@@ -112,6 +112,8 @@ def dragonscriptBuild( target, source, env ):
 	#script = []
 	script = createScriptHeader(env)
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	if env['OSPosix']:
+		script.append('export CPPFLAGS="$CPPFLAGS -fPIC"')
 	
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))
