@@ -12,7 +12,7 @@ pathShare = envAddon.subst(envAddon['path_igde_share'])
 
 versionString = envAddon['version']
 if envAddon['force_version']:
-        versionString = envAddon['force_version']
+	versionString = envAddon['force_version']
 
 try:
 	# blender repository version has to be "X.Y.Z" whereas "X.Y" matches drag[en]gine
@@ -60,7 +60,7 @@ files2 = []
 for f in files:
 	if f in specialFiles:
 		files2.extend(envAddon.Command(
-			'{}/{}'.format(addonDestDir, f[len(addonSrcDir)+1:]),
+			os.path.join(addonDestDir, f[len(addonSrcDir)+1:]),
 			envAddon.File(f).srcnode(),
 			envAddon.Action(copyModifyFile, 'Copy-Modify $TARGET')))
 	else:
@@ -82,10 +82,8 @@ targetBuild = envAddon.Command(filename, files2, envAddon.Action(archiveZip, 'Ar
 install = envAddon.Install(os.path.join(pathShare, 'tools'), targetBuild)
 targetInstall = envAddon.Alias('blender-addon', install)
 
-filename = os.path.join(pathShare, 'tools', filename)
-
 archiveDevelop = {}
-archiveDevelop[filename] = targetBuild[0]
+archiveDevelop[os.path.join(pathShare, 'tools', filename)] = targetBuild[0]
 
 parent_targets['blender-addon'] = {
 	'name' : 'Drag[en]gine Blender AddOn',
