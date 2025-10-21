@@ -2,6 +2,8 @@
 find modio-sdk -name ".git*" | xargs -- rm -rf
 find modio-sdk -type d -name ".ci" | xargs -- rm -rf
 rm -rf modio-sdk/doc
+rm -rf modio-sdk/ext/function2/test/googletest
+rm -rf modio-sdk/ext/utfcpp/extern/gtest
 rm -rf modio-sdk/ext/mbedtls/tests
 rm -rf modio-sdk/ext/mbedtls/programs
 rm -rf modio-sdk/ext/mbedtls/docs
