@@ -168,6 +168,9 @@ envDragengine.Append(CXXFLAGS = [
 	cmdlineDefinePath(envDragengine, 'DE_SHARE_PATH', pathShare),
 	cmdlineDefinePath(envDragengine, 'DE_CACHE_PATH', pathCache)])
 
+if not envDragengine['with_engine_module_checks']:
+	envDragengine.Append(CXXFLAGS = ['-DNO_ENGINE_MODULE_CHECKS'])
+
 if envDragengine['OSWindows']:
 	pathEngineBase = envDragengine.subst(envDragengine['path_de'])
 	envDragengine.Append(CXXFLAGS = [
