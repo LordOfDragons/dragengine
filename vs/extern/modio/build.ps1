@@ -22,7 +22,7 @@ $CmakeInstallDir = Join-Path -Path $ExpandedDir -ChildPath "install"
 
 $OldPath = Get-Location
 Set-Location "$CmakeSourceDir"
-git apply -p1 --binary --ignore-space-change --ignore-whitespace "$SourceDir\patches\$ModioVersion\05_makefile_fix.patch"
+#git apply -p1 --binary --ignore-space-change --ignore-whitespace "$SourceDir\patches\$ModioVersion\05_makefile_fix.patch"
 Set-Location $OldPath
 
 $Env:CXXFLAGS = "/DMODIO_SEPARATE_COMPILATION"
