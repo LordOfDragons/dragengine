@@ -442,8 +442,9 @@ void dexsiDeviceManager::pCreateEvdevDevices(){
 				
 				switch( device->GetType() ){
 				case deInputDevice::edtGamepad:
-					device->SetIndex( pDevices.GetCount() );
-					pDevices.Add( device );
+				case deInputDevice::edtTouchpad:
+					device->SetIndex(pDevices.GetCount());
+					pDevices.Add(device);
 					break;
 					
 				default:
