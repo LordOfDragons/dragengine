@@ -170,7 +170,7 @@
 			</action>
 		</transition>
 		
-		<transition event='movement.analog.move.leftRight-sticky'>
+		<transition event='movement.analog.move.leftRight.sticky'>
 			<action name='playerInputMove.set'>
 				<parameter name='analog.leftRight.sticky'>eventParam</parameter>
 			</action>
