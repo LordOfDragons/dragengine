@@ -279,6 +279,8 @@ jobs:
             Changelog: https://dragondreams.ch/?page_id=287
             
             Builds are potentially unstable. Use at own risk.
+            
+            GPG signatures for all files are included as .asc files.
           artifacts: |
             install-dragengine-nightly-linux64.sh
             install-dragengine-dev-nightly-linux64.sh

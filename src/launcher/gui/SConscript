@@ -148,11 +148,6 @@ if envLauncher['OSPosix'] and not envLauncher['OSBeOS']:
 	source = 'data/delauncher-gui.desktop'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
-	
-	target = os.path.join(pathDataDir, 'kservices5', 'dragengine-delauncher-gui-install.desktop')
-	source = 'data/delauncher-gui-install.desktop'
-	install.append(envLauncher.InstallAs(target, source))
-	archive[target] = envLauncher.File(source).srcnode()
 
 if envLauncher['OSPosix']:
 	target = os.path.join(pathMan1, 'delauncher-gui.1')
