@@ -62,7 +62,6 @@ if internalModule:
 	
 	objects = [envModule.SharedObject(s) for s in sources]
 	objects.extend(objshared)
-	envModule.Depends(objects, parent_targets['dragengine']['headers'])
 	
 	library = envModule.StaticLibrary(target='mdlfbx', source=objects, LIBS=libs)
 	targetBuild = parent_env.Alias('mdl_fbx_build', library)
@@ -95,10 +94,9 @@ else:
 		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 	
 	manifest = envModule.File('src/model/module.xml')
-	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	updateManifest = envModule.Command(manifest,
+		[manifest.srcnode(), library, 'SConscript'],
 		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-	Depends(updateManifest, library)
-	Depends(updateManifest, 'SConscript')
 	
 	install.append(envModule.Install(pathModule, updateManifest))
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
@@ -135,7 +133,6 @@ if internalModule:
 	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
 	
 	objects = [envModule.SharedObject(s) for s in sources]
-	envModule.Depends(objects, parent_targets['dragengine']['headers'])
 	
 	library = envModule.StaticLibrary(target='rigfbx', source=objects, LIBS=libs)
 	targetBuild = parent_env.Alias('rig_fbx_build', library)
@@ -168,9 +165,9 @@ else:
 		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 	
 	manifest = envModule.File('src/rig/module.xml')
-	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	updateManifest = envModule.Command(manifest,
+		[manifest.srcnode(), library, 'SConscript'],
 		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-	Depends(updateManifest, library)
 	
 	install.append(envModule.Install(pathModule, updateManifest))
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
@@ -207,7 +204,6 @@ if internalModule:
 	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
 	
 	objects = [envModule.SharedObject(s) for s in sources]
-	envModule.Depends(objects, parent_targets['dragengine']['headers'])
 	
 	library = envModule.StaticLibrary(target='animfbx', source=objects, LIBS=libs)
 	targetBuild = parent_env.Alias('anim_fbx_build', library)
@@ -240,9 +236,9 @@ else:
 		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 	
 	manifest = envModule.File('src/animation/module.xml')
-	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	updateManifest = envModule.Command(manifest,
+		[manifest.srcnode(), library, 'SConscript'],
 		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-	Depends(updateManifest, library)
 	
 	install.append(envModule.Install(pathModule, updateManifest))
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
@@ -279,7 +275,6 @@ if internalModule:
 	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
 	
 	objects = [envModule.SharedObject(s) for s in sources]
-	envModule.Depends(objects, parent_targets['dragengine']['headers'])
 	
 	library = envModule.StaticLibrary(target='skinfbx', source=objects, LIBS=libs)
 	targetBuild = parent_env.Alias('skin_fbx_build', library)
@@ -312,9 +307,9 @@ else:
 		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 	
 	manifest = envModule.File('src/skin/module.xml')
-	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	updateManifest = envModule.Command(manifest,
+		[manifest.srcnode(), library, 'SConscript'],
 		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-	Depends(updateManifest, library)
 	
 	install.append(envModule.Install(pathModule, updateManifest))
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
@@ -334,7 +329,6 @@ parent_targets['skin_fbx'] = {
 srcdir = Dir('.').srcnode()
 
 buildClocBare = BuildCLOC(envModule, [srcdir.Dir('src').abspath], srcdir.File('clocreport.csv'), ['doc'])
-Depends(buildClocBare, clocDepends)
 buildCloc = envModule.Alias('mdl_fbx_cloc', buildClocBare)
 
 parent_targets['mdl_fbx']['cloc'] = buildCloc

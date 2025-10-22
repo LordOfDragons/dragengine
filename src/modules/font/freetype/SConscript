@@ -51,7 +51,6 @@ if internalModule:
 	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
 	
 	objects = [envModule.SharedObject(s) for s in sources]
-	envModule.Depends(objects, parent_targets['dragengine']['headers'])
 	
 	library = envModule.StaticLibrary(target='fontfreetype', source=objects, LIBS=libs)
 	targetBuild = parent_env.Alias('font_freetype_build', library)
@@ -92,12 +91,11 @@ else:
 		archive[os.path.join(pathModule, l.name)] = l
 	
 	manifest = envModule.File('src/module.xml')
-	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	updateManifest = envModule.Command(manifest,
+		[manifest.srcnode(), library, 'SConscript',
+			parent_targets['lib_freetype']['runtimelibs'],
+			parent_targets[externLibPng]['runtimelibs']],
 		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-	Depends(updateManifest, library)
-	Depends(updateManifest, 'SConscript')
-	Depends(updateManifest, parent_targets['lib_freetype']['runtimelibs'])
-	Depends(updateManifest, parent_targets[externLibPng]['runtimelibs'])
 	
 	install.append(envModule.Install(pathModule, updateManifest))
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
@@ -110,8 +108,6 @@ srcdir = Dir('.').srcnode().abspath
 # cloc
 buildClocBare = BuildCLOC(envModule, ['{}/src'.format(srcdir)],
 	'{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
 buildCloc = envModule.Alias('font_freetype_cloc', buildClocBare)
 
 # add the targets to the targets list

@@ -59,9 +59,9 @@ manifestUpdates = [
 	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 manifest = envEditor.File( 'src/module.xml' )
-updateManifest = envEditor.Command( manifest, manifest.srcnode(),
-	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-Depends( updateManifest, library )
+updateManifest = envEditor.Command(manifest,
+	[manifest.srcnode(), library, 'SConscript'],
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
 
 install.append( envEditor.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
@@ -78,8 +78,6 @@ srcdir = Dir( '.' ).srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC( envEditor, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
-Depends( buildClocBare, sources )
-Depends( buildClocBare, headers )
 buildCloc = envEditor.Alias( 'editor_animator_cloc', buildClocBare )
 
 # add the targets to the targets list

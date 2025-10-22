@@ -144,13 +144,11 @@ if envIGDELib['OSPosix']:
 buildLibrary = envIGDELib.SharedLibrary(target='deigdeshared', source=objects, LIBS=libsLib)
 targetBuildLib = envIGDELib.Alias('deigde_shared_build', buildLibrary)
 
-copySharedHeaders = []
 refDir = envIGDELib.Dir('shared/src').srcnode()
 for h in sharedHeaders:
-	copySharedHeaders.append(envIGDELib.Command(
+	envIGDELib.Command(
 		os.path.join('include', 'deigde', refDir.rel_path(h)),
-		h, Copy('$TARGET', '$SOURCE')))
-envIGDELib.Depends(buildLibrary, copySharedHeaders)
+		h, Copy('$TARGET', '$SOURCE'))
 
 installLibDevelop = [envIGDELib.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in sharedHeaders]
 
@@ -200,7 +198,7 @@ if envIGDELib['igde_toolkit'] == 'fox':
 		key = '{}/{}'.format(foxRuntimePath, l)
 		if not key in parent_targets['lib_fox']['globalInstallTracker']:
 			parent_targets['lib_fox']['globalInstallTracker'].append(key)
-			envIGDELib.Depends(installLibRuntime, envIGDELib.Install(foxRuntimePath, l))
+			installLibRuntime.append(envIGDELib.Install(foxRuntimePath, l))
 			archiveLib[os.path.join(foxRuntimePath, l.name)] = l
 
 targetInstallLibDevelop = envIGDELib.Alias('deigde_shared_develop', installLibDevelop)
@@ -295,7 +293,7 @@ if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
 		archiveApp[os.path.join(pathBin, l.name)] = l
 
-envIGDEApp.Depends(installApp, targetInstallLibRuntime)
+installApp.append(targetInstallLibRuntime)
 
 
 if envIGDEApp['OSPosix']:

@@ -69,7 +69,6 @@ if internalModule:
 	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
 	
 	objects = [envModule.SharedObject(s) for s in sources]
-	envModule.Depends(objects, parent_targets['dragengine']['headers'])
 	
 	library = envModule.StaticLibrary(target='scrdscript', source=objects, LIBS=libs)
 	targetBuild = parent_env.Alias('scr_dragonscript_build', library)
@@ -106,11 +105,10 @@ else:
 		archive[os.path.join(pathModule, l.name)] = l
 	
 	manifest = envModule.File('src/module.xml')
-	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	updateManifest = envModule.Command(manifest,
+		[manifest.srcnode(), library, 'SConscript',
+			[manifest.srcnode(), library, 'SConscript']],
 		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-	Depends(updateManifest, library)
-	Depends(updateManifest, 'SConscript')
-	Depends(updateManifest, parent_targets['lib_dragonscript']['runtimelibs'])
 	
 	install.append(envModule.Install(pathModule, updateManifest))
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
@@ -155,9 +153,8 @@ else:
 
 for s in igdeGameDefs:
 	node = envModule.File(s)
-	modifiedFile = envModule.Command(node, node.srcnode(),
+	modifiedFile = envModule.Command(node, [node.srcnode(), 'SConscript'],
 		Action(ActionReplaceTokenInPlace), Replacements=replacements)
-	envModule.Depends(modifiedFile, 'SConscript')
 	
 	filename = os.path.join(pathIGDEShared, 'gamedefs', s.split('/')[-1])
 	
@@ -219,10 +216,6 @@ buildDoxygen = envModule.Alias('scr_dragonscript_doc', [buildDoxygenModule, buil
 buildClocBare = BuildCLOC(envModule,
 	['{}/src'.format(srcdir), '{}/scripts'.format(srcdir)],
 	'{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
-Depends(buildClocBare, scripts)
-Depends(buildClocBare, nativeclasses)
 buildCloc = envModule.Alias('scr_dragonscript_cloc', buildClocBare)
 
 # add the targets to the targets list

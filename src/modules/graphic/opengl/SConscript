@@ -1,5 +1,6 @@
 from SConsCommon import *
 import xml.etree.ElementTree as ET
+import os, re
 
 # import whatever is given by the parent builder
 Import('parent_env parent_targets parent_report')
@@ -143,7 +144,6 @@ if internalModule:
 	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
 	
 	objects = [envModule.SharedObject(s) for s in sources]
-	envModule.Depends(objects, parent_targets['dragengine']['headers'])
 	
 	library = envModule.StaticLibrary(target='graopengl', source=objects, LIBS=libs)
 	targetBuild = parent_env.Alias('gra_opengl_build', library)
@@ -175,10 +175,9 @@ else:
 		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 	
 	manifest = envModule.File('src/module.xml')
-	updateManifest = envModule.Command(manifest, manifest.srcnode(),
+	updateManifest = envModule.Command(manifest,
+		[manifest.srcnode(), library, 'SConscript'],
 		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-	Depends(updateManifest, library)
-	Depends(updateManifest, 'SConscript')
 	
 	install.append(envModule.Install(pathModule, updateManifest))
 	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
@@ -248,10 +247,15 @@ def transpileOpenGLSpirV(env):
 	basePathTranspiled = env.Dir('data').Dir(dataPath)
 	basePathShaderSources = env.Dir('data/shaderSources').srcnode()
 	
-	env.Append(GLSL_INCPATH=[env.Dir('data/shaderSources').srcnode()])
+	env.Append(GLSL_INCPATH=[basePathShaderSources])
 	
 	sharedShaderSources = []
 	globFiles(envModule, 'data/shaderSources/shared', '*.glsl', sharedShaderSources)
+	
+	nodeBaseShared = envModule.Dir('.').srcnode()
+	nodeShared = [nodeBaseShared.File(s).srcnode() for s in sharedShaderSources]
+	
+	sharedIncludes = [s[19:] for s in sharedShaderSources]
 	
 	# certain shaders can never happen under spir-v. remove them
 	removeShaderSources = [
@@ -260,19 +264,52 @@ def transpileOpenGLSpirV(env):
 		'data/shaderSources/geometry/defren/skin/depth.shaderSource.xml',
 	]
 	
+	reInclude = re.compile(r'^#include\s+"(\S+)"', re.M)
+	
+	def scanShaderSource(node, env, path, arg=None):
+		includes = reInclude.findall(node.get_text_contents())
+		l = []
+		for i in includes:
+			found = False
+			for d in path:
+				f = os.path.join(str(d), i)
+				if os.path.exists(f):
+					n = env.File(f)
+					l.append(n)
+					scanShaderSource(n, env, path, arg)
+					found = True
+					break
+			if not found:
+				raise "Include file not found: '{}'".format(i)
+		return l
+	
+	scannerShaderSource = Scanner(function=scanShaderSource, skeys=['.glsl'],
+		path_function=FindPathDirs('GLSL_INCPATH'))
+	env.Append(SCANNERS = scannerShaderSource)
+	
+	shaderMap = {}
 	for s in [x for x in shaderSources if x not in removeShaderSources]:
-		shaderSourceFile = env.File(s)
-		tree = ET.parse(shaderSourceFile.srcnode().abspath)
+		shaderSourceFile = env.File(s).srcnode()
+		tree = ET.parse(shaderSourceFile.abspath)
 		root = tree.getroot()
 		
 		filename = root.find('source').text
-		glslFile = shaderSourceFile.srcnode().get_dir().File(filename)
+		glslFile = shaderSourceFile.get_dir().File(filename)
 		relativePath = basePathShaderSources.rel_path(glslFile).replace('.glsl', '.spv')
-		spirvFile = basePathTranspiled.File(relativePath)
-		env.Depends(spirvFile, [shaderSourceFile, glslFile, sharedShaderSources])
 		
-		transpiled = env.Command(spirvFile, glslFile, env.Action(
-			buildTranspileOpenGLSpirV, 'Transpile Spir-V (GLSL): {}'.format(relativePath)))
+		if glslFile in shaderMap:
+			shaderMap[glslFile][2].append(shaderSourceFile)
+		else:
+			shaderMap[glslFile] = [filename, relativePath, [shaderSourceFile]]
+	
+	for (glslFile,v) in shaderMap.items():
+		filename = v[0]
+		relativePath = v[1]
+		spirvFile = basePathTranspiled.File(relativePath)
+		
+		transpiled = env.Command(spirvFile, [glslFile, v[2]],
+			env.Action(buildTranspileOpenGLSpirV,
+				'Transpile Spir-V (GLSL): {}'.format(relativePath)))
 		
 		if withEngineDeal:
 			filename = os.path.join(pathAsset, dataPath, relativePath)
@@ -304,9 +341,6 @@ srcdir = Dir('.').srcnode().abspath
 buildClocBare = BuildCLOC(envModule,
 	['{}/src'.format(srcdir), '{}/shaders'.format(srcdir), '{}/shaderSources'.format(srcdir)],
 	'{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
-Depends(buildClocBare, data)
 buildCloc = envModule.Alias('gra_opengl_cloc', buildClocBare)
 
 # add the targets to the targets list

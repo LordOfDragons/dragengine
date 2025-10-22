@@ -255,8 +255,6 @@ if envDragengine['with_static_internalmodules']:
 	targetCreateInternalModules = envDragengine.Command(
 		'deModuleSystem_generated.cpp', targetConfig, envDragengine.Action(
 			createInternalModulesBuild, 'Generate Internal Modules Source'))
-	
-	envDragengine.Depends('src/systems/deModuleSystem.cpp', targetCreateInternalModules)
 
 objects = [envDragengine.SharedObject(s) for s in sources]
 
@@ -273,8 +271,6 @@ envDragengine.Append(LIBPATH = parent_targets['lib_zlib']['libpath'])
 if envDragengine['OSPosix']:
 	envDragengine.Replace(SHLIBVERSION = libVersionString)
 
-envDragengine.Depends(sources, targetConfig)
-
 
 if buildStatic:
 	library = envDragengine.StaticLibrary(target='dragengine', source=objects, LIBS=libs)
@@ -283,13 +279,11 @@ else:
 
 targetBuild = envDragengine.Alias('dragengine_build', library)
 
-copyHeaders = []
 refDir = envDragengine.Dir('src').srcnode()
 for h in headers:
-	copyHeaders.append(envDragengine.Command(
+	envDragengine.Command(
 		os.path.join('include', 'dragengine', refDir.rel_path(h)),
-		h, Copy('$TARGET', '$SOURCE')))
-envDragengine.Depends(library, copyHeaders)
+		h, Copy('$TARGET', '$SOURCE'))
 
 installHeaders = [envDragengine.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
 installDevelop = installHeaders[:]
@@ -393,7 +387,6 @@ parent_targets['dragengine'] = {
 	'install': targetInstall,
 	'install-runtime': targetInstallRuntime,
 	'install-engine-runtime': targetInstallRuntime,
-	'headers': copyHeaders,
 	'library': library,
 	'archive-engine': archiveEngine,
 	'archive-engine-develop': archiveDevelop,
