@@ -194,7 +194,9 @@ function DownloadArtifact {
     )
 
     if (!(Test-Path "$SourceDir\$FilenameArtifact")) {
-        Invoke-WebRequest "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -OutFile "$SourceDir\$FilenameArtifact"
+        #Invoke-WebRequest "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -OutFile "$SourceDir\$FilenameArtifact"
+        Start-BitsTransfer -Source "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" `
+            -Destination "$SourceDir\$FilenameArtifact" -Priority High
     }
 }
 
