@@ -195,8 +195,20 @@ function DownloadArtifact {
 
     if (!(Test-Path "$SourceDir\$FilenameArtifact")) {
         #Invoke-WebRequest "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -OutFile "$SourceDir\$FilenameArtifact"
-        Start-BitsTransfer -Source "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" `
-            -Destination "$SourceDir\$FilenameArtifact" -Priority High
+        #Start-BitsTransfer -Source "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" `
+        #    -Destination "$SourceDir\$FilenameArtifact" -Priority High
+        
+        $Retries = 0
+        while ($Retries -lt 6) {
+            try {
+                Start-BitsTransfer -Source "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" `
+                    -Destination "$SourceDir\$FilenameArtifact" -Priority High -ErrorAction Stop
+                break
+            } catch {
+                Start-Sleep -Seconds 5
+                $Retries++
+            }
+        }
     }
 }
 
