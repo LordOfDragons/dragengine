@@ -80,10 +80,12 @@ def liburingBuild(target, source, env):
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building liburing')
 
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+
 if not buildStaticLinking:
-	patches = [] # create with 'diff -rupN original_sources patches_sources'
 	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
-	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 if buildStaticLinking:
 	targets = [staticFileName]
@@ -96,8 +98,7 @@ targets.extend([
 	'include/liburing/io_uring.h',
 	'include/liburing/io_uring_version.h'])
 
-library = envLibrary.Command(targets,
-	[nodeArtifacts, envLibrary['PATCHES']],
+library = envLibrary.Command(targets, [nodeArtifacts, patches],
 	envLibrary.Action(liburingBuild, 'Build liburing'))
 
 depends = parent_env.Alias('lib_liburing', library)
