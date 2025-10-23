@@ -103,10 +103,12 @@ def libapngBuild( target, source, env ):
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libapng')
 
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+
 if not buildStaticLinking:
-	patches = [] # create with 'diff -rupN original_sources patches_sources'
 	globFiles( envLibrary, 'patches', '*.patch', patches, recursive=False )
-	envLibrary.Append( PATCHES = [ envLibrary.File( x ) for x in sorted( patches ) ] )
+
+envLibrary.Append( PATCHES = [ envLibrary.File( x ) for x in sorted( patches ) ] )
 
 if buildStaticLinking:
 	targets = [ staticFileName ]
