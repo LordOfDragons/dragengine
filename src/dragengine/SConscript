@@ -280,10 +280,11 @@ else:
 targetBuild = envDragengine.Alias('dragengine_build', library)
 
 refDir = envDragengine.Dir('src').srcnode()
+copyHeaders = []
 for h in headers:
-	envDragengine.Command(
+	copyHeaders.append(envDragengine.Command(
 		os.path.join('include', 'dragengine', refDir.rel_path(h)),
-		h, Copy('$TARGET', '$SOURCE'))
+		h, Copy('$TARGET', '$SOURCE')))
 
 installHeaders = [envDragengine.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
 installDevelop = installHeaders[:]
@@ -385,6 +386,7 @@ parent_targets['dragengine'] = {
 	'binlibs': binlibs,
 	'libs': linklibs,
 	'build': targetBuild,
+	'depends': copyHeaders,
 	'install': targetInstall,
 	'install-runtime': targetInstallRuntime,
 	'install-engine-runtime': targetInstallRuntime,

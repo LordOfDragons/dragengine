@@ -52,6 +52,9 @@ targetDir = envLauncher.Dir('app/src/main/jniLibs/{}'.format(jniDir)).srcnode()
 apkDeps.extend(installJniLibrary(targetDir, parent_targets['delauncher']['library']))
 apkDeps.extend(installJniLibrary(targetDir, parent_targets['dragengine']['library']))
 
+apkDeps.extend(parent_targets['delauncher']['depends'])
+apkDeps.extend(parent_targets['dragengine']['depends'])
+
 
 # game engine asset archive
 assetDir = envLauncher.Dir('app/src/main/assets').srcnode()

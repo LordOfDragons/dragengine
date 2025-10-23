@@ -68,10 +68,11 @@ else:
 targetBuildLib = envLibrary.Alias('delauncher_build', buildLibrary)
 
 refDir = envLibrary.Dir('src').srcnode()
+copyHeaders = []
 for h in headers:
-	envLibrary.Command(
+	copyHeaders.append(envLibrary.Command(
 		os.path.join('include', 'delauncher', refDir.rel_path(h)),
-		h, Copy('$TARGET', '$SOURCE'))
+		h, Copy('$TARGET', '$SOURCE')))
 
 installLibDevelop = [envLibrary.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
 
@@ -153,6 +154,7 @@ parent_targets['delauncher'] = {
 	'binlibs' : binlibs,
 	'library': buildLibrary,
 	'build' : targetBuildLib,
+	'depends': copyHeaders,
 	'install' : targetInstallLib,
 	'install-runtime' : targetInstallLibRuntime,
 	'install-launcher-runtime' : targetInstallLibRuntime,
