@@ -217,6 +217,10 @@
 			"path": "src/deigde/editors/gameDefinition"
 		},
 		{
+			"name": "Editor: Language Pack",
+			"path": "src/deigde/editors/langpack"
+		},
+		{
 			"name": "Editor: Particle Emitter",
 			"path": "src/deigde/editors/particleEmitter"
 		},
@@ -235,6 +239,14 @@
 		{
 			"name": "Editor: Sky",
 			"path": "src/deigde/editors/sky"
+		},
+		{
+			"name": "Editor: Speech Animation",
+			"path": "src/deigde/editors/speechAnimation"
+		},
+		{
+			"name": "Editor: Synthesizer",
+			"path": "src/deigde/editors/synthesizer"
 		},
 		{
 			"name": "Editor: World",

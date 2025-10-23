@@ -144,9 +144,8 @@ def gradleBuildApk(env, target, source):
 	script.append('./gradlew {} || exit 1'.format(' '.join(arguments)))
 	return 1 if os.system('\n'.join(script)) else None
 
-apk = envLauncher.Command(nodeApk, apkSources,
+apk = envLauncher.Command(nodeApk, [apkSources, apkDeps],
 	envLauncher.Action(gradleBuildApk, 'Build Android Launcher APK'))
-envLauncher.Depends(apk, apkDeps)
 envLauncher.Clean(apk, 'app/build')
 
 apkFilename = '{}.apk'.format(envLauncher['apk_name_launcher'])
@@ -182,10 +181,7 @@ def gradleBuildAab(env, target, source):
 	else:
 		raise Exception('unsupported platform {}'.format(platform))
 	
-	if env['with_debug']:
-		task.append('Debug')
-	else:
-		task.append('Release')
+	task.append('Debug' if env['with_debug'] else 'Release')
 	
 	arguments = []
 	arguments.append(''.join(task))
@@ -195,9 +191,8 @@ def gradleBuildAab(env, target, source):
 	script.append('./gradlew {} || exit 1'.format(' '.join(arguments)))
 	return 1 if os.system('\n'.join(script)) else None
 
-aab = envLauncher.Command(nodeAab, apkSources,
+aab = envLauncher.Command(nodeAab, [apkSources, apk],
 	envLauncher.Action(gradleBuildAab, 'Build Android Launcher Bundle'))
-envLauncher.Depends(aab, apk)
 
 aabFilename = '{}.aab'.format(envLauncher['apk_name_launcher'])
 
@@ -216,7 +211,6 @@ srcdir = Dir('.').srcnode().abspath
 # cloc
 buildClocBare = BuildCLOC(envLauncher, ['{}/app/src'.format(srcdir)],
 	'{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, apkSources)
 buildCloc = envLauncher.Alias('launcher_android_cloc', buildClocBare)
 
 

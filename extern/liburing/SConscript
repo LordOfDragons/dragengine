@@ -96,10 +96,9 @@ targets.extend([
 	'include/liburing/io_uring.h',
 	'include/liburing/io_uring_version.h'])
 
-library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(liburingBuild, 'Build liburing'))
-
-if not buildStaticLinking:
-	envLibrary.Depends(library, envLibrary['PATCHES'])
+library = envLibrary.Command(targets,
+	[nodeArtifacts, envLibrary['PATCHES']],
+	envLibrary.Action(liburingBuild, 'Build liburing'))
 
 depends = parent_env.Alias('lib_liburing', library)
 

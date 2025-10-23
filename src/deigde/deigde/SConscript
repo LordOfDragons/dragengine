@@ -220,8 +220,8 @@ linklibs.extend(parent_targets['delauncher']['libs'])
 #if not envIGDELib['OSWindows']:
 #	linklibs.extend(parent_targets['lib_fox']['libs'])
 
-doxyfile = envIGDELib.Command(envIGDELib.File('Doxyfile').srcnode(), 'Doxyfile.in',
-	Action(UpdateModuleManifest),
+doxyfile = envIGDELib.UpdateModuleManifest(
+	envIGDELib.File('Doxyfile').srcnode(), 'Doxyfile.in',
 	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
 
 targetDoxygen = envIGDELib.Alias('deigde_shared_doc', envIGDELib.Command(
@@ -346,10 +346,6 @@ srcdir = Dir('.').srcnode().abspath
 buildClocBare = BuildCLOC(envIGDEApp,
 	['{}/src'.format(srcdir), '{}/shared'.format(srcdir)],
 	'{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
-Depends(buildClocBare, sharedSources)
-Depends(buildClocBare, sharedHeaders)
 buildCloc = envIGDEApp.Alias('deigde_cloc', buildClocBare)
 
 # add the targets to the targets list

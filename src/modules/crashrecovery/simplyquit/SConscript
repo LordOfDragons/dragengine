@@ -69,15 +69,14 @@ else:
 		archive['{}/crsimplyquit.pdb'.format(pathPdb)] = envModule.File('crsimplyquit.pdb')
 	
 	manifestUpdates = [
-		{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
-		{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-		{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+		{'action': 'filename', 'file': library[0], 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'file': library[0], 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'file': library[0], 'keyword': 'SHA1SUM'},
 		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 	
 	manifest = envModule.File( 'src/module.xml' )
-	updateManifest = envModule.Command(manifest,
-		[manifest.srcnode(), library, 'SConscript'],
-		Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
+	updateManifest = envModule.UpdateModuleManifest(manifest,
+		manifest.srcnode(), ManifestUpdates=manifestUpdates)
 	
 	install.append( envModule.Install( pathModule, updateManifest ) )
 	archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]

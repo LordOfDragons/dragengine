@@ -108,11 +108,9 @@ targets.extend([
 	'include/libevdev-1.0/libevdev/libevdev.h',
 	'include/libevdev-1.0/libevdev/libevdev-uinput.h'])
 
-library = envLibrary.Command(targets, nodeArtifacts,
+library = envLibrary.Command(targets,
+	[nodeArtifacts, envLibrary['PATCHES']],
 	envLibrary.Action(libevdevBuild, 'Build libevdev'))
-
-if not buildStaticLinking:
-	envLibrary.Depends(library, envLibrary['PATCHES'])
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

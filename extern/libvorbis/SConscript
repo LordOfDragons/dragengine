@@ -107,10 +107,9 @@ else:
 targets.append( 'include/vorbis/vorbisenc.h' )
 targets.append( 'include/vorbis/vorbisfile.h' )
 targets.append( 'include/vorbis/codec.h' )
-library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(libvorbisBuild, 'Build libvorbis' ) )
-
-if parent_targets[ 'lib_libogg' ][ 'depends' ]:
-	envLibrary.Depends( library, parent_targets[ 'lib_libogg' ][ 'depends' ] )
+library = envLibrary.Command(targets,
+	[nodeArtifacts, parent_targets['lib_libogg']['depends']],
+	envLibrary.Action(libvorbisBuild, 'Build libvorbis' ) )
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

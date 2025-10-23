@@ -170,9 +170,9 @@ envLibrary.Append(PATCHES = [])
 globFiles(envLibrary, os.path.join('patches', jpegVersion), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
-library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(jpegBuild, 'Build JPEG library'))
-
-envLibrary.Depends(library, envLibrary['PATCHES'])
+library = envLibrary.Command(targets,
+	[nodeArtifacts, envLibrary['PATCHES']],
+	envLibrary.Action(jpegBuild, 'Build JPEG library'))
 
 envLibrary.SideEffect('#notParallelCMake', library)
 

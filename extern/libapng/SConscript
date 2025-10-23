@@ -114,12 +114,10 @@ else:
 	targets = [ libFileName ]
 targets.extend( [ 'include/pngconf.h', 'include/png.h', 'include/pnglibconf.h' ] )
 
-library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(libapngBuild, 'Build libapng' ) )
-
-if not buildStaticLinking:
-	envLibrary.Depends( library, envLibrary[ 'PATCHES' ] )
-if parent_targets[ 'lib_zlib' ][ 'depends' ]:
-	envLibrary.Depends( library, parent_targets[ 'lib_zlib' ][ 'depends' ] )
+library = envLibrary.Command(targets,
+	[nodeArtifacts, envLibrary['PATCHES'],
+		parent_targets['lib_zlib']['depends']],
+	envLibrary.Action(libapngBuild, 'Build libapng' ) )
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

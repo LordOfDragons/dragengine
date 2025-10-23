@@ -106,8 +106,6 @@ srcdir = Dir( '.' ).srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC( envLauncher, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
-Depends( buildClocBare, [ sources, sourcesEngine ] )
-Depends( buildClocBare, [ headers, headersEngine ] )
 buildCloc = envLauncher.Alias( 'launcher_android_cloc', buildClocBare )
 
 # add the targets to the targets list

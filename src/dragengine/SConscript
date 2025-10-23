@@ -350,9 +350,12 @@ targetInstall = envDragengine.Alias('dragengine', [targetInstallRuntime, targetI
 srcdir = Dir('src').srcnode().abspath
 
 # doxygen
-doxyfile = envDragengine.Command(envDragengine.File('Doxyfile').srcnode(), 'Doxyfile.in',
-	Action(UpdateModuleManifest),
-	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
+doxyfile = envDragengine.UpdateModuleManifest(
+	envDragengine.File('Doxyfile').srcnode(), 'Doxyfile.in',
+	ManifestUpdates=[{
+		'action': 'text',
+		'value': versionString,
+		'keyword': '%VERSION%'}])
 
 targetDoxygen = envDragengine.Alias('dragengine_doc', envDragengine.Command(
 	'doc/html/index.html', doxyfile, 'cd {} && doxygen ../Doxyfile'.format(srcdir)))
@@ -360,8 +363,6 @@ targetDoxygen = envDragengine.Alias('dragengine_doc', envDragengine.Command(
 
 # cloc
 targetClocBare = BuildCLOC(envDragengine, [srcdir], '{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(targetClocBare, sources)
-Depends(targetClocBare, headers)
 targetCloc = envDragengine.Alias('dragengine_cloc', targetClocBare)
 
 # add the targets to the targets list

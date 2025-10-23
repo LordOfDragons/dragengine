@@ -118,10 +118,9 @@ targets.extend( [ 'include/pngconf.h', 'include/png.h', 'include/pnglibconf.h' ]
 if envLibrary['OSWindows']:
 	targets.append(libFileName)
 
-library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(libpngBuild, 'Build libpng' ) )
-
-if parent_targets[ 'lib_zlib' ][ 'depends' ]:
-	envLibrary.Depends( library, parent_targets[ 'lib_zlib' ][ 'depends' ] )
+library = envLibrary.Command(targets,
+	[nodeArtifacts, parent_targets['lib_zlib']['depends']],
+	envLibrary.Action(libpngBuild, 'Build libpng' ) )
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

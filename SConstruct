@@ -114,6 +114,7 @@ if parent_env['LogStdOut_Enabled']:
 parent_env.Tool('runExternalCommand')
 parent_env.Tool('macos_bundle')
 parent_env.Tool('downloadArtifact')
+parent_env.Tool('updateModuleManifest')
 
 InitCommon(parent_env)
 #print('os.name', os.name)

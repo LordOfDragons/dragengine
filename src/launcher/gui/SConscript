@@ -125,7 +125,7 @@ for l in reversed(parent_targets['lib_fox']['runtimelibs']):
 	key = '{}/{}'.format(pathBinLib, l)
 	if not key in parent_targets['lib_fox']['globalInstallTracker']:
 		parent_targets['lib_fox']['globalInstallTracker'].append(key)
-		envLauncher.Depends(install, envLauncher.Install(pathBinLib, l))
+		install.append(envLauncher.Install(pathBinLib, l))
 		archive[os.path.join(pathBinLib, l.name)] = l
 
 
@@ -166,8 +166,6 @@ srcdir = Dir('.').srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC(envLauncher, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
 buildCloc = envLauncher.Alias('launcher_gui_cloc', buildClocBare)
 
 # add the targets to the targets list

@@ -192,13 +192,13 @@ globFiles(envLibrary, os.path.join('patches', freetypeVersion),
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 if envLibrary['platform_webwasm']:
-	library = envLibrary.Command(targets, nodeArtifacts,
+	library = envLibrary.Command(targets,
+		[nodeArtifacts, envLibrary['PATCHES']],
 		envLibrary.Action(freetypeBuildWasm, 'Build FreeType library'))
 else:
-	library = envLibrary.Command(targets, nodeArtifacts,
+	library = envLibrary.Command(targets,
+		[nodeArtifacts, envLibrary['PATCHES']],
 		envLibrary.Action(freetypeBuild, 'Build FreeType library'))
-
-envLibrary.Depends(library, envLibrary['PATCHES'])
 
 if envLibrary['platform_webwasm']:
 	envLibrary.SideEffect('#notParallelCMake', library)
