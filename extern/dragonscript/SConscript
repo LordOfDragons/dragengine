@@ -145,7 +145,8 @@ with open( envLibrary.File( 'data_file_list' ).srcnode().abspath, 'r' ) as f:
 	runtimedata.extend( [ envLibrary.File( envLibrary.subst( x[:-1] ) ) for x in f.readlines() ] )
 targets.extend( runtimedata )
 
-library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action( dragonscriptBuild, 'Build DragonScript' ) )
+library = envLibrary.Command( targets, [nodeArtifacts, patches],
+	envLibrary.Action( dragonscriptBuild, 'Build DragonScript' ) )
 
 depends = parent_env.Alias( 'lib_dragonscript', library )
 

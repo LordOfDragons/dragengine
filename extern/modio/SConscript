@@ -152,8 +152,7 @@ if envLibrary['platform_android'] != 'no':
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 library = envLibrary.Command(targets,
-	[nodeArtifacts, envLibrary['PATCHES'],
-		depUring['depends'] if depUring else []],
+	[nodeArtifacts, patches, depUring['depends'] if depUring else []],
 	envLibrary.Action(modioBuild, 'Build ModIO library'))
 
 envLibrary.SideEffect('#notParallelCMake', library)

@@ -115,8 +115,7 @@ else:
 targets.extend( [ 'include/pngconf.h', 'include/png.h', 'include/pnglibconf.h' ] )
 
 library = envLibrary.Command(targets,
-	[nodeArtifacts, envLibrary['PATCHES'],
-		parent_targets['lib_zlib']['depends']],
+	[nodeArtifacts, patches, parent_targets['lib_zlib']['depends']],
 	envLibrary.Action(libapngBuild, 'Build libapng' ) )
 
 #envLibrary.SideEffect('#notParallelCMake', library)

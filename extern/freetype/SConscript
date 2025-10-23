@@ -192,12 +192,10 @@ globFiles(envLibrary, os.path.join('patches', freetypeVersion),
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 if envLibrary['platform_webwasm']:
-	library = envLibrary.Command(targets,
-		[nodeArtifacts, envLibrary['PATCHES']],
+	library = envLibrary.Command(targets, [nodeArtifacts, patches],
 		envLibrary.Action(freetypeBuildWasm, 'Build FreeType library'))
 else:
-	library = envLibrary.Command(targets,
-		[nodeArtifacts, envLibrary['PATCHES']],
+	library = envLibrary.Command(targets, [nodeArtifacts, patches],
 		envLibrary.Action(freetypeBuild, 'Build FreeType library'))
 
 if envLibrary['platform_webwasm']:

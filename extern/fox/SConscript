@@ -182,7 +182,7 @@ with open(envLibrary.File('header_file_list/{}'.format(foxSrcVersion)).srcnode()
 	targets.extend([x[:-1] for x in f.readlines()])
 
 library = envLibrary.Command(targets,
-	[nodeArtifacts, envLibrary['PATCHES'], envLibrary['POST_PATCHES'],
+	[nodeArtifacts, patches, envLibrary['POST_PATCHES'],
 		parent_targets['lib_libpng']['depends']],
 	envLibrary.Action(foxBuild, 'Build fox'))
 

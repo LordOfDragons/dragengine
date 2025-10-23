@@ -93,10 +93,12 @@ def soundtouchBuild(target, source, env):
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building soundtouch')
 
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+
 if not buildStaticLinking:
-	patches = [] # create with 'diff -rupN original_sources patches_sources'
 	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
-	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 if buildStaticLinking:
 	targets = [staticFileName]
@@ -110,8 +112,7 @@ targets.extend(['include/soundtouch/{}'.format(x) for x in [
 	'SoundTouch.h',
 	'soundtouch_config.h']])
 
-library = envLibrary.Command(targets,
-	[nodeArtifacts, envLibrary['PATCHES']],
+library = envLibrary.Command(targets, [nodeArtifacts, patches],
 	envLibrary.Action(soundtouchBuild, 'Build SoundTouch'))
 
 #envLibrary.SideEffect('#notParallelCMake', library)
