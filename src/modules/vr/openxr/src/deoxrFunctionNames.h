@@ -69,6 +69,8 @@ INSTANCE_LEVEL_OPENXR_FUNCTION( xrGetViewConfigurationProperties )
 INSTANCE_LEVEL_OPENXR_FUNCTION( xrEnumerateViewConfigurationViews )
 INSTANCE_LEVEL_OPENXR_FUNCTION( xrLocateViews )
 
+INSTANCE_LEVEL_OPENXR_FUNCTION( xrEnumerateEnvironmentBlendModes )
+
 INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( xrCreateDebugUtilsMessengerEXT, extEXTDebugUtils )
 INSTANCE_LEVEL_OPENXR_FUNCTION_FROM_EXTENSION( xrDestroyDebugUtilsMessengerEXT, extEXTDebugUtils )
 

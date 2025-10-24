@@ -81,8 +81,8 @@ Texture Configurations
 - Roughness:                rgb (roughness, n/a, n/a) [3]
 - AOSolidity:               rgb (ambientOcclusion, ssao, solidity) [3]
 - Color:                    float rgba [8]
-- Temporary1:               float rgb [6]
-- Temporary2:               float rgb [6]
+- Temporary1:               float rgba [6]
+- Temporary2:               float rgba [6]
 - Temporary3:               r [1]
 => width * height * 40
 => 1680 x 1050 => 70.5 MB (80%)
@@ -1271,12 +1271,12 @@ void deoglDeferredRendering::pCreateTextures(){
 	// create temporary textures
 	pTextureTemporary1 = new deoglArrayTexture( pRenderThread );
 	pTextureTemporary1->SetMipMapped( true );
-	pTextureTemporary1->SetFBOFormat( 3, true );
+	pTextureTemporary1->SetFBOFormat( 4, true );
 	pTextureTemporary1->SetDebugObjectLabel( "DefRen.Temporary1" );
 	
 	pTextureTemporary2 = new deoglArrayTexture( pRenderThread );
 	pTextureTemporary2->SetMipMapped( true );
-	pTextureTemporary2->SetFBOFormat( 3, true );
+	pTextureTemporary2->SetFBOFormat( 4, true );
 	pTextureTemporary2->SetDebugObjectLabel( "DefRen.Temporary2" );
 	
 	pTextureTemporary3 = new deoglArrayTexture( pRenderThread );

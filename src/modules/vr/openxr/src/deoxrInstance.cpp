@@ -202,6 +202,10 @@ uint32_t deoxrInstance::ExtensionVersion( eExtension extension ) const{
 	return pSupportsExtension[ extension ].version;
 }
 
+void deoxrInstance::DisableExtension(eExtension extension){
+	pSupportsExtension[extension].version = 0;
+}
+
 bool deoxrInstance::SupportsLayer( eLayer layer ) const{
 	return pSupportsLayer[ layer ].enableIfSupported
 		&& pSupportsLayer[ layer ].layerVersion != 0;

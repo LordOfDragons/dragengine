@@ -1154,8 +1154,8 @@ bool deVROpenXR::pBeginFrame(){
 		
 		pSession->AttachActionSet( pActionSet );
 		
-		if( pSystem->GetSupportsPassthrough() ){
-			pPassthrough.TakeOver( new deoxrPassthrough( pSession ) );
+		if(pSystem->GetSupportsPassthrough()){
+			pPassthrough.TakeOver(new deoxrPassthrough(pSession));
 		}
 		return true;
 		

@@ -603,10 +603,11 @@ deoglEnvironmentMap &envmap ){
 		deoglCubeMap::efPositiveY, deoglCubeMap::efNegativeY,
 		deoglCubeMap::efPositiveZ, deoglCubeMap::efNegativeZ };
 	
-	decColor engSkyColor( ( ( deoglRSkyInstance* )pSkyInstances.GetAt( 0 ) )->GetRSky()->GetBgColor() );
-	engSkyColor.r = powf( engSkyColor.r, OGL_RENDER_GAMMA );
-	engSkyColor.g = powf( engSkyColor.g, OGL_RENDER_GAMMA );
-	engSkyColor.b = powf( engSkyColor.b, OGL_RENDER_GAMMA );
+	decColor engSkyColor(((deoglRSkyInstance*)pSkyInstances.GetAt(0))->GetRSky()->GetBgColor());
+	engSkyColor.r = powf(engSkyColor.r, OGL_RENDER_GAMMA);
+	engSkyColor.g = powf(engSkyColor.g, OGL_RENDER_GAMMA);
+	engSkyColor.b = powf(engSkyColor.b, OGL_RENDER_GAMMA);
+	engSkyColor.a = engSkyColor.a;
 	
 	plan.SetCameraParameters( DEG2RAD * 90.0f, 1.0f, 0.01f, 500.0f );
 	plan.SetCameraMatrix( decDMatrix() );
@@ -788,21 +789,17 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 }
 
 decColor deoglRenderSky::LinearBgColor( const deoglRSkyInstance &instance, bool first ) const{
-	if( ! first ){
-		return decColor( 0.0f, 0.0f, 0.0f, 0.0f );
-	}
-	
-	if( ! instance.GetRSky() ){
-		return decColor( 0.0f, 0.0f, 0.0f, 0.0f );
+	if(!first || instance.GetRSky()){
+		return decColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	
 	const decColor &skyColor = instance.GetRSky()->GetBgColor();
 	
 	return decColor(
-		( GLfloat )powf( skyColor.r, OGL_RENDER_GAMMA ),
-		( GLfloat )powf( skyColor.g, OGL_RENDER_GAMMA ),
-		( GLfloat )powf( skyColor.b, OGL_RENDER_GAMMA ),
-		skyColor.a );
+		(GLfloat)powf(skyColor.r, OGL_RENDER_GAMMA),
+		(GLfloat)powf(skyColor.g, OGL_RENDER_GAMMA),
+		(GLfloat)powf(skyColor.b, OGL_RENDER_GAMMA),
+		skyColor.a);
 }
 
 void deoglRenderSky::PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan ){

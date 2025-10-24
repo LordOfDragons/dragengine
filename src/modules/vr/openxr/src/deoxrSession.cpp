@@ -553,6 +553,7 @@ void deoxrSession::EndFrame(){
 	}
 	
 	const deoxrInstance &instance = pSystem.GetInstance();
+	const deoxrPassthrough::Ref &passthrough = instance.GetOxr().GetPassthrough();
 	
 	// end frame. views have to be submitted even if not rendered to otherwise runtimes
 	// like SteamVR can crash entire OpenGL
@@ -561,6 +562,9 @@ void deoxrSession::EndFrame(){
 	
 	endInfo.type = XR_TYPE_FRAME_END_INFO;
 	endInfo.environmentBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
+	if(passthrough){
+		endInfo.environmentBlendMode = passthrough->GetEnvBlendMode();
+	}
 	endInfo.displayTime = pPredictedDisplayTime;
 	
 	XrCompositionLayerProjectionView views[ 2 ];
@@ -620,16 +624,16 @@ void deoxrSession::EndFrame(){
 	const XrCompositionLayerBaseHeader *layers[ 2 ];
 	int layerCount = 0;
 	
-	const deoxrPassthrough * const passthrough = instance.GetOxr().GetPassthrough();
-	if( passthrough && passthrough->GetEnabled() && passthrough->GetTransparency() > 0.001f ){
-		layers[ layerCount++ ] = ( const XrCompositionLayerBaseHeader* )&passthrough->GetCompositeLayer();
+	if(passthrough){
+		if(passthrough->ShowPassthroughLayerFB()){
+			layers[layerCount++] = (const XrCompositionLayerBaseHeader*)&passthrough->GetCompositeLayerFB();
+		}
 	}
 	
-	XrCompositionLayerProjection layerProjection;
-	memset( &layerProjection, 0, sizeof( layerProjection ) );
-	
-	layerProjection.type = XR_TYPE_COMPOSITION_LAYER_PROJECTION;
-// 	layerProjection.layerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;
+	XrCompositionLayerProjection layerProjection{XR_TYPE_COMPOSITION_LAYER_PROJECTION};
+	if(passthrough){
+		layerProjection.layerFlags |= passthrough->GetCompositeLayerFlags();
+	}
 	layerProjection.space = pMainSpace->GetSpace();
 	layerProjection.viewCount = 2;
 	layerProjection.views = views;

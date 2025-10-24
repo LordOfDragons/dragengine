@@ -159,6 +159,8 @@ public:
 	/** Extension version or 0 if not supported. */
 	uint32_t ExtensionVersion( eExtension extension ) const;
 	
+	/** Disable extension support. */
+	void DisableExtension(eExtension extension);
 	
 	
 	/** Layer is supported. */

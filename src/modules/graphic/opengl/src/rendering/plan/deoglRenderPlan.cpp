@@ -612,7 +612,7 @@ void deoglRenderPlan::pPlanSky(){
 	int i;
 	
 	pSkyInstances.RemoveAll();
-	pSkyBgColor.SetZero();
+	pSkyBgColor.Set(0.0f, 0.0f, 0.0f, 0.0f);
 	
 	for( i=0; i<count; i++ ){
 		deoglRSkyInstance * const instance = pWorld->GetSkyAt( i );

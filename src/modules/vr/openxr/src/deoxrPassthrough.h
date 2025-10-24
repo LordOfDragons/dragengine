@@ -45,15 +45,16 @@ public:
 private:
 	deoxrSession &pSession;
 	
-	XrPassthroughFB pPassthrough;
-	XrPassthroughLayerFB pLayer;
-	
 	bool pEnabled;
 	float pTransparency;
 	
-	XrPassthroughStyleFB pLayerStyle;
-	XrCompositionLayerPassthroughFB pCompositeLayer;
+	XrPassthroughFB pPassthroughFB;
+	XrPassthroughLayerFB pLayerFB;
+	XrPassthroughStyleFB pLayerStyleFB;
+	XrCompositionLayerPassthroughFB pCompositeLayerFB;
 	
+	XrEnvironmentBlendMode pEnvBlendMode;
+	XrCompositionLayerFlags pCompositionLayerFlags;
 	
 	
 public:
@@ -64,9 +65,8 @@ public:
 	
 protected:
 	/** Clean up passthrough. */
-	virtual ~deoxrPassthrough();
+	~deoxrPassthrough() override;
 	/*@}*/
-	
 	
 	
 public:
@@ -75,11 +75,6 @@ public:
 	/** Session. */
 	inline deoxrSession &GetSession() const{ return pSession; }
 	
-	/** Passthrough. */
-	inline XrPassthroughFB GetPassthrough() const{ return pPassthrough; }
-	
-	/** Passthrough layer. */
-	inline XrPassthroughLayerFB GetLayer() const{ return pLayer; }
 	
 	/** Enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
@@ -93,16 +88,35 @@ public:
 	/** Set transparency. */
 	void SetTransparency( float transparency );
 	
-	/** Composite layer. */
-	inline const XrCompositionLayerPassthroughFB &GetCompositeLayer() const{ return pCompositeLayer; }
-	/*@}*/
 	
+	/** Passthrough. */
+	inline XrPassthroughFB GetPassthroughFB() const{ return pPassthroughFB; }
+	
+	/** Passthrough layer. */
+	inline XrPassthroughLayerFB GetLayerFB() const{ return pLayerFB; }
+	
+	/** Composite layer. */
+	inline const XrCompositionLayerPassthroughFB &GetCompositeLayerFB() const{ return pCompositeLayerFB; }
+	
+	/** Show passthrough layer. */
+	bool ShowPassthroughLayerFB() const;
+	
+	
+	/** Environment blend mode. */
+	inline XrEnvironmentBlendMode GetEnvBlendMode() const{ return pEnvBlendMode; }
+	
+	/** Composition layer flags. */
+	inline XrCompositionLayerFlags GetCompositeLayerFlags() const{ return pCompositionLayerFlags; }
+	/*@}*/
 	
 	
 private:
 	void pCleanUp();
-	void pUpdateLayerStyle();
 	void pEnsureCreated();
+	void pEnsureCreateFB();
+	void pUpdateLayerStyleFB();
+	void pEnablePassthroughFB();
+	void pUpdateEnvBlendMode();
 };
 
 #endif

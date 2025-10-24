@@ -47,7 +47,8 @@ pSupportsHandTracking( false ),
 pSupportsEyeGazeTracking( false ),
 pSupportsFaceEyeTracking( false ),
 pSupportsFaceLipTracking( false ),
-pSupportsPassthrough( false )
+pSupportsPassthrough( false ),
+pSupportsEnvBlendModeAlphaBlend(false)
 {
 	try{
 		// create system
@@ -97,6 +98,7 @@ pSupportsPassthrough( false )
 		}
 		
 		OXR_CHECK( instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
+		deVROpenXR &oxr = instance.GetOxr();
 		
 		pSystemName = sysProps.systemName;
 		pMaxRenderImageSize.x = sysProps.graphicsProperties.maxSwapchainImageWidth;
@@ -125,11 +127,30 @@ pSupportsPassthrough( false )
 			pSupportsFaceLipTracking = sysFaceTrackProps.supportLipFacialTracking;
 		}
 		
-		if( instance.SupportsExtension( deoxrInstance::extFBPassthrough ) ){
-			pSupportsPassthrough = sysPassThroughProps.supportsPassthrough;
+		if(instance.SupportsExtension(deoxrInstance::extFBPassthrough)){
+			if(sysPassThroughProps.supportsPassthrough){
+				pSupportsPassthrough = true;
+				
+			}else{
+				instance.DisableExtension(deoxrInstance::extFBPassthrough);
+				oxr.LogWarn("Disabling extFBPassthrough extension since passthrough is not supported by the system");
+			}
 		}
 		
-		deVROpenXR &oxr = instance.GetOxr();
+		XrEnvironmentBlendMode envBlendModes[3]{};
+		uint32_t i, envBlendModeCount;
+		OXR_CHECK(instance.xrEnumerateEnvironmentBlendModes(instance.GetInstance(), pSystemId,
+			XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO,
+			3, &envBlendModeCount, envBlendModes));
+		
+		for(i=0; i<envBlendModeCount; i++){
+			if(envBlendModes[i] == XR_ENVIRONMENT_BLEND_MODE_ALPHA_BLEND){
+				pSupportsEnvBlendModeAlphaBlend = true;
+				pSupportsPassthrough = true;
+				break;
+			}
+		}
+		
 		oxr.LogInfoFormat( "System name: %s", pSystemName.GetString() );
 		oxr.LogInfoFormat( "Maximum render image size: %d x %d", pMaxRenderImageSize.x, pMaxRenderImageSize.y );
 		oxr.LogInfoFormat( "Maximum layer count: %d", pMaxLayerCount);
@@ -139,6 +160,7 @@ pSupportsPassthrough( false )
 		oxr.LogInfoFormat( "Supports eye gaze tracking: %s", pSupportsEyeGazeTracking ? "yes" : "no" );
 		oxr.LogInfoFormat( "Supports face eye tracking: %s", pSupportsFaceEyeTracking ? "yes" : "no" );
 		oxr.LogInfoFormat( "Supports face mouth tracking: %s", pSupportsFaceLipTracking ? "yes" : "no" );
+		oxr.LogInfoFormat("Supports environment blend mode alpha blend: %s", pSupportsEnvBlendModeAlphaBlend ? "yes" : "no");
 		oxr.LogInfoFormat( "Supports passthrough: %s", pSupportsPassthrough ? "yes" : "no" );
 		
 		// required features check
@@ -172,7 +194,6 @@ pSupportsPassthrough( false )
 				memset( &props, 0, sizeof( props ) );
 				props.type = XR_TYPE_VIEW_CONFIGURATION_PROPERTIES;
 				
-				uint32_t i;
 				for( i=0; i<viewConfigCount; i++ ){
 					OXR_CHECK( instance.xrGetViewConfigurationProperties(
 						instance.GetInstance(), pSystemId, viewConfigs[ i ], &props ) );

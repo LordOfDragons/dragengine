@@ -79,6 +79,8 @@ private:
 	bool pSupportsFaceLipTracking;
 	bool pSupportsPassthrough;
 	
+	bool pSupportsEnvBlendModeAlphaBlend;
+	
 	
 	
 public:
@@ -150,6 +152,9 @@ public:
 	
 	/** Supports passthrough. */
 	inline bool GetSupportsPassthrough() const{ return pSupportsPassthrough; }
+	
+	/** Supports environment blend mode alpha blend. */
+	inline bool GetSupportsEnvBlendModeAlphaBlend() const{ return pSupportsEnvBlendModeAlphaBlend; }
 	/*@}*/
 	
 	
