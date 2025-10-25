@@ -86,6 +86,7 @@ pLeftEye( *this, deBaseVRModule::evreLeft ),
 pRightEye( *this, deBaseVRModule::evreRight ),
 pCameraFov( 1.0f ),
 pCameraFovRatio( 1.0f ),
+pPassthroughTransparency(1.0f),
 pState( esBeginFrame ),
 pTimeHistoryFrame( 9, 2 ),
 pTargetFPS( 90 ),
@@ -173,10 +174,13 @@ void deoglVR::StartBeginFrame(){
 	// NOTE not done during constructor since constructor is called from main thread
 	
 	deoglRenderThread &renderThread = pCamera.GetRenderThread();
-	deBaseVRModule * const vrmodule = renderThread.GetOgl().GetGameEngine()->GetVRSystem()->GetActiveModule();
-	if( ! vrmodule ){
+	deVRSystem &vrsys = *renderThread.GetOgl().GetGameEngine()->GetVRSystem();
+	deBaseVRModule * const vrmodule = vrsys.GetActiveModule();
+	if(!vrmodule){
 		return;
 	}
+	
+	pPassthroughTransparency = vrsys.GetEnablePassthrough() ? vrsys.GetPassthroughTransparency() : 1.0f;
 	
 	pLeftEye.BeginFrame( *vrmodule );
 	pRightEye.BeginFrame( *vrmodule );
