@@ -229,7 +229,7 @@ deoglRenderBase( renderThread )
 	}
 	
 	pipconf.Reset();
-	pipconf.SetMasks( true, true, true, false, false ); // alpha=false to avoid blended alpha to be written
+	pipconf.SetMasks( true, true, true, true, false );
 	pipconf.EnableBlendBlend();
 	pipconf.SetEnableScissorTest( true );
 	pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
