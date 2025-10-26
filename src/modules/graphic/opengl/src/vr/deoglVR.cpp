@@ -87,6 +87,7 @@ pRightEye( *this, deBaseVRModule::evreRight ),
 pCameraFov( 1.0f ),
 pCameraFovRatio( 1.0f ),
 pPassthroughTransparency(1.0f),
+pPassthroughEnabled(false),
 pState( esBeginFrame ),
 pTimeHistoryFrame( 9, 2 ),
 pTargetFPS( 90 ),
@@ -180,7 +181,8 @@ void deoglVR::StartBeginFrame(){
 		return;
 	}
 	
-	pPassthroughTransparency = vrsys.GetEnablePassthrough() ? vrsys.GetPassthroughTransparency() : 1.0f;
+	pPassthroughEnabled = vrsys.GetEnablePassthrough();
+	pPassthroughTransparency = pPassthroughEnabled ? vrsys.GetPassthroughTransparency() : 1.0f;
 	
 	pLeftEye.BeginFrame( *vrmodule );
 	pRightEye.BeginFrame( *vrmodule );

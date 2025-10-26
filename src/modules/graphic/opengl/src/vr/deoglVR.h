@@ -55,6 +55,7 @@ private:
 	deoglVREye pLeftEye, pRightEye;
 	
 	float pFovX, pFovY, pCameraFov, pCameraFovRatio, pPassthroughTransparency;
+	bool pPassthroughEnabled;
 	
 	eState pState;
 	
@@ -112,6 +113,9 @@ public:
 	
 	/** Passthrough transparency. */
 	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
+	
+	/** Passthrough enabled. */
+	inline bool GetPassthroughEnabled() const{ return pPassthroughEnabled; }
 	
 	
 	/** Update target frame rate. */

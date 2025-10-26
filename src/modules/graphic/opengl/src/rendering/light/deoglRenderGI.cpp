@@ -790,7 +790,7 @@ deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 
 void deoglRenderGI::ClearProbes( deoglRenderPlan &plan ){
 	deoglGIState * const giState = plan.GetUpdateGIState();
-	DEASSERT_NOTNULL( giState  )
+	DEASSERT_NOTNULL(giState)
 	
 	deoglGICascade &cascade = giState->GetActiveCascade();
 	if( ! cascade.HasClearProbes() ){

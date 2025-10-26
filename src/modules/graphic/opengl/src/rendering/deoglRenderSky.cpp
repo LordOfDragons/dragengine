@@ -63,7 +63,9 @@
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../vao/deoglVAO.h"
+#include "../world/deoglRCamera.h"
 #include "../world/deoglRWorld.h"
+#include "../vr/deoglVR.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -325,10 +327,18 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMask
 	
 	pPipelineClearBuffers->Activate();
 	
+	const bool skipPassthrough = plan.GetRenderVR() != deoglRenderPlan::ervrNone
+		&& plan.GetCamera()->GetVR()->GetPassthroughEnabled();
+	
 	GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const int skyCount = plan.GetSkyInstanceCount();
 	if( skyCount > 0 ){
-		const decColor bgColor( LinearBgColor( *plan.GetSkyInstanceAt( 0 ), true ) );
+		decColor bgColor( LinearBgColor( *plan.GetSkyInstanceAt( 0 ), true ) );
+		
+		if(skipPassthrough && plan.GetSkyInstanceAt(0)->GetPassthroughTransparency() < 0.001f){
+			bgColor.a = 0.0f;
+		}
+		
 		clearColor[ 0 ] = ( GLfloat )bgColor.r;
 		clearColor[ 1 ] = ( GLfloat )bgColor.g;
 		clearColor[ 2 ] = ( GLfloat )bgColor.b;
@@ -364,6 +374,10 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMask
 	
 	for( i=0; i<skyCount; i++ ){
 		deoglRSkyInstance &instance = *plan.GetSkyInstanceAt( i );
+		if(skipPassthrough && instance.GetPassthroughTransparency() < 0.001f){
+			continue;
+		}
+		
 		deoglRSky &sky = *instance.GetRSky();
 		const int layerCount = sky.GetLayerCount();
 		
