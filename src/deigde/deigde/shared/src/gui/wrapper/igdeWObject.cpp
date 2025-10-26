@@ -512,6 +512,23 @@ void igdeWObject::SetAsyncLoadFinished( cAsyncLoadFinished *listener ){
 	pAsyncLoadFinished = listener;
 }
 
+bool igdeWObject::AllSubObjectsFinishedLoading() const{
+	if(pAsyncLoadCounter != 0){
+		return false;
+	}
+	
+	const int count = pSubObjects.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		if(!((igdeWOSubObject*)pSubObjects.GetAt(i))->AllSubObjectsFinishedLoading()){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+
 void igdeWObject::OnGameDefinitionChanged(){
 	if( pGDClass ){
 		SetGDClassName( pGDClass->GetName() );

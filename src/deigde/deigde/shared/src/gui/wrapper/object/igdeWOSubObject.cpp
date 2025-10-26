@@ -138,6 +138,10 @@ bool igdeWOSubObject::IsContentVisible(){
 	return false;
 }
 
+bool igdeWOSubObject::AllSubObjectsFinishedLoading() const{
+	return true;
+}
+
 
 
 // Protected Functions

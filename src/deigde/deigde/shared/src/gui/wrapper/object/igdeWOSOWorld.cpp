@@ -567,6 +567,17 @@ bool igdeWOSOWorld::IsContentVisible(){
 	return false;
 }
 
+bool igdeWOSOWorld::AllSubObjectsFinishedLoading() const{
+	const int count = pChildObjects.GetCount();
+	int i;
+	for(i=0; i<count; i++){
+		if(!((ChildObject*)pChildObjects.GetAt(i))->GetWrapper()->AllSubObjectsFinishedLoading()){
+			return false;
+		}
+	}
+	return true;
+}
+
 
 // Protected Functions
 ////////////////////////

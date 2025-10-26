@@ -411,6 +411,14 @@ public:
 	/** \brief Trigger listener for internal use only. */
 	inline igdeTriggerListener *GetTriggerListener() const{ return pTriggerListener; }
 	
+	/**
+	 * \brief Determine if all sub objects (direct or indirect) finished loading.
+	 * 
+	 * Required if world type sub objects are present. These report finished loading
+	 * as soon as the world has been loaded to avoid waiting. Use this function to
+	 * check if all sub objects inside this object fully finished loading.
+	 */
+	bool AllSubObjectsFinishedLoading() const;
 	
 	
 	/**

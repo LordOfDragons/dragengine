@@ -145,7 +145,7 @@ void igdeGDPCObjectClass::PrepareCanvasForRender(){
 }
 
 bool igdeGDPCObjectClass::IsCanvasReadyForRender(){
-	if( ! pAsyncFinished.asyncLoadFinished ){
+	if(!pAsyncFinished.asyncLoadFinished || !pObject->AllSubObjectsFinishedLoading()){
 		return false;
 	}
 	

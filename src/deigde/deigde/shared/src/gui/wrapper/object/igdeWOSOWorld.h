@@ -264,6 +264,15 @@ public:
 	 * visible if it would be visible otherwise.
 	 */
 	bool IsContentVisible() override;
+	
+	/**
+	 * \brief Determine if all sub objects (direct or indirect) finished loading.
+	 * 
+	 * Required if world type sub objects are present. These report finished loading
+	 * as soon as the world has been loaded to avoid waiting. Use this function to
+	 * check if all sub objects inside this object fully finished loading.
+	 */
+	bool AllSubObjectsFinishedLoading() const override;
 	/*@}*/
 	
 	
