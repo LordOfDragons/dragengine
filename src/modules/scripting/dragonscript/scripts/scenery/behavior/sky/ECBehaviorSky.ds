@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
@@ -99,12 +98,10 @@ class ECBehaviorSky extends DefaultECBehavior
 		var SkyController pControllerPlayback
 		
 		
-		
 		/** \brief Create element. */
 		func new(ECBehaviorSky ecbehavior, BehaviorElement element) super(element)
 			pECBehavior = ecbehavior
 		end
-		
 		
 		
 		/** \brief Initialize element from stub. */
@@ -118,6 +115,7 @@ class ECBehaviorSky extends DefaultECBehavior
 			pSkyInstance.setSky(sky)
 			pSkyInstance.setOrder(pECBehavior.getOrder().getValue(stub))
 			pSkyInstance.setLayerMask(pECBehavior.getLayerMask())
+			pSkyInstance.setPassthroughTransparency(pECBehavior.getPassthroughTransparency().getValue(stub))
 			
 			var String name = pECBehavior.getControllerPlayback().getValue(stub)
 			if not name.empty()
@@ -126,7 +124,6 @@ class ECBehaviorSky extends DefaultECBehavior
 			
 			setRequiresThink(pControllerPlayback != null)
 		end
-		
 		
 		
 		/** \brief Behavior. */
@@ -146,12 +143,7 @@ class ECBehaviorSky extends DefaultECBehavior
 		
 		/** \brief Playback time. */
 		func float getPlaybackTime()
-			if pControllerPlayback != null
-				return pControllerPlayback.getValue()
-				
-			else
-				return 0
-			end
+			return pControllerPlayback != null if pControllerPlayback.getValue() else 0
 		end
 		
 		/** \brief Set playback time. */
@@ -206,12 +198,11 @@ class ECBehaviorSky extends DefaultECBehavior
 	end
 	
 	
-	
 	var ECPSky pSky
 	var ECPInteger pOrder
 	var ECPString pControllerPlayback
 	var LayerMask pLayerMask
-	
+	var ECPFloat pPassthroughTransparency
 	
 	
 	/** \brief Create behavior element class. */
@@ -231,18 +222,13 @@ class ECBehaviorSky extends DefaultECBehavior
 	func new(BehaviorElementClass eclass, Loaders loaders, String prefix) super(eclass)
 		pLayerMask = LayerMask.new()
 		
-		pSky = ECPSky.new(prefix + "path", loaders.getSky())
-		eclass.addProperty(pSky)
-		
-		pOrder = ECPInteger.new(prefix + "order", 0)
-		eclass.addProperty(pOrder)
-		
-		pControllerPlayback = ECPString.new(prefix + "controllerPlayback", "")
-		eclass.addProperty(pControllerPlayback)
+		eclass.addProperty(pSky = ECPSky.new(prefix + "path", loaders.getSky()))
+		eclass.addProperty(pOrder = ECPInteger.new(prefix + "order", 0))
+		eclass.addProperty(pControllerPlayback = ECPString.new(prefix + "controllerPlayback", ""))
+		eclass.addProperty(pPassthroughTransparency = ECPFloat.new(prefix + "passthroughTransparency", 0, 0, 1))
 		
 		eclass.addBehavior(this)
 	end
-	
 	
 	
 	/** \brief Sky resource. */
@@ -273,6 +259,13 @@ class ECBehaviorSky extends DefaultECBehavior
 		pLayerMask = layerMask
 	end
 	
+	/**
+	 * \brief Passthrough transparency factor.
+	 * \version 1.29
+	 */
+	func ECPFloat getPassthroughTransparency()
+		return pPassthroughTransparency
+	end
 	
 	
 	/** \brief Get instance in element from owner element class. */
@@ -303,7 +296,6 @@ class ECBehaviorSky extends DefaultECBehavior
 			return true
 		end) cast Instance
 	end
-	
 	
 	
 	/** \brief Create Behavior instance. */
