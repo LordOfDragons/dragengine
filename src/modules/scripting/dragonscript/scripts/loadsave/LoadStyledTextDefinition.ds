@@ -201,6 +201,7 @@ class LoadStyledTextDefinition extends BaseXmlLoader
 		if root.hasAttributeNamed("style")
 			textNode.setStyle(root.getAttributeNamed("style"))
 		end
+		textNode.setNewPage(root.hasAttributeNamed("newPage"))
 		
 		for i = 0 to elementCount
 			element = root.getElementAt(i)
@@ -247,6 +248,7 @@ class LoadStyledTextDefinition extends BaseXmlLoader
 		if root.hasAttributeNamed("style")
 			imageNode.setStyle(root.getAttributeNamed("style"))
 		end
+		imageNode.setNewPage(root.hasAttributeNamed("newPage"))
 		
 		var String path = root.getFirstCData()
 		if not path.empty()
@@ -268,6 +270,7 @@ class LoadStyledTextDefinition extends BaseXmlLoader
 		if root.hasAttributeNamed("style")
 			videoNode.setStyle(root.getAttributeNamed("style"))
 		end
+		videoNode.setNewPage(root.hasAttributeNamed("newPage"))
 		
 		var String path = root.getFirstCData()
 		if not path.empty()
@@ -286,10 +289,7 @@ class LoadStyledTextDefinition extends BaseXmlLoader
 	private func RectArea parseMargins(EasyXMLElement root)
 		var int i, elementCount = root.getElementCount()
 		var EasyXMLElement element
-		var int leftMargin = 0
-		var int topMargin = 0
-		var int rightMargin = 0
-		var int bottomMargin = 0
+		var int leftMargin, topMargin, rightMargin, bottomMargin
 		var String tagName
 		
 		if root.hasAttributeNamed("left")
