@@ -40,7 +40,6 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeContainerReference.h>
@@ -217,6 +216,45 @@ public:
 		}
 		configuration.SetSensitivity( textField->GetFloat() );
 		world.NotifyEditingChanged();
+	}
+};
+
+class cActionSetSensitivity : public cBaseAction{
+	float pSensitivity;
+	
+public:
+	cActionSetSensitivity(meWPView &panel, float sensitivity, const char *text) :
+	cBaseAction(panel, text, nullptr, "Set sensitivity"), pSensitivity(sensitivity){}
+	
+	void OnAction(meWorld &world) override{
+		meConfiguration &conf = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
+		if(fabsf(pSensitivity - conf.GetSensitivity()) < FLOAT_SAFE_EPSILON){
+			return;
+		}
+		conf.SetSensitivity(pSensitivity);
+		world.NotifyEditingChanged();
+	}
+};
+
+class cActionMenuSensitivity : public igdeActionContextMenu{
+	meWPView &pPanel;
+	
+public:
+	cActionMenuSensitivity(meWPView &panel) : igdeActionContextMenu("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Sensitivity menu"),
+	pPanel(panel){}
+	
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
+		meWorld * const world = pPanel.GetWorld();
+		if(!world){
+			return;
+		}
+		
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 1.0f, "Set to 1")));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 0.1f, "Set to 0.1")));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 0.01f, "Set to 0.01")));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 10.0f, "Set to 10")));
 	}
 };
 
@@ -531,8 +569,11 @@ pPreventUpdateCamera(false)
 	helper.CheckBoxOnly( groupBox, pChkScaleSnap, new cActionScaleSnap( *this ) );
 	helper.EditFloat( groupBox, "Snap scaling factor", pEditScaleStep, new cTextScaleStep( *this ) );
 	
-	helper.EditFloat( groupBox, "Sensitivity:", "Sensitivity of mouse input",
-		pEditSensitivity, new cTextSensitivity( *this ) );
+	helper.FormLineStretchFirst(groupBox, "Sensitivity:", "Sensitivity of mouse input", formLine);
+	helper.EditFloat(formLine, "Sensitivity of mouse input", pEditSensitivity, new cTextSensitivity(*this));
+	actionMenu.TakeOver(new cActionMenuSensitivity(*this));
+	helper.Button(formLine, pBtnSensitivity, actionMenu.Pointer());
+	actionMenu->SetWidget(pBtnSensitivity);
 	
 	
 	// selection
@@ -602,7 +643,7 @@ pPreventUpdateCamera(false)
 	helper.EditVector(formLine, "Minimum extend of limit box", pEditLimitBoxMinExtend,
 		new cEditLimitBoxMinExtend(*this));
 	actionMenu.TakeOver(new cActionMenuLimitBox(*this));
-	helper.Button(formLine, pBtnLimitBoxMenu, actionMenu);
+	helper.Button(formLine, pBtnLimitBoxMenu, actionMenu.Pointer());
 	actionMenu->SetWidget(pBtnLimitBoxMenu);
 	
 	helper.EditVector(groupBox, "Maximum Extend:", "Maximum extend of limit box",

@@ -32,6 +32,7 @@
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeActionUndoReference.h>
 #include <deigde/gui/event/igdeActionRedoReference.h>
+#include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/resources/igdeIconReference.h>
 
 class meConfiguration;
@@ -83,6 +84,7 @@ private:
 	igdeIconReference pIconEditLockAxisX;
 	igdeIconReference pIconEditLockAxisY;
 	igdeIconReference pIconEditLockAxisZ;
+	igdeIcon::Ref pIconEditLockAxisFlip;
 	igdeIconReference pIconEditUseLocal;
 	igdeIconReference pIconEditSnap;
 	igdeIconReference pIconViewFullBrightOn;
@@ -118,10 +120,8 @@ private:
 	igdeActionReference pActionEditMaskPaintMode;
 	igdeActionReference pActionEditVisPaintMode;
 	igdeActionReference pActionEditModeNavSpaceEdit;
-	igdeActionReference pActionEditLockAxisX;
-	igdeActionReference pActionEditLockAxisY;
-	igdeActionReference pActionEditLockAxisZ;
-	igdeActionReference pActionEditUseLocal;
+	igdeActionReference pActionEditLockAxisX, pActionEditLockAxisY, pActionEditLockAxisZ;
+	igdeActionReference pActionEditUseLocal, pActionEditLockAxisFlip;
 	igdeActionReference pActionEditSnapSnapPoints;
 	igdeActionReference pActionEditRPCenterActive;
 	igdeActionReference pActionEditRPCenterSelected;
@@ -304,6 +304,7 @@ public:
 	inline igdeIcon *GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
 	inline igdeIcon *GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
 	inline igdeIcon *GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisFlip() const{ return pIconEditLockAxisFlip; }
 	inline igdeIcon *GetIconEditUseLocal() const{ return pIconEditUseLocal; }
 	inline igdeIcon *GetIconEditSnap() const{ return pIconEditSnap; }
 	inline igdeIcon *GetIconViewFullBrightOn() const{ return pIconViewFullBrightOn; }

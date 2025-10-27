@@ -26,7 +26,7 @@
 #define _MEWPVIEW_H_
 
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
+#include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -63,6 +63,7 @@ private:
 	igdeCheckBoxReference pChkScaleSnap;
 	igdeCheckBoxReference pChkAutoUpdate;
 	igdeTextFieldReference pEditSensitivity;
+	igdeButton::Ref pBtnSensitivity;
 	igdeTextFieldReference pEditRectSelDist;
 	igdeTextFieldReference pEditRectSelDistStep;
 	
@@ -83,7 +84,7 @@ private:
 	igdeCheckBoxReference pChkEnableAuralization;
 	
 	igdeEditVectorReference pEditLimitBoxMinExtend, pEditLimitBoxMaxExtend;
-	igdeButtonReference pBtnLimitBoxMenu;
+	igdeButton::Ref pBtnLimitBoxMenu;
 	
 	bool pPreventUpdateCamera;
 	

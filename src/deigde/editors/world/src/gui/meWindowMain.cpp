@@ -848,7 +848,7 @@ class cActionEditLockAxisZ : public cActionBase{
 public:
 	cActionEditLockAxisZ( meWindowMain &window ) : cActionBase( window, "Lock Z-Axis",
 		window.GetIconEditLockAxisZ(), "Lock Z coordinates during editing",
-		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcY ){}
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcZ ){}
 	
 	virtual igdeUndo *OnAction( meWorld *world ){
 		world->GetGuiParameters().SetLockAxisZ( ! world->GetGuiParameters().GetLockAxisZ() );
@@ -875,6 +875,21 @@ public:
 	virtual void Update( const meWorld &world ){
 		cActionBase::Update( world );
 		SetSelected( world.GetGuiParameters().GetUseLocal() );
+	}
+};
+
+class cActionEditLockAxisFlip : public cActionBase{
+public:
+	cActionEditLockAxisFlip(meWindowMain &window) : cActionBase(window, "Flip Lock Axes",
+		window.GetIconEditLockAxisFlip(), "Flip lock axes during editing",
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcF){}
+	
+	igdeUndo *OnAction(meWorld *world) override{
+		meWorldGuiParameters &gp = world->GetGuiParameters();
+		gp.SetLockAxisX(!gp.GetLockAxisX());
+		gp.SetLockAxisY(!gp.GetLockAxisY());
+		gp.SetLockAxisZ(!gp.GetLockAxisZ());
+		return nullptr;
 	}
 };
 
@@ -1738,6 +1753,7 @@ void meWindowMain::pLoadIcons(){
 	pIconEditLockAxisX.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_lock_axis_x.png" ) );
 	pIconEditLockAxisY.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_lock_axis_y.png" ) );
 	pIconEditLockAxisZ.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_lock_axis_z.png" ) );
+	pIconEditLockAxisFlip.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_lock_axis_flip.png"));
 	pIconEditUseLocal.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_use_local.png" ) );
 	pIconEditSnap.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_snap.png" ) );
 	pIconViewFullBrightOn.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_full_bright_on.png" ) );
@@ -1813,6 +1829,7 @@ void meWindowMain::pCreateActions(){
 	pActionEditLockAxisY.TakeOver( new cActionEditLockAxisY( *this ) );
 	pActionEditLockAxisZ.TakeOver( new cActionEditLockAxisZ( *this ) );
 	pActionEditUseLocal.TakeOver( new cActionEditUseLocal( *this ) );
+	pActionEditLockAxisFlip.TakeOver(new cActionEditLockAxisFlip(*this));
 	pActionEditSnapSnapPoints.TakeOver( new cActionEditSnapSnapPoints( *this ) );
 	
 	pActionEditRPCenterActive.TakeOver( new cActionEditRotationPivot( *this,
@@ -1931,6 +1948,7 @@ void meWindowMain::pCreateActions(){
 	AddUpdateAction( pActionEditLockAxisY );
 	AddUpdateAction( pActionEditLockAxisZ );
 	AddUpdateAction( pActionEditUseLocal );
+	AddUpdateAction(pActionEditLockAxisFlip);
 	AddUpdateAction( pActionEditSnapSnapPoints );
 	AddUpdateAction( pActionEditRPCenterActive );
 	AddUpdateAction( pActionEditRPCenterSelected );
@@ -2042,6 +2060,7 @@ void meWindowMain::pCreateToolBarEdit(){
 	helper.ToolBarToggleButton( pTBEdit, pActionEditLockAxisY );
 	helper.ToolBarToggleButton( pTBEdit, pActionEditLockAxisZ );
 	helper.ToolBarToggleButton( pTBEdit, pActionEditUseLocal );
+	helper.ToolBarToggleButton(pTBEdit, pActionEditLockAxisFlip);
 	
 	helper.ToolBarSeparator( pTBEdit );
 	helper.ToolBarToggleButton( pTBEdit, pActionEditSnapSnapPoints );
@@ -2164,6 +2183,7 @@ void meWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
 	helper.MenuCheck( menu, pActionEditLockAxisY );
 	helper.MenuCheck( menu, pActionEditLockAxisZ );
 	helper.MenuCheck( menu, pActionEditUseLocal );
+	helper.MenuCheck(menu, pActionEditLockAxisFlip);
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCheck( menu, pActionEditSnapSnapPoints );

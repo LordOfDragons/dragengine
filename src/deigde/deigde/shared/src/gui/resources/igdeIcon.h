@@ -42,6 +42,11 @@ class decPath;
  * Icons are immutable.
  */
 class DE_DLL_EXPORT igdeIcon : public deObject{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeIcon> Ref;
+	
+	
 private:
 	void *pNativeIcon;
 	decPoint pSize;
