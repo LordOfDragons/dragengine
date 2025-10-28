@@ -122,7 +122,11 @@ class BehaviorElement extends Element
 			if factory == null
 				throw EInvalidParam.new("Attachable behavior factory not found: " + each)
 			end
-			addAttachableBehavior(factory.createAttachableBehavior(this))
+			
+			var ECAttachableBehavior behavior = factory.createAttachableBehavior(this)
+			if behavior != null
+				addAttachableBehavior(behavior)
+			end
 		end)
 	end
 	

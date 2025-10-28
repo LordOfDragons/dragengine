@@ -1005,7 +1005,28 @@ public:
 	
 	virtual const igdeGDProperty *GetGDProperty( const char *key ) const{
 		const meObject * const object = pPanel.GetActiveObject();
-		return object && object->GetGDClass() ? object->GetGDClass()->GetPropertyNamed( key ) : NULL;
+		if(!object || !object->GetGDClass()){
+			return nullptr;
+		}
+		
+		const igdeGDClassManager &clsmgr = *pPanel.GetGameDefinition()->GetClassManager();
+		const decStringList &attachBehaviors = object->GetAttachBehaviors();
+		const int count = attachBehaviors.GetCount();
+		int i;
+		
+		for(i=0; i<count; i++){
+			const igdeGDClass * const gdclass = clsmgr.GetNamed(attachBehaviors.GetAt(i));
+			if(!gdclass){
+				continue;
+			}
+			
+			const igdeGDProperty * const property = gdclass->GetPropertyNamed(key);
+			if(property){
+				return property;
+			}
+		}
+		
+		return object->GetGDClass()->GetPropertyNamed(key);
 	}
 	
 	virtual decStringSet GetGDPropertyKeys() const{

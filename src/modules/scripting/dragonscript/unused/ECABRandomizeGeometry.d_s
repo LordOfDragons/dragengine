@@ -1,0 +1,162 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+/**
+ * \brief Attachable element behavior randomizing geometry of element.
+ * \version 1.29
+ * 
+ * Upon adding the behavior to an element the geometry of the element is randomized. After this
+ * point the behavior has no effect anymore and can be removed if desired.
+ * 
+ * Main use for this behavior though is using attachable behavior factory by adding the behavior
+ * to an element in the world editor. Used this way the randomization is applied during factory
+ * create behavior call without actually adding the behavior to the element. This way the
+ * randomization is applied once during element instantiation without keeping the behavior around.
+ * 
+ * Randomization uses element stub properties with prefix "randomizeGeometry.". Randomization
+ * is applied relative to the element geometry in world space except scale.
+ * 
+ * \see https://developer.dragondreams.ch/wiki/doku.php/dragengine:modules:dragonscript:behavior_attachable_randomizegeometry
+ */
+class ECABehaviorRandomizeGeometry extends DefaultECAttachableBehavior
+	/** Factory. */
+	class Factory implements AttachableBehaviorFactory
+		func new()
+		end
+		
+		func String factoryId()
+			return "ECABehaviorRandomizeGeometry"
+		end
+		
+		func ECAttachableBehavior createAttachableBehavior(BehaviorElement element)
+			ECABehaviorRandomizeGeometry.new().randomizeGeometry(element)
+			return null
+		end
+	end
+	
+	
+	/** Create attachable behavior. */
+	func new()
+	end
+	
+	
+	func void onAddToElement()
+		randomizeGeometry(getElement())
+	end
+	
+	/** Randomize element geometry. */
+	func void randomizeGeometry(BehaviorElement element)
+		var CodecPropertyString codec = element.getClass().getCodecPropertyString()
+		var StubElement stub = element.getStub()
+		
+		randomizeScale(element, stub)
+		randomizeRotation(element, stub, codec)
+		randomizePosition(element, stub, codec)
+	end
+	
+	/** Randomize element position. */
+	func void randomizePosition(BehaviorElement element, StubElement stub, CodecPropertyString codec)
+		var Vector vmin, vmax
+		
+		var String value = stub.getPropertyValueFor("randomizeGeometry.position", null)
+		if value != null and not value.empty()
+			vmax = codec.decodeVector(value).absolute()
+			vmin = -vmax
+		end
+		
+		value = stub.getPropertyValueFor("randomizeGeometry.positionMinimum", null)
+		if value != null and not value.empty()
+			vmin = codec.decodeVector(value)
+		end
+		
+		value = stub.getPropertyValueFor("randomizeGeometry.positionMaximum", null)
+		if value != null and not value.empty()
+			vmax = codec.decodeVector(value)
+		end
+		
+		if vmin == null and vmax == null
+			return
+		end
+		
+		if vmin == null
+			vmin = Vector.new()
+		end
+		if vmax == null
+			vmax = Vector.new()
+		end
+		
+		element.setPosition(element.getPosition() + DVector.new(vmin.mix(vmax, DEMath.random())))
+	end
+	
+	/** Randomize element rotation. */
+	func void randomizeRotation(BehaviorElement element, StubElement stub, CodecPropertyString codec)
+		var Vector vmin, vmax
+		
+		var String value = stub.getPropertyValueFor("randomizeGeometry.rotation", null)
+		if value != null and not value.empty()
+			vmax = codec.decodeVector(value).absolute()
+			vmin = -vmax
+		end
+		
+		value = stub.getPropertyValueFor("randomizeGeometry.rotationMinimum", null)
+		if value != null and not value.empty()
+			vmin = codec.decodeVector(value)
+		end
+		
+		value = stub.getPropertyValueFor("randomizeGeometry.rotationMaximum", null)
+		if value != null and not value.empty()
+			vmax = codec.decodeVector(value)
+		end
+		
+		if vmin == null and vmax == null
+			return
+		end
+		
+		if vmin == null
+			vmin = Vector.new()
+		end
+		if vmax == null
+			vmax = Vector.new()
+		end
+		
+		element.setOrientation(element.getOrientation() * Quaternion.newFromEuler(vmin.mix(vmax, DEMath.random())))
+	end
+	
+	/** Randomize element scale. */
+	func void randomizeScale(BehaviorElement element, StubElement stub)
+		var float vall = DEMath.fabs(stub.getPropertyFloatFor("randomizeGeometry.scale", 0))
+		var float vmin = stub.getPropertyFloatFor("randomizeGeometry.scaleMinimum", -vall)
+		var float vmax = stub.getPropertyFloatFor("randomizeGeometry.scaleMaximum", vall)
+		
+		if vmin == 0 and vmax == 0
+			return
+		end
+		
+		element.setScaling(element.getScaling() * (1 + DEMath.mix(vmin, vmax, DEMath.random())))
+	end
+end

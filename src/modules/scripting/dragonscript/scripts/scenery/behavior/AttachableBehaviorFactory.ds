@@ -46,6 +46,12 @@ interface AttachableBehaviorFactory
 	/**
 	 * \brief Create attachable behavior.
 	 * \param element Element to add attachable behavior to.
+	 * 
+	 * It is possible to return null if no attachable behavior should be created. This can be
+	 * useful for different purposes. For example conditional creation based on element properties.
+	 * Another example are attachable behaviors only applying an effect to an element without
+	 * needing to be present as an attachable behavior. These kind of attachable behaviors do not
+	 * allow or require to be removed later on.
 	 */
 	func ECAttachableBehavior createAttachableBehavior(BehaviorElement element)
 end

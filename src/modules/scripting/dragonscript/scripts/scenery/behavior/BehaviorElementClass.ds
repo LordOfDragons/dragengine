@@ -104,6 +104,8 @@ class BehaviorElementClass extends ElementClass
 		pBehaviorFactories = Dictionary.new()
 		pAttachableBehaviorFactories = Dictionary.new()
 		pXmlBehaviorsInfo = Array.new()
+		
+		addAttachableBehaviorFactories()
 	end
 	
 	/** \brief Dispose of element class. */
@@ -414,7 +416,7 @@ class BehaviorElementClass extends ElementClass
 	 * \version 1.29
 	 */
 	func void addAttachableBehaviorFactories(AttachableBehaviorFactoryList factories)
-		factories.forEach(block BehaviorFactory each
+		factories.forEach(block AttachableBehaviorFactory each
 			pAttachableBehaviorFactories.setAt(each.factoryId(), each)
 		end)
 	end
@@ -436,16 +438,6 @@ class BehaviorElementClass extends ElementClass
 	end
 	
 	/**
-	 * \brief Add all attachable behavior factories present in the DragonScript module.
-	 * \version 1.29
-	 * 
-	 * Add \ref BaseGameApp#getAttachableBehaviorFactories().
-	 */
-	func void addDefaultAttachableBehaviorFactories()
-		addAttachableBehaviorFactories(BaseGameApp.getApp().getAttachableBehaviorFactories())
-	end
-	
-	/**
 	 * \brief Attachable behavior factory with identifier or null if absent.
 	 * \version 1.29
 	 */
@@ -461,6 +453,26 @@ class BehaviorElementClass extends ElementClass
 	 */
 	func void forEachAttachableBehaviorFactory(Block ablock)
 		pAttachableBehaviorFactories.forEachValue(ablock)
+	end
+	
+	/**
+	 * \brief Add all attachable behavior factories present in the DragonScript module.
+	 * \version 1.29
+	 * 
+	 * Add \ref BaseGameApp#getAttachableBehaviorFactories().
+	 */
+	func void addDefaultAttachableBehaviorFactories()
+		addAttachableBehaviorFactories(BaseGameApp.getApp().getAttachableBehaviorFactories())
+	end
+	
+	/**
+	 * \brief Add attachable behavior factories supported by this element class.
+	 * \version 1.29
+	 * 
+	 * Default implementation calls \ref #addDefaultAttachableBehaviorFactories().
+	 */
+	func void addAttachableBehaviorFactories()
+		addDefaultAttachableBehaviorFactories()
 	end
 	
 	

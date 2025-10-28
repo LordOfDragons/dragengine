@@ -47,7 +47,6 @@ class GenericBehaviorElementClass extends BehaviorElementClass
 	 */
 	func new(String className) super(className)
 		addBehaviorFactories()
-		addAttachableBehaviorFactories()
 	end
 	
 	
@@ -58,16 +57,6 @@ class GenericBehaviorElementClass extends BehaviorElementClass
 	 */
 	func void addBehaviorFactories()
 		addDefaultBehaviorFactories()
-	end
-	
-	/**
-	 * \brief Add attachable behavior factories supported by this element class.
-	 * \version 1.29
-	 * 
-	 * Default implementation calls \ref #addDefaultAttachableBehaviorFactories().
-	 */
-	func void addAttachableBehaviorFactories()
-		addDefaultAttachableBehaviorFactories()
 	end
 	
 	
