@@ -367,8 +367,7 @@ class BaseGameApp extends Game
 	
 	
 	
-	var ParameterTree pConfiguration
-	var ParameterTree pSettings
+	var ParameterTree pConfiguration, pSettings
 	var Console pConsole
 	var Loaders pLoaders
 	var Desktop pDesktop
