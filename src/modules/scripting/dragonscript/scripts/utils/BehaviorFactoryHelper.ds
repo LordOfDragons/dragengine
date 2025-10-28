@@ -1571,6 +1571,5 @@ class BehaviorFactoryHelper
 	 * \version 1.29
 	 */
 	func void addCommonAttachableFactories(AttachableBehaviorFactoryList factories)
-		factories.add(ECABehaviorRandomizeGeometry.Factory.new())
 	end
 end
