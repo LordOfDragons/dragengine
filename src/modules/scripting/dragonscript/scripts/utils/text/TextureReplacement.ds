@@ -61,114 +61,111 @@ pin Dragengine.Scenery
  * ECPTextureReplacementList element class property.
  */
 class TextureReplacement
-	/** \brief Name of the texture to replace. */
-	private var String pName
-	
-	/** \brief Path to skin to replace the texture with. */
-	private var String pPath
-	
-	/** \brief Skin resource if found. */
-	private var Skin pSkin
-	
-	/** \brief Texture coordinates transformation. */
-	private var TexMatrix2 pTransform
-	
-	/** \brief Color tint. */
-	private var Color pColorTint
-	
+	var String pName, pPath
+	var Skin pSkin
+	var TexMatrix2 pTransform
+	var Color pColorTint
 	
 	
 	/** \brief Create texture replace object. */
-	public func new( String name )
-		if name == null
-			throw EInvalidParam.new()
-		end
-		this.pName = name
+	func new(String name)
+		setName(name)
 	end
 	
 	/** \brief Create copy of texture replace object. */
-	public func new( TextureReplacement copy )
-		this.pName = copy.pName
-		this.pPath = copy.pPath
-		this.pSkin = copy.pSkin
-		this.pTransform = copy.pTransform
-		this.pColorTint = copy.pColorTint
+	func new(TextureReplacement copy)
+		pName = copy.pName
+		pPath = copy.pPath
+		pSkin = copy.pSkin
+		pTransform = copy.pTransform
+		pColorTint = copy.pColorTint
 	end
 	
 	/** \brief Create texture replacement from stub. */
-	public func new( StubElementTexture stub )
-		this.pName = stub.getTextureName()
-		this.pPath = stub.getPathSkin()
-		this.pSkin = stub.getSkin()
-		this.pTransform = stub.getTransform()
-		this.pColorTint = stub.getColorTint()
+	func new(StubElementTexture stub)
+		pName = stub.getTextureName()
+		pPath = stub.getPathSkin()
+		pSkin = stub.getSkin()
+		pTransform = stub.getTransform()
+		pColorTint = stub.getColorTint()
 	end
 	
 	
 	
 	/** \brief Name of the texture in the component. */
-	public func String getName()
-		return this.pName
+	func String getName()
+		return pName
+	end
+	
+	/**
+	 * \brief Set name of the texture in the component.
+	 * \version 1.29
+	 */
+	func void setName(String name)
+		if name == null
+			throw EInvalidParam.new()
+		end
+		pName = name
 	end
 	
 	/** \brief Path to skin or \em null to not replace the skin. */
-	public func String getPath()
-		return this.pPath
+	func String getPath()
+		return pPath
 	end
 	
 	/** \brief Set path to skin or \em null to not replace the skin. */
-	public func void setPath( String path )
-		this.pPath = path
+	func void setPath(String path)
+		pPath = path
 	end
 	
 	/** \brief Skin resource or \em null to not replace the skin. */
-	public func Skin getSkin()
-		return this.pSkin
+	func Skin getSkin()
+		return pSkin
 	end
 	
 	/** \brief Set skin resource or \em null to not replace the skin. */
-	public func void setSkin( Skin skin )
-		this.pSkin = skin
+	func void setSkin(Skin skin)
+		pSkin = skin
 	end
 	
 	/** \brief Texture coordinate transformation or \em null to not replace the transformation. */
-	public func TexMatrix2 getTransform()
-		return this.pTransform
+	func TexMatrix2 getTransform()
+		return pTransform
 	end
 	
 	/** \brief Set texture coordinate transformation or \em null to not replace the transformation. */
-	public func void setTransform( TexMatrix2 matrix )
-		this.pTransform = matrix
+	func void setTransform(TexMatrix2 matrix)
+		pTransform = matrix
 	end
 	
 	/** \brief Color tint or \em null to not replace the color tint. */
-	public func Color getColorTint()
-		return this.pColorTint
+	func Color getColorTint()
+		return pColorTint
 	end
 	
 	/** \brief Set color tint or \em null to not replace the color tint. */
-	public func void setColorTint( Color color )
-		this.pColorTint = color
+	func void setColorTint(Color color)
+		pColorTint = color
 	end
 	
 	
 	
 	/** \brief Apply texture replacement to matching component texture if present. */
-	public func void applyToComponent( Component component )
-		var int index = component.indexOfTextureNamed( this.pName )
+	func void applyToComponent(Component component)
+		var int index = component.indexOfTextureNamed(pName)
 		if index == -1
 			return
 		end
 		
-		if this.pSkin != null
-			component.setTextureSkinAt( index, this.pSkin, 0 )
+		if pSkin != null
+			component.setTextureSkinAt(index, pSkin, 0)
 		end
 		
-		if this.pTransform != null
-			component.setTextureTransformAt( index, this.pTransform )
+		if pTransform != null
+			component.setTextureTransformAt(index, pTransform)
 		end
 		
-		component.setTextureDynamicSkinAt( index, this.createDynamicSkin() )
+		component.setTextureDynamicSkinAt(index, createDynamicSkin())
 	end
 	
 	
@@ -177,14 +174,14 @@ class TextureReplacement
 	 * \brief Create dynamic skin from texture replace definition.
 	 * \details If no dynamic skin is required null is returned.
 	 */
-	public func DynamicSkin createDynamicSkin()
-		if this.pColorTint == null
+	func DynamicSkin createDynamicSkin()
+		if pColorTint == null
 			return null
 		end
 		
 		var DynamicSkin dynamicSkin = DynamicSkin.new()
-		dynamicSkin.addRenderable( "tint", DynamicSkinRenderableType.color )
-		dynamicSkin.setColorAt( 0, this.pColorTint )
+		dynamicSkin.addRenderable("tint", DynamicSkinRenderableType.color)
+		dynamicSkin.setColorAt(0, pColorTint)
 		
 		return dynamicSkin
 	end
