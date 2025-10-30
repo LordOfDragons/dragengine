@@ -366,7 +366,11 @@ const deoglModelLOD &modelLod, int texture, const deoglRenderTaskSharedVAO *rtva
 	
 	const deoglRComponent &component = lod.GetComponent();
 	const deoglRComponentTexture &componentTexture = component.GetTextureAt( texture );
-	if( ( componentTexture.GetRenderTaskFilters() & pFilterMask ) != pFiltersMasked ){
+	int filters = componentTexture.GetRenderTaskFilters();
+	if(componentTexture.GetUseDecal()){
+		filters &= ~ertfSolid;
+	}
+	if((filters & pFilterMask) != pFiltersMasked){
 		return;
 	}
 		#ifdef ATRT_TIMING
@@ -501,7 +505,7 @@ void deoglAddToRenderTask::AddBillboard( const deoglRBillboard &billboard ){
 
 
 void deoglAddToRenderTask::AddDecal( const deoglRDecal &decal, int lodLevel ){
-	if( ! decal.GetVisible() ){
+	if(!decal.GetVisible() || pSolid != decal.IsParentComponentSolid()){
 		return;
 	}
 	
