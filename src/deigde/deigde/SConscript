@@ -299,7 +299,7 @@ installApp.append(targetInstallLibRuntime)
 if envIGDEApp['OSPosix']:
 	pathDataDir = envIGDEApp.subst('${datadir}')
 	
-	for s in ['128', '64', '32']:
+	for s in ['256', '128', '64', '32']:
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
 			'{}x{}'.format(s, s), 'apps', 'dragengine-deigde.png')
 		source = 'data/deigde{}.png'.format(s)
@@ -313,7 +313,7 @@ if envIGDEApp['OSPosix']:
 		archiveApp[target] = envIGDEApp.File(source).srcnode()
 	
 	target = os.path.join(pathDataDir, 'pixmaps', 'dragengine-deigde.png')
-	source = 'data/deigde128.png'
+	source = 'data/deigde256.png'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
 	
