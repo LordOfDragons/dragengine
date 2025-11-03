@@ -339,30 +339,40 @@ decString deOSUnix::GetPathSystemConfig(){
 }
 
 decString deOSUnix::GetPathUserConfig(){
-	const char * const envPath = getenv( "DE_CONFIG_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char *envPath = getenv("DE_CONFIG_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	return decString( pGetHomeDirectory() + "/.config/dragengine" );
+	envPath = getenv("XDG_CONFIG_HOME");
+	if(envPath){
+		return decString(envPath) + "/dragengine";
+	}
+	
+	return decString(pGetHomeDirectory() + "/.config/dragengine");
 }
 
 decString deOSUnix::GetPathUserCache(){
-	const char * const envPath = getenv( "DE_CACHE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char *envPath = getenv("DE_CACHE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	return decString( pGetHomeDirectory() + "/.cache/dragengine" );
+	envPath = getenv("XDG_CACHE_HOME");
+	if(envPath){
+		return decString(envPath) + "/dragengine";
+	}
+	
+	return decString(pGetHomeDirectory() + "/.cache/dragengine");
 }
 
 decString deOSUnix::GetPathUserCapture(){
-	const char * const envPath = getenv( "DE_CAPTURE_PATH" );
-	if( envPath ){
-		return decString( envPath );
+	const char * const envPath = getenv("DE_CAPTURE_PATH");
+	if(envPath){
+		return decString(envPath);
 	}
 	
-	return decString( GetPathUserCache() + "/capture" );
+	return decString(GetPathUserCache() + "/capture");
 }
 
 

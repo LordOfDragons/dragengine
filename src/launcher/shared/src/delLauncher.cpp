@@ -294,6 +294,17 @@ void delLauncher::pLocatePath(){
 	}
 #endif
 	
+#ifndef OS_W32
+	value = getenv("XDG_CONFIG_HOME");
+	if(value){
+		path.SetFromNative(value);
+		if(path.GetComponentCount() > 0){
+			path.AddComponent("delauncher");
+			pPathConfigUser = path.GetPathNative();
+		}
+	}
+#endif
+	
 #ifdef OS_W32
 	if(GetEnvironmentVariable(L"DELAUNCHER_USER_CONFIG", &value[ 0 ], sizeof(value))){
 		pPathConfigUser = deOSWindows::WideToUtf8(value);
