@@ -40,7 +40,7 @@
 		</p>
 	</description>
 	
-	<launchable type="desktop-id">delauncher-gui.desktop</launchable>
+	<launchable type="desktop-id">ch.dragondreams.dragengine.desktop</launchable>
 	
 	<provides>
 		<mediatype>application/dragengine-delga</mediatype>
