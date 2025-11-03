@@ -80,7 +80,7 @@ def dragonscriptBuild( target, source, env ):
 		f.write('with_debug = "{}"\n'.format('yes' if envLibrary['with_debug'] else 'no'))
 		f.write('with_sanitize = "{}"\n'.format('yes' if useSanitize else 'no'))
 		f.write('with_verbose = "no"\n')
-		f.write('with_warnerrors = "yes"\n')
+		f.write('with_warnerrors = "no"\n')
 		f.write('with_internal_packages = "yes"\n')
 		if buildStaticLinking:
 			f.write('with_static = "yes"\n')
