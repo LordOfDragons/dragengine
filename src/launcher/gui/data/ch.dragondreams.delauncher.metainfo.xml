@@ -45,6 +45,7 @@
 		<library>libdragengine.so.1</library>
 		<binary>delauncher</binary>
 		<binary>delauncher-gui</binary>
+		<binary>delauncher-console</binary>
 	</provides>
 	
 	<branding>
