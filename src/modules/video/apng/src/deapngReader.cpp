@@ -142,7 +142,9 @@ pErrorState( false )
 		// clear to transparent black
 		memset( pAccumData, '\0', pImageSize );
 		
-	}catch( const deException & ){
+	}catch(const deException &e){
+		pModule.LogErrorFormat("Failed to create reader for file %s", reader->GetFilename());
+		pModule.LogException(e);
 		pCleanUp();
 		throw;
 	}
