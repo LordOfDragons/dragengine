@@ -341,12 +341,6 @@ if envDragengine['OSPosix'] and not envDragengine['OSBeOS'] and envDragengine['p
 	source = 'data/mimetypes.xml'
 	installRuntime.append(envDragengine.InstallAs(target, source))
 	archiveEngine[target] = envDragengine.File(source).srcnode()
-	
-	target = os.path.join(pathDataDir, 'metainfo', 'ch.dragondreams.dragengine.metainfo.xml')
-	source = 'data/ch.dragondreams.dragengine.metainfo.xml'
-	installRuntime.append(envDragengine.InstallAs(target, source))
-	archiveEngine[target] = envDragengine.File(source).srcnode()
-
 
 targetInstallDevelop = envDragengine.Alias('dragengine_develop', installDevelop)
 targetInstallRuntime = envDragengine.Alias('dragengine_runtime', installRuntime)

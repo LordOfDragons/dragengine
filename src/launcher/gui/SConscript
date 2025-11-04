@@ -134,18 +134,23 @@ if envLauncher['OSPosix'] and not envLauncher['OSBeOS']:
 	
 	for s in ['256', '128', '64', '32']:
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'apps', 'ch.dragondreams.dragengine.png')
+			'{}x{}'.format(s, s), 'apps', 'ch.dragondreams.delauncher.png')
 		source = 'data/delauncher-gui{}.png'.format(s)
 		install.append(envLauncher.InstallAs(target, source))
 		archive[target] = envLauncher.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'pixmaps', 'ch.dragondreams.dragengine.png')
+	target = os.path.join(pathDataDir, 'pixmaps', 'ch.dragondreams.delauncher.png')
 	source = 'data/delauncher-gui256.png'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'applications', 'ch.dragondreams.dragengine.desktop')
+	target = os.path.join(pathDataDir, 'applications', 'ch.dragondreams.delauncher.desktop')
 	source = 'data/delauncher-gui.desktop'
+	install.append(envLauncher.InstallAs(target, source))
+	archive[target] = envLauncher.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'metainfo', 'ch.dragondreams.delauncher.metainfo.xml')
+	source = 'data/ch.dragondreams.delauncher.metainfo.xml'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
 

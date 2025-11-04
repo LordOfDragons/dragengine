@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-	<id>ch.dragondreams.dragengine</id>
+	<id>ch.dragondreams.delauncher</id>
 	
 	<name>Dragengine Launcher</name>
 	<summary>Run DELGA files</summary>
@@ -30,17 +30,13 @@
 		DELGA files can be run directly by clicking them.
 		</p>
 		<p>
-		Gui launcher can be used to create and modify game
+		Launcher can be used to create and modify game
 		profiles for example to fine tune performance.
 		In general creating profiles is not required.
 		</p>
-		<p>
-		Console launcher (delauncher-console) allows to run
-		DELGA files from console.
-		</p>
 	</description>
 	
-	<launchable type="desktop-id">ch.dragondreams.dragengine.desktop</launchable>
+	<launchable type="desktop-id">ch.dragondreams.delauncher.desktop</launchable>
 	
 	<provides>
 		<mediatype>application/dragengine-delga</mediatype>
@@ -49,7 +45,6 @@
 		<library>libdragengine.so.1</library>
 		<binary>delauncher</binary>
 		<binary>delauncher-gui</binary>
-		<binary>delauncher-console</binary>
 	</provides>
 	
 	<branding>
