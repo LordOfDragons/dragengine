@@ -326,18 +326,18 @@ if envDragengine['OSPosix'] and not envDragengine['OSBeOS'] and envDragengine['p
 	
 	for s in ['128', '64', '32']:
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'mimetypes', 'ch.dragondreams.dragengine-delga.png')
+			'{}x{}'.format(s, s), 'mimetypes', 'ch.dragondreams.delauncher-delga.png')
 		source = 'data/mime-dragengine-delga{}.png'.format(s)
 		installRuntime.append(envDragengine.InstallAs(target, source))
 		archiveEngine[target] = envDragengine.File(source).srcnode()
 		
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'mimetypes', 'ch.dragondreams.dragengine-game.png')
+			'{}x{}'.format(s, s), 'mimetypes', 'ch.dragondreams.delauncher-game.png')
 		source = 'data/mime-dragengine-game{}.png'.format(s)
 		installRuntime.append(envDragengine.InstallAs(target, source))
 		archiveEngine[target] = envDragengine.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'mime', 'packages', 'ch.dragondreams.dragengine-mime.xml')
+	target = os.path.join(pathDataDir, 'mime', 'packages', 'ch.dragondreams.delauncher-mime.xml')
 	source = 'data/mimetypes.xml'
 	installRuntime.append(envDragengine.InstallAs(target, source))
 	archiveEngine[target] = envDragengine.File(source).srcnode()
