@@ -172,6 +172,7 @@ params.Add(StringVariable('with_threads', 'Count of threads to use for building 
 params.Add(StringVariable('with_cmake_flags', 'Additional flags for external CMake builds', ''))
 params.Add(StringVariable('with_cmake_c_flags', 'Additional C flags for external CMake builds', ''))
 params.Add(BoolVariable('with_engine_module_checks', 'Check engine module file before loading', True))
+params.Add(StringVariable('distro_maintained_info_url', 'Package is distribution maintaned and URL contains update information', ''))
 
 params.Add(StringVariable('url_extern_artifacts',
 	'Base URL to download external artifacts from if missing',

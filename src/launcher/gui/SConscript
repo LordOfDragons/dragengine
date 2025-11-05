@@ -1,5 +1,7 @@
 from SConsCommon import *
 
+import os
+
 Import('parent_env parent_targets parent_report')
 
 envLauncher = parent_env.Clone()
@@ -149,10 +151,23 @@ if envLauncher['OSPosix'] and not envLauncher['OSBeOS']:
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
 	
+	replacements = [
+		{'action': 'text', 'keyword': '%{ENGINE_VERSION}',
+			'value': envLauncher['version']},
+		{'action': 'text', 'keyword': '%{DISTRO_MAINTAINED}',
+			'value': 'true' if envLauncher['distro_maintained_info_url'] else 'false'},
+		{'action': 'text', 'keyword': '%{DISTRO_MAINTAINED_UPDATE_URL}',
+			'value': envLauncher['distro_maintained_info_url']}
+	]
+	
+	metainfo = envLauncher.UpdateModuleManifest(
+		'data/ch.dragondreams.delauncher.metainfo.xml',
+		'data/delauncher-gui.metainfo.xml',
+		ManifestUpdates=replacements)
+	
 	target = os.path.join(pathDataDir, 'metainfo', 'ch.dragondreams.delauncher.metainfo.xml')
-	source = 'data/ch.dragondreams.delauncher.metainfo.xml'
-	install.append(envLauncher.InstallAs(target, source))
-	archive[target] = envLauncher.File(source).srcnode()
+	install.append(envLauncher.InstallAs(target, metainfo))
+	archive[target] = metainfo
 
 if envLauncher['OSPosix']:
 	target = os.path.join(pathMan1, 'delauncher-gui.1')
