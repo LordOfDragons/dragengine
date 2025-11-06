@@ -80,6 +80,9 @@ void deoxrDeviceProfile::ClearActions(){
 void deoxrDeviceProfile::RemoveDevice( deInputDevice::eDeviceTypes ){
 }
 
+void deoxrDeviceProfile::OnSessionEnd(){
+}
+
 
 
 // Protected Functions

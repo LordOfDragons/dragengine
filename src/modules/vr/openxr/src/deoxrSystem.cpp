@@ -28,6 +28,7 @@
 #include "deoxrSystem.h"
 #include "deoxrInstance.h"
 #include "deVROpenXR.h"
+#include "extension/xdev/XR_MNDX_xdev_space.h"
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
@@ -48,53 +49,48 @@ pSupportsEyeGazeTracking( false ),
 pSupportsFaceEyeTracking( false ),
 pSupportsFaceLipTracking( false ),
 pSupportsPassthrough( false ),
+pSupportsXDevSpace(false),
 pSupportsEnvBlendModeAlphaBlend(false)
 {
 	try{
 		// create system
-		XrSystemGetInfo getInfo;
-		memset( &getInfo, 0, sizeof( getInfo ) );
-		getInfo.type = XR_TYPE_SYSTEM_GET_INFO;
+		XrSystemGetInfo getInfo{XR_TYPE_SYSTEM_GET_INFO};
 		getInfo.formFactor = XR_FORM_FACTOR_HEAD_MOUNTED_DISPLAY;
 		
 		OXR_CHECK( instance.xrGetSystem( instance.GetInstance(), &getInfo, &pSystemId ) );
 		
 		// get system properties
-		XrSystemProperties sysProps;
-		memset( &sysProps, 0, sizeof( sysProps ) );
-		sysProps.type = XR_TYPE_SYSTEM_PROPERTIES;
+		XrSystemProperties sysProps{XR_TYPE_SYSTEM_PROPERTIES};
 		void **next = &sysProps.next;
 		
-		XrSystemHandTrackingPropertiesEXT sysHandTrackProps;
-		memset( &sysHandTrackProps, 0, sizeof( sysHandTrackProps ) );
+		XrSystemHandTrackingPropertiesEXT sysHandTrackProps{XR_TYPE_SYSTEM_HAND_TRACKING_PROPERTIES_EXT};
 		if( instance.SupportsExtension( deoxrInstance::extEXTHandTracking ) ){
-			sysHandTrackProps.type = XR_TYPE_SYSTEM_HAND_TRACKING_PROPERTIES_EXT;
 			*next = &sysHandTrackProps;
 			next = &sysHandTrackProps.next;
 		}
 		
-		XrSystemEyeGazeInteractionPropertiesEXT sysEyeGazeProps;
-		memset( &sysEyeGazeProps, 0, sizeof( sysEyeGazeProps ) );
+		XrSystemEyeGazeInteractionPropertiesEXT sysEyeGazeProps{XR_TYPE_SYSTEM_EYE_GAZE_INTERACTION_PROPERTIES_EXT};
 		if( instance.SupportsExtension( deoxrInstance::extEXTEyeGazeInteraction ) ){
-			sysEyeGazeProps.type = XR_TYPE_SYSTEM_EYE_GAZE_INTERACTION_PROPERTIES_EXT;
 			*next = &sysEyeGazeProps;
 			next = &sysEyeGazeProps.next;
 		}
 		
-		XrSystemFacialTrackingPropertiesHTC sysFaceTrackProps;
-		memset( &sysFaceTrackProps, 0, sizeof( sysFaceTrackProps ) );
+		XrSystemFacialTrackingPropertiesHTC sysFaceTrackProps{XR_TYPE_SYSTEM_FACIAL_TRACKING_PROPERTIES_HTC};
 		if( instance.SupportsExtension( deoxrInstance::extHTCFacialTracking ) ){
-			sysFaceTrackProps.type = XR_TYPE_SYSTEM_FACIAL_TRACKING_PROPERTIES_HTC;
 			*next = &sysFaceTrackProps;
 			next = &sysFaceTrackProps.next;
 		}
 		
-		XrSystemPassthroughPropertiesFB sysPassThroughProps;
-		memset( &sysPassThroughProps, 0, sizeof( sysPassThroughProps ) );
+		XrSystemPassthroughPropertiesFB sysPassThroughProps{XR_TYPE_SYSTEM_PASSTHROUGH_PROPERTIES_FB};
 		if( instance.SupportsExtension( deoxrInstance::extFBPassthrough ) ){
-			sysPassThroughProps.type = XR_TYPE_SYSTEM_PASSTHROUGH_PROPERTIES_FB;
 			*next = &sysPassThroughProps;
 			next = ( void** )&sysPassThroughProps.next;
+		}
+		
+		XrSystemXDevSpacePropertiesMNDX sysXDevSpaceProps{XR_TYPE_SYSTEM_XDEV_SPACE_PROPERTIES_MNDX};
+		if(instance.SupportsExtension(deoxrInstance::extMNDXXDevSpace)){
+			*next = &sysXDevSpaceProps;
+			next = (void**)&sysXDevSpaceProps.next;
 		}
 		
 		OXR_CHECK( instance.xrGetSystemProperties( instance.GetInstance(), pSystemId, &sysProps ) );
@@ -137,6 +133,16 @@ pSupportsEnvBlendModeAlphaBlend(false)
 			}
 		}
 		
+		if(instance.SupportsExtension(deoxrInstance::extMNDXXDevSpace)){
+			if(sysXDevSpaceProps.supportsXDevSpace){
+				pSupportsXDevSpace = true;
+				
+			}else{
+				instance.DisableExtension(deoxrInstance::extMNDXXDevSpace);
+				oxr.LogWarn("Disabling extMNDXXDevSpace extension since XDevSpace is not supported by the system");
+			}
+		}
+		
 		XrEnvironmentBlendMode envBlendModes[3]{};
 		uint32_t i, envBlendModeCount;
 		OXR_CHECK(instance.xrEnumerateEnvironmentBlendModes(instance.GetInstance(), pSystemId,
@@ -162,6 +168,7 @@ pSupportsEnvBlendModeAlphaBlend(false)
 		oxr.LogInfoFormat( "Supports face mouth tracking: %s", pSupportsFaceLipTracking ? "yes" : "no" );
 		oxr.LogInfoFormat("Supports environment blend mode alpha blend: %s", pSupportsEnvBlendModeAlphaBlend ? "yes" : "no");
 		oxr.LogInfoFormat( "Supports passthrough: %s", pSupportsPassthrough ? "yes" : "no" );
+		oxr.LogInfoFormat("Supports XDev space: %s", pSupportsXDevSpace ? "yes" : "no");
 		
 		// required features check
 		if( oxr.GetRequestFeatureEyeGazeTracking() == deBaseVRModule::efslRequired && ! pSupportsEyeGazeTracking ){

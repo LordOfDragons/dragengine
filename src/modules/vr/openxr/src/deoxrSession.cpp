@@ -819,7 +819,15 @@ void deoxrSession::pCleanUp(){
 	
 	pSpaceStage = nullptr;
 	
+	pSpaceStageOrigin = nullptr;
+	pSpaceView = nullptr;
+	pSpaceLocal = nullptr;
+	pSpaceLocalOrigin = nullptr;
+	pMainSpace = nullptr;
+	pMainSpaceOrigin = nullptr;
+	
 	if( pSession ){
+		pSystem.GetInstance().GetOxr().GetDeviceProfiles().OnSessionEnd();
 		pSystem.GetInstance().xrDestroySession( pSession );
 		pSession = XR_NULL_HANDLE;
 	}

@@ -78,6 +78,7 @@ private:
 	bool pSupportsFaceEyeTracking;
 	bool pSupportsFaceLipTracking;
 	bool pSupportsPassthrough;
+	bool pSupportsXDevSpace;
 	
 	bool pSupportsEnvBlendModeAlphaBlend;
 	
@@ -155,6 +156,9 @@ public:
 	
 	/** Supports environment blend mode alpha blend. */
 	inline bool GetSupportsEnvBlendModeAlphaBlend() const{ return pSupportsEnvBlendModeAlphaBlend; }
+	
+	/** Supports XDev space. */
+	inline bool GetSupportsXDevSpace() const{ return pSupportsXDevSpace; }
 	/*@}*/
 	
 	

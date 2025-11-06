@@ -109,3 +109,12 @@ void deoxrDeviceProfileManager::RemoveDevice( deInputDevice::eDeviceTypes type )
 		( ( deoxrDeviceProfile* )pProfiles.GetAt( i ) )->RemoveDevice( type );
 	}
 }
+
+void deoxrDeviceProfileManager::OnSessionEnd(){
+	const int count = pProfiles.GetCount();
+	int i;
+	
+	for(i=0; i<count; i++){
+		((deoxrDeviceProfile*)pProfiles.GetAt(i))->OnSessionEnd();
+	}
+}

@@ -55,6 +55,7 @@ deoxrDevice::deoxrDevice( deVROpenXR &oxr, const deoxrDeviceProfile &profile ) :
 pOxr( oxr ),
 pIndex( -1 ),
 pProfile( profile ),
+pPoseValidity(0),
 pType( deInputDevice::edtGeneric ),
 pBoneConfiguration( deInputDevice::ebcNone ),
 pNameNumber( -1 ),
@@ -487,6 +488,8 @@ void deoxrDevice::TrackStates(){
 	const deoxrInstance &instance = pOxr.GetInstance();
 	const deoxrSession &session = pOxr.GetSession();
 	
+	pPoseValidity = 0;
+	
 	if( pType == deInputDevice::edtVRHMD ){
 		pPosePosition = session.GetHeadPosition();
 		pPoseOrientation = session.GetHeadOrientation();
@@ -497,6 +500,12 @@ void deoxrDevice::TrackStates(){
 		pPoseDevice.SetOrientation( pPoseOrientation );
 		pPoseDevice.SetLinearVelocity( pPoseLinearVelocity );
 		pPoseDevice.SetAngularVelocity( pPoseAngularVelocity );
+		
+		pPoseValidity = (int)deoxrSpace::eValidData::space
+			| (int)deoxrSpace::eValidData::position
+			| (int)deoxrSpace::eValidData::orientation
+			| (int)deoxrSpace::eValidData::linearVelocity
+			| (int)deoxrSpace::eValidData::angularVelocity;
 	}
 	
 	if( pActionPose && pSpacePose ){
@@ -525,12 +534,13 @@ void deoxrDevice::TrackStates(){
 				// space to make sure all kinds of drivers return the same result
 				
 				// using local space requires locating space without converting coordinate system
-				pSpacePose->LocateSpaceEye( session.GetPredictedDisplayTime(),
-					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
+				pPoseValidity = pSpacePose->LocateSpaceEye(session.GetPredictedDisplayTime(),
+					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity);
 				
 			}else{
-				pSpacePose->LocateSpace( session.GetMainSpace(), session.GetPredictedDisplayTime(),
-					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity );
+				pPoseValidity = pSpacePose->LocateSpace(
+					session.GetMainSpace(), session.GetPredictedDisplayTime(),
+					pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity);
 				
 				if( pActionPoseOrientation && pSpacePoseOrientation ){
 					getInfo = {};
@@ -544,7 +554,7 @@ void deoxrDevice::TrackStates(){
 					if( XR_SUCCEEDED( instance.xrGetActionStatePose( session.GetSession(), &getInfo, &state ) )
 					&& state.isActive == XR_TRUE ){
 						decVector ignore;
-						pSpacePoseOrientation->LocateSpace( session.GetMainSpace(),
+						pPoseValidity |= pSpacePoseOrientation->LocateSpace( session.GetMainSpace(),
 							session.GetPredictedDisplayTime(), ignore, pPoseOrientation );
 					}
 				}
@@ -554,6 +564,21 @@ void deoxrDevice::TrackStates(){
 			pPoseDevice.SetOrientation( pPoseOrientation );
 			pPoseDevice.SetLinearVelocity( pPoseLinearVelocity );
 			pPoseDevice.SetAngularVelocity( pPoseAngularVelocity );
+			
+		}else{
+			pPoseValidity = 0;
+		}
+		
+	}else if(pSpacePose){
+		pPoseValidity = pSpacePose->LocateSpace(
+			session.GetMainSpace(), session.GetPredictedDisplayTime(),
+			pPosePosition, pPoseOrientation, pPoseLinearVelocity, pPoseAngularVelocity);
+		
+		if((pPoseValidity & (int)deoxrSpace::eValidData::space) != 0){
+			pPoseDevice.SetPosition(pPosePosition);
+			pPoseDevice.SetOrientation(pPoseOrientation);
+			pPoseDevice.SetLinearVelocity(pPoseLinearVelocity);
+			pPoseDevice.SetAngularVelocity(pPoseAngularVelocity);
 		}
 	}
 	
@@ -576,6 +601,12 @@ void deoxrDevice::TrackStates(){
 			const decMatrix velocityMatrix( wristMatrix.QuickInvert() * pMatrixWristToDevice * wristMatrix );
 			pPoseDevice.SetLinearVelocity( velocityMatrix.TransformNormal( wrist.GetLinearVelocity() ) );
 			pPoseDevice.SetAngularVelocity( velocityMatrix.TransformNormal( wrist.GetAngularVelocity() ) );
+			
+			pPoseValidity |= (int)deoxrSpace::eValidData::space
+				| (int)deoxrSpace::eValidData::position
+				| (int)deoxrSpace::eValidData::orientation
+				| (int)deoxrSpace::eValidData::linearVelocity
+				| (int)deoxrSpace::eValidData::angularVelocity;
 			
 			int i;
 			for( i=0; i<deInputDevice::HandBoneCount; i++ ){

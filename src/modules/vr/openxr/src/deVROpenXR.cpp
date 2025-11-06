@@ -55,6 +55,7 @@
 #include "device/profile/deoxrDPEyeGazeInteraction.h"
 #include "device/profile/deoxrDPHandInteraction.h"
 #include "device/profile/deoxrDPHTCHandInteraction.h"
+#include "device/profile/deoxrDPMndxDevSpace.h"
 #include "loader/deoxrLoader.h"
 #include "parameters/deoxrPLogLevel.h"
 
@@ -1076,6 +1077,8 @@ void deVROpenXR::pCreateDeviceProfiles(){
 	
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPHtcViveTracker( pInstance ) ) );
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPEyeGazeInteraction( pInstance ) ) );
+	
+	pDeviceProfiles.Add(deoxrDeviceProfile::Ref::New(new deoxrDPMndxDevSpace(pInstance)));
 	
 	// has to come last since it adds a device only if no other controller provides hand tracking
 	pDeviceProfiles.Add( deoxrDeviceProfile::Ref::New( new deoxrDPNoControllerHands( pInstance ) ) );

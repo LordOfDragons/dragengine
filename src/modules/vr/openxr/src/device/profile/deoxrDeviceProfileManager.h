@@ -80,6 +80,9 @@ public:
 	
 	/** Remove device if matching type. */
 	void RemoveDevice( deInputDevice::eDeviceTypes type );
+	
+	/** Sessions ends. */
+	void OnSessionEnd();
 	/*@}*/
 };
 
