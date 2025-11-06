@@ -167,7 +167,7 @@ if envLauncher['OSPosix'] and not envLauncher['OSBeOS']:
 	
 	target = os.path.join(pathDataDir, 'metainfo', 'ch.dragondreams.delauncher.metainfo.xml')
 	install.append(envLauncher.InstallAs(target, metainfo))
-	archive[target] = metainfo
+	archive[target] = metainfo[0]
 
 if envLauncher['OSPosix']:
 	target = os.path.join(pathMan1, 'delauncher-gui.1')
