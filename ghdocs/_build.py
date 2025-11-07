@@ -185,15 +185,15 @@ class IdeScriptsBuilder:
             with zipfile.ZipFile(dest, 'w',
                                  compression=zipfile.ZIP_DEFLATED,
                                  compresslevel=9) as z:
-                def process(rootDir):
+                def process(rootDir, targetDir):
                     for root, _, files in os.walk(rootDir):
                         for name in files:
                             if fnmatch.fnmatch(name, '*.ds'):
                                 path = os.path.join(root, name)
-                                arcname = os.path.relpath(path, rootDir)
+                                arcname = os.path.join(targetDir, os.path.relpath(path, rootDir))
                                 z.write(path, arcname=arcname)
-                process(os.path.join(self.path_src, 'doc', 'nativeclasses'))
-                process(os.path.join(self.path_src, 'scripts'))
+                process(os.path.join(self.path_src, 'doc', 'nativeclasses'), 'native')
+                process(os.path.join(self.path_src, 'scripts'), 'scripts')
 
     def write_data_file(self: 'IdeScriptsBuilder', versions: list[Release]) -> None:
         directory = os.path.dirname(self.path_datafile)
