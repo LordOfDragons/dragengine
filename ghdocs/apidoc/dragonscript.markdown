@@ -34,11 +34,13 @@ These files contain the DragonScript Scripting module scripts alone for use by c
 provide DragonScript code completion features. The file below contains the list of archive
 files an IDE can download together with checksum information to quickly identify changes.
 The lines have this format:
-
 ```
 {version} {file size in bytes} {SHA-256 hash} {file title}
 ```
 
-To download the respective file append the file title to _{{ urlidescripts }}_.
+To download the respective file append the file title to:
+```
+{{ urlidescripts }}/
+```
 
-[DragonScript IDE Scripts List]({{ urlidescripts }}/list.html){:target="_blank"}
+[DragonScript IDE Scripts List]({{ urlidescripts }}/list){:target="_blank"}
