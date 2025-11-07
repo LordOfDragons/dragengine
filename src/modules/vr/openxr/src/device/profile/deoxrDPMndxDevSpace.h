@@ -33,7 +33,7 @@
 
 
 /**
- * Vive Tracker profile.
+ * XR_MNDX_xdev_space profile.
  */
 class deoxrDPMndxDevSpace : public deoxrDeviceProfile{
 private:
