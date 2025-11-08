@@ -212,7 +212,7 @@ void deMTGetStatsAndAchievements::OnFinished()
 		uint32_t i, j;
 
 		found = new bool[statCount];
-		for(i=0; i<statCount; i++)
+		for(i=0; i<(uint32_t)statCount; i++)
 		{
 			found[i] = false;
 		}
@@ -265,7 +265,7 @@ void deMTGetStatsAndAchievements::OnFinished()
 		delete [] buffer;
 		buffer = nullptr;
 
-		for(i=0; i<statCount; i++)
+		for(i=0; i<(uint32_t)statCount; i++)
 		{
 			if(!found[i])
 			{
