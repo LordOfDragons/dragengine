@@ -387,8 +387,8 @@ void main( void ){
 		}else{
 			// by deviating from the paper above we need to handle the case of no hit
 			// being scored at all otherwise the probe turns black
-			//newProbeState = vec2( pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance );
-			newProbeState = vec3(0);
+			newProbeState = vec3(pGIMaxProbeDistance, pGIMaxProbeDistance * pGIMaxProbeDistance, 0);
+			//newProbeState = vec3(0);
 		}
 		blendFactor = 1.0;
 	}
