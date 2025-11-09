@@ -129,6 +129,15 @@ void projTestRunLauncher::LocatePath(){
 	}
 #endif
 	
+	value = getenv("XDG_CONFIG_PATH");
+	if(value){
+		path.SetFromNative(value);
+		if(path.GetComponentCount() > 0){
+			path.AddComponent("delauncher");
+			pPathConfigUser = path.GetPathNative();
+		}
+	}
+	
 	value = getenv( "DELAUNCHER_USER_CONFIG" );
 	if( value ){
 		pPathConfigUser = value;

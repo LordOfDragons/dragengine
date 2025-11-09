@@ -123,5 +123,13 @@ class Billboard
 	/** \brief Set layer mask. */
 	public func void setLayerMask( LayerMask layerMask )
 	end
+	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
 	/*@}*/
 end

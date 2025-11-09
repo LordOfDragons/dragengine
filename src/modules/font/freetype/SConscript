@@ -1,0 +1,118 @@
+from SConsCommon import *
+
+Import('parent_env parent_targets parent_report')
+
+envModule = parent_env.Clone()
+
+buildModule = envModule['build_font_freetype'] != TernaryVariableNo
+internalModule = envModule['build_font_freetype_internal']
+parent_report['build FreeType FontModule'] = (
+	'yes (internal)' if internalModule else 'yes') if buildModule else 'no'
+
+if not buildModule:
+	Return()
+
+# if this module is compiled as internal module we can not use regular libpng.
+# this is because the APNG video module uses the libapng which is libpng with
+# animation support. this would cause two version of libpng to be linked in at
+# the same time. it is fully fine to use libapng instead of libpng in this case
+externLibPng = 'lib_libapng' if internalModule else 'lib_libpng'
+
+libs = []
+appendLibrary(envModule, parent_targets['dragengine'], libs, internalModule=internalModule)
+appendLibrary(envModule, parent_targets['lib_freetype'], libs)
+appendLibrary(envModule, parent_targets[externLibPng], libs)
+
+envModule.Append(CPPFLAGS = parent_env['MODULE_CPPFLAGS'])
+envModule.Append(LINKFLAGS = parent_env['MODULE_LINKFLAGS'])
+
+# fetch values in expanded form for later use
+versionString = '1.29'
+if envModule['force_version']:
+	versionString = envModule['force_version']
+
+pathConfig = '{}/modules/font/freetype/{}'.format(
+	envModule.subst(envModule['path_de_config']), versionString)
+pathModule = '{}/modules/font/freetype/{}'.format(
+	envModule.subst(envModule['path_de_data']), versionString)
+
+# determine the source files
+sources = []
+headers = []
+globFiles(envModule, 'src', '*.cpp', sources)
+globFiles(envModule, 'src', '*.h', headers)
+
+# setup the builders
+install = []
+archive = {}
+
+if internalModule:
+	envModule.Append(CPPFLAGS = ['-DWITH_INTERNAL_MODULE'])
+	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
+	
+	objects = [envModule.SharedObject(s) for s in sources]
+	
+	library = envModule.StaticLibrary(target='fontfreetype', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('font_freetype_build', library)
+	install.extend(targetBuild)
+	
+	parent_targets['dragengine']['add internal module'](
+		envModule, library, ['lib_freetype', externLibPng], 'deftRegisterInternalModule')
+	
+else:
+	objects = [envModule.SharedObject(s) for s in sources]
+	library = envModule.LoadableModule(target='fontfreetype', source=objects, LIBS=libs)
+	targetBuild = parent_env.Alias('font_freetype_build', library)
+	
+	for l in library:
+		if l.name.endswith(envModule['SHLIBSUFFIX']):
+			install.append(envModule.Install(pathModule, l))
+			archive[os.path.join(pathModule, l.name)] = l
+	
+	if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['with_install_pdb']:
+		pathPdb = os.path.join(envModule.subst(envModule['path_pdb']), 'EngineModules')
+		install.append(envModule.Install(pathPdb, 'fontfreetype.pdb'))
+		archive['{}/fontfreetype.pdb'.format(pathPdb)] = envModule.File('fontfreetype.pdb')
+	
+	manifestUpdates = [
+		{'action': 'filename', 'file': library[0], 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'file': library[0], 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'file': library[0], 'keyword': 'SHA1SUM'},
+		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
+	
+	for l in reversed(parent_targets['lib_freetype']['runtimelibs']):
+		manifestUpdates.append({'action': 'preloadLibrary', 'library': l})
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+	
+	for l in reversed(parent_targets[externLibPng]['runtimelibs']):
+		manifestUpdates.append({'action': 'preloadLibrary', 'library': l})
+		install.append(envModule.Install(pathModule, l))
+		archive[os.path.join(pathModule, l.name)] = l
+	
+	manifest = envModule.File('src/module.xml')
+	updateManifest = envModule.UpdateModuleManifest(manifest,
+		manifest.srcnode(), ManifestUpdates=manifestUpdates)
+	
+	install.append(envModule.Install(pathModule, updateManifest))
+	archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
+
+targetInstall = parent_env.Alias('font_freetype', install)
+
+# source directory required for special commands
+srcdir = Dir('.').srcnode().abspath
+
+# cloc
+buildClocBare = BuildCLOC(envModule, ['{}/src'.format(srcdir)],
+	'{}/clocreport.csv'.format(srcdir), ['doc'])
+buildCloc = envModule.Alias('font_freetype_cloc', buildClocBare)
+
+# add the targets to the targets list
+parent_targets['font_freetype'] = {
+	'name' : 'FreeType Font Module',
+	'build' : targetBuild,
+	'install' : targetInstall,
+	'install-engine-runtime' : targetInstall,
+	'archive-engine' : archive,
+	'cloc' : buildCloc,
+	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

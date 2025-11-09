@@ -420,6 +420,7 @@ void deoglShaderLanguage::FinishTask(deoglShaderCompileUnitTask::Ref &task){
 	}
 	}
 	
+	pSemaphoreTasksFinished.Signal();
 	pSemaphoreNewTasks.Signal();
 }
 
@@ -488,6 +489,7 @@ void deoglShaderLanguage::FinishTask(deoglShaderLoadTask::Ref &task){
 	}
 	}
 	
+	pSemaphoreTasksFinished.Signal();
 	pSemaphoreNewTasks.Signal();
 }
 
@@ -687,6 +689,7 @@ void deoglShaderLanguage::pCleanUp(){
 	}
 	
 	pSemaphoreNewTasks.SignalAll();
+	pSemaphoreTasksFinished.SignalAll();
 	
 	for(i=0; i<pCompilerThreadCount; i++){
 		pRenderThread.GetLogger().LogInfoFormat("Wait exit shader compile thread %d", i);

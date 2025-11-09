@@ -42,6 +42,7 @@
 #include "../world/deClassModel.h"
 #include "../world/deClassSkin.h"
 #include "../world/deClassDynamicSkin.h"
+#include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 #include "../../peers/dedsParticleEmitter.h"
@@ -285,7 +286,16 @@ void deClassParticleEmitterInstance::nfSetBurstTime::RunFunction( dsRunTime *rt,
 	instance.SetBurstTime( rt->GetValue( 0 )->GetFloat() );
 }
 
+// func World getParentWorld()
+deClassParticleEmitterInstance::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsPEI, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
 
+void deClassParticleEmitterInstance::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deParticleEmitterInstance &instance = *((sPEINatDat*)p_GetNativeData(myself))->instance;
+	deScriptingDragonScript &ds = *((deClassParticleEmitterInstance*)GetOwnerClass())->GetDS();
+	ds.GetClassWorld()->PushWorld(rt, instance.GetParentWorld());
+}
 
 // public func int getControllerCount()
 deClassParticleEmitterInstance::nfGetControllerCount::nfGetControllerCount( const sInitData &init ) :
@@ -827,6 +837,7 @@ void deClassParticleEmitterInstance::CreateClassMembers( dsEngine *engine ){
 	init.clsPEController = pDS->GetClassParticleEmitterController();
 	init.clsLayerMask = pDS->GetClassLayerMask();
 	init.clsCollider = pDS->GetClassCollider();
+	init.clsWorld = pDS->GetClassWorld();
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
@@ -847,6 +858,7 @@ void deClassParticleEmitterInstance::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetWarmUpTime( init ) );
 	AddFunction( new nfGetBurstTime( init ) );
 	AddFunction( new nfSetBurstTime( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfGetControllerCount( init ) );
 	AddFunction( new nfGetControllerAt( init ) );

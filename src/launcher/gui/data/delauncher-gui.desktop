@@ -3,13 +3,13 @@
 Categories=Game;
 Version=1.0
 Type=Application
-Name=Drag[en]gine GUI Launcher
-GenericName=Drag[en]gine GUI Launcher
+Name=Drag[en]gine Launcher
+GenericName=Drag[en]gine Launcher
 Comment=Run Drag[en]gine based games
 Exec=delauncher-gui %f
 TryExec=delauncher-gui
 MimeType=application/dragengine-gamedefinition;application/dragengine-delga;
-Icon=dragengine-delauncher-gui
+Icon=ch.dragondreams.delauncher
 NoDisplay=false
 StartupNotify=false
 Terminal=false

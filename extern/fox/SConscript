@@ -41,7 +41,7 @@ hasSystemFOX = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_fox'] != TernaryVariableNo:
 	hasSystemFOX = conf.CheckLibWithHeader(libLinkName,
-		'fox-{}/fx.h'.format(libFOXVersion), 'c++', 'FX::isUTF8(0x32);')
+		'fox-{}/fx.h'.format(libFOXVersion), 'c++', call='FX::isUTF8(0x32);')
 conf.Finish()
 
 if not hasSystemFOX and envLibrary['with_system_fox'] == TernaryVariableYes:
@@ -105,7 +105,8 @@ def foxBuild(target, source, env):
 	script.append('autoreconf -fi || exit 1')
 	
 	for p in env['POST_PATCHES']:
-		script.append('patch -F 3 -p1 <{} || exit 1'.format(p.srcnode().abspath))
+		#script.append('patch -F 3 -p1 <{} || exit 1'.format(p.srcnode().abspath))
+		script.append('sed -i -f "{}" aclocal.m4 configure'.format(p.srcnode().abspath))
 	
 	cmdline = ['./configure --prefix="{}"'.format(buildDir.abspath)]
 	
@@ -169,7 +170,8 @@ globFiles(envLibrary, 'patches/{}'.format(foxSrcVersion), '*.patch', patches, re
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 postPatches = [] # create with 'diff -rupN original_sources patches_sources'
-globFiles(envLibrary, 'postPatches/{}'.format(foxSrcVersion), '*.patch', postPatches, recursive=False)
+#globFiles(envLibrary, 'postPatches/{}'.format(foxSrcVersion), '*.patch', postPatches, recursive=False)
+globFiles(envLibrary, 'postPatches/{}'.format(foxSrcVersion), '*.sed', postPatches, recursive=False)
 envLibrary.Append(POST_PATCHES = [envLibrary.File(x) for x in sorted(postPatches)])
 
 if buildStaticLinking:
@@ -179,11 +181,9 @@ else:
 with open(envLibrary.File('header_file_list/{}'.format(foxSrcVersion)).srcnode().abspath, 'r') as f:
 	targets.extend([x[:-1] for x in f.readlines()])
 
-library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(foxBuild, 'Build fox'))
-envLibrary.Depends(library, envLibrary['PATCHES'])
-envLibrary.Depends(library, envLibrary['POST_PATCHES'])
-if envLibrary['OSWindows']:
-	envLibrary.Depends(library, parent_targets['lib_libpng']['depends'])
+library = envLibrary.Command(targets,
+	[nodeArtifacts, patches, postPatches, parent_targets['lib_libpng']['depends']],
+	envLibrary.Action(foxBuild, 'Build fox'))
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

@@ -28,10 +28,13 @@
 
 #include "meCLCollect.h"
 #include "meCLHitListEntry.h"
+#include "../filter/meFilterObjects.h"
 #include "../world/meWorld.h"
 #include "../world/meColliderOwner.h"
 #include "../world/decal/meDecal.h"
 #include "../world/object/meObject.h"
+#include "../world/terrain/meHeightTerrain.h"
+#include "../world/terrain/meHeightTerrainSector.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 
@@ -39,7 +42,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
-
+#include <dragengine/resources/terrain/heightmap/deHeightTerrainSector.h>
 
 
 // Class meCLCollect
@@ -48,31 +51,46 @@
 // Constructor, destructor
 ////////////////////////////
 
-meCLCollect::meCLCollect( meWorld *world ){
-	if( ! world ) DETHROW( deeInvalidParam );
-	
-	pWorld = world;
-	
-	pCollectObjects = true;
-	pCollectDecals = false;
+meCLCollect::meCLCollect(meWorld &world) :
+pWorld(world),
+pTestHeightTerrain(false),
+pTestObjects(false),
+pTestDecals(false),
+pTestSnapPoints(false),
+pFilterObjects(nullptr),
+pIgnoreDecal(nullptr){
 }
 
 meCLCollect::~meCLCollect(){
 }
 
 
-
 // Management
 ///////////////
 
-void meCLCollect::SetCollectObjects( bool collect ){
-	pCollectObjects = collect;
+void meCLCollect::SetTestHeightTerrain(bool test){
+	pTestHeightTerrain = test;
 }
 
-void meCLCollect::SetCollectDecals( bool collect ){
-	pCollectDecals = collect;
+void meCLCollect::SetTestObjects(bool test){
+	pTestObjects = test;
 }
 
+void meCLCollect::SetTestDecals(bool test){
+	pTestDecals = test;
+}
+
+void meCLCollect::SetTestSnapPoints(bool test){
+	pTestSnapPoints = test;
+}
+
+void meCLCollect::SetFilterObjects(const meFilterObjects *filter){
+	pFilterObjects = filter;
+}
+
+void meCLCollect::SetIgnoreDecal(meDecal *decal){
+	pIgnoreDecal = decal;
+}
 
 
 void meCLCollect::Reset(){
@@ -80,70 +98,83 @@ void meCLCollect::Reset(){
 }
 
 
-
 // Notifications
 //////////////////
 
 void meCLCollect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	meCLHitListEntry *entry = NULL;
-	
-	if( info->IsCollider() ){
-		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
-			*pWorld->GetEnvironment(), info->GetCollider() );
-		if( ! colliderOwner ){
+	if(info->IsHTSector()){
+		if(!pTestHeightTerrain){
 			return;
 		}
 		
-		if( colliderOwner->GetObject() ){
-			if( ! pCollectObjects ){
-				return;
-			}
-			
-			try{
-				entry = new meCLHitListEntry;
-				entry->SetObject( colliderOwner->GetObject() );
-				entry->SetDistance( info->GetDistance() );
-				entry->SetNormal( info->GetNormal() );
-				
-				pElements.AddEntry( entry );
-				entry = NULL;
-				
-			}catch( const deException & ){
-				if( entry ){
-					delete entry;
-				}
-				throw;
-			}
-			
-		}else if( colliderOwner->GetDecal() ){
-			if( ! pCollectDecals ){
-				return;
-			}
-			
-			try{
-				entry = new meCLHitListEntry;
-				entry->SetDecal( colliderOwner->GetDecal() );
-				entry->SetDistance( info->GetDistance() );
-				entry->SetNormal( info->GetNormal() );
-				
-				pElements.AddEntry( entry );
-				entry = NULL;
-				
-			}catch( const deException & ){
-				if( entry ){
-					delete entry;
-				}
-				throw;
-			}
+		meHeightTerrainSector * const htsector = pWorld.GetHeightTerrain()->
+			GetSectorWith(info->GetHTSector()->GetSector());
+		
+		if(htsector->GetTextureCount() == 0){
+			return;
 		}
 		
-	}else if( info->IsHTSector() ){
+		const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+		entry->SetHTSector(htsector);
+		entry->SetDistance(info->GetDistance());
+		entry->SetNormal(info->GetNormal());
+		pElements.AddEntry(entry);
+		
+	}else if(info->IsCollider()){
+		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
+			*pWorld.GetEnvironment(), info->GetCollider());
+		if(!colliderOwner){
+			return;
+		}
+		
+		if(colliderOwner->GetObject()){
+			if(!pTestObjects){
+				return;
+			}
+			if(pIgnoreObjects.Has(colliderOwner->GetObject())){
+				return;
+			}
+			if(pFilterObjects && !pFilterObjects->AcceptObject(colliderOwner->GetObject())){
+				return;
+			}
+			
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			entry->SetObject(colliderOwner->GetObject());
+			entry->SetDistance(info->GetDistance());
+			entry->SetNormal(info->GetNormal());
+			pElements.AddEntry(entry);
+			
+		}else if(colliderOwner->GetDecal()){
+			if(!pTestDecals){
+				return;
+			}
+			if(colliderOwner->GetDecal() == pIgnoreDecal){
+				return;
+			}
+			
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			entry->SetDecal(colliderOwner->GetDecal());
+			entry->SetDistance(info->GetDistance());
+			entry->SetNormal(info->GetNormal());
+			pElements.AddEntry(entry);
+			
+		}else if(colliderOwner->GetSnapPoint()){
+			if(!pTestSnapPoints){
+				return;
+			}
+			
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			entry->SetSnapPoint(colliderOwner->GetSnapPoint());
+			entry->SetDistance(info->GetDistance());
+			entry->SetNormal(info->GetNormal());
+			pElements.AddEntry(entry);
+		}
 	}
 }
 
-bool meCLCollect::CanHitCollider( deCollider *owner, deCollider *collider ){
+bool meCLCollect::CanHitCollider(deCollider *owner, deCollider *collider){
 	return true;
 }
 
-void meCLCollect::ColliderChanged( deCollider *owner ){
+void meCLCollect::ColliderChanged(deCollider *owner){
 }

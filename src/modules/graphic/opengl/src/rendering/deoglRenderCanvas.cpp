@@ -100,7 +100,8 @@ enum eSPCanvas{
 	spcGamma,
 	spcClipRect,
 	spcTCClamp,
-	spcTCTransformMask
+	spcTCTransformMask,
+	spcTCLayer
 };
 
 
@@ -151,8 +152,13 @@ pDebugCountCanvasCanvasView( 0 )
 		sources = shaderManager.GetSourcesNamed( "Canvas" );
 		pCreatePipelines(pPipelineCanvasColor, pipconf, sources, defines);
 		
-		defines.SetDefines( "WITH_TEXTURE" );
+		
+		defines.SetDefines("WITH_TEXTURE");
 		pCreatePipelines(pPipelineCanvasImage, pipconf, sources, defines);
+		
+		defines.SetDefines("INPUT_ARRAY_TEXTURES");
+		pCreatePipelines(pPipelineCanvasImageArray, pipconf, sources, defines);
+		
 		
 		defines = commonDefines;
 		defines.SetDefines( "WITH_MASK" );
@@ -160,6 +166,10 @@ pDebugCountCanvasCanvasView( 0 )
 		
 		defines.SetDefines( "WITH_TEXTURE" );
 		pCreatePipelines(pPipelineCanvasImageMask, pipconf, sources, defines);
+		
+		defines.SetDefines("INPUT_ARRAY_TEXTURES");
+		pCreatePipelines(pPipelineCanvasImageArrayMask, pipconf, sources, defines);
+		
 		
 		defines = commonDefines;
 		defines.SetDefines( "WITH_RENDER_WORLD" );
@@ -543,13 +553,22 @@ void deoglRenderCanvas::DrawCanvasVideoPlayer( const deoglRenderCanvasContext &c
 }
 
 void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context, const deoglRCanvasText &canvas ){
-	deoglRFont * const font = canvas.GetFont();
-	if( ! font ){
+	const deoglRFont::Ref &font = canvas.GetFont();
+	if(!font){
 		return;
 	}
 	
-	deoglRImage * const image = font->GetImage();
-	if( ! image || ! image->GetTexture() ){
+	const deoglRFontSize::Ref &fontSize = canvas.GetFontSize();
+	const deoglRFontGlyphs &glyphs = (fontSize ? fontSize->GetGlyphs() : font->GetGlyphs());
+	
+	const deoglRImage::Ref &image = glyphs.GetImage();
+	if(!image){
+		return;
+	}
+	
+	deoglTexture * const texture = image->GetTexture();
+	deoglArrayTexture * const arrayTexture = image->GetArrayTexture();
+	if(!texture && !arrayTexture){
 		return;
 	}
 	
@@ -567,14 +586,25 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	
 	pActivateVAOShapes();
 	
-	const deoglPipeline &pipeline = context.GetMask()
-		? *pPipelineCanvasImageMask[ canvas.GetBlendMode() ]
-		: *pPipelineCanvasImage[ canvas.GetBlendMode() ];
+	const deoglPipeline &pipeline = arrayTexture
+		? (context.GetMask()
+			? *pPipelineCanvasImageArrayMask[canvas.GetBlendMode()]
+			: *pPipelineCanvasImageArray[canvas.GetBlendMode()])
+		: (context.GetMask()
+			? *pPipelineCanvasImageMask[canvas.GetBlendMode()]
+			: *pPipelineCanvasImage[canvas.GetBlendMode()]);
 	pipeline.Activate();
 	
 	// set texture
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-	tsmgr.EnableTexture( 0, *image->GetTexture(), GetSamplerClampNearest() );
+	
+	if(arrayTexture){
+		tsmgr.EnableArrayTexture(0, *arrayTexture, GetSamplerClampNearest());
+		
+	}else{
+		tsmgr.EnableTexture(0, *texture, GetSamplerClampNearest());
+	}
+	
 	if( context.GetMask() ){
 		tsmgr.EnableTexture( 1, *context.GetMask(), GetSamplerClampLinear() );
 	}
@@ -611,14 +641,14 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	shader.SetParameterTexMatrix3x2( spcTCTransformMask, context.GetTCTransformMask() );
 	
 	// render text
-	const deoglRFont::sGlyph * const oglGlyphs = font->GetGlyphs();
 	decUTF8Decoder utf8Decoder;
 	float curx = 0.0f;
 	float cury = 0.0f;
 	
 	utf8Decoder.SetString( canvas.GetText() );
 	const int len = utf8Decoder.GetLength();
-	const float fontScale = canvas.GetFontSize() / ( float )font->GetLineHeight();
+	const float textSize = canvas.GetTextSize();
+	const float fontScale = textSize / (float)glyphs.GetLineHeight();
 	
 	const decTexMatrix2 &transform = context.GetTransform();
 	
@@ -628,17 +658,20 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 			continue; // invalid unicode character
 		}
 		
-		const deoglRFont::sGlyph &oglGlyph = ( character < 256 )
-			? oglGlyphs[ character ] : font->GetUndefinedGlyph();
-			// temp hack: not working for unicode
+		if(character == '\n'){
+			curx = 0.0f;
+			cury += textSize;
+			continue;
+		}
+		
+		const deoglRFontGlyphs::sGlyph &oglGlyph = glyphs.GetGlyphFor(character);
 		
 		// calculate positions
-		const float x1 = curx - ( float )oglGlyph.bearing * fontScale;
-		const float y1 = cury;
-		const float cw = ( float )oglGlyph.width * fontScale;
-		const float x2 = x1 + cw;
-		const float y2 = y1 + ( float )oglGlyph.height * fontScale;
-		const float adv = ( float )oglGlyph.advance * fontScale;
+		const float x1 = curx - (float)oglGlyph.bearing * fontScale;
+		const float y1 = cury - (float)oglGlyph.bearingY * fontScale;
+		const float x2 = x1 + (float)oglGlyph.width * fontScale;
+		const float y2 = y1 + (float)oglGlyph.height * fontScale;
+		const float adv = (float)oglGlyph.advance * fontScale;
 		
 		// render char
 		const decTexMatrix2 rectTransform( decTexMatrix2::CreateST( x2 - x1, y2 - y1, x1, y1 ) );
@@ -648,6 +681,8 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 			( oglGlyph.x2 - oglGlyph.x1 ) * factorU, ( oglGlyph.y2 - oglGlyph.y1 ) * factorV,
 			                                 oglGlyph.x1 * factorU + offsetU, oglGlyph.y1 * factorV + offsetV ) );
 		shader.SetParameterTexMatrix3x2( spcTCTransform, tcTransform );
+		
+		shader.SetParameterInt(spcTCLayer, oglGlyph.z);
 		
 		OGL_CHECK( renderThread, glDrawArrays( GL_TRIANGLE_FAN, OFFSET_RECT, COUNT_RECT ) );
 		

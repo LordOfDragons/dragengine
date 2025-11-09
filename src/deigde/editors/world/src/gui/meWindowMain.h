@@ -32,6 +32,7 @@
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeActionUndoReference.h>
 #include <deigde/gui/event/igdeActionRedoReference.h>
+#include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/resources/igdeIconReference.h>
 
 class meConfiguration;
@@ -75,6 +76,7 @@ private:
 	igdeIconReference pIconEditMove;
 	igdeIconReference pIconEditScale;
 	igdeIconReference pIconEditRotate;
+	igdeIconReference pIconEditRotateRandom;
 	igdeIconReference pIconEdit3DCursor;
 	igdeIconReference pIconEditHeightPaint;
 	igdeIconReference pIconEditMaskPaint;
@@ -82,6 +84,7 @@ private:
 	igdeIconReference pIconEditLockAxisX;
 	igdeIconReference pIconEditLockAxisY;
 	igdeIconReference pIconEditLockAxisZ;
+	igdeIcon::Ref pIconEditLockAxisFlip;
 	igdeIconReference pIconEditUseLocal;
 	igdeIconReference pIconEditSnap;
 	igdeIconReference pIconViewFullBrightOn;
@@ -117,10 +120,8 @@ private:
 	igdeActionReference pActionEditMaskPaintMode;
 	igdeActionReference pActionEditVisPaintMode;
 	igdeActionReference pActionEditModeNavSpaceEdit;
-	igdeActionReference pActionEditLockAxisX;
-	igdeActionReference pActionEditLockAxisY;
-	igdeActionReference pActionEditLockAxisZ;
-	igdeActionReference pActionEditUseLocal;
+	igdeActionReference pActionEditLockAxisX, pActionEditLockAxisY, pActionEditLockAxisZ;
+	igdeActionReference pActionEditUseLocal, pActionEditLockAxisFlip;
 	igdeActionReference pActionEditSnapSnapPoints;
 	igdeActionReference pActionEditRPCenterActive;
 	igdeActionReference pActionEditRPCenterSelected;
@@ -134,6 +135,7 @@ private:
 	igdeActionReference pActionObjectRotateR45;
 	igdeActionReference pActionObjectRotateR90;
 	igdeActionReference pActionObjectRotate180;
+	igdeActionReference pActionObjectRotateRandom;
 	igdeActionReference pActionObjectDropToGround;
 	igdeActionReference pActionObjectSnapToGrid;
 	igdeActionReference pActionObjectCopyPositionX;
@@ -294,6 +296,7 @@ public:
 	inline igdeIcon *GetIconEditMove() const{ return pIconEditMove; }
 	inline igdeIcon *GetIconEditScale() const{ return pIconEditScale; }
 	inline igdeIcon *GetIconEditRotate() const{ return pIconEditRotate; }
+	inline igdeIcon *GetIconEditRotateRandom() const{ return pIconEditRotateRandom; }
 	inline igdeIcon *GetIconEdit3DCursor() const{ return pIconEdit3DCursor; }
 	inline igdeIcon *GetIconEditHeightPaint() const{ return pIconEditHeightPaint; }
 	inline igdeIcon *GetIconEditMaskPaint() const{ return pIconEditMaskPaint; }
@@ -301,6 +304,7 @@ public:
 	inline igdeIcon *GetIconEditLockAxisX() const{ return pIconEditLockAxisX; }
 	inline igdeIcon *GetIconEditLockAxisY() const{ return pIconEditLockAxisY; }
 	inline igdeIcon *GetIconEditLockAxisZ() const{ return pIconEditLockAxisZ; }
+	inline const igdeIcon::Ref &GetIconEditLockAxisFlip() const{ return pIconEditLockAxisFlip; }
 	inline igdeIcon *GetIconEditUseLocal() const{ return pIconEditUseLocal; }
 	inline igdeIcon *GetIconEditSnap() const{ return pIconEditSnap; }
 	inline igdeIcon *GetIconViewFullBrightOn() const{ return pIconViewFullBrightOn; }
@@ -318,6 +322,7 @@ public:
 	inline igdeAction *GetActionObjectRotateR45() const{ return pActionObjectRotateR45; }
 	inline igdeAction *GetActionObjectRotateR90() const{ return pActionObjectRotateR90; }
 	inline igdeAction *GetActionObjectRotate180() const{ return pActionObjectRotate180; }
+	inline igdeAction *GetActionObjectRotateRandom() const{ return pActionObjectRotateRandom; }
 	inline igdeAction *GetActionObjectDropToGround() const{ return pActionObjectDropToGround; }
 	inline igdeAction *GetActionObjectSnapToGrid() const{ return pActionObjectSnapToGrid; }
 	inline igdeAction *GetActionObjectCopyPositionX() const{ return pActionObjectCopyPositionX; }

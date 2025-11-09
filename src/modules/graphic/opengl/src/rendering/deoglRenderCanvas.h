@@ -52,6 +52,8 @@ private:
 	const deoglPipeline *pPipelineCanvasColorMask[ deoglRCanvas::BlendModeCount ];
 	const deoglPipeline *pPipelineCanvasImage[ deoglRCanvas::BlendModeCount ];
 	const deoglPipeline *pPipelineCanvasImageMask[ deoglRCanvas::BlendModeCount ];
+	const deoglPipeline *pPipelineCanvasImageArray[deoglRCanvas::BlendModeCount];
+	const deoglPipeline *pPipelineCanvasImageArrayMask[deoglRCanvas::BlendModeCount];
 	const deoglPipeline *pPipelineCanvasRenderWorld[ deoglRCanvas::BlendModeCount ];
 	const deoglPipeline *pPipelineCanvasRenderWorldMask[ deoglRCanvas::BlendModeCount ];
 	

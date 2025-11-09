@@ -43,6 +43,8 @@
 deoalConfiguration::deoalConfiguration() :
 pDirty( false ),
 
+pLogLevel(ellInfo),
+
 pEnableEFX( true ),
 pStreamBufSizeThreshold( 700000 ), // see deoalSound.cpp
 pAuralizationMode( eamFull ),
@@ -82,6 +84,15 @@ void deoalConfiguration::SetDirty( bool dirty ){
 }
 
 
+
+void deoalConfiguration::SetLogLevel(eLogLevels logLevel){
+	if(logLevel == pLogLevel){
+		return;
+	}
+	
+	pLogLevel = logLevel;
+	pDirty = true;
+}
 
 void deoalConfiguration::SetDeviceName( const char *deviceName ){
 	if( pDeviceName == deviceName ){

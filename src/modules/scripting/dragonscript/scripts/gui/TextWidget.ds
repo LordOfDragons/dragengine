@@ -46,7 +46,7 @@ class TextWidget extends Widget implements TextModelListener
 		protected var TextWidget pWidget
 		
 		/** \brief Create action. */
-		public func new(TextWidget widget)
+		func new(TextWidget widget)
 			if widget == null
 				throw ENullPointer.new("widget")
 			end
@@ -54,7 +54,7 @@ class TextWidget extends Widget implements TextModelListener
 		end
 		
 		/** \brief Action fired. */
-		public func void onAction(ActionEvent event)
+		func void onAction(ActionEvent event)
 			pWidget.onClipboardCut()
 		end
 	end
@@ -67,7 +67,7 @@ class TextWidget extends Widget implements TextModelListener
 		protected var TextWidget pWidget
 		
 		/** \brief Create action. */
-		public func new(TextWidget widget)
+		func new(TextWidget widget)
 			if widget == null
 				throw ENullPointer.new("widget")
 			end
@@ -75,7 +75,7 @@ class TextWidget extends Widget implements TextModelListener
 		end
 		
 		/** \brief Action fired. */
-		public func void onAction(ActionEvent event)
+		func void onAction(ActionEvent event)
 			pWidget.onClipboardCopy()
 		end
 	end
@@ -88,7 +88,7 @@ class TextWidget extends Widget implements TextModelListener
 		protected var TextWidget pWidget
 		
 		/** \brief Create action. */
-		public func new(TextWidget widget)
+		func new(TextWidget widget)
 			if widget == null
 				throw ENullPointer.new("widget")
 			end
@@ -96,32 +96,32 @@ class TextWidget extends Widget implements TextModelListener
 		end
 		
 		/** \brief Action fired. */
-		public func void onAction(ActionEvent event)
+		func void onAction(ActionEvent event)
 			pWidget.onClipboardPaste()
 		end
 	end
 	
 	
 	
-	private var TextModel pModel
-	private var TextValidator pValidator
-	private var bool pReadOnly
-	private var Array pActionListeners
-	private var bool pHasTyped
-	private var bool pActionOnEnter
-	private var bool pAddTabToText
+	var TextModel pModel
+	var TextValidator pValidator
+	var bool pReadOnly
+	var Array pActionListeners
+	var bool pHasTyped
+	var bool pActionOnEnter
+	var bool pAddTabToText
 	
 	
 	
 	/** \brief Create text widget. */
-	public func new(TextModel model) this(model, false)
+	func new(TextModel model) this(model, false)
 	end
 	
 	/**
 	 * \brief Create text widget.
 	 * \version 1.7
 	 */
-	public func new(TextModel model, bool readOnly)
+	func new(TextModel model, bool readOnly)
 		if model == null
 			throw EInvalidParam.new()
 		end
@@ -134,7 +134,7 @@ class TextWidget extends Widget implements TextModelListener
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		pValidator = null
 		pActionListeners = null
 		
@@ -149,12 +149,12 @@ class TextWidget extends Widget implements TextModelListener
 	
 	
 	/** \brief Text model. */
-	public func TextModel getModel()
+	func TextModel getModel()
 		return pModel
 	end
 	
 	/** \brief Set text model. */
-	public func void setModel(TextModel model)
+	func void setModel(TextModel model)
 		if model == pModel
 			return
 		end
@@ -171,7 +171,7 @@ class TextWidget extends Widget implements TextModelListener
 	end
 	
 	/** \brief Text validator or null if not used. */
-	public func TextValidator getValidator()
+	func TextValidator getValidator()
 		return pValidator
 	end
 	
@@ -181,7 +181,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * Current model text is not re-validated. Caller has to ensure text is valid before
 	 * assigning a new validator to avoid impossible to solve situations.
 	 */
-	public func void setValidator(TextValidator validator)
+	func void setValidator(TextValidator validator)
 		pValidator = validator
 	end
 	
@@ -191,7 +191,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * \brief Add action listener.
 	 * \version 1.8
 	 */
-	public func void addActionListener(ActionListener listener)
+	func void addActionListener(ActionListener listener)
 		if listener == null
 			throw EInvalidParam.new()
 		end
@@ -202,7 +202,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * \brief Remove action listener.
 	 * \version 1.8
 	 */
-	public func void removeActionListener(ActionListener listener)
+	func void removeActionListener(ActionListener listener)
 		pActionListeners.remove(listener)
 	end
 	
@@ -210,7 +210,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * \brief User has changed text by typing in the widget since the last action listener call.
 	 * \version 1.8
 	 */
-	public func bool getHasTyped()
+	func bool getHasTyped()
 		return pHasTyped
 	end
 	
@@ -226,7 +226,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * \brief Call action listeners if enter is pressed after user changed text by typing into the widget.
 	 * \version 1.8
 	 */
-	public func bool getActionOnEnter()
+	func bool getActionOnEnter()
 		return pActionOnEnter
 	end
 	
@@ -234,7 +234,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * \brief Set to call action listeners if enter is pressed after user changed text by typing into the widget.
 	 * \version 1.8
 	 */
-	public func void setActionOnEnter(bool actionOnEnter)
+	func void setActionOnEnter(bool actionOnEnter)
 		pActionOnEnter = actionOnEnter
 	end
 	
@@ -242,7 +242,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * \brief Add tab to text instead of moving focus.
 	 * \version 1.8
 	 */
-	public func bool getAddTabToText()
+	func bool getAddTabToText()
 		return pAddTabToText
 	end
 	
@@ -250,7 +250,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * \brief Set to add tab to text instead of moving focus.
 	 * \version 1.8
 	 */
-	public func void setAddTabToText(bool addTabToText)
+	func void setAddTabToText(bool addTabToText)
 		pAddTabToText = addTabToText
 	end
 	
@@ -258,7 +258,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * \brief Fire action.
 	 * \version 1.8
 	 */
-	public func void fireAction(int modifiers)
+	func void fireAction(int modifiers)
 		pHasTyped = false
 		
 		var ActionEvent event = ActionEvent.new(this, ActionEvent.idAction, modifiers)
@@ -274,7 +274,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * Convenience method for calling getModel().getText().
 	 */
-	public func String getText()
+	func String getText()
 		return pModel.getText()
 	end
 	
@@ -283,19 +283,19 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * Convenience method for calling getModel().setText().
 	 */
-	public func void setText(String text)
+	func void setText(String text)
 		pModel.setText(text)
 	end
 	
 	
 	
 	/** Determines if the text is read only. */
-	public func bool getReadOnly()
+	func bool getReadOnly()
 		return pReadOnly
 	end
 	
 	/** Sets if the text is read only. */
-	public func void setReadOnly(bool readOnly)
+	func void setReadOnly(bool readOnly)
 		if readOnly == pReadOnly
 			return
 		end
@@ -314,7 +314,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * \param font Font to use for measuring.
 	 * \throws EInvalidParam toPosition is less than fromPosition
 	 */
-	public func float measureAdvance(int fromPosition, int toPosition, Font font)
+	func float measureAdvance(int fromPosition, int toPosition, Font font)
 		var UTF8Navigator nav = UTF8Navigator.new(pModel.getText(), fromPosition)
 		var float advance
 		var int character
@@ -337,11 +337,11 @@ class TextWidget extends Widget implements TextModelListener
 	 " 
 	 " Convenience method called if onKeyPress is called with an event containing a printable key.
 	 */
-	public func void onKeyType(KeyEvent event)
+	func void onKeyType(KeyEvent event)
 	end
 	
 	/** \brief Text model changed. */
-	public func void onModelChanged()
+	func void onModelChanged()
 	end
 	
 	/**
@@ -349,7 +349,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * Implementation of TextModelListener.textChanged().
 	 */
-	public func void textChanged(TextModel textModel)
+	func void textChanged(TextModel textModel)
 	end
 	
 	
@@ -359,7 +359,7 @@ class TextWidget extends Widget implements TextModelListener
 	 * 
 	 * If event contains a printable character onKeyType() is called after super.onKeyPress().
 	 */
-	public func void onKeyPress(KeyEvent event)
+	func void onKeyPress(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.enter
 			if not pReadOnly
@@ -419,7 +419,7 @@ class TextWidget extends Widget implements TextModelListener
 	end
 	
 	/** \brief Widget lost focus. */
-	public func void onFocusLost(FocusEvent event)
+	func void onFocusLost(FocusEvent event)
 		super.onFocusLost(event)
 		
 		if pHasTyped
@@ -432,27 +432,27 @@ class TextWidget extends Widget implements TextModelListener
 	 * \brief Read only state changed.
 	 * \version 1.7
 	 */
-	public func void onReadOnlyChanged()
+	func void onReadOnlyChanged()
 	end
 	
 	/**
 	 * \brief Copy to clipboard requested.
 	 * \version 1.11
 	 */
-	public func void onClipboardCopy()
+	func void onClipboardCopy()
 	end
 	
 	/**
 	 * \brief Cut to clipboard requested.
 	 * \version 1.11
 	 */
-	public func void onClipboardCut()
+	func void onClipboardCut()
 	end
 	
 	/**
 	 * \brief Paste from clipboard requested.
 	 * \version 1.11
 	 */
-	public func void onClipboardPaste()
+	func void onClipboardPaste()
 	end
 end

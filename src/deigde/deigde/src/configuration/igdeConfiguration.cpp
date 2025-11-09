@@ -282,8 +282,7 @@ void igdeConfiguration::SetMaxRecentProjectEntries( int entries ){
 
 
 void igdeConfiguration::LocatePath(){
-	decPath pathHome;
-	decPath path;
+	decPath path, pathHome;
 
 #ifdef OS_W32
 	TCHAR value[ 256 ];
@@ -367,7 +366,17 @@ void igdeConfiguration::LocatePath(){
 		path.AddComponent( "deprojects" );
 		pPathProjects = path.GetPathNative();
 	}
+#endif
 	
+#ifndef OS_W32
+	value = getenv("XDG_CONFIG_HOME");
+	if(value){
+		path.SetFromNative(value);
+		if(path.GetComponentCount() > 0){
+			path.AddComponent("deigde");
+			pPathConfigUser = path.GetPathNative();
+		}
+	}
 #endif
 	
 #ifdef OS_W32

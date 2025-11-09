@@ -87,6 +87,7 @@ class BaseConversationPlayback extends ConversationPlayback
 	end
 	
 	
+	var TagResolver pCommandTagResolver
 	var CommandLineParser pCommandParser
 	var Dictionary pCommands
 	var Dictionary pConditions
@@ -133,6 +134,8 @@ class BaseConversationPlayback extends ConversationPlayback
 	
 	private func void initShared()
 		pCommandParser = CommandLineParser.new()
+		pCommandTagResolver = TagResolver.new()
+		
 		pCommands = Dictionary.new()
 		pConditions = Dictionary.new()
 		setSubTitle(BehaviorElementClass.sharedFactoryHelper.defaultSubtitle())
@@ -151,6 +154,8 @@ class BaseConversationPlayback extends ConversationPlayback
 		pRestoreInputProcessor = null
 		pConditions = null
 		pCommands = null
+		pCommandTagResolver = null
+		pCommandParser = null
 	end
 	
 	
@@ -187,6 +192,25 @@ class BaseConversationPlayback extends ConversationPlayback
 			throw EInvalidParam.new()
 		end
 		pCommandParser = parser
+	end
+	
+	/**
+	 * \brief Command tag resolver.
+	 * \version 1.29
+	 */
+	func TagResolver getCommandTagResolver()
+		return pCommandTagResolver
+	end
+	
+	/**
+	 * \brief Set command tag resolver.
+	 * \version 1.29
+	 */
+	func void setCommandTagResolver(TagResolver resolver)
+		if resolver == null
+			throw ENullPointer.new("resolver")
+		end
+		pCommandTagResolver = resolver
 	end
 	
 	
@@ -343,10 +367,17 @@ class BaseConversationPlayback extends ConversationPlayback
 	/**
 	 * \brief Game command send by the conversation script.
 	 * 
-	 * Parses command using CommandLineParser into Array of String and calls runCommand()
+	 * Parses command using \ref CommandLineParser into Array of String and calls
+	 * \ref #runCommand(Array).
+	 * 
+	 * \par Version 1.29
+	 * 
+	 * Added support for tag resolving command before parsing it into an array. This allows
+	 * to use dynamic command parts without needing to create special conversation commands.
+	 * The context used for resolving is this instance.
 	 */
 	func void gameCommand(String command)
-		runCommand(pCommandParser.parseCommand(command))
+		runCommand(pCommandParser.parseCommand(pCommandTagResolver.resolveTags(command, this)))
 	end
 	
 	/**
@@ -376,7 +407,8 @@ class BaseConversationPlayback extends ConversationPlayback
 	 * Parses command using CommandLineParser into Array of String and calls evaluateCondition()
 	 */
 	func bool conditionGameCommand(String command)
-		return evaluateCondition(pCommandParser.parseCommand(command))
+		return evaluateCondition(pCommandParser.parseCommand(\
+			pCommandTagResolver.resolveTags(command, this)))
 	end
 	
 	/**

@@ -439,6 +439,7 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleCanInstantiate.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetInheritSubObjects.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsGhost.cpp" />
+    <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsAttachableBehavior.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeURemoveObjectClass.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCAddInherit.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCInheritSetName.cpp" />
@@ -995,6 +996,7 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleCanInstantiate.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCSetInheritSubObjects.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsGhost.h" />
+    <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeUOCToggleIsAttachableBehavior.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\gdeURemoveObjectClass.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCAddInherit.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\gameDefinition\src\undosys\objectClass\inherit\gdeUOCInheritSetName.h" />

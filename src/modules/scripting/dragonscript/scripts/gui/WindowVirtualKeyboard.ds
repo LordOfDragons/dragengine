@@ -139,15 +139,9 @@ class WindowVirtualKeyboard extends Window
 	end
 	
 	
-	
 	var Widget pInputWidget
-	var Panel pKeyboardLayoutPanel
-	
-	var Panel pKeyboardLayoutDefaultPanel
-	var Panel pKeyboardLayoutNumericPanel
-	
+	var Panel pKeyboardLayoutPanel, pKeyboardLayoutDefaultPanel, pKeyboardLayoutNumericPanel
 	var DefaultToggleModel pModelShift
-	
 	
 	
 	/** \brief Create window. */
@@ -156,7 +150,6 @@ class WindowVirtualKeyboard extends Window
 		
 		runWhileBlockingLayout(block
 			setVisible(false)
-			setCanFocus(false)
 			setCanReorder(false)
 			setCanMove(false)
 			setCanResize(false)
@@ -261,6 +254,7 @@ class WindowVirtualKeyboard extends Window
 		setPosition(calculatePopupPosition(inputWidget))
 		setVisible(true)
 		moveToTop()
+		captureDirectional()
 	end
 	
 	/**
@@ -269,11 +263,77 @@ class WindowVirtualKeyboard extends Window
 	 * Hides window.
 	 */
 	func void popdown()
+		if not getVisible()
+			return
+		end
+		
+		releaseDirectional()
 		setVisible(false)
 		setKeyboardLayoutPanel(null)
 		pInputWidget = null
 	end
 	
+	func Widget findFocusableWidget()
+		return null
+	end
+	
+	/**
+	 * \brief Focus default directional navigation widget.
+	 * \version 1.29
+	 */
+	func void focusDefaultDirectional()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.warpCenterMouseIn(this)
+		end
+	end
+	
+	func void focusDirectional(int direction)
+		var Desktop desktop = getDesktop()
+		if desktop == null
+			return
+		end
+		
+		var Point origin = getLocalMouseLocation()
+		if not isPointInside(origin)
+			origin = getSize() / 2
+		end
+		
+		var Widget widget = getWidgetAt(origin)
+		if widget != null
+			widget.desktopWarpMouseFocusHere()
+			widget.focusDirectional(direction)
+			
+		else
+			return
+		end
+		
+		/*
+		var ClosestDirectionFocusFinder finder
+		var Widget widget = getWidgetAt(origin)
+		if widget != null
+			var Point size = widget.getSize()
+			origin = widget.getRelativePosition(this) + size / 2
+			finder = ClosestDirectionFocusFinder.new(direction, -size / 2, size)
+			finder.addIgnoreWidgetFocusable(widget)
+			
+		else
+			finder = ClosestDirectionFocusFinder.new(direction, Point.new(), Point.new())
+		end
+		
+		BaseGameApp.getApp().getConsole().addMessage("BEGIN TOP VKEY: " + Array.newWith(this, getDesktopBoundary(), origin, direction, widget, widget != null if widget.getDesktopBoundary() else null))
+		collectClosestFocusWidget(finder, origin)
+		
+		widget = finder.getBestWidget()
+		if widget == null
+			BaseGameApp.getApp().getConsole().addMessage("    REJECT VKEY")
+			return
+		end
+		
+		BaseGameApp.getApp().getConsole().addMessage("    ACCEPT VKEY: " + Array.newWith(widget, widget.getDesktopBoundary()))
+		desktop.warpMouseFocusLocation(widget)
+		*/
+	end
 	
 	
 	/** \brief Send key pressed event to input widget if present. */
@@ -285,8 +345,7 @@ class WindowVirtualKeyboard extends Window
 		// we could use "this" as source to indicate where the event originates from.
 		// this though prevents the key repetition from working since this is only started
 		// if the event originates from the input widget itself
-		pInputWidget.sendEvent(KeyEvent.new(pInputWidget, KeyEvent.idKeyPressed, \
-			keyCode, InputEventModifier.none, keyChar, -1, keyCode))
+		pInputWidget.simulateKeyPress(keyCode, keyChar)
 	end
 	
 	/** \brief Send key released event to input widget if present. */
@@ -295,8 +354,7 @@ class WindowVirtualKeyboard extends Window
 			return
 		end
 		
-		pInputWidget.sendEvent(KeyEvent.new(pInputWidget, KeyEvent.idKeyReleased,\
-			keyCode, InputEventModifier.none, keyChar, -1, keyCode))
+		pInputWidget.simulateKeyRelease(keyCode, keyChar)
 	end
 	
 	
@@ -311,6 +369,9 @@ class WindowVirtualKeyboard extends Window
 	 * the underlaying window.
 	 */
 	func void grabFocus()
+	end
+	
+	func void requestGrabFocus(Widget widget)
 	end
 	
 	
@@ -570,6 +631,7 @@ class WindowVirtualKeyboard extends Window
 	/** \brief Create virtual key widget. */
 	protected func Widget createVirtualKey(int keyCode, int keyChar, String text, String designerSuffix)
 		var Label label = Label.new(text, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		label.setCanFocusDirectional(true)
 		label.addMouseListener(VirtualKeyType.new(this, label, keyCode, keyChar, keyChar))
 		return label
 	end
@@ -578,6 +640,7 @@ class WindowVirtualKeyboard extends Window
 	protected func Widget createVirtualKey(int keyCode, int keyChar, String text,\
 	int shiftedKeyChar, String shiftedText, String designerSuffix)
 		var Label label = Label.new(text, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		label.setCanFocusDirectional(true)
 		label.addMouseListener(VirtualKeyType.new(this, label, keyCode, keyChar, shiftedKeyChar))
 		pModelShift.addListener(RenameShiftToggle.new(label.getModel(), text, shiftedText))
 		return label
@@ -586,6 +649,7 @@ class WindowVirtualKeyboard extends Window
 	/** \brief Create virtual key widget. */
 	protected func Widget createVirtualKey(int keyCode, int keyChar, Image image, String designerSuffix)
 		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		display.setCanFocusDirectional(true)
 		display.addMouseListener(VirtualKeyType.new(this, display, keyCode, keyChar, keyChar))
 		return display
 	end
@@ -596,6 +660,7 @@ class WindowVirtualKeyboard extends Window
 	 */
 	protected func Widget createVirtualKeyHide(Image image, String designerSuffix)
 		var DisplayRotatingImage display = DisplayRotatingImage.new(image, "Label.WindowVirtualKeyboard.Key" + designerSuffix)
+		display.setCanFocusDirectional(true)
 		display.addMouseListener(HideVirtualKeyboard.new(this, display))
 		return display
 	end

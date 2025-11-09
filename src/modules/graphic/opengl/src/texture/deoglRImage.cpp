@@ -81,6 +81,20 @@ deoglRImage::~deoglRImage(){
 // Management
 ///////////////
 
+void deoglRImage::SetPixelBuffer(const deoglPixelBuffer::Ref &pixelBuffer){
+	// WARNING Called during synchronization from main thread only
+	
+	if(pDepth == 1){
+		SetPixelBufferTexture(pixelBuffer);
+		
+	}else if(pDepth == 6 && pWidth == pHeight){
+		SetPixelBufferCubeMap(pixelBuffer);
+		
+	}else{
+		SetPixelBufferArrayTexture(pixelBuffer);
+	}
+}
+
 void deoglRImage::SetPixelBufferTexture(const deoglPixelBuffer::Ref &pixelBuffer){
 	// WARNING Called during synchronization from main thread only
 	

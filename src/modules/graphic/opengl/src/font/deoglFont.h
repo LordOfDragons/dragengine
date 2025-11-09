@@ -25,14 +25,14 @@
 #ifndef _DEOGLFONT_H_
 #define _DEOGLFONT_H_
 
+#include "deoglRFont.h"
 #include "../deoglBasics.h"
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicFont.h>
 
 class deFont;
 class deGraphicOpenGl;
-class deoglRFont;
-
+class deoglRFontSize;
 
 
 /**
@@ -40,37 +40,46 @@ class deoglRFont;
  */
 class deoglFont : public deBaseGraphicFont{
 private:
-	const deFont &pFont;
+	deFont &pFont;
+	const deoglRFont::Ref pRFont;
 	
-	deoglRFont *pRFont;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create font. */
-	deoglFont( deGraphicOpenGl &ogl, const deFont &font );
+	deoglFont(deGraphicOpenGl &ogl, deFont &font);
 	
 	/** Clean up font. */
-	virtual ~deoglFont();
+	~deoglFont() override;
 	/*@}*/
-	
 	
 	
 	/** \name Management */
 	/*@{*/
 	/** Font resource. */
-	inline const deFont &GetFont() const{ return pFont; }
+	inline deFont &GetFont() const{ return pFont; }
 	
 	/** Render font. */
-	inline deoglRFont *GetRFont() const{ return pRFont; }
-	/*@}*/
+	inline const deoglRFont::Ref &GetRFont() const{ return pRFont; }
 	
+	/**
+	 * Get font size if present in font resource. If not present returns nullptr. Otherwise
+	 * ensures deoglRFontSize is present, prepared and ready to be used.
+	 * 
+	 * \note Mutex protected access to sizes.
+	 */
+	deoglRFontSize *GetFontSizeFor(int lineHeight);
+	/*@}*/
 	
 	
 	/** \name Notifications */
 	/*@{*/
 	/** Update font. */
-	virtual void Update( float elapsed );
+	void Update(float elapsed) override;
+	
+	/** \brief Font size added. */
+	void FontSizeAdded(int lineHeight, deFontSize *size) override;
 	/*@}*/
 };
 

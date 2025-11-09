@@ -232,4 +232,17 @@ class OptionBox extends ToggleButton
 		super.updateWidgetImage()
 		pPanelCheckTextImage.setVisible(getWidgetText().getVisible() or getWidgetImage().getVisible())
 	end
+	
+	
+	func Point getFocusMouseLocation()
+		if pWidgetOptionBox != null
+			return pWidgetOptionBox.getRelativePosition(this) + pWidgetOptionBox.getSize() * 3 / 4
+			
+		elif pWidgetSelected != null
+			return pWidgetSelected.getRelativePosition(this) + pWidgetSelected.getSize() * 3 / 4
+			
+		else
+			return super.getFocusMouseLocation()
+		end
+	end
 end

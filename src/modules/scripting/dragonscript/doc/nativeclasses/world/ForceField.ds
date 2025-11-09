@@ -43,6 +43,14 @@ class ForceField
 	public func void setOrientation( Quaternion orientation )
 	end
 	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
+	
 	
 	
 	/** \brief Influence area. */

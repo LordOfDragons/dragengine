@@ -36,6 +36,11 @@
  * and the menu is enabled.
  */
 class DE_DLL_EXPORT igdeMenuCheck : public igdeMenuCommand{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeMenuCheck> Ref;
+	
+	
 private:
 	bool pChecked;
 	

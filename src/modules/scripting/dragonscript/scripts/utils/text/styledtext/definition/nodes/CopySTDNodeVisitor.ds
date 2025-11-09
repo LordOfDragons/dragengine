@@ -62,12 +62,10 @@ class CopySTDNodeVisitor extends DefaultSTDNodeVisitor
 	var StyledTextDefinition pDefinition
 	
 	
-	
 	/** \brief Create visitor with empty definition. */
 	func new()
 		pDefinition = StyledTextDefinition.new()
 	end
-	
 	
 	
 	/** \brief Definition to add nodes to. */
@@ -107,7 +105,6 @@ class CopySTDNodeVisitor extends DefaultSTDNodeVisitor
 			each.visit(this)
 		end)
 	end
-	
 	
 	
 	/**

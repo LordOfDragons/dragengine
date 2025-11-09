@@ -185,6 +185,7 @@ private:
 	
 	decStringSet pAddFilterObjectSet;
 	bool pAddFilterObjectInclusive;
+	bool pAddRandomizeYAxis;
 	
 	float pRectSelDistance;
 	float pRectSelDistanceStep;
@@ -432,6 +433,12 @@ public:
 	
 	/** \brief Set if add object filter is inclusive. */
 	void SetAddFilterObjectInclusive( bool inclusive );
+	
+	/** \brief Add object randomize Y axis. */
+	inline bool GetAddRandomizeYAxis() const { return pAddRandomizeYAxis; }
+	
+	/** \brief Set add object randomize Y axis. */
+	void SetAddRandomizeYAxis(bool randomize);
 	/*@}*/
 };
 

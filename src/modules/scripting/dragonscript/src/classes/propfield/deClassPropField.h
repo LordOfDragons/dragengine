@@ -71,6 +71,7 @@ private:
 	struct sInitData{
 		dsClass *clsPF, *clsVoid, *clsBool, *clsInt, *clsFlt, *clsStr, *clsObj;
 		dsClass *clsDVec, *clsVec, *clsMdl, *clsSkin, *clsPFL, *clsCF;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -82,6 +83,7 @@ private:
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfSetPosition );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfAddType );
 	DEF_NATFUNC( nfRemoveAllTypes );

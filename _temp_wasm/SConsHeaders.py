@@ -41,7 +41,7 @@ conf = envDragengine.Configure()
 if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	hasDL = False
 	if envDragengine['with_dl'] != TernaryVariableNo:
-		hasDL = conf.CheckLibWithHeader('dl', 'dlfcn.h', 'c++', 'dlerror();')
+		hasDL = conf.CheckLibWithHeader('dl', 'dlfcn.h', 'c++', call='dlerror();')
 		if hasDL:
 			envDragengine.Append(CXXFLAGS = '-DHAS_LIB_DL')
 			if envDragengine['platform_android'] == 'no':
@@ -56,19 +56,19 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 		envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
 		hasPThreads = True # special implementation bundled in OS. no library include
 	elif envDragengine['with_pthread'] != TernaryVariableNo:
-		hasPThreads = conf.CheckLibWithHeader('pthread', 'pthread.h', 'c++', 'pthread_exit(NULL);')
+		hasPThreads = conf.CheckLibWithHeader('pthread', 'pthread.h', 'c++', call='pthread_exit(NULL);')
 		if hasPThreads:
 			envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
 			libs.append('pthread')
 			binlibs.append('pthread')
 		else:
-			hasPThreads = conf.CheckLibWithHeader('pthreads', 'pthread.h', 'c++', 'pthread_exit(NULL);')
+			hasPThreads = conf.CheckLibWithHeader('pthreads', 'pthread.h', 'c++', call='pthread_exit(NULL);')
 			if hasPThreads:
 				envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
 				libs.append('pthreads')
 				binlibs.append('pthreads')
 			else:
-				hasPThreads = conf.CheckLibWithHeader('root', 'pthread.h', 'c++', 'pthread_exit(NULL);')
+				hasPThreads = conf.CheckLibWithHeader('root', 'pthread.h', 'c++', call='pthread_exit(NULL);')
 				if hasPThreads:
 					envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
 					# no lib append since root is already included
@@ -78,13 +78,13 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	
 	hasX11 = False
 	if envDragengine['with_x'] != TernaryVariableNo:
-		hasX11 = conf.CheckLibWithHeader('X11', 'X11/Xlib.h', 'c++', 'XOpenDisplay(NULL);')
+		hasX11 = conf.CheckLibWithHeader('X11', 'X11/Xlib.h', 'c++', call='XOpenDisplay(NULL);')
 		if hasX11:
 			envDragengine.Append(CXXFLAGS = '-DHAS_LIB_X11')
 			libs.append('X11')
 			binlibs.append('X11')
 			
-			if conf.CheckLibWithHeader('Xrandr', 'X11/extensions/Xrandr.h', 'c++', 'XRRQueryVersion(NULL,NULL,NULL);'):
+			if conf.CheckLibWithHeader('Xrandr', 'X11/extensions/Xrandr.h', 'c++', call='XRRQueryVersion(NULL,NULL,NULL);'):
 				envDragengine.Append(CXXFLAGS = '-DHAS_LIB_XRANDR')
 				libs.append('Xrandr')
 				binlibs.append('Xrandr')

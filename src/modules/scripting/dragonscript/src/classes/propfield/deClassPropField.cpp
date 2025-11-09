@@ -34,6 +34,7 @@
 #include "../physics/deClassCollisionFilter.h"
 #include "../world/deClassModel.h"
 #include "../world/deClassSkin.h"
+#include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 #include "../../peers/dedsPropField.h"
@@ -114,6 +115,19 @@ void deClassPropField::nfSetPosition::RunFunction( dsRunTime *rt, dsValue *mysel
 	if( ! objPos ) DSTHROW( dueNullPointer );
 	
 	propfield->SetPosition( clsDVec->GetDVector( objPos ) );
+}
+
+// func World getParentWorld()
+deClassPropField::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsPF, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
+
+void deClassPropField::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself) {
+	dePropField &propfield = *(((sPFNatDat*)p_GetNativeData(myself))->propfield);
+	deClassPropField &clsPF = *((deClassPropField*)GetOwnerClass());
+	deScriptingDragonScript &ds = *clsPF.GetDS();
+
+	ds.GetClassWorld()->PushWorld(rt, propfield.GetParentWorld());
 }
 
 // public func int addType( Model model, Skin skin, float rotPerForce, float restitution,
@@ -322,12 +336,14 @@ void deClassPropField::CreateClassMembers( dsEngine *engine ){
 	init.clsSkin = pDS->GetClassSkin();
 	init.clsPFL = pDS->GetClassPropFieldListener();
 	init.clsCF = pDS->GetClassCollisionFilter();
+	init.clsWorld = pDS->GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
 	
 	AddFunction( new nfSetPosition( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfAddType( init ) );
 	AddFunction( new nfRemoveAllTypes( init ) );

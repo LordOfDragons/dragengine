@@ -66,15 +66,12 @@ class WindowOverColor extends Window
 		pTimeFadeIn = 1
 		pTimeStay = 1
 		pTimeFadeOut = 1
-		pElapsed = 0
-		pRunning = false
 		pUseSmoothStep = true
 		
 		updateThresholds()
 		
 		setWindowState(Window.WindowState.maximized)
 		setCanActivate(false)
-		setCanFocus(false)
 		setTransparency(0)
 		setDesignerSelector("Window.OverColor")
 	end

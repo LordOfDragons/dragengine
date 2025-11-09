@@ -28,46 +28,59 @@ pin Dragengine.Gui
 pin Dragengine.Scenery
 
 
-
 /**
  * \brief Styled text definition node.
  */
 class STDNode
-	/** \brief Style or \em null to use parent node style. */
-	private var String pStyle
-	
+	var String pStyle
+	var bool pNewPage
 	
 	
 	/** \brief Create styled text definition node. */
-	public func new()
+	func new()
 	end
 	
 	/** \brief Create copy of styled text definition node. */
-	public func new( STDNode node )
-		this.pStyle = node.pStyle
+	func new(STDNode node)
+		pStyle = node.pStyle
+		pNewPage = node.pNewPage
 	end
-	
 	
 	
 	/** \brief Style or \em null to use the parent node style. */
-	public func String getStyle()
-		return this.pStyle
+	func String getStyle()
+		return pStyle
 	end
 	
 	/** \brief Set style or \em null to use the parent node style. */
-	public func void setStyle( String style )
-		this.pStyle = style
+	func void setStyle(String style)
+		pStyle = style
 	end
 	
+	/**
+	 * \brief Whether this node starts a new page.
+	 * \version 1.29
+	 */
+	func bool getNewPage()
+		return pNewPage
+	end
+	
+	/**
+	 * \brief Set whether this node starts a new page.
+	 * \version 1.29
+	 */
+	func void setNewPage(bool newPage)
+		pNewPage = newPage
+	end
 	
 	
 	/** \brief Create copy of styled text definition node. */
-	public func STDNode copy()
-		return STDNode.new( this )
+	func STDNode copy()
+		return STDNode.new(this)
 	end
 	
 	/** \brief Visit node. */
-	public func void visit( STDNodeVisitor visitor )
-		visitor.visitNode( this )
+	func void visit(STDNodeVisitor visitor)
+		visitor.visitNode(this)
 	end
 end

@@ -190,6 +190,8 @@ class InteractiveMainMenu extends Window
 		setCanMinimize(false)
 		setCanResize(false)
 		setDesignerSelector("InteractiveMainMenu")
+		setCanFocus(true)
+		setCanFocusDirectional(true)
 		
 		setLayout(StackLayout.new())
 		
@@ -669,7 +671,14 @@ class InteractiveMainMenu extends Window
 		end
 	end
 	
-	/** \brief Temporary hack until class is working then remove. */
+	
+	
+	func void focusDirectional(int direction)
+		pInteract.focusDirectional(direction)
+	end
+	
+	
+	
 	func void onKeyPress(KeyEvent event)
 		super.onKeyPress(event)
 		
@@ -679,7 +688,6 @@ class InteractiveMainMenu extends Window
 		end
 	end
 	
-	/** \brief Mouse button pressed. */
 	func void onButtonPress(MouseEvent event)
 		super.onButtonPress(event)
 		
@@ -688,6 +696,16 @@ class InteractiveMainMenu extends Window
 			pInteract.onButtonPress(event)
 		end
 	end
+	
+	func void onGamepadButtonPressed(GamepadEvent event)
+		super.onGamepadButtonPressed(event)
+		
+		select pState
+		case State.mainMenuIdle, State.hotSpotIdle
+			pInteract.onGamepadButtonPressed(event)
+		end
+	end
+	
 	
 	/**
 	 * \brief Update frame.

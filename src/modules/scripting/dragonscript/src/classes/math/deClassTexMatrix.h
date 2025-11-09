@@ -66,6 +66,7 @@ private:
 	struct sInitData{
 		dsClass *clsTexMat, *clsVoid, *clsBool, *clsInt, *clsFlt, *clsStr, *clsObj;
 		dsClass *clsVec2, *clsFileReader, *clsFileWriter;
+		dsClass *clsTexMatrix2;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -80,12 +81,17 @@ private:
 	DEF_NATFUNC( nfNewScaling );
 	DEF_NATFUNC( nfNewScaling2 );
 	DEF_NATFUNC( nfNewRotation );
+	DEF_NATFUNC( nfNewShear );
+	DEF_NATFUNC( nfNewShear2 );
 	DEF_NATFUNC( nfNewST );
 	DEF_NATFUNC( nfNewST2 );
 	DEF_NATFUNC( nfNewSRT );
 	DEF_NATFUNC( nfNewSRT2 );
+	DEF_NATFUNC(nfNewRT);
+	DEF_NATFUNC(nfNewRT2);
 	DEF_NATFUNC( nfNewCenterSRT );
 	DEF_NATFUNC( nfNewCenterSRT2 );
+	DEF_NATFUNC( nfNewCenterRotation );
 	DEF_NATFUNC( nfDestructor );
 	
 	DEF_NATFUNC( nfGetAt );
@@ -98,6 +104,16 @@ private:
 	DEF_NATFUNC( nfGet31 );
 	DEF_NATFUNC( nfGet32 );
 	DEF_NATFUNC( nfGet33 );
+	DEF_NATFUNC(nfTransformNormal);
+	DEF_NATFUNC(nfGetRightVector);
+	DEF_NATFUNC(nfGetUpVector);
+	DEF_NATFUNC(nfGetPosition);
+	DEF_NATFUNC(nfGetRotationAngle);
+	DEF_NATFUNC(nfGetScaling);
+	DEF_NATFUNC(nfGetInverse);
+	DEF_NATFUNC(nfGetRotation);
+	DEF_NATFUNC(nfNormalize);
+	DEF_NATFUNC(nfToTexMatrix2);
 	
 	DEF_NATFUNC( nfReadFromFile );
 	DEF_NATFUNC( nfWriteToFile );

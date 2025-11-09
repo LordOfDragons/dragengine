@@ -103,9 +103,7 @@ private:
 	decString pDescription;
 	eScaleModes pScaleMode;
 	igdeGDCamera *pCamera;
-	bool pHasCamera;
-	bool pIsGhost;
-	bool pCanInstantiate;
+	bool pHasCamera, pIsGhost, pCanInstantiate, pIsAttachableBehavior;
 	decString pCategory;
 	igdeGDPropertyList pListProperties;
 	decStringDictionary pPropertyValues;
@@ -198,6 +196,12 @@ public:
 	
 	/** \brief Set if object can be instantiated. */
 	void SetCanInstantiate( bool canInstantiate );
+	
+	/** Object class is an attachable behavior. */
+	inline bool GetIsAttachableBehavior() const{ return pIsAttachableBehavior; }
+	
+	/** Set if object class is an attachable behavior. */
+	void SetIsAttachableBehavior(bool isAttachableBehavior);
 	
 	/** \brief Hide tags. */
 	inline igdeTagManager &GetHideTags(){ return pHideTags; }

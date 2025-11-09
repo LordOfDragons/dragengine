@@ -29,6 +29,7 @@
 // #include "deoxrDevice.h"
 #include "deoxrDebug.h"
 #include "deoxrPath.h"
+#include "extension/xdev/XR_MNDX_xdev_space.h"
 
 #include <dragengine/deObject.h>
 
@@ -82,10 +83,11 @@ public:
 		extKHRAndroidCreateInstance, //<! XR_KHR_android_create_instance
 		extFBTouchControllerPro, //<! XR_FB_touch_controller_pro
 		extFBTouchControllerProximity, //<! XR_FB_touch_controller_proximity
-		extMETATouchControllerPlus //<! XR_META_touch_controller_plus
+		extMETATouchControllerPlus, //<! XR_META_touch_controller_plus
+		extMNDXXDevSpace //<! XR_MNDX_xdev_space
 	};
 	
-	static const int ExtensionCount = extMETATouchControllerPlus + 1;
+	static const int ExtensionCount = extMNDXXDevSpace + 1;
 	
 	/** Layers. */
 	enum eLayer{
@@ -159,6 +161,8 @@ public:
 	/** Extension version or 0 if not supported. */
 	uint32_t ExtensionVersion( eExtension extension ) const;
 	
+	/** Disable extension support. */
+	void DisableExtension(eExtension extension);
 	
 	
 	/** Layer is supported. */

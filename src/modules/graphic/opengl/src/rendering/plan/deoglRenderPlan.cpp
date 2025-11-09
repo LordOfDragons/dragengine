@@ -612,23 +612,23 @@ void deoglRenderPlan::pPlanSky(){
 	int i;
 	
 	pSkyInstances.RemoveAll();
-	pSkyBgColor.SetZero();
+	pSkyBgColor.Set(0.0f, 0.0f, 0.0f, 0.0f);
 	
-	for( i=0; i<count; i++ ){
-		deoglRSkyInstance * const instance = pWorld->GetSkyAt( i );
-		if( ! instance->GetRSky() ){
+	for(i=0; i<count; i++){
+		deoglRSkyInstance * const instance = pWorld->GetSkyAt(i);
+		if(!instance->GetRSky()){
 			continue;
 		}
-		if( pUseLayerMask && instance->GetLayerMask().IsNotEmpty()
-		&& pLayerMask.MatchesNot( instance->GetLayerMask() ) ){
+		if(pUseLayerMask && instance->GetLayerMask().IsNotEmpty()
+		&& pLayerMask.MatchesNot(instance->GetLayerMask())){
 			continue;
 		}
 		
-		if( pSkyInstances.GetCount() == 0 ){
+		if(pSkyInstances.GetCount() == 0){
 			pSkyBgColor = instance->GetRSky()->GetBgColor();
 		}
 		
-		pSkyInstances.Add( instance );
+		pSkyInstances.Add(instance);
 	}
 }
 

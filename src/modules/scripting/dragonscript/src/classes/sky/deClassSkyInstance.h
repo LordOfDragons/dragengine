@@ -100,6 +100,8 @@ private:
 	DEF_NATFUNC( nfSetOrder );
 	DEF_NATFUNC( nfGetLayerMask );
 	DEF_NATFUNC( nfSetLayerMask );
+	DEF_NATFUNC(nfGetPassthroughTransparency);
+	DEF_NATFUNC(nfSetPassthroughTransparency);
 	
 	DEF_NATFUNC( nfGetControllerCount );
 	DEF_NATFUNC( nfGetControllerAt );

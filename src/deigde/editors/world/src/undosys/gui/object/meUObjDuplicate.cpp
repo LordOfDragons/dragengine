@@ -43,30 +43,24 @@
 // Constructor, destructor
 ////////////////////////////
 
-meUObjDuplicate::meUObjDuplicate( meWorld *world, const decVector &offset ){
-	if( ! world ){
-		DETHROW( deeInvalidParam );
-	}
+meUObjDuplicate::meUObjDuplicate( meWorld *world, const decVector &offset ) :
+pWorld(nullptr)
+{
+	DEASSERT_NOTNULL(world)
 	
 	const meObjectList &list = world->GetSelectionObject().GetSelected();
 	const int count = list.GetCount();
-	if( count == 0 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_FALSE(count == 0)
 	
-	deObjectReference ref, refObj, refTex;
-	int i, j, textureCount;
+	int i, j;
 	
 	SetShortInfo( "Duplicate Objects" );
-	
-	pWorld = NULL;
 	
 	try{
 		for( i=0; i<count; i++ ){
 			const meObject &object = *list.GetAt( i );
 			
-			refObj.TakeOver( new meObject( world->GetEnvironment() ) );
-			meObject * const duplicate = ( meObject* )( deObject* )refObj;
+			const meObject::Ref duplicate(meObject::Ref::NewWith(world->GetEnvironment()));
 			
 			duplicate->SetClassName( object.GetClassName() );
 			duplicate->SetPosition( object.GetPosition() + decDVector( offset ) );
@@ -74,17 +68,16 @@ meUObjDuplicate::meUObjDuplicate( meWorld *world, const decVector &offset ){
 			duplicate->SetSize( object.GetSize() );
 			duplicate->SetScaling( object.GetScaling() );
 			duplicate->SetProperties( object.GetProperties() );
+			duplicate->SetAttachBehaviors(object.GetAttachBehaviors());
 			
-			textureCount = object.GetTextureCount();
-			for( j=0; j<textureCount; j++ ){
-				refTex.TakeOver( new meObjectTexture( *object.GetTextureAt( j ) ) );
-				duplicate->AddTexture( ( meObjectTexture* )( deObject* )refTex );
+			const int textureCount = object.GetTextureCount();
+			for(j=0; j<textureCount; j++){
+				duplicate->AddTexture(meObjectTexture::Ref::NewWith(*object.GetTextureAt(j)));
 			}
 			
 			duplicate->SetID( world->NextObjectID() );
 			
-			ref.TakeOver( new meUndoDataObject( duplicate ) );
-			pObjects.Add( ref );
+			pObjects.Add(meUndoDataObject::Ref::NewWith(duplicate));
 		}
 		
 		// update attachment

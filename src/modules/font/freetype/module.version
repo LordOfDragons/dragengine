@@ -1,0 +1,4 @@
+DEFONTFREETYPE {
+  global: DEFreeTypeCreateModule;
+  local: *;
+};

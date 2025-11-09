@@ -124,6 +124,10 @@ void deoglRDecal::WorldComputeElement::UpdateDataGeometries( sDataElementGeometr
 	int filter = skinTexture->GetRenderTaskFilters() & ~RenderFilterOutline;
 	filter |= ertfDecal | ertfShadow;
 	
+	if(!pDecal.IsParentComponentSolid()){
+		filter &= ~ertfSolid;
+	}
+	
 	int pipelineModifier = deoglSkinTexturePipelines::emDoubleSided;
 	
 	SetDataGeometry( *data, 0, filter, deoglSkinTexturePipelinesList::eptDecal, pipelineModifier,
@@ -131,6 +135,8 @@ void deoglRDecal::WorldComputeElement::UpdateDataGeometries( sDataElementGeometr
 	
 	sInfoTUC info;
 	info.geometry = pDecal.GetTUCGeometry();
+	info.depth = pDecal.GetTUCDepth();
+	info.counter = pDecal.GetTUCCounter();
 	info.envMap = pDecal.GetTUCEnvMap();
 	SetDataGeometryTUCs( *data, info );
 }
@@ -187,9 +193,7 @@ pListenerIndex( 0 )
 	pDirtyUseTexture = true;
 	pDirtyVBO = true;
 	
-	pTUCGeometry = NULL;
-	pTUCShadow = NULL;
-	pTUCEnvMap = NULL;
+	pTUCGeometry = pTUCDepth = pTUCCounter = pTUCShadow = pTUCEnvMap = nullptr;
 	
 	pUniqueKey = renderThread.GetUniqueKey().Get();
 	LEAK_CHECK_CREATE( renderThread, Decal );
@@ -220,6 +224,12 @@ deoglRDecal::~deoglRDecal(){
 	}
 	if( pTUCGeometry ){
 		pTUCGeometry->RemoveUsage();
+	}
+	if(pTUCDepth){
+		pTUCDepth->RemoveUsage();
+	}
+	if(pTUCCounter){
+		pTUCCounter->RemoveUsage();
 	}
 	if( pTUCShadow ){
 		pTUCShadow->RemoveUsage();
@@ -448,6 +458,10 @@ void deoglRDecal::SetParentComponent( deoglRComponent *component ){
 // 	NotifyGeometryChanged(); // either removed from component (notify destroyed) or added (no listener)
 }
 
+bool deoglRDecal::IsParentComponentSolid() const{
+	return !pParentComponent || pParentComponent->GetSolid();
+}
+
 void deoglRDecal::SetComponentMarkedRemove( bool marked ){
 	pComponentMarkedRemove = marked;
 }
@@ -470,6 +484,13 @@ deoglTexUnitsConfig *deoglRDecal::GetTUCForPipelineType( deoglSkinTexturePipelin
 	switch( type ){
 	case deoglSkinTexturePipelines::etGeometry:
 		return GetTUCGeometry();
+		
+	case deoglSkinTexturePipelines::etDepth:
+		return GetTUCDepth();
+		
+	case deoglSkinTexturePipelines::etCounter:
+	case deoglSkinTexturePipelines::etCounterClipPlane:
+		return GetTUCCounter();
 		
 	case deoglSkinTexturePipelines::etEnvMap:
 		return GetTUCEnvMap();
@@ -968,6 +989,20 @@ void deoglRDecal::pPrepareTUCs(){
 		pTUCGeometry = NULL;
 	}
 	pTUCGeometry = BareGetTUCFor( deoglSkinTexturePipelines::etGeometry );
+	
+	// depth
+	if(pTUCDepth){
+		pTUCDepth->RemoveUsage();
+		pTUCDepth = nullptr;
+	}
+	pTUCDepth = BareGetTUCFor(deoglSkinTexturePipelines::etDepth);
+	
+	// counter
+	if(pTUCCounter){
+		pTUCCounter->RemoveUsage();
+		pTUCCounter = nullptr;
+	}
+	pTUCCounter = BareGetTUCFor(deoglSkinTexturePipelines::etCounter);
 	
 	// shadow
 	if( pTUCShadow ){

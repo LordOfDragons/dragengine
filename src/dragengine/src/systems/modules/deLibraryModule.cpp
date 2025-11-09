@@ -523,10 +523,12 @@ bool deLibraryModule::pVerifyLibrary( const char* filename ){
 		return false;
 	}
 	
+	#ifndef NO_ENGINE_MODULE_CHECKS
 	if( ( ( uint64_t )fa.nFileSizeHigh << 32 ) + ( uint64_t )fa.nFileSizeLow != ( uint64_t )pLibFileSize ){
 		SetErrorCode( eecLibFileSizeMismatch );
 		return false;
 	}
+	#endif
 	
 #else
 	struct stat fs;
@@ -544,10 +546,12 @@ bool deLibraryModule::pVerifyLibrary( const char* filename ){
 	}
 	
 	// check that the file size matches the one specified
+	#ifndef NO_ENGINE_MODULE_CHECKS
 	if( fs.st_size != pLibFileSize ){
 		SetErrorCode( eecLibFileSizeMismatch );
 		return false;
 	}
+	#endif
 #endif
 	
 	// check that the sha1 sum is the same

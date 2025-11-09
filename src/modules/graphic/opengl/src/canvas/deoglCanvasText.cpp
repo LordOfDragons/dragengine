@@ -66,15 +66,20 @@ void deoglCanvasText::DropRCanvas(){
 
 void deoglCanvasText::SyncContentToRender(){
 	const deFont * const font = pCanvasText.GetFont();
-	deoglRFont *rfont = NULL;
+	deoglRFont *rfont = nullptr;
+	deoglRFontSize *rfontSize = nullptr;
 	
-	if( font ){
-		deoglFont &oglFont = *( ( deoglFont* )font->GetPeerGraphic() );
+	if(font){
+		deoglFont &oglFont = *((deoglFont*)font->GetPeerGraphic());
 		rfont = oglFont.GetRFont();
+		if(rfont){
+			rfontSize = oglFont.GetFontSizeFor((int)(pCanvasText.GetFontSize() + 0.5f));
+		}
 	}
 	
-	pRCanvasText->SetFont( rfont );
-	pRCanvasText->SetFontSize( pCanvasText.GetFontSize() );
+	pRCanvasText->SetFont(rfont);
+	pRCanvasText->SetFontSize(rfontSize);
+	pRCanvasText->SetTextSize( pCanvasText.GetFontSize() );
 	pRCanvasText->SetColor( pCanvasText.GetColor() );
 	pRCanvasText->SetText( pCanvasText.GetText() );
 }

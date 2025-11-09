@@ -288,8 +288,12 @@ void deoglRComponentWCElement::UpdateDataGeometries( sDataElementGeometry *data 
 			if( shadowCombineCount == 0 ){
 				filter |= ertfShadow;
 			}
+			if(texture.GetUseDecal() && !pComponent.GetSolid()){
+				filter &= ~ertfSolid;
+			}
 			
-			SetDataGeometry( *data, i, filter, texture.GetUseDecal() ? deoglSkinTexturePipelinesList::eptDecal
+			SetDataGeometry( *data, i, filter, texture.GetUseDecal()
+					? deoglSkinTexturePipelinesList::eptDecal
 					: deoglSkinTexturePipelinesList::eptComponent,
 				texture.GetUseDoubleSided() ? deoglSkinTexturePipelines::emDoubleSided : 0,
 				skinTexture, vao, rtsi, spbi );

@@ -141,8 +141,8 @@ private:
 	void pFillBackground( const decColor &color );
 	void pTileNode( const decPoint &offset, const decTexMatrix2 &transformScreen,
 		const decTexMatrix2 &transformInverse, deSkinPropertyNode &childNode );
-	void pDrawImage( const sContext &context, const deImage &image,
-		const decVector2 &tcScale, const decVector2 &tcOffset );
+	void pDrawImage(const sContext &context, const deImage &image,
+		const decVector2 &tcScale, const decVector2 &tcOffset, int layer);
 	void pWritePixel( const sContext &context, int offset, const decColor &color );
 	void pWritePixelSet( int offset, const decColor &color );
 	void pWritePixelBlend( int offset, const decColor &color, float alpha );

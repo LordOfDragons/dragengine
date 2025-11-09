@@ -45,6 +45,10 @@
 			"path": "src/modules/font/defont"
 		},
 		{
+			"name": "Module Font: FreeType",
+			"path": "src/modules/font/freetype"
+		},
+		{
 			"name": "Module Graphic: Null",
 			"path": "src/modules/graphic/null"
 		},
@@ -205,16 +209,44 @@
 			"path": "src/deigde/editors/conversation"
 		},
 		{
+			"name": "Editor: Font",
+			"path": "src/deigde/editors/font"
+		},
+		{
 			"name": "Editor: Game Definition",
 			"path": "src/deigde/editors/gameDefinition"
+		},
+		{
+			"name": "Editor: Language Pack",
+			"path": "src/deigde/editors/langpack"
+		},
+		{
+			"name": "Editor: Particle Emitter",
+			"path": "src/deigde/editors/particleEmitter"
 		},
 		{
 			"name": "Editor: Project",
 			"path": "src/deigde/editors/project"
 		},
 		{
+			"name": "Editor: Rig",
+			"path": "src/deigde/editors/rigeditor"
+		},
+		{
 			"name": "Editor: Skin",
 			"path": "src/deigde/editors/skin"
+		},
+		{
+			"name": "Editor: Sky",
+			"path": "src/deigde/editors/sky"
+		},
+		{
+			"name": "Editor: Speech Animation",
+			"path": "src/deigde/editors/speechAnimation"
+		},
+		{
+			"name": "Editor: Synthesizer",
+			"path": "src/deigde/editors/synthesizer"
 		},
 		{
 			"name": "Editor: World",
@@ -247,6 +279,9 @@
 		{
 			"name": "ghdocs",
 			"path": "ghdocs"
+		},
+		{
+			"path": "installer"
 		}
 	],
 	"settings": {
@@ -353,7 +388,9 @@
 			"locale": "cpp",
 			"print": "cpp",
 			"__locale": "cpp",
-			"stack": "cpp"
+			"stack": "cpp",
+			"hash_set": "cpp",
+			"queue": "cpp"
 		},
 		"dragonscriptLanguage.scriptDirectories": [
 			

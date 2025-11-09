@@ -89,6 +89,7 @@ void feFontBuilder::BuildFont( deFont *engFont ){
 		engGlyph.SetY( glyph.GetV() );
 		engGlyph.SetZ( 0 );
 		engGlyph.SetWidth( glyph.GetWidth() );
+		engGlyph.SetHeight(pFont->GetLineHeight());
 		engGlyph.SetBearing( glyph.GetBearing() );
 		engGlyph.SetAdvance( glyph.GetAdvance() );
 		

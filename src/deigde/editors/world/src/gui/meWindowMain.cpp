@@ -29,6 +29,7 @@
 #include "meWindowMain.h"
 #include "meWindowMainListener.h"
 #include "meView3D.h"
+#include "vieweditor/meViewEditor.h"
 #include "meTaskSyncGameDefinition.h"
 #include "properties/meWindowProperties.h"
 // #include "effects/meWindowEffects.h"
@@ -64,6 +65,7 @@
 #include "../undosys/gui/object/meUObjectCopyPosition.h"
 #include "../undosys/gui/object/meUObjectCopyRotation.h"
 #include "../undosys/gui/object/meUObjectCopyScale.h"
+#include "../undosys/gui/object/meURotateObject.h"
 #include "../undosys/gui/objectshape/meUObjectShapeAdd.h"
 #include "../undosys/gui/objectshape/meUObjectShapeDelete.h"
 #include "../undosys/gui/navspace/meUDeleteNavSpace.h"
@@ -71,6 +73,7 @@
 #include "../undosys/properties/object/meUSetObjectRotation.h"
 #include "../undosys/properties/object/property/meUObjectAddProperty.h"
 #include "../undosys/properties/object/property/meUObjectSetProperty.h"
+#include "../undosys/properties/object/meUObjectRandomRotation.h"
 #include "../utils/meHelpers.h"
 #include "../meIGDEModule.h"
 #include "../worldedit.h"
@@ -845,7 +848,7 @@ class cActionEditLockAxisZ : public cActionBase{
 public:
 	cActionEditLockAxisZ( meWindowMain &window ) : cActionBase( window, "Lock Z-Axis",
 		window.GetIconEditLockAxisZ(), "Lock Z coordinates during editing",
-		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcY ){}
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcZ ){}
 	
 	virtual igdeUndo *OnAction( meWorld *world ){
 		world->GetGuiParameters().SetLockAxisZ( ! world->GetGuiParameters().GetLockAxisZ() );
@@ -872,6 +875,21 @@ public:
 	virtual void Update( const meWorld &world ){
 		cActionBase::Update( world );
 		SetSelected( world.GetGuiParameters().GetUseLocal() );
+	}
+};
+
+class cActionEditLockAxisFlip : public cActionBase{
+public:
+	cActionEditLockAxisFlip(meWindowMain &window) : cActionBase(window, "Flip Lock Axes",
+		window.GetIconEditLockAxisFlip(), "Flip lock axes during editing",
+		deInputEvent::esmControl | deInputEvent::esmShift, deInputEvent::ekcF){}
+	
+	igdeUndo *OnAction(meWorld *world) override{
+		meWorldGuiParameters &gp = world->GetGuiParameters();
+		gp.SetLockAxisX(!gp.GetLockAxisX());
+		gp.SetLockAxisY(!gp.GetLockAxisY());
+		gp.SetLockAxisZ(!gp.GetLockAxisZ());
+		return nullptr;
 	}
 };
 
@@ -1159,23 +1177,111 @@ public:
 };
 
 class cActionObjectRotate : public cActionBase{
-	const decVector pRotation;
+	meWindowMain &pWindow;
+	const decVector pAxis;
+	const float pAngle;
 public:
-	cActionObjectRotate( meWindowMain &window, const decVector &rotation, const char *text,
-		igdeIcon *icon, const char *description, deInputEvent::eKeyCodes mnemonic ) :
-	cActionBase( window, text, icon, description, deInputEvent::esmNone,
-		deInputEvent::ekcUndefined, mnemonic ), pRotation( rotation ){}
+	cActionObjectRotate(meWindowMain &window, const decVector &axis, float angle, const char *text,
+		igdeIcon *icon, const char *description, deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, deInputEvent::esmNone,
+		deInputEvent::ekcUndefined, mnemonic), pWindow(window), pAxis(axis), pAngle(angle){}
 	
-	virtual igdeUndo *OnAction( meWorld *world ){
-		meObject * const object = world->GetSelectionObject().GetActive();
-		if( ! object ){
-			return NULL;
+	void GetSelectedObjectsWithAttached(meWorld &world, meObjectList &list){
+		const meObjectList &listSelected = world.GetSelectionObject().GetSelected();
+		const int selectedCount = listSelected.GetCount();
+		meObject *object;
+		int i, j;
+		
+		list.RemoveAll();
+		
+		for(i=0; i<selectedCount; i++){
+			list.Add(listSelected.GetAt(i));
 		}
-		return new meUSetObjectRotation( object, object->GetRotation() + pRotation );
+		
+		for(i=0; i<list.GetCount(); i++){
+			object = list.GetAt(i);
+			
+			const meObjectList &listChildren = object->GetAttachedObjectsList();
+			const int childrenCount = listChildren.GetCount();
+			
+			for(j=0; j<childrenCount; j++){
+				list.AddIfAbsent(listChildren.GetAt(j));
+			}
+		}
 	}
 	
-	virtual void Update( const meWorld &world ){
-		SetEnabled( world.GetSelectionObject().HasActive() );
+	virtual igdeUndo *OnAction(meWorld *world){
+		meObject * const activeObject = world->GetSelectionObject().GetActive();
+		if(!activeObject){
+			return nullptr;
+		}
+		
+		const meWorldGuiParameters &guiparams = world->GetGuiParameters();
+		decDVector center, axis(pAxis);
+		
+		if(guiparams.GetUseLocal()){
+			axis = activeObject->GetObjectMatrix() * axis;
+		}
+		
+		const meObjectList &listSelected = world->GetSelectionObject().GetSelected();
+		meObjectList list;
+		int i, count;
+		
+		GetSelectedObjectsWithAttached(*world, list);
+		
+		bool modifyPosition = list.GetCount() > 0;
+		
+		switch(world->GetGuiParameters().GetRotationPivotCenter()){
+		case meWorldGuiParameters::erpcActive:
+			center = activeObject->GetPosition();
+			break;
+			
+		case meWorldGuiParameters::erpcSelected:
+			count = listSelected.GetCount();
+			for(i=0; i<count; i++){
+				center += listSelected.GetAt(i)->GetPosition();
+			}
+			center /= (double)listSelected.GetCount();
+			break;
+			
+		case meWorldGuiParameters::erpcIndividual:
+			center = activeObject->GetPosition();
+			modifyPosition = false;
+			break;
+		}
+		
+		meURotateObject * const undo = new meURotateObject(world, list);
+		undo->SetPivot(center);
+		undo->SetAxis(axis);
+		undo->SetAngle(pAngle);
+		undo->SetModifyPosition(modifyPosition);
+		return undo;
+	}
+	
+	virtual void Update(const meWorld &world){
+		SetEnabled(world.GetSelectionObject().HasActive());
+	}
+};
+
+class cActionObjectRandomRotate : public cActionBase{
+	meWindowMain &pWindow;
+	const bool pRandomizeX, pRandomizeY, pRandomizeZ;
+public:
+	cActionObjectRandomRotate(meWindowMain &window, bool randomizeX, bool randomizeY,
+		bool randomizeZ, const char *text, igdeIcon *icon, const char *description,
+		deInputEvent::eKeyCodes mnemonic) :
+	cActionBase(window, text, icon, description, deInputEvent::esmNone,
+		deInputEvent::ekcUndefined, mnemonic), pWindow(window), pRandomizeX(randomizeX),
+		pRandomizeY(randomizeY), pRandomizeZ(randomizeZ){}
+	
+	virtual igdeUndo *OnAction(meWorld *world){
+		const meObjectList &listSelected = world->GetSelectionObject().GetSelected();
+		return listSelected.GetCount() != 0 ? new meUObjectRandomRotation(
+			world, listSelected, pRandomizeX, pRandomizeY, pRandomizeZ) : nullptr;
+	}
+	
+	virtual void Update(const meWorld &world){
+		SetEnabled(world.GetSelectionObject().GetSelected().GetCount() > 0);
 	}
 };
 
@@ -1639,6 +1745,7 @@ void meWindowMain::pLoadIcons(){
 	pIconEditMove.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_move.png" ) );
 	pIconEditScale.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_scale.png" ) );
 	pIconEditRotate.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_rotate.png" ) );
+	pIconEditRotateRandom.TakeOver( igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_rotate_random.png"));
 	pIconEdit3DCursor.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_3d_cursor.png" ) );
 	pIconEditMaskPaint.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_maskpaint.png" ) );
 	pIconEditHeightPaint.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_heightpaint.png" ) );
@@ -1646,6 +1753,7 @@ void meWindowMain::pLoadIcons(){
 	pIconEditLockAxisX.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_lock_axis_x.png" ) );
 	pIconEditLockAxisY.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_lock_axis_y.png" ) );
 	pIconEditLockAxisZ.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_lock_axis_z.png" ) );
+	pIconEditLockAxisFlip.TakeOver(igdeIcon::LoadPNG(GetEditorModule(), "icons/edit_lock_axis_flip.png"));
 	pIconEditUseLocal.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_use_local.png" ) );
 	pIconEditSnap.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_snap.png" ) );
 	pIconViewFullBrightOn.TakeOver( igdeIcon::LoadPNG( GetEditorModule(), "icons/edit_full_bright_on.png" ) );
@@ -1721,6 +1829,7 @@ void meWindowMain::pCreateActions(){
 	pActionEditLockAxisY.TakeOver( new cActionEditLockAxisY( *this ) );
 	pActionEditLockAxisZ.TakeOver( new cActionEditLockAxisZ( *this ) );
 	pActionEditUseLocal.TakeOver( new cActionEditUseLocal( *this ) );
+	pActionEditLockAxisFlip.TakeOver(new cActionEditLockAxisFlip(*this));
 	pActionEditSnapSnapPoints.TakeOver( new cActionEditSnapSnapPoints( *this ) );
 	
 	pActionEditRPCenterActive.TakeOver( new cActionEditRotationPivot( *this,
@@ -1738,21 +1847,29 @@ void meWindowMain::pCreateActions(){
 	
 	pActionObjectLightToggle.TakeOver( new cActionObjectLightToggle( *this ) );
 	
-	pActionObjectRotateL45.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, 45.0f, 0.0f ),
-		"Left 45°", environment.GetStockIcon( igdeEnvironment::esiLeft ),
-		"Rotate object left by 45°", deInputEvent::ekcUndefined ) );
-	pActionObjectRotateL90.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, 90.0f, 0.0f ),
-		"Left 90°", environment.GetStockIcon( igdeEnvironment::esiStrongLeft ),
-		"Rotate object left by 90°", deInputEvent::ekcUndefined ) );
-	pActionObjectRotateR45.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, -45.0f, 0.0f ),
-		"Right 45°", environment.GetStockIcon( igdeEnvironment::esiRight ),
-		"Rotate object right by 45°", deInputEvent::ekcUndefined ) );
-	pActionObjectRotateR90.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, -90.0f, 0.0f ),
-		"Right 90°", environment.GetStockIcon( igdeEnvironment::esiStrongRight ),
-		"Rotate object right by 90°", deInputEvent::ekcUndefined ) );
-	pActionObjectRotate180.TakeOver( new cActionObjectRotate( *this, decVector( 0.0f, 180.0f, 0.0f ),
-		"Turn around 180°", environment.GetStockIcon( igdeEnvironment::esiStrongDown ),
-		"Rotate object by 180°", deInputEvent::ekcUndefined ) );
+	pActionObjectRotateL45.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), 45.0f,
+		"Left 45°", environment.GetStockIcon(igdeEnvironment::esiLeft),
+		"Rotate object left by 45°", deInputEvent::ekcUndefined));
+	pActionObjectRotateL90.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), 90.0f,
+		"Left 90°", environment.GetStockIcon(igdeEnvironment::esiStrongLeft),
+		"Rotate object left by 90°", deInputEvent::ekcUndefined));
+	pActionObjectRotateR45.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), -45.0f,
+		"Right 45°", environment.GetStockIcon(igdeEnvironment::esiRight),
+		"Rotate object right by 45°", deInputEvent::ekcUndefined));
+	pActionObjectRotateR90.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), -90.0f,
+		"Right 90°", environment.GetStockIcon(igdeEnvironment::esiStrongRight),
+		"Rotate object right by 90°", deInputEvent::ekcUndefined));
+	pActionObjectRotate180.TakeOver(new cActionObjectRotate(*this,
+		decVector(0.0f, 1.0f, 0.0f), 180.0f,
+		"Turn around 180°", environment.GetStockIcon(igdeEnvironment::esiStrongDown),
+		"Rotate object by 180°", deInputEvent::ekcUndefined));
+	pActionObjectRotateRandom.TakeOver(new cActionObjectRandomRotate(*this, false, true, false,
+		"Random rotate Y axis", pIconEditRotateRandom,
+		"Random rotate object around Y axis", deInputEvent::ekcUndefined));
 	
 	pActionObjectDropToGround.TakeOver( new cActionObjectDropToGround( *this ) );
 	pActionObjectSnapToGrid.TakeOver( new cActionObjectSnapToGrid( *this ) );
@@ -1831,6 +1948,7 @@ void meWindowMain::pCreateActions(){
 	AddUpdateAction( pActionEditLockAxisY );
 	AddUpdateAction( pActionEditLockAxisZ );
 	AddUpdateAction( pActionEditUseLocal );
+	AddUpdateAction(pActionEditLockAxisFlip);
 	AddUpdateAction( pActionEditSnapSnapPoints );
 	AddUpdateAction( pActionEditRPCenterActive );
 	AddUpdateAction( pActionEditRPCenterSelected );
@@ -1844,6 +1962,7 @@ void meWindowMain::pCreateActions(){
 	AddUpdateAction( pActionObjectRotateR45 );
 	AddUpdateAction( pActionObjectRotateR90 );
 	AddUpdateAction( pActionObjectRotate180 );
+	AddUpdateAction( pActionObjectRotateRandom );
 	AddUpdateAction( pActionObjectDropToGround );
 	AddUpdateAction( pActionObjectSnapToGrid );
 	AddUpdateAction( pActionObjectCopyPositionX );
@@ -1941,6 +2060,7 @@ void meWindowMain::pCreateToolBarEdit(){
 	helper.ToolBarToggleButton( pTBEdit, pActionEditLockAxisY );
 	helper.ToolBarToggleButton( pTBEdit, pActionEditLockAxisZ );
 	helper.ToolBarToggleButton( pTBEdit, pActionEditUseLocal );
+	helper.ToolBarToggleButton(pTBEdit, pActionEditLockAxisFlip);
 	
 	helper.ToolBarSeparator( pTBEdit );
 	helper.ToolBarToggleButton( pTBEdit, pActionEditSnapSnapPoints );
@@ -1963,6 +2083,7 @@ void meWindowMain::pCreateToolBarObject(){
 	helper.ToolBarButton( pTBObject, pActionObjectRotateR45 );
 	helper.ToolBarButton( pTBObject, pActionObjectRotateR90 );
 	helper.ToolBarButton( pTBObject, pActionObjectRotate180 );
+	helper.ToolBarButton( pTBObject, pActionObjectRotateRandom );
 	
 	helper.ToolBarSeparator( pTBObject );
 	helper.ToolBarToggleButton( pTBObject, pActionObjectLightToggle );
@@ -2062,6 +2183,7 @@ void meWindowMain::pCreateMenuEdit( igdeMenuCascade &menu ){
 	helper.MenuCheck( menu, pActionEditLockAxisY );
 	helper.MenuCheck( menu, pActionEditLockAxisZ );
 	helper.MenuCheck( menu, pActionEditUseLocal );
+	helper.MenuCheck(menu, pActionEditLockAxisFlip);
 	
 	helper.MenuSeparator( menu );
 	helper.MenuCheck( menu, pActionEditSnapSnapPoints );
@@ -2113,6 +2235,7 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeRotate, pActionObjectRotateR45 );
 			helper.MenuCommand( activeRotate, pActionObjectRotateR90 );
 			helper.MenuCommand( activeRotate, pActionObjectRotate180 );
+			helper.MenuCommand( activeRotate, pActionObjectRotateRandom );
 		
 		igdeMenuCascadeReference activeCopySelected;
 		activeCopySelected.TakeOver( new igdeMenuCascade( GetEnvironment(),

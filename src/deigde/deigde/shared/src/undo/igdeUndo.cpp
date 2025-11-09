@@ -42,9 +42,6 @@ igdeUndo::igdeUndo() :
 pMemoryConsumption( 0 ){
 }
 
-igdeUndo::~igdeUndo(){
-}
-
 
 
 // Management

@@ -212,6 +212,9 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMetaTouchControllerPlus.h">
       <Filter>Source Files\device\profile</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMndxDevSpace.h">
+      <Filter>Source Files\device\profile</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deoxrFaceTracker.cpp">
@@ -389,6 +392,9 @@
       <Filter>Source Files\device\profile</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMetaTouchControllerPlus.cpp">
+      <Filter>Source Files\device\profile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMndxDevSpace.cpp">
       <Filter>Source Files\device\profile</Filter>
     </ClCompile>
   </ItemGroup>

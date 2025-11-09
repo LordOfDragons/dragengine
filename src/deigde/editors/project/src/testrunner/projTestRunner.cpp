@@ -124,7 +124,7 @@ void projTestRunner::LoadEngineConfiguration(){
 	pLauncherProfiles.RemoveAll();
 	
 	// find path of engine config file
-	decPath pathConfigUser;
+	decPath path, pathConfigUser;
 	const char *value;
 	
 	#ifdef OS_W32
@@ -164,6 +164,15 @@ void projTestRunner::LoadEngineConfiguration(){
 		pathConfigUser.AddComponent( "delauncher" );
 	}
 	#endif
+	
+	value = getenv("XDG_CONFIG_PATH");
+	if(value){
+		path.SetFromNative(value);
+		if(path.GetComponentCount() > 0){
+			pathConfigUser = path;
+			pathConfigUser.AddComponent("delauncher");
+		}
+	}
 	
 	value = getenv( "DELAUNCHER_USER_CONFIG" );
 	if( value ){

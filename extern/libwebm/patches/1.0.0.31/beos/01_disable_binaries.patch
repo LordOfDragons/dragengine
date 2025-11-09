@@ -1,0 +1,14 @@
+diff -rupN org-libwebm-libwebm-1.0.0.31/CMakeLists.txt libwebm-libwebm-1.0.0.31/CMakeLists.txt
+--- org-libwebm-libwebm-1.0.0.31/CMakeLists.txt	2023-10-26 17:44:02.061603840 +0000
++++ libwebm-libwebm-1.0.0.31/CMakeLists.txt	2025-08-21 15:47:31.860094464 +0000
+@@ -367,8 +367,8 @@ if(ENABLE_WEBM_PARSER)
+   add_library(webm_parser OBJECT ${webm_parser_sources})
+   target_sources(webm PUBLIC $<TARGET_OBJECTS:webm_parser>)
+ 
+-  add_executable(webm_parser_demo ${webm_parser_demo_sources})
+-  target_link_libraries(webm_parser_demo LINK_PUBLIC webm)
++  #add_executable(webm_parser_demo ${webm_parser_demo_sources})
++  #target_link_libraries(webm_parser_demo LINK_PUBLIC webm)
+ endif()
+ 
+ if(ENABLE_WEBMTS)

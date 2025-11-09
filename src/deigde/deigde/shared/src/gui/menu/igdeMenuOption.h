@@ -37,6 +37,11 @@
  * is selected at all times.
  */
 class DE_DLL_EXPORT igdeMenuOption : public igdeMenuCommand{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeMenuOption> Ref;
+	
+	
 private:
 	bool pSelected;
 	

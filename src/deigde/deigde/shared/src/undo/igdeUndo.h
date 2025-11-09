@@ -36,6 +36,11 @@
  * Supports Undo/Redo operations.
  */
 class DE_DLL_EXPORT igdeUndo : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeUndo> Ref;
+	
+	
 private:
 	decString pShortInfo;
 	decString pLongInfo;
@@ -59,7 +64,7 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeUndo();
+	~igdeUndo() override = default;
 	/*@}*/
 	
 	

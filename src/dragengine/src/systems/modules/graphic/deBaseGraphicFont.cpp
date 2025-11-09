@@ -37,3 +37,6 @@ deBaseGraphicFont::~deBaseGraphicFont(){
 // management
 void deBaseGraphicFont::Update(float elapsed){
 }
+
+void deBaseGraphicFont::FontSizeAdded(int, deFontSize*){
+}

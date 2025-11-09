@@ -25,15 +25,12 @@
 #ifndef _DEOGLRFONT_H_
 #define _DEOGLRFONT_H_
 
-#include "../texture/deoglRImage.h"
+#include "deoglRFontSize.h"
+#include "deoglRFontGlyphs.h"
 
 #include <dragengine/deObject.h>
-
-class deoglImage;
-class deoglRenderThread;
-class deFont;
-class deFontGlyph;
-
+#include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/threading/deMutex.h>
 
 
 /**
@@ -43,27 +40,15 @@ class deoglRFont : public deObject{
 public:
 	typedef deTObjectReference<deoglRFont> Ref;
 	
-	struct sGlyph{
-		float x1;
-		float y1;
-		float x2;
-		float y2;
-		int bearing;
-		int width;
-		int height;
-		int advance;
-	};
-	
 private:
-	deoglRenderThread &pRenderThread;
-	
-	sGlyph pUndefinedGlyph;
-	sGlyph *pGlyphs;
-	int pLineHeight;
+	const decString pFilename;
 	bool pIsColorFont;
 	
-	deoglRImage::Ref pImage;
-	deoglImage *pDelayedImage;
+	deoglRFontGlyphs pGlyphs;
+	
+	decObjectList pSizes;
+	deMutex pMutex;
+	
 	
 public:
 	/** \name Constructors and Destructors */
@@ -71,44 +56,38 @@ public:
 	/** Create render font. */
 	deoglRFont( deoglRenderThread &renderThread, const deFont &font );
 	
+protected:
 	/** Clean up render font. */
-	virtual ~deoglRFont();
+	~deoglRFont() override;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
-	/** Render thread. */
-	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
+	/** Filename. */
+	inline const decString &GetFilename() const{ return pFilename; }
 	
+	/** Font is a colorable font. */
+	inline bool GetIsColorFont() const{ return pIsColorFont; }
+	
+	/** Glyphs. */
+	inline deoglRFontGlyphs &GetGlyphs(){ return pGlyphs; }
+	inline const deoglRFontGlyphs &GetGlyphs() const{ return pGlyphs; }
 	
 	
 	/** Finalize after asynchronous resource loading. */
 	void FinalizeAsyncResLoading();
 	
 	
-	
-	/** Undefined glyph. */
-	inline const sGlyph &GetUndefinedGlyph() const{ return pUndefinedGlyph; }
-	
-	/** Glyphs. */
-	inline const sGlyph *GetGlyphs() const{ return pGlyphs; }
-	
-	/** Line height. */
-	inline int GetLineHeight() const{ return pLineHeight; }
-	
-	/** Font is a colorable font. */
-	inline bool GetIsColorFont() const{ return pIsColorFont; }
-	
-	/** Render image or nullptr if not existing. */
-	inline const deoglRImage::Ref &GetImage() const{ return pImage; }
+	/**
+	 * Get font size if present in font resource. If not present returns nullptr. Otherwise
+	 * ensures deoglRFontSize is present, prepared and ready to be used.
+	 * 
+	 * \note Mutex protected access to sizes.
+	 */
+	deoglRFontSize *GetFontSizeFor(deFont &font, int lineHeight);
 	/*@}*/
-	
-private:
-	void pCleanUp();
-	void pBuildGlyphs( const deFont &font );
-	void pSetGlyph( sGlyph &target, const deFontGlyph &source );
 };
 
 #endif

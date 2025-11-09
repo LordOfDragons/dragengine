@@ -28,33 +28,27 @@ pin Dragengine.Gui
 pin Dragengine.Scenery
 
 
-
 /**
  * \brief Default styled text definition node.
  */
 class DefaultSTDNodeVisitor implements STDNodeVisitor
 	/** \brief Create default styled text definition node visitor. */
-	public func new()
+	func new()
 	end
 	
 	
-	
-	/** \brief Visit node. */
-	public func void visitNode( STDNode node )
+	func void visitNode(STDNode node)
 	end
 	
-	/** \brief Visit text node. */
-	public func void visitText( STDNText node )
-		this.visitNode( node )
+	func void visitText(STDNText node)
+		visitNode(node)
 	end
 	
-	/** \brief Visit image node. */
-	public func void visitImage( STDNImage node )
-		this.visitNode( node )
+	func void visitImage(STDNImage node)
+		visitNode(node)
 	end
 	
-	/** \brief Visit video node. */
-	public func void visitVideo( STDNVideo node )
-		this.visitNode( node )
+	func void visitVideo(STDNVideo node)
+		visitNode(node)
 	end
 end

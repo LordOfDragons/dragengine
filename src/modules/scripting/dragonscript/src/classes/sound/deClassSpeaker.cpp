@@ -29,6 +29,7 @@
 
 #include "deClassSpeaker.h"
 #include "deClassSound.h"
+#include "deClassMicrophone.h"
 #include "../math/deClassVector.h"
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
@@ -36,6 +37,7 @@
 #include "../synthesizer/deClassSynthesizerInstance.h"
 #include "../video/deClassVideoPlayer.h"
 #include "../utils/deClassShapeList.h"
+#include "../world/deClassWorld.h"
 #include "../../peers/dedsSpeaker.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
@@ -296,7 +298,30 @@ void deClassSpeaker::nfSetVelocity::RunFunction( dsRunTime *rt, dsValue *myself 
 	speaker->SetVelocity( clsVec->GetVector( obj ) );
 }
 
+// func World getParentWorld()
+deClassSpeaker::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsSpk, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
+void deClassSpeaker::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	deSpeaker &speaker = *(((sSpkNatDat*)p_GetNativeData(myself))->speaker);
+	deClassSpeaker &clsSpk = *((deClassSpeaker*)GetOwnerClass());
+	deClassWorld &clsWorld = *(clsSpk.GetScriptModule()->GetClassWorld());
+	
+	clsWorld.PushWorld(rt, speaker.GetParentWorld());
+}
 
+// func Microphone getParentMicrophone()
+deClassSpeaker::nfGetParentMicrophone::nfGetParentMicrophone(const sInitData &init) :
+dsFunction(init.clsSpk, "getParentMicrophone", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsMicrophone){
+}
+void deClassSpeaker::nfGetParentMicrophone::RunFunction(dsRunTime *rt, dsValue *myself){
+	deSpeaker &speaker = *(((sSpkNatDat*)p_GetNativeData(myself))->speaker);
+	deClassSpeaker &clsSpk = *((deClassSpeaker*)GetOwnerClass());
+	deClassMicrophone &clsMic = *(clsSpk.GetScriptModule()->GetClassMicrophone());
+	
+	clsMic.PushMicrophone(rt, speaker.GetParentMicrophone());
+}
 
 // public func bool getMuted()
 deClassSpeaker::nfGetMuted::nfGetMuted( const sInitData &init ) : dsFunction( init.clsSpk,
@@ -705,6 +730,8 @@ void deClassSpeaker::CreateClassMembers( dsEngine *engine ){
 	init.clsShapeList = pScrMgr->GetClassShapeList();
 	init.clsSpeakerType = pClsSpeakerType;
 	init.clsVideoPlayer = pScrMgr->GetClassVideoPlayer();
+	init.clsWorld = pScrMgr->GetClassWorld();
+	init.clsMicrophone = pScrMgr->GetClassMicrophone();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -724,6 +751,8 @@ void deClassSpeaker::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetOrientation( init ) );
 	AddFunction( new nfGetVelocity( init ) );
 	AddFunction( new nfSetVelocity( init ) );
+	AddFunction(new nfGetParentWorld(init));
+	AddFunction(new nfGetParentMicrophone(init));
 	
 	AddFunction( new nfGetMuted( init ) );
 	AddFunction( new nfSetMuted( init ) );

@@ -61,6 +61,7 @@ class Button extends Container
 			setLayout(CentrizedBoxLayout.new(LayoutAxis.y))
 			setDesignerSelector("Button")
 			setCanFocus(true)
+			setCanFocusDirectional(true)
 			setStateChangeNotifyChildren(true)
 			
 			createContentWidgets()
@@ -442,5 +443,9 @@ class Button extends Container
 			pWidgetImage.setVisible(pWidgetImage.getImage() != null)
 		end)
 		pWidgetImage.layoutParentIfBlocked()
+	end
+	
+	func Point getFocusMouseLocation()
+		return Point.new(DEMath.max(getWidth() * 3 / 4, 0), DEMath.max(getHeight() - 5, 0))
 	end
 end

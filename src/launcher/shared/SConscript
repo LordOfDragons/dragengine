@@ -67,13 +67,12 @@ else:
 
 targetBuildLib = envLibrary.Alias('delauncher_build', buildLibrary)
 
-copyHeaders = []
 refDir = envLibrary.Dir('src').srcnode()
+copyHeaders = []
 for h in headers:
 	copyHeaders.append(envLibrary.Command(
 		os.path.join('include', 'delauncher', refDir.rel_path(h)),
 		h, Copy('$TARGET', '$SOURCE')))
-envLibrary.Depends(buildLibrary, copyHeaders)
 
 installLibDevelop = [envLibrary.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
 
@@ -133,8 +132,8 @@ binlibs.extend(parent_targets['dragengine']['libs'])
 srcdir = Dir('.').srcnode().abspath
 
 # doxygen
-doxyfile = envLibrary.Command(envLibrary.File('Doxyfile').srcnode(), 'Doxyfile.in',
-	Action(UpdateModuleManifest),
+doxyfile = envLibrary.UpdateModuleManifest(
+	envLibrary.File('Doxyfile').srcnode(), 'Doxyfile.in',
 	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
 
 targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
@@ -144,10 +143,6 @@ targetDoxygen = envLibrary.Alias('delauncher_doc', envLibrary.Command(
 buildClocBare = BuildCLOC(envLibrary,
 	['{}/src'.format(srcdir), '{}/shared'.format(srcdir)],
 	'{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
 buildCloc = envLibrary.Alias('delauncher_cloc', buildClocBare)
 
 # add the targets to the targets list
@@ -159,6 +154,7 @@ parent_targets['delauncher'] = {
 	'binlibs' : binlibs,
 	'library': buildLibrary,
 	'build' : targetBuildLib,
+	'depends': copyHeaders,
 	'install' : targetInstallLib,
 	'install-runtime' : targetInstallLibRuntime,
 	'install-launcher-runtime' : targetInstallLibRuntime,

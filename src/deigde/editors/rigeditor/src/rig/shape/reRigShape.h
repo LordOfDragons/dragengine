@@ -178,6 +178,7 @@ private:
 	void pUpdateShapes();
 	void pUpdateDDSColor();
 	void pRepositionShapes();
+	void pSetRig(reRig *rig, bool update);
 };
 
 #endif

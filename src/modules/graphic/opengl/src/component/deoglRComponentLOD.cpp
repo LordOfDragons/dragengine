@@ -494,9 +494,13 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 		}
 		
 		deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType;
+		int filterMask = ~0;
 		
-		if( texture.GetUseDecal() ){
+		if(texture.GetUseDecal()){
 			pipelinesType = deoglSkinTexturePipelinesList::eptDecal;
+			if(!pComponent.GetSolid()){
+				filterMask &= ~ertfSolid;
+			}
 			
 		}else{
 			pipelinesType = deoglSkinTexturePipelinesList::eptComponent;
@@ -505,7 +509,7 @@ void deoglRComponentLOD::UpdateRenderTaskConfigurations(){
 		int j;
 		for( j=0; j<6; j++ ){
 			deoglRenderTaskConfigTexture &rct = pRenderTaskConfigs[ j ].AddTexture();
-			rct.SetRenderTaskFilter( texture.GetRenderTaskFilters() );
+			rct.SetRenderTaskFilter(texture.GetRenderTaskFilters() & filterMask);
 			rct.SetPipeline( skinTexture->GetPipelines().GetAt( pipelinesType ).GetWithRef( typesShadow[ j ] ).GetPipeline() );
 			const deoglTexUnitsConfig *tuc = texture.GetTUCForPipelineType( typesShadow[ j ] );
 			if( ! tuc ){
@@ -1268,16 +1272,20 @@ deoglSkinTexturePipelines::eTypes type, int renderTaskFlags, int renderTaskFlagM
 		}
 		
 		deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType;
+		int filterMask = ~0;
 		
-		if( texture.GetUseDecal() ){
+		if(texture.GetUseDecal()){
 			pipelinesType = deoglSkinTexturePipelinesList::eptDecal;
+			if(!pComponent.GetSolid()){
+				filterMask &= ~ertfSolid;
+			}
 			
 		}else{
 			pipelinesType = deoglSkinTexturePipelinesList::eptComponent;
 		}
 		
 		deoglRenderTaskConfigTexture &rct = config.AddTexture();
-		rct.SetRenderTaskFilter( texture.GetRenderTaskFilters() );
+		rct.SetRenderTaskFilter(texture.GetRenderTaskFilters() & filterMask);
 		rct.SetPipeline( skinTexture->GetPipelines().GetAt( pipelinesType ).GetWithRef( type ).GetPipeline() );
 		const deoglTexUnitsConfig *tuc = texture.GetTUCForPipelineType( type );
 		if( ! tuc ){

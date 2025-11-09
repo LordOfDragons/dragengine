@@ -86,8 +86,16 @@ static const sTableEntryAxis vTableRelativeAxes[ vTableRelativeAxisCount ]{
 	*/
 };
 
-static const int vTableAbsolutAxisCount = 27;
-static const sTableEntryAxis vTableAbsolutAxes[ vTableAbsolutAxisCount ]{
+static const int vTableTouchpadAbsAxisCount = 4;
+static const sTableEntryAxis vTableTouchpadAbsAxis[vTableTouchpadAbsAxisCount]{
+	{ABS_X, deInputDeviceAxis::eatTouchPad, "x", "touchpadX", ""},
+	{ABS_Y, deInputDeviceAxis::eatTouchPad, "y", "touchpadY", ""},
+	{ABS_MT_POSITION_X, deInputDeviceAxis::eatGeneric, nullptr},
+	{ABS_MT_POSITION_Y, deInputDeviceAxis::eatGeneric, nullptr}
+};
+
+static const int vTableAbsAxisCount = 27;
+static const sTableEntryAxis vTableAbsAxis[vTableAbsAxisCount]{
 	{ ABS_X, deInputDeviceAxis::eatStick, "sx0", "stickX", "", ABS_RX, "L" },
 	{ ABS_Y, deInputDeviceAxis::eatStick, "sy0", "stickY", "", ABS_RY, "L" },
 	{ ABS_Z, deInputDeviceAxis::eatTrigger, "tr0", "trigger", "", ABS_RZ, "L" },
@@ -255,29 +263,66 @@ pEvdevMapKeys( NULL )
 	SetID( string );
 	
 	// try to identify what kind of device this is
-	bool hasRelativeAxes = libevdev_has_event_type( pEvdevDevice, EV_REL );
-	bool hasAbsoluteAxes = libevdev_has_event_type( pEvdevDevice, EV_ABS );
-	bool hasKeys = libevdev_has_event_type( pEvdevDevice, EV_KEY );
-// 		bool hasLeftMouse = libevdev_has_event_code( pEvdevDevice, EV_KEY, BTN_LEFT );
+
+	/*
+	Touchpads are problematic. Example report of an Elantech touchpad:
+
+	'ELAN1200:00 04F3:307A Touchpad' (XSys_2) [2]
+	Axes:
+	- 'ABS_X' (sx0)[2] 0 .. 3234 [0 323]
+	- 'ABS_Y' (sy0)[2] 0 .. 1661 [0 166]
+	- 'ABS_MT_SLOT' (aa0)[7] 0 .. 4 [0 0]
+	- 'ABS_MT_POSITION_X' (aa1)[7] 0 .. 3234 [0 0]
+	- 'ABS_MT_POSITION_Y' (aa2)[7] 0 .. 1661 [0 0]
+	- 'ABS_MT_TOOL_TYPE' (aa3)[7] 0 .. 2 [0 0]
+	- 'ABS_MT_TRACKING_ID' (aa4)[7] 0 .. 65535 [0 0]
+
+	Buttons:
+	- 'BTN_LEFT' (bml)[1] 272 => 0
+	- 'BTN_RIGHT' (bmr)[1] 273 => 1
+	- 'BTN_TOOL_FINGER' (badtf)[1] 325 => 2
+	- 'BTN_TOOL_QUINTTAP' (badtt5)[1] 328 => 3
+	- 'BTN_TOUCH' (badth)[1] 330 => 4
+	- 'BTN_TOOL_DOUBLETAP' (badtt2)[1] 333 => 5
+	- 'BTN_TOOL_TRIPLETAP' (badtt3)[1] 334 => 6
+	- 'BTN_TOOL_QUADTAP' (badtt4)[1] 335 => 7
+	*/
+
+	const bool hasRelativeAxes = libevdev_has_event_type(pEvdevDevice, EV_REL);
+	const bool hasAbsoluteAxes = libevdev_has_event_type(pEvdevDevice, EV_ABS);
+	const bool hasKeys = libevdev_has_event_type(pEvdevDevice, EV_KEY);
+	const bool isKeyboard = libevdev_has_event_code(pEvdevDevice, EV_KEY, KEY_ENTER)
+		|| libevdev_has_event_code(pEvdevDevice, EV_KEY, KEY_ESC);
+	const bool isMouse = libevdev_has_event_code(pEvdevDevice, EV_KEY, BTN_LEFT);
+	const bool isTouchpad = libevdev_has_event_code(pEvdevDevice, EV_ABS, ABS_MT_POSITION_X)
+		|| libevdev_has_event_code(pEvdevDevice, EV_ABS, ABS_MT_POSITION_Y);
 	
-	const decString lcname( GetName().GetLower() );
-	if( lcname.FindString( "mouse" ) != -1 || lcname.FindString( "keyboard" ) != -1 ){
+	const decString lcname(GetName().GetLower());
+	if(lcname.FindString("mouse") != -1 || lcname.FindString("keyboard") != -1){
 		// drop mouse and keyboard. they are covered by core input already and mess things up
 		return;
 	}
 	
-	/*
-	if( hasRelativeAxes && hasLeftMouse ){
-		pType = deInputDevice::edtMouse;
+	if(hasRelativeAxes && isMouse){
+		SetType(deInputDevice::edtMouse);
+		SetDisplayImages("mouse");
 		
-	}else if( hasAbsoluteAxes ){
-		pType = deInputDevice::edtGamepad;
+	}else if(hasKeys && isKeyboard){
+		SetType(deInputDevice::edtKeyboard);
+		SetDisplayImages("keyboard");
+
+	}else if(hasAbsoluteAxes && isTouchpad){
+		SetType(deInputDevice::edtTouchpad);
+		SetDisplayImages("touchpad");
 		
+	}else if(hasAbsoluteAxes && hasKeys){
+		SetType(deInputDevice::edtGamepad);
+		SetDisplayImages("gamepad");
+
 	}else{
-		pType = deInputDevice::edtKeyboard;
-	}*/
-	SetType( deInputDevice::edtGamepad );
-	SetDisplayImages( "gamepad" );
+		// we do not know what this is. ignore it to avoid problems
+		return;
+	}
 	
 	// relative and absolute axes
 	int countAxes = 0;
@@ -359,58 +404,76 @@ pEvdevMapKeys( NULL )
 	if( hasAbsoluteAxes ){
 		int nextGeneric = 0;
 		
-		for( i=0; i<ABS_MAX; i++ ){
-			if( ! libevdev_has_event_code( pEvdevDevice, EV_ABS, i ) ){
+		for(i=0; i<ABS_MAX; i++){
+			if(!libevdev_has_event_code(pEvdevDevice, EV_ABS, i)){
 				continue;
 			}
 			
-			const dexsiDeviceAxis::Ref axis( dexsiDeviceAxis::Ref::New( new dexsiDeviceAxis( module ) ) );
-			AddAxis( axis );
-			axis->SetIndex( indexAxis );
-			axis->SetName( libevdev_event_code_get_name( EV_ABS, i ) );
-			axis->SetEvdevCode( i );
-			axis->SetAbsolute( true );
-			
-			axis->SetMinimum( libevdev_get_abs_minimum( pEvdevDevice, i ) );
-			axis->SetMaximum( libevdev_get_abs_maximum( pEvdevDevice, i ) );
-			axis->SetFuzz( libevdev_get_abs_fuzz( pEvdevDevice, i ) );
-			axis->SetFlat( libevdev_get_abs_flat( pEvdevDevice, i ) );
-			
-			for( j=0; j<vTableAbsolutAxisCount; j++ ){
-				const sTableEntryAxis &t = vTableAbsolutAxes[ j ];
-				if( t.code != i ){
-					continue;
+			const sTableEntryAxis *entry = nullptr;
+
+			if(GetType() == deInputDevice::edtTouchpad){
+				for(j=0; j<vTableTouchpadAbsAxisCount; j++){
+					const sTableEntryAxis &t = vTableTouchpadAbsAxis[j];
+					if(t.code == i){
+						entry = &t;
+						break;
+					}
 				}
-				
-				axis->SetType( t.type );
-				axis->SetDisplayImages( t.displayName );
-				axis->SetID( t.id );
-				axis->SetDisplayText( t.displayText );
-				if( t.renameDisplayText && libevdev_has_event_code( pEvdevDevice, EV_ABS, t.renameCode ) ){
-					axis->SetDisplayText( t.renameDisplayText );
+			}
+
+			if(!entry){
+				for(j=0; j<vTableAbsAxisCount; j++){
+					const sTableEntryAxis &t = vTableAbsAxis[j];
+					if(t.code == i){
+						entry = &t;
+						break;
+					}
 				}
-				break;
 			}
 			
-			if( j == vTableAbsolutAxisCount ){
-				axis->SetType( deInputDeviceAxis::eatGeneric );
-				axis->SetDisplayImages( "axis" );
-				
-				string.Format( "aa%d", nextGeneric++ );
-				axis->SetID( string );
-				
-				string.Format( "%d", nextGeneric );
-				axis->SetDisplayText( string );
+			if(entry && !entry->id){
+				continue;
 			}
 			
-			if( axis->GetType() == deInputDeviceAxis::eatStick ){
+			const dexsiDeviceAxis::Ref axis(dexsiDeviceAxis::Ref::New(new dexsiDeviceAxis(module)));
+			AddAxis(axis);
+			axis->SetIndex(indexAxis);
+			axis->SetName(libevdev_event_code_get_name(EV_ABS, i));
+			axis->SetEvdevCode(i);
+			axis->SetAbsolute(true);
+			axis->SetMinimum(libevdev_get_abs_minimum(pEvdevDevice, i));
+			axis->SetMaximum(libevdev_get_abs_maximum(pEvdevDevice, i));
+			axis->SetFuzz(libevdev_get_abs_fuzz(pEvdevDevice, i));
+			axis->SetFlat(libevdev_get_abs_flat(pEvdevDevice, i));
+
+			if(entry){
+				axis->SetType(entry->type);
+				axis->SetDisplayImages(entry->displayName);
+				axis->SetID(entry->id);
+				axis->SetDisplayText(entry->displayText);
+				if(entry->renameDisplayText && libevdev_has_event_code(pEvdevDevice, EV_ABS, entry->renameCode)){
+					axis->SetDisplayText(entry->renameDisplayText);
+				}
+
+			}else{
+				axis->SetType(deInputDeviceAxis::eatGeneric);
+				axis->SetDisplayImages("stick");
+				
+				string.Format("aa%d", nextGeneric++);
+				axis->SetID(string);
+				
+				string.Format("%d", nextGeneric);
+				axis->SetDisplayText(string);
+			}
+			
+			if(axis->GetType() == deInputDeviceAxis::eatStick){
 				// libevdev likes to lie about the deadzone of input devices. ensure the deadzone
 				// is not smaller than a specific percentage of the total range. typical deadzone
 				// ranges are 0.2 - 0.25 of half-range
-				axis->LimitFlat( 0.1f );
+				axis->LimitFlat(0.1f);
 			}
 			
-			pEvdevMapAbsAxis[ i ] = indexAxis++;
+			pEvdevMapAbsAxis[i] = indexAxis++;
 		}
 	}
 	

@@ -536,6 +536,9 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		
 		/** \brief Look-at element or null. */
 		func Element getLookAtElement()
+			if pLookAtElement != null and pLookAtElement.isDisposed()
+				setLookAtElement(null, -1, null, 0)
+			end
 			return pLookAtElement
 		end
 		
@@ -544,20 +547,21 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		 * \version 1.4 
 		 */
 		func BehaviorElement getLookAtBehaviorElement()
-			if pLookAtElement != null and pLookAtElement castable BehaviorElement
-				return pLookAtElement cast BehaviorElement
+			var Element element = getLookAtElement()
+			if element != null and element castable BehaviorElement
+				return element cast BehaviorElement
 			end
 			return null
 		end
 		
 		/** \brief Is looking at an element. */
 		func bool hasLookAtElement()
-			return pLookAtElement != null
+			return getLookAtElement() != null
 		end
 		
 		/** \brief Is not looking at an element. */
 		func bool hasNotLookAtElement()
-			return pLookAtElement == null
+			return getLookAtElement() == null
 		end
 		
 		/** \brief Look-at bone or -1. */
@@ -577,7 +581,7 @@ class ECBehaviorLookAt extends DefaultECBehavior
 		
 		/** \brief Look-at hit point or \em null. */
 		func DVector getLookAtHitPoint()
-			if pLookAtHitPoint == null and pLookAtElement != null
+			if pLookAtHitPoint == null and hasLookAtElement()
 				pLookAtHitPoint = pLookAtOrigin + pLookAtDirection.normalize() * pLookAtDistance
 			end
 			return pLookAtHitPoint

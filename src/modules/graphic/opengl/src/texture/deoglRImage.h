@@ -106,10 +106,14 @@ public:
 	 * Set pixel or nullptr if not set.
 	 * \warning Called during synchronization from main thread only.
 	 */
+	void SetPixelBuffer(const deoglPixelBuffer::Ref &pixelBuffer);
 	void SetPixelBufferTexture(const deoglPixelBuffer::Ref &pixelBuffer);
 	void SetPixelBufferCubeMap(const deoglPixelBuffer::Ref &pixelBuffer);
 	void SetPixelBufferArrayTexture(const deoglPixelBuffer::Ref &pixelBuffer);
 	
+	inline const deoglPixelBuffer::Ref &GetPixelBufferTexture() const{ return pPixelBufferTexture; }
+	inline const deoglPixelBuffer::Ref &GetPixelBufferCubeMap() const{ return pPixelBufferCubeMap; }
+	inline const deoglPixelBuffer::Ref &GetPixelBufferArrayTexture() const{ return pPixelBufferArrayTexture; }
 	
 	
 	/** Texture or nullptr. */

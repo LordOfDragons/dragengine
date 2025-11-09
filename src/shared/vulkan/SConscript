@@ -52,8 +52,6 @@ srcdir = Dir('.').srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC(envShared, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
 buildCloc = envShared.Alias('shared_vulkan_cloc', buildClocBare)
 
 # add the targets to the targets list

@@ -70,6 +70,7 @@ private:
 		dsClass *clsPEController;
 		dsClass *clsLayerMask;
 		dsClass *clsCollider;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -96,6 +97,7 @@ private:
 	DEF_NATFUNC( nfSetWarmUpTime );
 	DEF_NATFUNC( nfGetBurstTime );
 	DEF_NATFUNC( nfSetBurstTime );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfGetControllerCount );
 	DEF_NATFUNC( nfGetControllerAt );

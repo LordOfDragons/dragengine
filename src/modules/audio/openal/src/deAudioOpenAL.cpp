@@ -39,6 +39,7 @@
 #include "parameters/deoalPAuralizationMode.h"
 #include "parameters/deoalPAuralizationQuality.h"
 #include "parameters/deoalPMaxEnvSlots.h"
+#include "parameters/deoalPLogLevel.h"
 #include "microphone/deoalMicrophone.h"
 #include "model/deoalModel.h"
 #include "skin/deoalSkin.h"
@@ -110,10 +111,11 @@ pActiveMicrophone( NULL )
 		pConfiguration = new deoalConfiguration;
 		
 		pParameters = new deoalParameterList;
-		pParameters->AddParameter( new deoalPEnableEFX( *this ) );
-		pParameters->AddParameter( new deoalPAuralizationMode( *this ) );
-		pParameters->AddParameter( new deoalPAuralizationQuality( *this ) );
-		pParameters->AddParameter( new deoalPMaxEnvSlots( *this ) );
+		pParameters->AddParameter(new deoalPEnableEFX(*this));
+		pParameters->AddParameter(new deoalPAuralizationMode(*this));
+		pParameters->AddParameter(new deoalPAuralizationQuality(*this));
+		pParameters->AddParameter(new deoalPMaxEnvSlots(*this));
+		pParameters->AddParameter(new deoalPLogLevel(*this));
 		
 	}catch( const deException &e ){
 		LogException( e );

@@ -85,6 +85,7 @@ class STDVariableResolver extends DefaultSTDNodeVisitor
 		
 		var STDNText resolvedNode = STDNText.new()
 		resolvedNode.setStyle(node.getStyle())
+		resolvedNode.setNewPage(node.getNewPage())
 		
 		for i = 0 to count
 			span = node.getSpanAt(i)

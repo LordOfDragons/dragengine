@@ -79,7 +79,6 @@ igdeEditableEntity( environment ),
 pWorld( NULL ),
 
 pSky( NULL ),
-pEnvObject( NULL ),
 
 pCamera( NULL ),
 pViewRatio( 1.0f ),
@@ -137,7 +136,7 @@ pPreviewVFS( NULL )
 		pSky->SetWorld( pWorld );
 		
 		// create the environment wrapper object
-		pEnvObject = new igdeWObject( *environment );
+		pEnvObject.TakeOver(new igdeWObject(*environment));
 		pEnvObject->SetWorld( pWorld );
 		pEnvObject->SetPosition( decDVector( 0.0, 0.0, 0.0 ) );
 		pEnvObject->SetVisible( false ); // otherwise a stupid placeholder box shows
@@ -2278,9 +2277,7 @@ void gdeGameDefinition::pCleanUp(){
 	if( pSky ){
 		delete pSky;
 	}
-	if( pEnvObject ){
-		delete pEnvObject;
-	}
+	pEnvObject = nullptr;
 	if( pCamera ){
 		delete pCamera;
 	}

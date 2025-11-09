@@ -60,7 +60,7 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create visitor. */
-	meCLInvalidateDecals( meWorld *world );
+	meCLInvalidateDecals(meWorld &world);
 	
 	/** \brief Clean visitor. */
 	virtual ~meCLInvalidateDecals();

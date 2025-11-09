@@ -40,7 +40,7 @@ public:
 	
 protected:
 	/** Clean up skin texture pipeline. */
-	virtual ~deoglSTPipelinesDecal();
+	~deoglSTPipelinesDecal() override;
 	/*@}*/
 	
 	
@@ -49,17 +49,21 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Debug name. */
-	virtual const char *GetDebugName() const;
+	const char *GetDebugName() const override;
 	/*@}*/
 	
 	
 	
 protected:
-	virtual void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched );
+	void pPreparePipelines( const ChannelInfo &cinfo, deoglBatchedShaderLoading &batched ) override;
 	
-	virtual void pPipelineConfigGeometry( deoglPipelineConfiguration &config );
+	void pPipelineConfigGeometry( deoglPipelineConfiguration &config ) override;
+	void pPipelineConfigDepth(deoglPipelineConfiguration &config) override;
+	void pPipelineConfigCounter(deoglPipelineConfiguration &config) override;
 	
-	virtual void pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo );
+	void pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ) override;
+	
+	void pSetDepthOffset(deoglPipelineConfiguration &config);
 };
 
 #endif

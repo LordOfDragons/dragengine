@@ -14,6 +14,7 @@
     'modules\crashrecovery\basicrecovery\%ARCH%',
     'modules\crashrecovery\simplyquit\%ARCH%',
     'modules\font\defont\%ARCH%',
+    'modules\font\freetype\%ARCH%',
     'modules\graphic\null\%ARCH%',
     'modules\graphic\opengl\%ARCH%',
     'modules\image\ies\%ARCH%',

@@ -150,7 +150,7 @@ private:
 	
 	DEF_NATFUNC( nfGetLayerMask );
 	DEF_NATFUNC( nfSetLayerMask );
-	DEF_NATFUNC( nfGetParentWorld );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC(nfGetMatrix);
 	DEF_NATFUNC(nfGetInverseMatrix);

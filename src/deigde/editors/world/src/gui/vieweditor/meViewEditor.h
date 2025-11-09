@@ -25,6 +25,8 @@
 #ifndef _MEVIEWEDITOR_H_
 #define _MEVIEWEDITOR_H_
 
+#include "../../world/meWorldGuiParameters.h"
+
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/input/deInputEvent.h>
 
@@ -98,7 +100,7 @@ public:
 	meWorldGuiParameters &GetWorldGuiParameters() const;
 	
 	/** \brief Element mode. */
-	int GetElementMode() const;
+	meWorldGuiParameters::eElementModes GetElementMode() const;
 	
 	/** \brief Active camera. */
 	meCamera &GetActiveCamera() const;

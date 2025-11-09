@@ -80,7 +80,7 @@ def dragonscriptBuild( target, source, env ):
 		f.write('with_debug = "{}"\n'.format('yes' if envLibrary['with_debug'] else 'no'))
 		f.write('with_sanitize = "{}"\n'.format('yes' if useSanitize else 'no'))
 		f.write('with_verbose = "no"\n')
-		f.write('with_warnerrors = "yes"\n')
+		f.write('with_warnerrors = "no"\n')
 		f.write('with_internal_packages = "yes"\n')
 		if buildStaticLinking:
 			f.write('with_static = "yes"\n')
@@ -124,7 +124,7 @@ def dragonscriptBuild( target, source, env ):
 		script.append('install_name_tool -id "@rpath/libdscript.dylib" "{}" || exit 1'.format(target[0].abspath))
 	
 	# on haiku not all symlinks properly install. fix it
-	if env['OSBeOS']:
+	if env['OSBeOS'] and not buildStaticLinking:
 		script.append('cp -f src/scriptengine/build/libdscript.so.[0-9] ../lib')
 	
 	return 1 if os.system('\n'.join(script)) else None
@@ -145,7 +145,8 @@ with open( envLibrary.File( 'data_file_list' ).srcnode().abspath, 'r' ) as f:
 	runtimedata.extend( [ envLibrary.File( envLibrary.subst( x[:-1] ) ) for x in f.readlines() ] )
 targets.extend( runtimedata )
 
-library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action( dragonscriptBuild, 'Build DragonScript' ) )
+library = envLibrary.Command( targets, [nodeArtifacts, patches],
+	envLibrary.Action( dragonscriptBuild, 'Build DragonScript' ) )
 
 depends = parent_env.Alias( 'lib_dragonscript', library )
 

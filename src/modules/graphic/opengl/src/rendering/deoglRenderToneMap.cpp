@@ -235,7 +235,7 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		
 		
 		// parameters
-		pipconf.SetColorMask( true, true, true, true );
+		pipconf.SetMasks(true, true, true, true, false);
 		
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TEXCOORD" );
@@ -247,8 +247,8 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		
 		
 		// bright pass
-		pipconf.SetColorMask( true, true, true, false );
-		pipconf.SetEnableBlend( false );
+		pipconf.SetMasks(true, true, true, false, false);
+		pipconf.SetEnableBlend(false);
 		
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "FULLSCREENQUAD" );
@@ -322,7 +322,8 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM", "NO_TCTRANSFORM" );
 		sources = shaderManager.GetSourcesNamed( "ToneMap Tone Mapping" );
-		pipconf.SetEnableBlend( false );
+		pipconf.SetMasks(true, true, true, true, false);
+		pipconf.SetEnableBlend(false);
 		pAsyncGetPipeline(pPipelineToneMap, pipconf, sources, defines);
 		
 		defines.SetDefines( "WITH_TONEMAP_CURVE" );
@@ -346,8 +347,8 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		
 		// ldr
 		pipconf.Reset();
-		pipconf.SetMasks( true, true, true, true, false );
-		pipconf.SetEnableScissorTest( true );
+		pipconf.SetMasks(true, true, true, true, false);
+		pipconf.SetEnableScissorTest(true);
 		
 		defines = commonDefines;
 		defines.SetDefines( "NO_POSTRANSFORM" );

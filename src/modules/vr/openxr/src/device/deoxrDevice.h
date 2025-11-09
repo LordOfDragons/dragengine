@@ -73,28 +73,22 @@ private:
 	
 	deoxrPath pSubactionPath;
 	
-	deoxrAction::Ref pActionPose;
-	deoxrAction::Ref pActionPoseOrientation;
-	deoxrSpace::Ref pSpacePose;
-	deoxrSpace::Ref pSpacePoseOrientation;
+	deoxrAction::Ref pActionPose, pActionPoseOrientation;
+	deoxrSpace::Ref pSpacePose, pSpacePoseOrientation;
 	decVector pPosePosition;
 	decQuaternion pPoseOrientation;
-	decVector pPoseLinearVelocity;
-	decVector pPoseAngularVelocity;
+	decVector pPoseLinearVelocity, pPoseAngularVelocity;
+	int pPoseValidity;
 	
 	deInputDevice::eDeviceTypes pType;
 	deInputDevice::eBoneConfigurations pBoneConfiguration;
 	int pNameNumber;
-	decString pID;
-	decString pName;
+	decString pID, pName;
 	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	
-	decObjectOrderedSet pButtons;
-	decObjectOrderedSet pAxes;
-	decObjectOrderedSet pFeedbacks;
-	decObjectOrderedSet pComponents;
+	decObjectOrderedSet pButtons, pAxes, pFeedbacks, pComponents;
 	
 	deInputDevicePose pPoseDevice;
 	

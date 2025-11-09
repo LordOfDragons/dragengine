@@ -63,7 +63,12 @@ pDebugTimeMainThread( 29, 2 ),
 pDebugTimeMainThreadWaitFinish( 29, 2 ),
 pDebugTimeMainThreadSynchronize( 29, 2 ),
 pDebugTimeAudioThread( 29, 2 ),
-pDebugTimeAudioThreadAudio( 29, 2 ),
+pDebugTimeAudioThreadPrepare(29, 2),
+pDebugTimeAudioThreadProcess(29, 2),
+pDebugTimeAudioThreadSpeakersUpdate(29, 2),
+pDebugTimeAudioThreadWorldProcess(29, 2),
+pDebugTimeAudioThreadSpeakersProcess(29, 2),
+pDebugTimeAudioThreadEffectsProcess(29, 2),
 pDebugTimeFrameLimiterMain( 0.0f ),
 pDebugTimeFrameLimiterAudio( 0.0f ),
 pDebugTimeFrameLimiterAudioEstimated( 0.0f ),
@@ -132,14 +137,7 @@ void deoalDebugInfo::ResetTimersAudioThread(){
 	
 	pDebugTimerAudioThread1.Reset();
 	pDebugTimerAudioThread2.Reset();
-}
-
-void deoalDebugInfo::StoreTimeAudioThreadAudio(){
-	if( ! pDIModule ){
-		return;
-	}
-	
-	pDebugTimeAudioThreadAudio.Add( pDebugTimerAudioThread2.GetElapsedTime() );
+	pDebugTimerAudioThread3.Reset();
 }
 
 void deoalDebugInfo::StoreTimeAudioThread(){
@@ -148,6 +146,54 @@ void deoalDebugInfo::StoreTimeAudioThread(){
 	}
 	
 	pDebugTimeAudioThread.Add( pDebugTimerAudioThread1.GetElapsedTime() );
+}
+
+void deoalDebugInfo::StoreTimeAudioThreadPrepare(){
+	if(!pDIModule){
+		return;
+	}
+	
+	pDebugTimeAudioThreadPrepare.Add(pDebugTimerAudioThread2.GetElapsedTime());
+}
+
+void deoalDebugInfo::StoreTimeAudioThreadProcess(){
+	if(!pDIModule){
+		return;
+	}
+	
+	pDebugTimeAudioThreadProcess.Add(pDebugTimerAudioThread2.GetElapsedTime());
+}
+
+void deoalDebugInfo::StoreTimeAudioThreadSpeakersUpdate(){
+	if(!pDIModule){
+		return;
+	}
+	
+	pDebugTimeAudioThreadSpeakersUpdate.Add(pDebugTimerAudioThread3.GetElapsedTime());
+}
+
+void deoalDebugInfo::StoreTimeAudioThreadWorldProcess(){
+	if(!pDIModule){
+		return;
+	}
+	
+	pDebugTimeAudioThreadWorldProcess.Add(pDebugTimerAudioThread3.GetElapsedTime());
+}
+
+void deoalDebugInfo::StoreTimeAudioThreadSpeakersProcess(){
+	if(!pDIModule){
+		return;
+	}
+	
+	pDebugTimeAudioThreadSpeakersProcess.Add(pDebugTimerAudioThread3.GetElapsedTime());
+}
+
+void deoalDebugInfo::StoreTimeAudioThreadEffectsProcess(){
+	if(!pDIModule){
+		return;
+	}
+	
+	pDebugTimeAudioThreadEffectsProcess.Add(pDebugTimerAudioThread3.GetElapsedTime());
 }
 
 void deoalDebugInfo::StoreTimeFrameLimiter( const decTimeHistory &main,
@@ -193,7 +239,12 @@ enum eDebugInfoModule{
 	edimMainThreadWaitFinish,
 	edimMainThreadSynchronize,
 	edimAudioThread,
-	edimAudioThreadAudio,
+	edimAudioThreadAudioPrepare,
+	edimAudioThreadAudioProcess,
+	edimAudioThreadAudioProcessSpeakersUpdate,
+	edimAudioThreadAudioProcessWorldProcess,
+	edimAudioThreadAudioProcessSpeakersProcess,
+	edimAudioThreadAudioProcessEffects,
 	edimAudioThreadTraceSound,
 	edimAudioThreadListen,
 	edimFrameLimiter,
@@ -212,7 +263,12 @@ void deoalDebugInfo::ShowDIModule(){
 	pDIModule->AddEntry( "- Wait Finish", "" );
 	pDIModule->AddEntry( "- Synchronize", "" );
 	pDIModule->AddEntry( "Audio Thread", "" );
-	pDIModule->AddEntry( "- Audio", "" );
+	pDIModule->AddEntry( "- Prepare", "" );
+	pDIModule->AddEntry( "- Process Audio", "" );
+	pDIModule->AddEntry( "  - Update Speakers", "" );
+	pDIModule->AddEntry( "  - World Process", "" );
+	pDIModule->AddEntry( "  - Process Speakers", "" );
+	pDIModule->AddEntry( "  - Effects", "" );
 	pDIModule->AddEntry( "- Trace Sound", "" );
 	pDIModule->AddEntry( "- Listen", "" );
 	pDIModule->AddEntry( "Frame Limiter", "" );
@@ -249,8 +305,23 @@ void deoalDebugInfo::UpdateDIModule(){
 	text.Format( "%.2f", pDebugTimeAudioThread.GetAverage() * 1000.0f );
 	pDIModule->SetEntryText( edimAudioThread, text );
 	
-	text.Format( "%.2f", pDebugTimeAudioThreadAudio.GetAverage() * 1000.0f );
-	pDIModule->SetEntryText( edimAudioThreadAudio, text );
+	text.Format("%.2f", pDebugTimeAudioThreadPrepare.GetAverage() * 1000.0f);
+	pDIModule->SetEntryText(edimAudioThreadAudioPrepare, text);
+	
+	text.Format("%.2f", pDebugTimeAudioThreadProcess.GetAverage() * 1000.0f);
+	pDIModule->SetEntryText(edimAudioThreadAudioProcess, text);
+	
+	text.Format("%.2f", pDebugTimeAudioThreadSpeakersUpdate.GetAverage() * 1000.0f);
+	pDIModule->SetEntryText(edimAudioThreadAudioProcessSpeakersUpdate, text);
+	
+	text.Format("%.2f", pDebugTimeAudioThreadWorldProcess.GetAverage() * 1000.0f);
+	pDIModule->SetEntryText(edimAudioThreadAudioProcessWorldProcess, text);
+	
+	text.Format("%.2f", pDebugTimeAudioThreadSpeakersProcess.GetAverage() * 1000.0f);
+	pDIModule->SetEntryText(edimAudioThreadAudioProcessSpeakersProcess, text);
+	
+	text.Format("%.2f", pDebugTimeAudioThreadEffectsProcess.GetAverage() * 1000.0f);
+	pDIModule->SetEntryText(edimAudioThreadAudioProcessEffects, text);
 	
 	const deoalRTParallelEnvProbe &rtpenv = pAudioThread.GetRTParallelEnvProbe();
 	text.Format( "%.1f %.1f %.1f", rtpenv.GetTimeHistoryTraceSoundRays().GetAverage() * 1000.0f,

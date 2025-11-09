@@ -194,7 +194,20 @@ function DownloadArtifact {
     )
 
     if (!(Test-Path "$SourceDir\$FilenameArtifact")) {
-        Invoke-WebRequest "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -OutFile "$SourceDir\$FilenameArtifact"
+        #Invoke-WebRequest "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -OutFile "$SourceDir\$FilenameArtifact"
+        Start-BitsTransfer -Source "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" -Destination "$SourceDir\$FilenameArtifact"
+        
+        #$Retries = 0
+        #while ($Retries -lt 6) {
+        #    try {
+        #        Start-BitsTransfer -Source "$UrlExternArtifacts/$UrlPath/$FilenameArtifact" `
+        #            -Destination "$SourceDir\$FilenameArtifact" -ErrorAction Stop
+        #        break
+        #    } catch {
+        #        Start-Sleep -Seconds 5
+        #        $Retries++
+        #    }
+        #}
     }
 }
 
@@ -218,7 +231,20 @@ function UpdateModuleVersion {
     $Content = "#pragma once`r`n" +
         "#define MODULE_VERSION `"$ModuleVersion`"`r`n"
     
-    Set-Content -Path "$SourceDir\module_version.h" -Value $Content
+    # this is a strange M$ problem. sometimes the "module_version.h" file is considered
+    # to be open by another process but that is not possible since this call is done
+    # during pre-build step where nothing else is running. if this happens we do up to
+    # 2 retries with a small delay
+    $Retries = 0
+    while ($Retries -lt 3) {
+        try {
+            Set-Content -Path "$SourceDir\module_version.h" -Value $Content -ErrorAction Stop 
+            break
+        } catch {
+            Start-Sleep -Milliseconds 250
+            $Retries++
+        }
+    }
 }
 
 

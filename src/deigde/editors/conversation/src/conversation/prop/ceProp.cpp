@@ -57,8 +57,6 @@
 ceProp::ceProp(){
 	pConversation = NULL;
 	
-	pObjectWrapper = NULL;
-	
 	pName = "Prop";
 	pVisible = true;
 	
@@ -77,8 +75,7 @@ ceProp::~ceProp(){
 void ceProp::SetConversation( ceConversation *conversation ){
 	if( conversation != pConversation ){
 		if( pConversation ){
-			delete pObjectWrapper;
-			pObjectWrapper = NULL;
+			pObjectWrapper = nullptr;
 		}
 		
 		pConversation = conversation;
@@ -86,7 +83,7 @@ void ceProp::SetConversation( ceConversation *conversation ){
 		if( conversation ){
 			const decQuaternion &orientation = decMatrix::CreateRotation( pOrientation * DEG2RAD ).ToQuaternion();
 			
-			pObjectWrapper = new igdeWObject( *conversation->GetEnvironment() );
+			pObjectWrapper.TakeOver(new igdeWObject(*conversation->GetEnvironment()));
 			pObjectWrapper->SetGDClassName( pObjectClass.GetString() );
 			pObjectWrapper->SetPosition( pPosition );
 			pObjectWrapper->SetOrientation( orientation );
@@ -175,5 +172,5 @@ void ceProp::SetVisible( bool visible ){
 //////////////////////
 
 void ceProp::pCleanUp(){
-	SetConversation( NULL );
+	SetConversation(nullptr);
 }

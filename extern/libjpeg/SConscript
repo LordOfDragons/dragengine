@@ -46,7 +46,7 @@ conf = envLibrary.Configure()
 if envLibrary['with_system_libjpeg'] != TernaryVariableNo:
 	hasSystemJPEG = conf.CheckLibWithHeader(libLinkName,
 		['stdio.h', 'stdlib.h', 'jpeglib.h'], 'c++',
-		'jpeg_read_header(NULL, TRUE);')
+		call='jpeg_read_header(NULL, TRUE);')
 conf.Finish()
 
 if not hasSystemJPEG and envLibrary['with_system_libjpeg'] == TernaryVariableYes:
@@ -170,9 +170,8 @@ envLibrary.Append(PATCHES = [])
 globFiles(envLibrary, os.path.join('patches', jpegVersion), '*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
-library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(jpegBuild, 'Build JPEG library'))
-
-envLibrary.Depends(library, envLibrary['PATCHES'])
+library = envLibrary.Command(targets, [nodeArtifacts, patches],
+	envLibrary.Action(jpegBuild, 'Build JPEG library'))
 
 envLibrary.SideEffect('#notParallelCMake', library)
 

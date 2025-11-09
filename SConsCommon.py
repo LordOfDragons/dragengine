@@ -151,60 +151,6 @@ def SymLinkLibrary(env, target, source):
 
 
 
-# module signing action
-def UpdateModuleManifest(env, target, source):
-	with open(source[0].abspath, 'r') as f:
-		manifest = f.read()
-	
-	for update in env['ManifestUpdates']:
-		action = update['action']
-		
-		if action == 'filename':
-			manifest = manifest.replace(update['keyword'], update['name'])
-			
-		elif action == 'filesize':
-			manifest = manifest.replace(update['keyword'], str(os.path.getsize(update['path'])))
-			
-		elif action == 'filehash':
-			with open(update['path'], 'rb') as f:
-				hasher = hashlib.sha1()
-				bytes = f.read(1024)
-				while bytes:
-					hasher.update(bytes)
-					bytes = f.read(1024)
-			filehash = hasher.hexdigest()
-			manifest = manifest.replace(update['keyword'], filehash)
-			
-		elif action == 'preloadLibrary':
-			manifest = manifest.replace('</library>', '\t<preloadLibrary>{}</preloadLibrary>\n\t</library>'.format(update['path']))
-			
-		elif action == 'text':
-			manifest = manifest.replace(update['keyword'], update['value'])
-	
-	with open(target[0].abspath, 'w') as f:
-		f.write(manifest)
-	
-	return 0
-
-
-
-# Replace tokens in a file action. To use this action set an environment variable named
-# "Replacements" containing a list of (token, value) tuples. Both token and value have
-# to be strings.
-def ActionReplaceTokenInPlace(env, target, source):
-	with open(source[0].abspath, 'r') as f:
-		content = f.read()
-	
-	for token, value in env['Replacements']:
-		content = content.replace(token, value)
-	
-	with open(target[0].abspath, 'w') as f:
-		f.write(content)
-	
-	return 0
-
-
-
 # write configuration file action
 def WriteConfigFile(target, defines, env):
 	file = open(target, 'w')

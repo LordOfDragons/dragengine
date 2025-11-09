@@ -114,6 +114,7 @@ if parent_env['LogStdOut_Enabled']:
 parent_env.Tool('runExternalCommand')
 parent_env.Tool('macos_bundle')
 parent_env.Tool('downloadArtifact')
+parent_env.Tool('updateModuleManifest')
 
 InitCommon(parent_env)
 #print('os.name', os.name)
@@ -170,6 +171,8 @@ params.Add(StringVariable('force_version', 'Force version (empty to disable)', '
 params.Add(StringVariable('with_threads', 'Count of threads to use for building external packages', '1'))
 params.Add(StringVariable('with_cmake_flags', 'Additional flags for external CMake builds', ''))
 params.Add(StringVariable('with_cmake_c_flags', 'Additional C flags for external CMake builds', ''))
+params.Add(BoolVariable('with_engine_module_checks', 'Check engine module file before loading', True))
+params.Add(StringVariable('distro_maintained_info_url', 'Package is distribution maintaned and URL contains update information', ''))
 
 params.Add(StringVariable('url_extern_artifacts',
 	'Base URL to download external artifacts from if missing',
@@ -215,6 +218,7 @@ params.Add(PathVariable('with_denetwork_inc',
 params.Add(PathVariable('with_denetwork_lib',
 	'Path to DENetwork library files or empty to use system default',
 	'', PathVariable.PathAccept))
+params.Add(TernaryVariable('with_system_freetype', 'Use System FreeType'))
 
 params.Add(TernaryVariable('with_opengl', 'Use OpenGL'))
 params.Add(TernaryVariable('with_python', 'Use Python'))
@@ -226,6 +230,7 @@ params.Add(TernaryVariable('build_cr_basic', 'Build Basic Crash-Recovery Module'
 params.Add(TernaryVariable('build_graphics_opengl', 'Build OpenGL Graphics Module'))
 params.Add(TernaryVariable('build_graphics_vulkan', 'Build Vulkan Graphics Module', False))
 params.Add(TernaryVariable('build_guilauncher', 'Build GUI Launcher'))
+params.Add(TernaryVariable('build_font_freetype', 'Build FreeType Font Module'))
 params.Add(TernaryVariable('build_image_jpeg', 'Build JPEG Image Module'))
 params.Add(TernaryVariable('build_image_png', 'Build PNG Image Module'))
 params.Add(TernaryVariable('build_image_png3d', 'Build PNG-3D Image Module'))
@@ -260,6 +265,7 @@ params.Add(BoolVariable('build_comb_fbx_internal', 'Build FBX based modules as i
 params.Add(BoolVariable('build_cr_basic_internal', 'Build Basic Crash-Recovery Module as internal module', True))
 params.Add(BoolVariable('build_cr_simplyquit_internal', 'Build SimplyQuit Crash-Recovery Module as internal module', True))
 params.Add(BoolVariable('build_font_defont_internal', 'Build Drag[en]gine Font Font Module as internal module', True))
+params.Add(BoolVariable('build_font_freetype_internal', 'Build FreeType Font Module as internal module', True))
 params.Add(BoolVariable('build_graphic_null_internal', 'Build Null Graphic Module as internal module', True))
 params.Add(BoolVariable('build_graphic_opengl_internal', 'Build OpenGL Graphic Module as internal module', True))
 params.Add(BoolVariable('build_image_ies_internal', 'Build IES Image Module as internal module', True))
@@ -272,6 +278,7 @@ params.Add(BoolVariable('build_image_webp3d_internal', 'Build WebP-3D Image Modu
 params.Add(BoolVariable('build_input_android_internal', 'Build Android Input Module as internal module', True))
 params.Add(BoolVariable('build_input_console_internal', 'Build Console Input Module as internal module', True))
 params.Add(BoolVariable('build_input_x_internal', 'Build X Input Module as internal module', True))
+params.Add(BoolVariable('build_input_beos_internal', 'Build BeOS Input Module as internal module', True))
 params.Add(BoolVariable('build_langpack_delangpack_internal', 'Build DELangPack Language Pack Module as internal module', True))
 params.Add(BoolVariable('build_model_demodel_internal', 'Build Drag[en]gine Model Model Module as internal module', True))
 params.Add(BoolVariable('build_network_basic_internal', 'Build Basic Network Module as internal module', True))
@@ -816,7 +823,8 @@ parent_report['platform_webwasm'] = 'yes' if parent_env['platform_webwasm'] else
 
 parent_report['build dragengine tests'] = 'yes' if parent_env['with_tests'] else 'no'
 parent_report['treat warnings as errors'] = 'yes' if parent_env['with_warnerrors'] else 'no'
-parent_report['build with debug symbols'] = 'yes' if parent_env['with_debug'] else 'no'
+parent_report['build with debug symbols'] = 'yes' if (
+	parent_env['with_debug'] or parent_env['with_debug_symbols']) else 'no'
 parent_report['build with sanitizing'] = 'yes' if parent_env['with_sanitize'] else 'no'
 parent_report['build with thread sanitizing'] = 'yes' if parent_env['with_sanitize_thread'] else 'no'
 parent_report['version'] = parent_env['version']
@@ -829,6 +837,7 @@ extdirs.append('extern/zlib')
 extdirs.append('extern/libpng')
 extdirs.append('extern/libapng')
 extdirs.append('extern/libjpeg')
+extdirs.append('extern/freetype')
 extdirs.append('extern/sndio')
 extdirs.append('extern/jsoncpp')
 extdirs.append('extern/openal')
@@ -882,6 +891,7 @@ scdirs.append('src/modules/crashrecovery/simplyquit')
 scdirs.append('src/modules/crashrecovery/basicrecovery')
 
 scdirs.append('src/modules/font/defont')
+scdirs.append('src/modules/font/freetype')
 
 scdirs.append('src/modules/graphic/null')
 scdirs.append('src/modules/graphic/opengl')

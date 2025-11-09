@@ -78,7 +78,6 @@ pEngSky( NULL ),
 pEngSkyInstance( NULL ),
 pNeedsRebuildSky( true ),
 
-pEnvObject( NULL ),
 pCamera( NULL ),
 
 pDDHorizon( NULL ),
@@ -109,7 +108,7 @@ pActiveLayer( NULL )
 		pEngSkyInstance = engine->GetSkyInstanceManager()->CreateSkyInstance();
 		pEngWorld->AddSky( pEngSkyInstance );
 		
-		pEnvObject = new igdeWObject( *environment );
+		pEnvObject.TakeOver(new igdeWObject(*environment));
 		pEnvObject->SetWorld( pEngWorld );
 		pEnvObject->SetPosition( decDVector( 0.0, -1.8, 0.0 ) );
 		pEnvObject->SetGDClassName( "IGDETestTerrain" );
@@ -990,9 +989,7 @@ void seSky::pCleanUp(){
 	SetActiveController( NULL );
 	RemoveAllControllers();
 	
-	if( pEnvObject ){
-		delete pEnvObject;
-	}
+	pEnvObject = nullptr;
 	
 	if( pEngWorld ){
 		pDDSHorizon.SetParentDebugDrawer( NULL );

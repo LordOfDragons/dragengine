@@ -30,6 +30,7 @@
 
 class deEngine;
 class deFont;
+class deFontSize;
 class deFontBuilder;
 
 
@@ -72,8 +73,7 @@ public:
 	deFont *CreateFont( const char *filename, deFontBuilder &builder );
 	
 	/** \brief Create new font. */
-	deFont *CreateFont( deVirtualFileSystem *vfs, const char *filename,
-		deFontBuilder &builder );
+	deFont *CreateFont( deVirtualFileSystem *vfs, const char *filename, deFontBuilder &builder );
 	
 	/** \brief Load font from file relative to base path. */
 	deFont *LoadFont( const char *filename, const char *basePath );
@@ -90,6 +90,15 @@ public:
 	 * \warning To be used only by deResourceLoader.
 	 */
 	void AddLoadedFont( deFont *font );
+	
+	/**
+	 * \brief Load font size if supported and required.
+	 * 
+	 * If loading font size is supported font size instance is returned otherwise nullptr.
+	 * The returned font size is loading in parallel if a load task is assigned. In this case
+	 * to not use the font size until the load task is finished.
+	 */
+	deFontSize *LoadFontSize(deFont &font, int size);
 	
 	/** \brief Release leaking resources and report them. */
 	virtual void ReleaseLeakingResources();

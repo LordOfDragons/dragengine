@@ -507,6 +507,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 		/* backwards compatibility */ || tagName == "canInstanciate" ){
 			objectClass.SetCanInstantiate( GetCDataBool( *tag ) );
 			
+		}else if( tagName == "attachableBehavior" ){
+			objectClass.SetIsAttachableBehavior(GetCDataBool(*tag));
+			
 		}else if( tagName == "replaceSubObjects" ){
 			const decStringList keys( decString( GetCDataString( *tag ) ).Split( ',' ) );
 			int j, inherit = igdeGDClass::FilterSubObjectsAll;
@@ -2394,6 +2397,9 @@ const gdeGameDefinition&, const gdeObjectClass &objectClass ){
 	}
 	if( ! objectClass.GetCanInstantiate() ){
 		writer.WriteDataTagBool( "canInstantiate", objectClass.GetCanInstantiate() );
+	}
+	if(objectClass.GetIsAttachableBehavior()){
+		writer.WriteDataTagBool("attachableBehavior", objectClass.GetIsAttachableBehavior());
 	}
 	if( objectClass.GetInheritSubObjects() != igdeGDClass::FilterSubObjectsAll ){
 		decString keys;

@@ -29,148 +29,186 @@ pin Dragengine.Scenery
 pin Dragengine.Utils.StyledText.Definition.Nodes
 
 
-
 /**
  * \brief Styled text definition.
  */
 class StyledTextDefinition
-	private var Array pNodes
-	private var Dictionary pStyles
-	private var STDStyle pPageStyle
-	private var STDStyle pDefaultStyle
-	private var Point pPageSize
-	
+	var Array pNodes
+	var Dictionary pStyles
+	var STDStyle pPageStyle
+	var STDStyle pDefaultStyle
+	var Point pPageSize
 	
 	
 	/** \brief Create styled text definition. */
-	public func new()
-		this.pNodes = Array.new()
-		this.pStyles = Dictionary.new()
-		this.pPageStyle = STDStyle.new( "" )
-		this.pDefaultStyle = STDStyle.new( "" )
-		this.pPageSize = Point.new( 350, 500 )
+	func new()
+		pNodes = Array.new()
+		pStyles = Dictionary.new()
+		pPageStyle = STDStyle.new("")
+		pDefaultStyle = STDStyle.new("")
+		pPageSize = Point.new(350, 500)
 	end
 	
 	/** \brief Create copy of styled text definition. */
-	public func new( StyledTextDefinition definition )
-		this.pNodes = definition.pNodes.map( block STDNode each
-			return each.copy()
-		end )
-		this.pPageStyle = STDStyle.new( definition.pPageStyle )
-		this.pDefaultStyle = STDStyle.new( definition.pDefaultStyle )
-		this.pStyles = definition.pStyles.map( block String name, STDStyle style
-			return STDStyle.new( style )
-		end )
-		this.pPageSize = definition.pPageSize
+	func new(StyledTextDefinition definition) this(definition, true)
 	end
 	
+	/**
+	 * \brief Create copy of styled text definition.
+	 * \version 1.29
+	 */
+	func new(StyledTextDefinition definition, bool deepCopy)
+		pPageSize = definition.pPageSize
+		
+		if deepCopy
+			pStyles = definition.pStyles.map(block String name, STDStyle style
+				return STDStyle.new(style)
+			end)
+			pPageStyle = STDStyle.new(definition.pPageStyle)
+			pDefaultStyle = STDStyle.new(definition.pDefaultStyle)
+			pNodes = definition.pNodes.map(block STDNode each
+				return each.copy()
+			end)
+			
+		else
+			pStyles = Dictionary.new(definition.pStyles)
+			pPageStyle = definition.pPageStyle
+			pDefaultStyle = definition.pDefaultStyle
+			pNodes = Array.new(definition.pNodes)
+		end
+	end
 	
 	
 	/** \brief Number of nodes. */
-	public func int getNodeCount()
-		return this.pNodes.getCount()
+	func int getNodeCount()
+		return pNodes.getCount()
 	end
 	
 	/** \brief Node at index. */
-	public func STDNode getNodeAt( int index )
-		return this.pNodes.getAt( index ) cast STDNode
+	func STDNode getNodeAt(int index)
+		return pNodes.getAt(index) cast STDNode
 	end
 	
 	/** \brief Add node. */
-	public func void addNode( STDNode node )
-		this.pNodes.add( node )
+	func void addNode(STDNode node)
+		pNodes.add(node)
 	end
 	
 	/** \brief Remove all nodes. */
-	public func void removeAllNodes()
-		this.pNodes.removeAll()
+	func void removeAllNodes()
+		pNodes.removeAll()
 	end
 	
 	/** \brief Visit nodes with block with STDNode as parameter. */
-	public func void forEachNode( Block ablock )
-		this.pNodes.forEach( ablock )
+	func void forEachNode(Block ablock)
+		pNodes.forEach(ablock)
 	end
 	
 	/** \brief Visit nodes with visitor. */
-	public func void visitNodes( STDNodeVisitor visitor )
-		this.pNodes.forEach( block STDNode each
-			each.visit( visitor )
-		end )
+	func void visitNodes(STDNodeVisitor visitor)
+		pNodes.forEach(block STDNode each
+			each.visit(visitor)
+		end)
 	end
-	
 	
 	
 	/** \brief Number of styles. */
-	public func int getStyleCount()
-		return this.pStyles.getCount()
+	func int getStyleCount()
+		return pStyles.getCount()
 	end
 	
 	/** \brief Style with name is present. */
-	public func bool hasStyleNamed( String name )
-		return this.pStyles.has( name )
+	func bool hasStyleNamed(String name)
+		return pStyles.has(name)
 	end
 	
 	/** \brief Style with name or \em null if absent. */
-	public func STDStyle getStyleNamed( String name )
-		return this.pStyles.getAt( name, null ) cast STDStyle
+	func STDStyle getStyleNamed(String name)
+		return pStyles.getAt(name, null) cast STDStyle
 	end
 	
 	/** \brief Add style replacing style with same name if present. */
-	public func void addStyle( STDStyle style )
-		this.pStyles.setAt( style.getName(), style )
+	func void addStyle(STDStyle style)
+		pStyles.setAt(style.getName(), style)
 	end
 	
 	/** \brief Remove all styles. */
-	public func void removeAllStyles()
-		this.pStyles.removeAll()
+	func void removeAllStyles()
+		pStyles.removeAll()
 	end
 	
 	/** \brief Visit styles with block with STDStyle as parameter. */
-	public func void forEachStyle( Block ablock )
-		this.pStyles.forEachValue( ablock )
+	func void forEachStyle(Block ablock)
+		pStyles.forEachValue(ablock)
 	end
-	
 	
 	
 	/** \brief Page style. */
-	public func STDStyle getPageStyle()
-		return this.pPageStyle
+	func STDStyle getPageStyle()
+		return pPageStyle
 	end
 	
 	/** \brief Set page style. */
-	public func void setPageStyle( STDStyle style )
+	func void setPageStyle(STDStyle style)
 		if style == null
 			throw EInvalidParam.new()
 		end
-		this.pPageStyle = style
+		pPageStyle = style
 	end
 	
 	/** \brief Style to use for nodes not having a style set. */
-	public func STDStyle getDefaultStyle()
-		return this.pDefaultStyle
+	func STDStyle getDefaultStyle()
+		return pDefaultStyle
 	end
 	
 	/** \brief Set style to use for nodes not having a style set. */
-	public func void setDefaultStyle( STDStyle style )
+	func void setDefaultStyle(STDStyle style)
 		if style == null
 			throw EInvalidParam.new()
 		end
-		this.pDefaultStyle = style
+		pDefaultStyle = style
 	end
 	
 	/**
 	 * \brief Optimal page size in pixels.
 	 * \details Using this page size results in an optimal document layout.
 	 */
-	public func Point getPageSize()
-		return this.pPageSize
+	func Point getPageSize()
+		return pPageSize
 	end
 	
 	/**
 	 * \brief Set optimal page size in pixels.
 	 * \details Using this page size results in an optimal document layout.
 	 */
-	public func void setPageSize( Point pageSize )
-		this.pPageSize = pageSize
+	func void setPageSize(Point pageSize)
+		pPageSize = pageSize
+	end
+	
+	
+	/**
+	 * \brief Import styled text definition content.
+	 * \version 1.29
+	 * 
+	 * Only appends styles and nodes. Appended content is shared.
+	 */
+	func void import(StyledTextDefinition definition)
+		pStyles.setAll(definition.pStyles)
+		pNodes.addAll(definition.pNodes)
+	end
+	
+	/**
+	 * \brief Import copy of styled text definition content.
+	 * \version 1.29
+	 * 
+	 * Only appends styles and nodes. Appended content is copied.
+	 */
+	func void importCopy(StyledTextDefinition definition)
+		definition.pStyles.forEach(block String name, STDStyle style
+			pStyles.setAt(name, STDStyle.new(style))
+		end)
+		definition.pNodes.forEach(block STDNode each
+			pNodes.add(each.copy())
+		end)
 	end
 end

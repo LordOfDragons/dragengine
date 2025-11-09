@@ -78,8 +78,7 @@ igdeGDClass *gdclass, const decPoint &size ) :
 igdeGDPreviewCreator( environment, size ),
 pGDClass( gdclass ),
 pObject( NULL ),
-pSky( NULL ),
-pEnvObject( NULL )
+pSky( NULL )
 {
 	if( ! gdclass ){
 		DETHROW( deeInvalidParam );
@@ -89,12 +88,6 @@ pEnvObject( NULL )
 igdeGDPCObjectClass::~igdeGDPCObjectClass(){
 	if( pSky ){
 		delete pSky;
-	}
-	if( pObject ){
-		delete pObject;
-	}
-	if( pEnvObject ){
-		delete pEnvObject;
 	}
 }
 
@@ -137,7 +130,7 @@ void igdeGDPCObjectClass::PrepareCanvasForRender(){
 	pCamera->SetHighestIntensity( pSky->GetMaxLightIntensity() );
 	
 	// create the object class wrapper
-	pObject = new igdeWObject( environment );
+	pObject.TakeOver(new igdeWObject(environment));
 	pObject->SetWorld( pWorld );
 	pObject->SetAsyncLoadFinished( &pAsyncFinished );
 	DebugLog( "set gdclass" );
@@ -152,7 +145,7 @@ void igdeGDPCObjectClass::PrepareCanvasForRender(){
 }
 
 bool igdeGDPCObjectClass::IsCanvasReadyForRender(){
-	if( ! pAsyncFinished.asyncLoadFinished ){
+	if(!pAsyncFinished.asyncLoadFinished || !pObject->AllSubObjectsFinishedLoading()){
 		return false;
 	}
 	

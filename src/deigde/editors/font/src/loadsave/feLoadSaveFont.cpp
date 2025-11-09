@@ -162,6 +162,7 @@ void feLoadSaveFont::LoadFont( const char *virtualPath, feFont *font, decBaseFil
 		// store font information
 		font->SetFilePath( virtualPath );
 		font->SetLineHeight( engFont->GetLineHeight() );
+		font->SetBaseLine(engFont->GetBaseLine());
 		font->SetColorFont( engFont->GetIsColorFont() );
 		
 		// store font image information
@@ -182,7 +183,9 @@ void feLoadSaveFont::LoadFont( const char *virtualPath, feFont *font, decBaseFil
 			glyph->SetV( engGlyph.GetY() );
 			// engGlyph.GetZ()
 			glyph->SetWidth( engGlyph.GetWidth() );
+			glyph->SetHeight(engGlyph.GetHeight());
 			glyph->SetBearing( engGlyph.GetBearing() );
+			glyph->SetBearingY(engGlyph.GetBearingY());
 			glyph->SetAdvance( engGlyph.GetAdvance() );
 			
 			font->AddGlyph( glyph );

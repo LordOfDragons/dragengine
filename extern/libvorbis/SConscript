@@ -40,7 +40,7 @@ hasSystemVorbis = False
 conf = envLibrary.Configure()
 if envLibrary[ 'with_system_libvorbis' ] != TernaryVariableNo:
 	hasSystemVorbis = conf.CheckLibWithHeader( libLinkName,
-		'vorbis/vorbisfile.h', 'c++', 'ov_info(0, -1);' )
+		'vorbis/vorbisfile.h', 'c++', call='ov_info(0, -1);' )
 conf.Finish()
 
 if not hasSystemVorbis and envLibrary[ 'with_system_libvorbis' ] == TernaryVariableYes:
@@ -107,10 +107,9 @@ else:
 targets.append( 'include/vorbis/vorbisenc.h' )
 targets.append( 'include/vorbis/vorbisfile.h' )
 targets.append( 'include/vorbis/codec.h' )
-library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(libvorbisBuild, 'Build libvorbis' ) )
-
-if parent_targets[ 'lib_libogg' ][ 'depends' ]:
-	envLibrary.Depends( library, parent_targets[ 'lib_libogg' ][ 'depends' ] )
+library = envLibrary.Command(targets,
+	[nodeArtifacts, parent_targets['lib_libogg']['depends']],
+	envLibrary.Action(libvorbisBuild, 'Build libvorbis' ) )
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

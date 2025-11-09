@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRSky.h"
 #include "deoglRSkyInstance.h"
 #include "deoglRSkyInstanceLayer.h"
@@ -55,6 +51,7 @@ pRenderThread( renderThread ),
 pParentWorld( NULL ),
 pRSky( NULL ),
 pOrder( 0 ),
+pPassthroughTransparency(0.0f),
 pControllerStates( NULL ),
 pControllerStateCount( 0 ),
 pLayers( NULL ),
@@ -141,6 +138,9 @@ void deoglRSkyInstance::SetLayerMask( const decLayerMask &layerMask ){
 	pLayerMask = layerMask;
 }
 
+void deoglRSkyInstance::SetPassthroughTransparency(float transparency){
+	pPassthroughTransparency = decMath::clamp(transparency, 0.0f, 1.0f);
+}
 
 
 float deoglRSkyInstance::GetControllerStateAt( int index ) const{

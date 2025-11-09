@@ -57,6 +57,7 @@ private:
 	igdeListBoxReference pListObjClasses;
 	igdeCheckBoxReference pChkObjInclusive;
 	
+	igdeCheckBoxReference pChkRandomizeYAxis;
 	
 	
 public:
@@ -80,6 +81,9 @@ public:
 	
 	/** \brief Set world. */
 	void SetWorld( meWorld *world );
+	
+	/** \brief Update parameters. */
+	void UpdateParameters();
 	
 	/** \brief Update object filter. */
 	void UpdateObjectFilter();

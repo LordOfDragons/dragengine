@@ -28,10 +28,9 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/font/deFontReference.h>
+#include <dragengine/resources/font/deFont.h>
 
 class igdeEnvironment;
-
 
 
 /**
@@ -64,12 +63,8 @@ private:
 	void *pNativeFont;
 	decString pName;
 	float pSize;
-	bool pBold;
-	bool pItalic;
-	bool pUnderline;
-	bool pStrikeThrough;
-	deFontReference pEngineFont;
-	
+	bool pBold, pItalic, pUnderline, pStrikeThrough;
+	deFont::Ref pEngineFont;
 	
 	
 public:

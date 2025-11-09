@@ -28,20 +28,19 @@ pin Dragengine.Gui
 pin Dragengine.Scenery
 
 
-
 /**
  * \brief Styled text definition node visitor.
  */
 interface STDNodeVisitor
 	/** \brief Visit node. */
-	public func void visitNode( STDNode node )
+	func void visitNode(STDNode node)
 	
 	/** \brief Visit text node. */
-	public func void visitText( STDNText node )
+	func void visitText(STDNText node)
 	
 	/** \brief Visit image node. */
-	public func void visitImage( STDNImage node )
+	func void visitImage(STDNImage node)
 	
 	/** \brief Visit video node. */
-	public func void visitVideo( STDNVideo node )
+	func void visitVideo(STDNVideo node)
 end

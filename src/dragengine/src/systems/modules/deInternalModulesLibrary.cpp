@@ -29,6 +29,8 @@
 
 #ifdef OS_W32
 #include "../../app/deOSWindows.h"
+#elif defined OS_BEOS
+#include "../../app/deOSBeOS.h"
 #endif
 
 
@@ -114,7 +116,7 @@ void deInternalModulesLibrary::pLoadLibrary(deModuleSystem &modsys, const decPat
 	}
 	setenv("LIBRARY_PATH", newEnvVarLibPath, 1);
 	
-	pLibHandle = load_add_on(filename);
+	pLibHandle = load_add_on(path.GetPathNative());
 	
 	if(checkEnvVarLibPath){
 		setenv("LIBRARY_PATH", oldEnvVarLibPath, 1);

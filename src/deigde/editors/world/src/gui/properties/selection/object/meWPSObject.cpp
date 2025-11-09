@@ -53,6 +53,7 @@
 #include "../../../../undosys/properties/object/property/meUObjectPropertyCopyToSelected.h"
 #include "../../../../undosys/properties/object/property/meUObjectPropertyRemoveFromSelected.h"
 #include "../../../../undosys/properties/object/property/meUObjectClonePropertiesToSelected.h"
+#include "../../../../undosys/properties/object/attachBehavior/meUObjectSetAttachBehaviors.h"
 #include "../../../../undosys/properties/object/texture/meUObjectAddTexture.h"
 #include "../../../../undosys/properties/object/texture/meUObjectRemoveTexture.h"
 #include "../../../../undosys/properties/object/texture/meUObjectTextureSetSkin.h"
@@ -89,6 +90,7 @@
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
@@ -104,6 +106,8 @@
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
+#include <deigde/gui/event/igdeListBoxListener.h>
+#include <deigde/gui/event/igdeListBoxListenerReference.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
@@ -1001,14 +1005,51 @@ public:
 	
 	virtual const igdeGDProperty *GetGDProperty( const char *key ) const{
 		const meObject * const object = pPanel.GetActiveObject();
-		return object && object->GetGDClass() ? object->GetGDClass()->GetPropertyNamed( key ) : NULL;
+		if(!object || !object->GetGDClass()){
+			return nullptr;
+		}
+		
+		const igdeGDClassManager &clsmgr = *pPanel.GetGameDefinition()->GetClassManager();
+		const decStringList &attachBehaviors = object->GetAttachBehaviors();
+		const int count = attachBehaviors.GetCount();
+		int i;
+		
+		for(i=0; i<count; i++){
+			const igdeGDClass * const gdclass = clsmgr.GetNamed(attachBehaviors.GetAt(i));
+			if(!gdclass){
+				continue;
+			}
+			
+			const igdeGDProperty * const property = gdclass->GetPropertyNamed(key);
+			if(property){
+				return property;
+			}
+		}
+		
+		return object->GetGDClass()->GetPropertyNamed(key);
 	}
 	
 	virtual decStringSet GetGDPropertyKeys() const{
 		const meObject * const object = pPanel.GetActiveObject();
 		decStringSet keys;
-		if( object && object->GetGDClass() ){
-			object->GetGDClass()->AddPropertyNames( keys, true );
+		if(object){
+			if(object->GetGDClass()){
+				object->GetGDClass()->AddPropertyNames(keys, true);
+			}
+			
+			const decStringList &attachBehaviors = object->GetAttachBehaviors();
+			const int attachBehaviorCount = attachBehaviors.GetCount();
+			if(attachBehaviorCount > 0 && pPanel.GetGameDefinition()){
+				const igdeGDClassManager &classManager = *pPanel.GetGameDefinition()->GetClassManager();
+				int i;
+				
+				for(i=0; i<attachBehaviorCount; i++){
+					const igdeGDClass * const gdclass = classManager.GetNamed(attachBehaviors.GetAt(i));
+					if(gdclass){
+						gdclass->AddPropertyNames(keys, true);
+					}
+				}
+			}
 		}
 		return keys;
 	}
@@ -1104,6 +1145,109 @@ public:
 	virtual void Update(){
 		SetEnabled( pPanel.GetActiveObject() && pPanel.GetWorld()->GetSelectionObject().GetSelected().GetCount() > 1 );
 	}
+};
+
+
+class cActionAddAttachBehavior : public cBaseAction{
+public:
+	cActionAddAttachBehavior(meWPSObject &panel) : cBaseAction(panel, "Add Attachable Behavior...",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiPlus), "Add attachable behavior"){}
+	
+	igdeUndo *OnAction(meObject *object) override{
+		decStringList names;
+		if(pPanel.GetGameDefinition()){
+			const igdeGDClassManager &classManager = *pPanel.GetGameDefinition()->GetClassManager();
+			const int count = classManager.GetCount();
+			int i;
+			
+			for(i=0; i<count; i++){
+				const igdeGDClass &objectClass = *classManager.GetAt(i);
+				if(objectClass.GetIsAttachableBehavior()){
+					names.Add(objectClass.GetName());
+				}
+			}
+			
+			names.SortAscending();
+		}
+		
+		decString name;
+		if(!igdeCommonDialogs::GetString(&pPanel, "Add Attachable Behavior", "Behavior:", name, names)){
+			return nullptr;
+		}
+		
+		decStringList list(object->GetAttachBehaviors());
+		list.Add(name);
+		return new meUObjectSetAttachBehaviors(object, list);
+	}
+	
+	void Update() override{
+		SetEnabled(pPanel.GetActiveObject());
+	}
+};
+
+class cActionRemoveAttachBehavior : public cBaseAction{
+public:
+	cActionRemoveAttachBehavior(meWPSObject &panel) : cBaseAction(panel, "Remove Attachable Behavior",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus), "Remove attachable behavior"){}
+	
+	igdeUndo *OnAction(meObject *object) override{
+		decStringList list(object->GetAttachBehaviors());
+		list.RemoveFrom(object->GetActiveAttachBehavior());
+		return new meUObjectSetAttachBehaviors(object, list);
+	}
+	
+	void Update() override{
+		SetEnabled(pPanel.GetActiveObject()
+			&& pPanel.GetActiveObject()->GetActiveAttachBehavior() != -1);
+	}
+};
+
+class cActionRemoveAllAttachBehaviors : public cBaseAction{
+public:
+	cActionRemoveAllAttachBehaviors(meWPSObject &panel) : cBaseAction(panel,
+		"Remove All Attachable Behaviors",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiMinus),
+		"Remove all attachable behaviors"){}
+	
+	igdeUndo *OnAction(meObject *object) override{
+		if(pPanel.GetActiveObject()->GetAttachBehaviors().GetCount() == 0){
+			return nullptr;
+		}
+		
+		return new meUObjectSetAttachBehaviors(object, decStringList());
+	}
+	
+	void Update() override{
+		SetEnabled(pPanel.GetActiveObject()
+			&& pPanel.GetActiveObject()->GetAttachBehaviors().GetCount() > 0);
+	}
+};
+
+class cListAttachBehavior : public igdeListBoxListener{
+	meWPSObject &pPanel;
+	bool &pPreventUpdate;
+	
+public:
+	cListAttachBehavior(meWPSObject &panel, bool &preventUpdate) :
+		pPanel(panel), pPreventUpdate(preventUpdate){}
+	
+	void OnSelectionChanged(igdeListBox *listBox) override{
+		if(pPreventUpdate){
+			return;
+		}
+		
+		meObject * const object = pPanel.GetActiveObject();
+		if(object){
+			object->SetActiveAttachBehavior(listBox->GetSelection());
+		}
+	}
+	
+	void AddContextMenuEntries(igdeListBox *listBox, igdeMenuCascade &menu) override{
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand(menu, new cActionAddAttachBehavior(pPanel), true);
+		helper.MenuCommand(menu, new cActionRemoveAttachBehavior(pPanel), true);
+		helper.MenuCommand(menu, new cActionRemoveAllAttachBehaviors(pPanel), true);
+	};
 };
 
 
@@ -1312,7 +1456,8 @@ meWPSObject::meWPSObject( meWPSelection &wpselection ) :
 igdeContainerScroll( wpselection.GetEnvironment(), false, true ),
 pWPSelection( wpselection ),
 pListener( NULL ),
-pWorld( NULL )
+pWorld( NULL ),
+pPreventUpdate(false)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
@@ -1399,6 +1544,13 @@ pWorld( NULL )
 	
 	pEditProperties.TakeOver( new cEditObjectProperties( *this ) );
 	groupBox->AddChild( pEditProperties );
+	
+	
+	// attachable behaviors
+	helper.GroupBoxFlow(content, groupBox, "Attachable Behaviors:", true, true);
+	
+	helper.ListBox(groupBox, 3, "Attachable behaviors of the object.",
+		pListAttachBehaviors, new cListAttachBehavior(*this, pPreventUpdate));
 	
 	
 	// display options
@@ -1518,6 +1670,7 @@ void meWPSObject::SetWorld( meWorld *world ){
 	UpdateLight();
 	UpdatePropertyKeys();
 	UpdateProperties();
+	UpdateAttachBehaviors();
 	
 	UpdateTextureList();
 	UpdateTextureEnabled();
@@ -1768,6 +1921,42 @@ void meWPSObject::UpdateProperties(){
 	SelectActiveProperty();
 }
 
+void meWPSObject::UpdateAttachBehaviors(){
+	const meObject * const object = GetActiveObject();
+	
+	pPreventUpdate = true;
+	try{
+		pListAttachBehaviors->RemoveAllItems();
+		
+		if(object){
+			const decStringList &list = object->GetAttachBehaviors();
+			const int count = list.GetCount();
+			int i;
+			
+			for(i=0; i<count; i++){
+				pListAttachBehaviors->AddItem(list.GetAt(i));
+			}
+		}
+		
+		SelectActiveAttachBehavior();
+		pPreventUpdate = false;
+		
+	}catch(const deException &){
+		pPreventUpdate = false;
+		throw;
+	}
+	
+	pListAttachBehaviors->SetEnabled(object);
+}
+
+void meWPSObject::SelectActiveAttachBehavior(){
+	meObject * const object = GetActiveObject();
+	if(object){
+		pListAttachBehaviors->SetSelection(object->GetActiveAttachBehavior());
+	}
+}
+
+
 void meWPSObject::UpdateIntensityForDistance(){
 	const float intensity = pSldLigInt->GetValue();
 	const float range = pSldLigRange->GetValue();
@@ -1939,6 +2128,7 @@ void meWPSObject::OnGameDefinitionChanged(){
 	UpdateLight();
 	UpdatePropertyKeys();
 	UpdateProperties();
+	UpdateAttachBehaviors();
 	( ( meWPPropertyList& )( igdeWidget&  )pEditProperties ).OnGameDefinitionChanged();
 	
 	UpdateTexPropertyKeys();

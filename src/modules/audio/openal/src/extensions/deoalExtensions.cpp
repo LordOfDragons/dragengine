@@ -48,6 +48,7 @@ extern __eglMustCastToProperFunctionPointerType androidGetProcAddress( const cha
 static const char * const vExtensionNames[ deoalExtensions::EXT_COUNT ] = {
 	"ALC_EXT_EFX",
 	"ALC_SOFT_HRTF",
+	"ALC_EXT_debug"
 };
 
 
@@ -238,12 +239,22 @@ void deoalExtensions::pFetchOptionalFunctions(){
 	
 	// ALC_SOFT_HRTF
 	if( pHasExtension[ ext_ALC_SOFT_HRTF ] ){
-		pGetOptionalFunction( (void**)&palcGetStringi, "alcGetStringiSOFT", ext_ALC_SOFT_HRTF );
-		pGetOptionalFunction( (void**)&palcResetDevice, "alcResetDeviceSOFT", ext_ALC_SOFT_HRTF );
+		pGetOptionalFunction( (void**)&palcGetStringi,
+			"alcGetStringi", "alcGetStringiSOFT", ext_ALC_SOFT_HRTF );
+		pGetOptionalFunction( (void**)&palcResetDevice,
+			"alcResetDevice", "alcResetDeviceSOFT", ext_ALC_SOFT_HRTF );
 		
-		if( ! pHasExtension[ ext_ALC_SOFT_HRTF ] ){
-			DETHROW( deeInvalidAction );
-		}
+		DEASSERT_TRUE(pHasExtension[ext_ALC_SOFT_HRTF])
+	}
+	
+	// ALC_EXT_debug
+	if(pHasExtension[ext_ALC_EXT_debug]){
+		pGetOptionalFunction((void**)&palDebugMessageCallback,
+			"alDebugMessageCallback", "alDebugMessageCallbackEXT", ext_ALC_EXT_debug);
+		pGetOptionalFunction((void**)&palDebugMessageControl,
+			"alDebugMessageControl", "alDebugMessageControlEXT", ext_ALC_EXT_debug);
+		
+		DEASSERT_TRUE(pHasExtension[ext_ALC_EXT_debug])
 	}
 }
 
@@ -274,6 +285,27 @@ void deoalExtensions::pGetOptionalFunction( void **funcPointer, const char *func
 	}
 	
 	if( ! *funcPointer ){
+		*funcPointer = fp;
+	}
+}
+
+void deoalExtensions::pGetOptionalFunction(void **funcPointer, const char *funcName,
+const char *funcName2, int extensionIndex){
+	void *fp = alcGetProcAddress(pAudioThread.GetContext().GetDevice(), funcName);
+	
+	if(!fp){
+		fp = alcGetProcAddress(pAudioThread.GetContext().GetDevice(), funcName2);
+		
+		if(!fp){
+			pAudioThread.GetLogger().LogErrorFormat(
+				"Failed to get a suitable function address for %s or %s although extension "
+				"%s is supported. This is a driver bug!", funcName, funcName2,
+					vExtensionNames[extensionIndex]);
+			pHasExtension[extensionIndex] = false;
+		}
+	}
+	
+	if(!*funcPointer){
 		*funcPointer = fp;
 	}
 }

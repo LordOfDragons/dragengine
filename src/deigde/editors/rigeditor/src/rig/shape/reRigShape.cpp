@@ -110,24 +110,7 @@ reRigShape::~reRigShape(){
 ///////////////
 
 void reRigShape::SetRig( reRig *rig ){
-	if( rig == pRig ){
-		return;
-	}
-	
-	if( pRig ){
-		pRig->GetEngineWorld()->RemoveCollider( pCollider );
-		pRig->GetEngineWorld()->RemoveDebugDrawer( pDebugDrawer );
-	}
-	
-	pRig = rig;
-	
-	if( rig ){
-		rig->GetEngineWorld()->AddDebugDrawer( pDebugDrawer );
-		rig->GetEngineWorld()->AddCollider( pCollider );
-	}
-	
-	ShowStateChanged();
-	pUpdateShapes();
+	pSetRig(rig, true);
 }
 
 void reRigShape::SetRigBone( reRigBone *rigBone ){
@@ -244,8 +227,8 @@ bool reRigShape::IsVisible() const{
 //////////////////////
 
 void reRigShape::pRSCleanUp(){
-	SetRigBone( NULL );
-	SetRig( NULL );
+	pRigBone = nullptr;
+	pSetRig(nullptr, false);
 	
 	if( pCollider ){
 		pCollider->FreeReference();
@@ -335,4 +318,27 @@ void reRigShape::pUpdateShapes(){
 	
 	// no more dirty
 	pDirtyShape = false;
+}
+
+void reRigShape::pSetRig(reRig *rig, bool update){
+	if(rig == pRig){
+		return;
+	}
+	
+	if(pRig){
+		pRig->GetEngineWorld()->RemoveCollider(pCollider);
+		pRig->GetEngineWorld()->RemoveDebugDrawer(pDebugDrawer);
+	}
+	
+	pRig = rig;
+	
+	if(rig){
+		rig->GetEngineWorld()->AddDebugDrawer(pDebugDrawer);
+		rig->GetEngineWorld()->AddCollider(pCollider);
+	}
+	
+	if(update){
+		ShowStateChanged();
+		pUpdateShapes();
+	}
 }

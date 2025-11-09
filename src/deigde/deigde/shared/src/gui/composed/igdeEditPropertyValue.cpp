@@ -957,7 +957,7 @@ void igdeEditPropertyValue::pUpdateEditWidgets(){
 			break;
 		}
 		
-	}catch( const deException &e ){
+	}catch( const deException & ){
 		pSwitcher->SetCurrent( 0 );
 		pString->SetText( pValue );
 	}

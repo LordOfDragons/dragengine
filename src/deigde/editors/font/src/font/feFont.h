@@ -81,7 +81,7 @@ private:
 	deFont *pEngFont;
 	
 	feFontImage *pFontImage;
-	int pLineHeight;
+	int pLineHeight, pBaseLine;
 	bool pColorFont;
 	feFontGlyphList pGlyphs;
 	feFontGlyphSelection *pGlyphSelection;
@@ -128,6 +128,12 @@ public:
 	
 	/** \brief Set if font is a color font. */
 	void SetColorFont( bool colorFont );
+	
+	/** \brief Base line. */
+	inline int GetBaseLine() const{ return pBaseLine; }
+	
+	/** \brief Set base line. */
+	void SetBaseLine(int baseLine);
 	
 	/** \brief Font image. */
 	inline feFontImage *GetFontImage() const{ return pFontImage; }

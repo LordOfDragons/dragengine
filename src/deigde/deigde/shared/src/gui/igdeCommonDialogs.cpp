@@ -181,6 +181,8 @@ const deException &exception){
 	DEASSERT_NOTNULL(owner)
 	DEASSERT_NOTNULL(title)
 	
+	owner->GetEnvironment().GetLogger()->LogException("IGDE", exception);
+	
 	// TODO create a dialog to display the exception. this allows to display the exception
 	//      trace in a separate list field keeping the output compact compared to using
 	//      FXMessageBox::error . this also allows to add buttons to copy the exception to

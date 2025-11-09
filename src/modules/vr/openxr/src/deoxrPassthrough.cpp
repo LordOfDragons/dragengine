@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoxrPassthrough.h"
 #include "deoxrSystem.h"
 #include "deoxrInstance.h"
@@ -33,19 +30,22 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class deoxrPassthrough
 ///////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-deoxrPassthrough::deoxrPassthrough( deoxrSession &session ) :
-pSession( session ),
-pPassthrough( XR_NULL_HANDLE ),
-pLayer( XR_NULL_HANDLE ),
-pEnabled( false ),
-pTransparency( 1.0f ){
+deoxrPassthrough::deoxrPassthrough(deoxrSession &session) :
+pSession(session),
+pEnabled(false),
+pTransparency(1.0f),
+pPassthroughFB(XR_NULL_HANDLE),
+pLayerFB(XR_NULL_HANDLE),
+pLayerStyleFB{XR_TYPE_PASSTHROUGH_STYLE_FB},
+pCompositeLayerFB{XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_FB},
+pEnvBlendMode(XR_ENVIRONMENT_BLEND_MODE_OPAQUE),
+pCompositionLayerFlags(0){
 }
 
 deoxrPassthrough::~deoxrPassthrough(){
@@ -53,42 +53,38 @@ deoxrPassthrough::~deoxrPassthrough(){
 }
 
 
-
 // Management
 ///////////////
 
-void deoxrPassthrough::SetEnabled( bool enabled ){
-	if( enabled == pEnabled ){
+void deoxrPassthrough::SetEnabled(bool enabled){
+	if(enabled == pEnabled){
 		return;
 	}
 	
-	if( enabled ){
+	if(enabled){
 		pEnsureCreated();
 	}
 	
 	pEnabled = enabled;
 	
-	deoxrInstance &instance = pSession.GetSystem().GetInstance();
-	
-	if( enabled ){
-		OXR_CHECK( instance.xrPassthroughStartFB( pPassthrough ) );
-		OXR_CHECK( instance.xrPassthroughLayerResumeFB( pLayer ) );
-		
-	}else{
-		OXR_CHECK( instance.xrPassthroughPauseFB( pPassthrough ) );
-		OXR_CHECK( instance.xrPassthroughLayerPauseFB( pLayer ) );
-	}
+	pEnablePassthroughFB();
+	pUpdateEnvBlendMode();
 }
 
-void deoxrPassthrough::SetTransparency( float transparency ){
-	if( fabsf( transparency - pTransparency ) < 0.001f ){
+void deoxrPassthrough::SetTransparency(float transparency){
+	if(fabsf(transparency - pTransparency) < 0.001f){
 		return;
 	}
 	
 	pTransparency = transparency;
-	pUpdateLayerStyle();
+	
+	pUpdateLayerStyleFB();
+	pUpdateEnvBlendMode();
 }
 
+bool deoxrPassthrough::ShowPassthroughLayerFB() const{
+	return pLayerFB != XR_NULL_HANDLE && pEnabled && pTransparency > 0.001f;
+}
 
 
 // Private Functions
@@ -97,25 +93,26 @@ void deoxrPassthrough::SetTransparency( float transparency ){
 void deoxrPassthrough::pCleanUp(){
 	deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
-	if( pLayer != XR_NULL_HANDLE ){
-		OXR_CHECK( instance.xrDestroyPassthroughLayerFB( pLayer ) );
-		pLayer = XR_NULL_HANDLE;
+	if(pLayerFB != XR_NULL_HANDLE){
+		OXR_CHECK(instance.xrDestroyPassthroughLayerFB(pLayerFB));
+		pLayerFB = XR_NULL_HANDLE;
 	}
 	
-	if( pPassthrough != XR_NULL_HANDLE ){
-		OXR_CHECK( instance.xrDestroyPassthroughFB( pPassthrough ) );
-		pPassthrough = XR_NULL_HANDLE;
+	if(pPassthroughFB != XR_NULL_HANDLE){
+		OXR_CHECK(instance.xrDestroyPassthroughFB(pPassthroughFB));
+		pPassthroughFB = XR_NULL_HANDLE;
 	}
-}
-
-void deoxrPassthrough::pUpdateLayerStyle(){
-	pLayerStyle.textureOpacityFactor = pTransparency;
-	
-	OXR_CHECK( pSession.GetSystem().GetInstance().xrPassthroughLayerSetStyleFB( pLayer, &pLayerStyle ) );
 }
 
 void deoxrPassthrough::pEnsureCreated(){
-	if( pPassthrough != XR_NULL_HANDLE ){
+	deoxrInstance &instance = pSession.GetSystem().GetInstance();
+	if(instance.SupportsExtension(deoxrInstance::extFBPassthrough)){
+		pEnsureCreateFB();
+	}
+}
+
+void deoxrPassthrough::pEnsureCreateFB(){
+	if(pPassthroughFB != XR_NULL_HANDLE){
 		return;
 	}
 	
@@ -126,38 +123,74 @@ void deoxrPassthrough::pEnsureCreated(){
 		// XR_PASSTHROUGH_IS_RUNNING_AT_CREATION_BIT_FB or XR_PASSTHROUGH_LAYER_DEPTH_BIT_FB.
 		// but since we have no depth layer yet we are forced to use
 		// XR_PASSTHROUGH_IS_RUNNING_AT_CREATION_BIT_FB to not get into troubles
-		XrPassthroughCreateInfoFB createInfoPass;
-		memset( &createInfoPass, 0, sizeof( createInfoPass ) );
-		createInfoPass.type = XR_TYPE_PASSTHROUGH_CREATE_INFO_FB;
+		XrPassthroughCreateInfoFB createInfoPass{XR_TYPE_PASSTHROUGH_CREATE_INFO_FB};
 		createInfoPass.flags = XR_PASSTHROUGH_IS_RUNNING_AT_CREATION_BIT_FB;
 		
-		OXR_CHECK( instance.xrCreatePassthroughFB( pSession.GetSession(), &createInfoPass, &pPassthrough ) );
+		OXR_CHECK(instance.xrCreatePassthroughFB(pSession.GetSession(), &createInfoPass, &pPassthroughFB));
 		
 		// create layer
-		XrPassthroughLayerCreateInfoFB createInfoLayer;
-		memset( &createInfoLayer, 0, sizeof( createInfoLayer ) );
-		createInfoLayer.type = XR_TYPE_PASSTHROUGH_LAYER_CREATE_INFO_FB;
-		createInfoLayer.passthrough = pPassthrough;
+		XrPassthroughLayerCreateInfoFB createInfoLayer{XR_TYPE_PASSTHROUGH_LAYER_CREATE_INFO_FB};
+		createInfoLayer.passthrough = pPassthroughFB;
 		createInfoLayer.purpose = XR_PASSTHROUGH_LAYER_PURPOSE_RECONSTRUCTION_FB;
 		
-		OXR_CHECK( instance.xrCreatePassthroughLayerFB( pSession.GetSession(), &createInfoLayer, &pLayer ) );
+		OXR_CHECK(instance.xrCreatePassthroughLayerFB(pSession.GetSession(), &createInfoLayer, &pLayerFB));
 		
 		// init layer style structs
-		memset( &pLayerStyle, 0, sizeof( pLayerStyle ) );
-		pLayerStyle.type = XR_TYPE_PASSTHROUGH_STYLE_FB;
-		pLayerStyle.textureOpacityFactor = pTransparency;
+		pLayerStyleFB.textureOpacityFactor = pTransparency;
 		
 		// init composite layer struct
-		memset( &pCompositeLayer, 0, sizeof( XrCompositionLayerPassthroughFB ) );
-		pCompositeLayer.type = XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_FB;
-		pCompositeLayer.layerHandle = pLayer;
+		pCompositeLayerFB.layerHandle = pLayerFB;
 		
 		// pause passthrough since it gets automatically activated
-		OXR_CHECK( instance.xrPassthroughPauseFB( pPassthrough ) );
-		OXR_CHECK( instance.xrPassthroughLayerPauseFB( pLayer ) );
+		OXR_CHECK(instance.xrPassthroughPauseFB(pPassthroughFB));
+		OXR_CHECK(instance.xrPassthroughLayerPauseFB(pLayerFB));
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
+	}
+	
+	pEnvBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
+	pCompositionLayerFlags = 0;
+}
+
+void deoxrPassthrough::pUpdateLayerStyleFB(){
+	pLayerStyleFB.textureOpacityFactor = pTransparency;
+	
+	if(pLayerFB != XR_NULL_HANDLE){
+		OXR_CHECK(pSession.GetSystem().GetInstance().xrPassthroughLayerSetStyleFB(pLayerFB, &pLayerStyleFB));
+	}
+}
+
+void deoxrPassthrough::pEnablePassthroughFB(){
+	if(pPassthroughFB == XR_NULL_HANDLE){
+		return;
+	}
+	
+	deoxrInstance &instance = pSession.GetSystem().GetInstance();
+	
+	if(pEnabled){
+		OXR_CHECK(instance.xrPassthroughStartFB(pPassthroughFB));
+		OXR_CHECK(instance.xrPassthroughLayerResumeFB(pLayerFB));
+		
+	}else{
+		OXR_CHECK(instance.xrPassthroughPauseFB(pPassthroughFB));
+		OXR_CHECK(instance.xrPassthroughLayerPauseFB(pLayerFB));
+	}
+}
+
+void deoxrPassthrough::pUpdateEnvBlendMode(){
+	if(!pSession.GetSystem().GetSupportsEnvBlendModeAlphaBlend()
+	|| pPassthroughFB != XR_NULL_HANDLE){
+		return;
+	}
+	
+	if(pEnabled && pTransparency > 0.5f){
+		pEnvBlendMode = XR_ENVIRONMENT_BLEND_MODE_ALPHA_BLEND;
+		pCompositionLayerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;
+		
+	}else{
+		pEnvBlendMode = XR_ENVIRONMENT_BLEND_MODE_OPAQUE;
+		pCompositionLayerFlags = 0;
 	}
 }

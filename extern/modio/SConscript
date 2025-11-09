@@ -16,7 +16,7 @@ if parent_env['OSBeOS']:
 envLibrary = parent_env.Clone()
 
 # parameters
-libVersion = '2024_11'
+libVersion = '2025_10'
 
 srcdir = 'modio-sdk'
 
@@ -67,6 +67,8 @@ def modioBuild(target, source, env):
 		cppflags.append('-Wno-error=documentation')
 	
 	script = createScriptHeader(env, deps=deps, cppflags=cppflags, cflags=cppflags)
+	
+	script.append('export CMAKE_POLICY_VERSION_MINIMUM=3.5\n')
 	
 	# modio cmake scripts seem to only look at CXXFLAGS not CPPFLAGS
 	script.append('export CXXFLAGS="$CPPFLAGS"')
@@ -134,8 +136,7 @@ def modioBuild(target, source, env):
 targets = staticFileNames[:]
 
 # after building lib_modio run this from build directory to update header listing
-# find install -name "*.h" -type f >../header_file_list/modio
-# find install -name "*.hpp" -type f >>../header_file_list/modio
+# ./prepare_file_lists.sh
 
 with open(envLibrary.File('header_file_list/modio').srcnode().abspath, 'r', encoding='utf-8') as f:
 	targets.extend([x[:-1] for x in f.readlines()])
@@ -146,16 +147,13 @@ envLibrary.Append(PATCHES = [])
 globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
 globFiles(envLibrary, os.path.join('patches', libVersion), '*.patch', patches, recursive=False)
 if envLibrary['platform_android'] != 'no':
-	globFiles(envLibrary, os.path.join('patches', 'android', libVersion), '*.patch', patches, recursive=False)
+	globFiles(envLibrary, os.path.join('patches', 'android', libVersion),
+		'*.patch', patches, recursive=False)
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
-library = envLibrary.Command(targets, nodeArtifacts,
+library = envLibrary.Command(targets,
+	[nodeArtifacts, patches, depUring['depends'] if depUring else []],
 	envLibrary.Action(modioBuild, 'Build ModIO library'))
-
-if depUring and depUring['depends']:
-	envLibrary.Depends(library, depUring['depends'])
-
-envLibrary.Depends(library, envLibrary['PATCHES'])
 
 envLibrary.SideEffect('#notParallelCMake', library)
 

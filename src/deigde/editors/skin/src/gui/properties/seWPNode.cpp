@@ -565,9 +565,10 @@ public:
 	
 	virtual igdeUndo *OnChanged( igdeEditPoint &editPoint, seSkin*, seTexture*,
 	seProperty*, sePropertyNode *node ){
+		const decPoint repeat(editPoint.GetPoint().Largest(decPoint(1, 1)));
 		return node->GetNodeType() == sePropertyNode::entImage
-			&& ( ( sePropertyNodeImage* )node )->GetRepeat() != editPoint.GetPoint()
-			? new seUPropertyNodeImageSetRepeat( ( sePropertyNodeImage* )node, editPoint.GetPoint() ) : NULL;
+			&& ((sePropertyNodeImage*)node)->GetRepeat() != repeat
+			? new seUPropertyNodeImageSetRepeat((sePropertyNodeImage*)node, repeat) : nullptr;
 	}
 };
 
@@ -647,7 +648,7 @@ public:
 	seProperty*, sePropertyNode *node ){
 		const float value = textField.GetFloat();
 		return node->GetNodeType() == sePropertyNode::entText
-			&& fabsf( ( ( sePropertyNodeText* )node )->GetFontSize() - value ) > FLOAT_SAFE_EPSILON
+			&& fabsf( ( ( sePropertyNodeText* )node )->GetTextSize() - value ) > FLOAT_SAFE_EPSILON
 			? new seUPropertyNodeTextSetSize( ( sePropertyNodeText* )node, value ) : NULL;
 	}
 };
@@ -1073,7 +1074,7 @@ void seWPNode::UpdateNode(){
 		case sePropertyNode::entText:{
 			const sePropertyNodeText &nodeText = *( ( sePropertyNodeText* )node );
 			pTextEditFont->SetPath( nodeText.GetPath() );
-			pTextEditFontSize->SetFloat( nodeText.GetFontSize() );
+			pTextEditFontSize->SetFloat( nodeText.GetTextSize() );
 			
 			if( nodeText.GetFont() ){
 				const deFont &font = *nodeText.GetFont();

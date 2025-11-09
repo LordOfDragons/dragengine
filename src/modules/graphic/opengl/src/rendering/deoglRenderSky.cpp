@@ -63,7 +63,9 @@
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/texture2d/deoglTexture.h"
 #include "../vao/deoglVAO.h"
+#include "../world/deoglRCamera.h"
 #include "../world/deoglRWorld.h"
+#include "../vr/deoglVR.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -229,7 +231,7 @@ deoglRenderBase( renderThread )
 	}
 	
 	pipconf.Reset();
-	pipconf.SetMasks( true, true, true, false, false ); // alpha=false to avoid blended alpha to be written
+	pipconf.SetMasks( true, true, true, true, false );
 	pipconf.EnableBlendBlend();
 	pipconf.SetEnableScissorTest( true );
 	pipconf.EnableDepthTest( renderThread.GetChoices().GetDepthCompareFuncRegular() );
@@ -325,10 +327,18 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMask
 	
 	pPipelineClearBuffers->Activate();
 	
+	const bool skipPassthrough = plan.GetRenderVR() != deoglRenderPlan::ervrNone
+		&& plan.GetCamera()->GetVR()->GetPassthroughEnabled();
+	
 	GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	const int skyCount = plan.GetSkyInstanceCount();
 	if( skyCount > 0 ){
-		const decColor bgColor( LinearBgColor( *plan.GetSkyInstanceAt( 0 ), true ) );
+		decColor bgColor( LinearBgColor( *plan.GetSkyInstanceAt( 0 ), true ) );
+		
+		if(skipPassthrough && plan.GetSkyInstanceAt(0)->GetPassthroughTransparency() < 0.001f){
+			bgColor.a = 0.0f;
+		}
+		
 		clearColor[ 0 ] = ( GLfloat )bgColor.r;
 		clearColor[ 1 ] = ( GLfloat )bgColor.g;
 		clearColor[ 2 ] = ( GLfloat )bgColor.b;
@@ -364,6 +374,10 @@ void deoglRenderSky::RenderSky( deoglRenderPlan &plan, const deoglRenderPlanMask
 	
 	for( i=0; i<skyCount; i++ ){
 		deoglRSkyInstance &instance = *plan.GetSkyInstanceAt( i );
+		if(skipPassthrough && instance.GetPassthroughTransparency() < 0.001f){
+			continue;
+		}
+		
 		deoglRSky &sky = *instance.GetRSky();
 		const int layerCount = sky.GetLayerCount();
 		
@@ -603,10 +617,11 @@ deoglEnvironmentMap &envmap ){
 		deoglCubeMap::efPositiveY, deoglCubeMap::efNegativeY,
 		deoglCubeMap::efPositiveZ, deoglCubeMap::efNegativeZ };
 	
-	decColor engSkyColor( ( ( deoglRSkyInstance* )pSkyInstances.GetAt( 0 ) )->GetRSky()->GetBgColor() );
-	engSkyColor.r = powf( engSkyColor.r, OGL_RENDER_GAMMA );
-	engSkyColor.g = powf( engSkyColor.g, OGL_RENDER_GAMMA );
-	engSkyColor.b = powf( engSkyColor.b, OGL_RENDER_GAMMA );
+	decColor engSkyColor(((deoglRSkyInstance*)pSkyInstances.GetAt(0))->GetRSky()->GetBgColor());
+	engSkyColor.r = powf(engSkyColor.r, OGL_RENDER_GAMMA);
+	engSkyColor.g = powf(engSkyColor.g, OGL_RENDER_GAMMA);
+	engSkyColor.b = powf(engSkyColor.b, OGL_RENDER_GAMMA);
+	engSkyColor.a = engSkyColor.a;
 	
 	plan.SetCameraParameters( DEG2RAD * 90.0f, 1.0f, 0.01f, 500.0f );
 	plan.SetCameraMatrix( decDMatrix() );
@@ -788,21 +803,17 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 }
 
 decColor deoglRenderSky::LinearBgColor( const deoglRSkyInstance &instance, bool first ) const{
-	if( ! first ){
-		return decColor( 0.0f, 0.0f, 0.0f, 0.0f );
-	}
-	
-	if( ! instance.GetRSky() ){
-		return decColor( 0.0f, 0.0f, 0.0f, 0.0f );
+	if(!first || instance.GetRSky()){
+		return decColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	
 	const decColor &skyColor = instance.GetRSky()->GetBgColor();
 	
 	return decColor(
-		( GLfloat )powf( skyColor.r, OGL_RENDER_GAMMA ),
-		( GLfloat )powf( skyColor.g, OGL_RENDER_GAMMA ),
-		( GLfloat )powf( skyColor.b, OGL_RENDER_GAMMA ),
-		skyColor.a );
+		(GLfloat)powf(skyColor.r, OGL_RENDER_GAMMA),
+		(GLfloat)powf(skyColor.g, OGL_RENDER_GAMMA),
+		(GLfloat)powf(skyColor.b, OGL_RENDER_GAMMA),
+		skyColor.a);
 }
 
 void deoglRenderSky::PreparepRenderSkyIntoEnvMapParamBlock( const deoglRenderPlan &plan ){

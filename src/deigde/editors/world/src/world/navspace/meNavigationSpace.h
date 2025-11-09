@@ -27,6 +27,8 @@
 
 #include "../meColliderOwner.h"
 
+#include <deigde/gui/wrapper/igdeWObject.h>
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
@@ -36,7 +38,6 @@ class deRig;
 class deDebugDrawer;
 class deEngine;
 class igdeEnvironment;
-class igdeWObject;
 class meWorld;
 class igdeWDebugDrawerShape;
 class deNavigationSpace;
@@ -49,6 +50,11 @@ class deComponent;
  * \brief Navigation Space.
  */
 class meNavigationSpace : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meNavigationSpace> Ref;
+	
+	
 private:
 	igdeEnvironment *pEnvironment;
 	
@@ -60,7 +66,7 @@ private:
 	deColliderComponent *pEngCollider;
 	deComponent *pEngColComponent;
 	deRig *pEngRig;
-	igdeWObject *pObjectPlaceholder;
+	igdeWObject::Ref pObjectPlaceholder;
 	
 	decDVector pPosition;
 	decVector pOrientation;

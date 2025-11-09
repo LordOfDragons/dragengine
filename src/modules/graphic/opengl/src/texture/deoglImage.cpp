@@ -90,7 +90,7 @@ void deoglImage::SyncToRender(){
 		}
 	}
 	
-	pRImage->SetPixelBufferTexture(pPixelBufferRImageTexture);
+	pRImage->SetPixelBuffer(pPixelBufferRImageTexture);
 	pPixelBufferRImageTexture = nullptr;
 	
 	pDirtyTexture = false;

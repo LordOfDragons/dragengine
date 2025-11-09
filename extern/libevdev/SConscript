@@ -37,8 +37,8 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir), '
 hasSystemEvdev = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_libevdev'] != TernaryVariableNo:
-	hasSystemEvdev = conf.CheckLibWithHeader(
-		libLinkName, 'libevdev-1.0/libevdev/libevdev.h', 'c++', 'libevdev_has_event_type(0,0);')
+	hasSystemEvdev = conf.CheckLibWithHeader(libLinkName,
+		'libevdev-1.0/libevdev/libevdev.h', 'c++', call='libevdev_has_event_type(0,0);')
 conf.Finish()
 
 if not hasSystemEvdev and envLibrary['with_system_libevdev'] == TernaryVariableYes:
@@ -95,10 +95,12 @@ def libevdevBuild(target, source, env):
 	if not env.RunExternalCommand(script):
 		raise Exception('Failed building libevdev')
 
+patches = [] # create with 'diff -rupN original_sources patches_sources'
+
 if not buildStaticLinking:
-	patches = [] # create with 'diff -rupN original_sources patches_sources'
 	globFiles(envLibrary, 'patches', '*.patch', patches, recursive=False)
-	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
+
+envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 if buildStaticLinking:
 	targets = [staticFileName]
@@ -108,11 +110,8 @@ targets.extend([
 	'include/libevdev-1.0/libevdev/libevdev.h',
 	'include/libevdev-1.0/libevdev/libevdev-uinput.h'])
 
-library = envLibrary.Command(targets, nodeArtifacts,
+library = envLibrary.Command(targets, [nodeArtifacts, patches],
 	envLibrary.Action(libevdevBuild, 'Build libevdev'))
-
-if not buildStaticLinking:
-	envLibrary.Depends(library, envLibrary['PATCHES'])
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

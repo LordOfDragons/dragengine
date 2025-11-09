@@ -30,14 +30,12 @@
 class meWPView;
 
 
-
 /**
  * \brief View Panel Listener
  */
 class meWPViewListener : public meWorldNotifier{
 private:
 	meWPView &pPanel;
-	
 	
 	
 public:
@@ -47,39 +45,41 @@ public:
 	meWPViewListener( meWPView &panel );
 	
 	/** \brief Clean up listener. */
-	virtual ~meWPViewListener();
+	~meWPViewListener() override;
 	/*@}*/
-	
 	
 	
 	/** \name Notifications */
 	/*@{*/
 	/** \brief Sky changed. */
-	virtual void SkyChanged( meWorld *world );
+	void SkyChanged( meWorld *world ) override;
 	
 	/** Background object changed. */
-	virtual void BgObjectChanged( meWorld *world );
+	void BgObjectChanged( meWorld *world ) override;
+	
+	/** \brief Limit box changed. */
+	void LimitBoxChanged(meWorld *world) override;
 	
 	/** \brief Editing parameters changed. */
-	virtual void EditingChanged( meWorld *world );
+	void EditingChanged( meWorld *world ) override;
 	
 	/** \brief Trigger table changed. */
-	virtual void TriggerTableChanged( meWorld *world );
+	void TriggerTableChanged( meWorld *world ) override;
 	
 	/** \brief Class (partial) hide tags changed. */
-	virtual void ClassHideTagsChanged( meWorld *world );
+	void ClassHideTagsChanged( meWorld *world ) override;
 	
 	/** \brief Object changed. */
-	virtual void ObjectChanged( meWorld *world, meObject *object );
+	void ObjectChanged( meWorld *world, meObject *object ) override;
 	
 	/** \brief Object properties changed. */
-	virtual void ObjectPropertiesChanged( meWorld *world, meObject *object );
+	void ObjectPropertiesChanged( meWorld *world, meObject *object ) override;
 	
 	/** \brief Active camera changed. */
-	virtual void ActiveCameraChanged( meWorld *world );
+	void ActiveCameraChanged( meWorld *world ) override;
 	
 	/** \brief Camera changed. */
-	virtual void CameraChanged( meWorld *world, meCamera *camera );
+	void CameraChanged( meWorld *world, meCamera *camera ) override;
 	/*@}*/
 };
 

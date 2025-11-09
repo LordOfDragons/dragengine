@@ -95,16 +95,10 @@ class Window extends Container
 		pCanClose = true
 		pCanMaximize = true
 		pCanMinimize = true
-		pAlwaysOnTop = false
-		pActivated = false
 		pModalDarkenColor = Color.new(0.65, 0.65, 0.65)
-		
-		pProtectDecoration = false
-		pProtectModalDarkenColor = false
 		
 		setDesignerSelector("Window")
 		pWindowListeners = Array.new()
-		setCanFocus(false)
 	end
 	
 	
@@ -996,5 +990,6 @@ class Window extends Container
 	func void becomeBackgroundWindow()
 		setCanActivate(false)
 		setCanFocus(false)
+		setCanFocusDirectional(false)
 	end
 end

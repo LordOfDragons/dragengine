@@ -355,7 +355,7 @@ public:
 private:
 	void pUpdateFilters();
 	bool pFilterReject( const deoglSkinTexture &skinTexture ) const;
-	bool pFilterRejectNoSolid( const deoglSkinTexture &skinTexture ) const;
+	bool pFilterRejectNoSolid(const deoglSkinTexture &skinTexture) const;
 	
 	deoglRenderTaskVAO *pGetTaskVAO( deoglSkinTexturePipelinesList::ePipelineTypes pipelinesType,
 		deoglSkinTexturePipelines::eTypes pipelineType, int pipelineModifier,

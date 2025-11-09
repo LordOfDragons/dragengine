@@ -38,6 +38,11 @@
  * Calls OnAction() if user clicks the menu entry and it is enabled.
  */
 class DE_DLL_EXPORT igdeMenuCommand : public igdeWidget, igdeActionListener{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeMenuCommand> Ref;
+	
+	
 private:
 	decString pText;
 	decString pDescription;

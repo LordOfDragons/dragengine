@@ -42,31 +42,31 @@
 // Class meCLInvalidateDecals::Helper
 /////////////////////////////////////
 
-meCLInvalidateDecals::Helper::Helper( meWorld *world ) :
-pVisitor( world ? new meCLInvalidateDecals( world ) : NULL ){
+meCLInvalidateDecals::Helper::Helper(meWorld *world) :
+pVisitor(world ? new meCLInvalidateDecals(*world) : nullptr){
 }
 
 meCLInvalidateDecals::Helper::~Helper(){
-	if( pVisitor ){
+	if(pVisitor){
 		delete pVisitor;
 	}
 }
 
-void meCLInvalidateDecals::Helper::Collect( const decDVector &position, const decVector &minExtend,
-const decVector &maxExtend, const decQuaternion &orientation ){
-	if( pVisitor ){
-		pVisitor->Collect( position, minExtend, maxExtend, orientation );
+void meCLInvalidateDecals::Helper::Collect(const decDVector &position, const decVector &minExtend,
+const decVector &maxExtend, const decQuaternion &orientation){
+	if(pVisitor){
+		pVisitor->Collect(position, minExtend, maxExtend, orientation);
 	}
 }
 
-void meCLInvalidateDecals::Helper::Collect( igdeWObject &wobject ){
-	if( pVisitor ){
-		pVisitor->Collect( wobject );
+void meCLInvalidateDecals::Helper::Collect(igdeWObject &wobject){
+	if(pVisitor){
+		pVisitor->Collect(wobject);
 	}
 }
 
 void meCLInvalidateDecals::Helper::InvalidateDecals(){
-	if( pVisitor ){
+	if(pVisitor){
 		pVisitor->InvalidateDecals();
 	}
 }
@@ -79,9 +79,8 @@ void meCLInvalidateDecals::Helper::InvalidateDecals(){
 // Constructor, destructor
 ////////////////////////////
 
-meCLInvalidateDecals::meCLInvalidateDecals( meWorld *world ) : meCLCollect( world ){
-	SetCollectObjects( false );
-	SetCollectDecals( true );
+meCLInvalidateDecals::meCLInvalidateDecals(meWorld &world) : meCLCollect(world){
+	SetTestDecals(true);
 }
 
 meCLInvalidateDecals::~meCLInvalidateDecals(){
@@ -113,7 +112,7 @@ const decVector &maxExtend, const decQuaternion &orientation ){
 	decLayerMask collisionFilter;
 	collisionFilter.SetBit( meWorld::eclmDecals );
 	
-	GetWorld()->CollisionTestBox( position, minExtend, maxExtend, orientation,
+	GetWorld().CollisionTestBox( position, minExtend, maxExtend, orientation,
 		this, decCollisionFilter( collisionCategory, collisionFilter ) );
 }
 

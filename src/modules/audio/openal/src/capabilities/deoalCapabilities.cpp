@@ -74,32 +74,32 @@ void deoalCapabilities::ReportCapabilities(){
 			logger.LogInfoFormat( "  - %s", pHRTFSpecifiers.GetAt( i ).GetString() );
 		}
 		
-		alcGetIntegerv( device, ALC_HRTF, 1, &result );
+		alcGetIntegerv( device, ALC_HRTF_SOFT, 1, &result );
 		logger.LogInfoFormat( "- HRTF Enabled = %d", result == ALC_TRUE );
 		
-		alcGetIntegerv( device, ALC_HRTF_STATUS, 1, &result );
+		alcGetIntegerv( device, ALC_HRTF_STATUS_SOFT, 1, &result );
 		switch( result ){
-		case ALC_HRTF_DISABLED:
+		case ALC_HRTF_DISABLED_SOFT:
 			logger.LogInfo( "- HRTF Status: Disabled" );
 			break;
 			
-		case ALC_HRTF_ENABLED:
+		case ALC_HRTF_ENABLED_SOFT:
 			logger.LogInfo( "- HRTF Status: Enabled" );
 			break;
 			
-		case ALC_HRTF_DENIED:
+		case ALC_HRTF_DENIED_SOFT:
 			logger.LogInfo( "- HRTF Status: Denied" );
 			break;
 			
-		case ALC_HRTF_REQUIRED:
+		case ALC_HRTF_REQUIRED_SOFT:
 			logger.LogInfo( "- HRTF Status: Required" );
 			break;
 			
-		case ALC_HRTF_HEADPHONES_DETECTED:
+		case ALC_HRTF_HEADPHONES_DETECTED_SOFT:
 			logger.LogInfo( "- HRTF Status: Enabled, headphones detected" );
 			break;
 			
-		case ALC_HRTF_UNSUPPORTED_FORMAT:
+		case ALC_HRTF_UNSUPPORTED_FORMAT_SOFT:
 			logger.LogInfo( "- HRTF Status: Disabled, unsupported format" );
 			break;
 			
@@ -128,9 +128,9 @@ void deoalCapabilities::pDetectCapabilities(){
 	if( pAudioThread.GetExtensions().GetHasHRTF() ){
 		int count, i;
 		
-		alcGetIntegerv( device, ALC_NUM_HRTF_SPECIFIERS, 1, ( ALCint* )&count );
+		alcGetIntegerv( device, ALC_NUM_HRTF_SPECIFIERS_SOFT, 1, ( ALCint* )&count );
 		for( i=0; i<count; i++ ){
-			pHRTFSpecifiers.Add( palcGetStringi( device, ALC_HRTF_SPECIFIER, i ) );
+			pHRTFSpecifiers.Add( palcGetStringi( device, ALC_HRTF_SPECIFIER_SOFT, i ) );
 		}
 	}
 }

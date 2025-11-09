@@ -21,7 +21,7 @@ if not buildModule:
 	Return()
 
 # fetch values in expanded form for later use
-versionString = '1.24'
+versionString = '1.29'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
@@ -69,10 +69,9 @@ manifestUpdates = [
 	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 manifest = envModule.File( 'src/module.xml' )
-updateManifest = envModule.Command( manifest, manifest.srcnode(),
-	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-Depends( updateManifest, library )
-Depends(updateManifest, 'SConscript')
+updateManifest = envModule.Command(manifest,
+	[manifest.srcnode(), library, 'SConscript'],
+	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
 
 install.append( envModule.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
@@ -89,8 +88,6 @@ srcdir = Dir( '.' ).srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC( envModule, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
-Depends( buildClocBare, sources )
-Depends( buildClocBare, headers )
 buildCloc = envModule.Alias( 'inp_w32_cloc', buildClocBare )
 
 # add the targets to the targets list

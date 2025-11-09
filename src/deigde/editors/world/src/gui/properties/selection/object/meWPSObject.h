@@ -33,6 +33,7 @@
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeSpinTextFieldReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeWidgetReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditSliderTextReference.h>
@@ -55,7 +56,7 @@ class meWPSObjectListener;
 
 
 /**
- * \brief Object Selection Panel.
+ * Object Selection Panel.
  */
 class meWPSObject : public igdeContainerScroll{
 private:
@@ -124,19 +125,22 @@ private:
 	
 	igdeWidgetReference pEditProperties;
 	
+	igdeListBoxReference pListAttachBehaviors;
+	
 	igdeUndoReference pUndoAddProperty;
 	igdeUndoReference pUndoSetProperty;
 	
+	bool pPreventUpdate;
 	
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** \brief Create panel. */
+	/** Create panel. */
 	meWPSObject( meWPSelection &wpselection );
 	
 protected:
-	/** \brief Clean up . */
+	/** Clean up . */
 	virtual ~meWPSObject();
 	/*@}*/
 	
@@ -145,93 +149,99 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Selection panel. */
+	/** Selection panel. */
 	inline meWPSelection &GetWPSelection() const{ return pWPSelection; }
 	
-	/** \brief World. */
+	/** World. */
 	inline meWorld *GetWorld() const{ return pWorld; }
 	
-	/** \brief Set world. */
+	/** Set world. */
 	void SetWorld( meWorld *world );
 	
-	/** \brief Active object. */
+	/** Active object. */
 	meObject *GetActiveObject() const;
 	
-	/** \brief Active property. */
+	/** Active property. */
 	const decString &GetActiveProperty() const;
 	
-	/** \brief Active texture. */
+	/** Active texture. */
 	meObjectTexture *GetActiveTexture() const;
 	
-	/** \brief Active texture property. */
+	/** Active texture property. */
 	const decString &GetActiveTexProperty() const;
 	
-	/** \brief Update class list. */
+	/** Update class list. */
 	void UpdateClassList();
 	
-	/** \brief Update selection. */
+	/** Update selection. */
 	void UpdateSelection();
 	
-	/** \brief Update enabled state of all controls. */
+	/** Update enabled state of all controls. */
 	void UpdateEnabled();
 	
-	/** \brief Updates the object. */
+	/** Updates the object. */
 	void UpdateObject();
 	
-	/** \brief Updates the object geometry. */
+	/** Updates the object geometry. */
 	void UpdateGeometry();
 	
-	/** \brief Update the light properties. */
+	/** Update the light properties. */
 	void UpdateLight();
 	
-	/** \brief Select active property. */
+	/** Select active property. */
 	void SelectActiveProperty();
 	
-	/** \brief Updates the object properties. */
+	/** Updates the object properties. */
 	void UpdatePropertyKeys();
 	
-	/** \brief Updates the object properties. */
+	/** Updates the object properties. */
 	void UpdateProperties();
 	
-	/** \brief Select active texture. */
+	/** Update attach behaviors list. */
+	void UpdateAttachBehaviors();
+	
+	/** Select active attach behavior. */
+	void SelectActiveAttachBehavior();
+	
+	/** Select active texture. */
 	void SelectActiveTexture();
 	
-	/** \brief Updates the texture list. */
+	/** Updates the texture list. */
 	void UpdateTextureList();
 	
-	/** \brief Update enabled state of all texture controls. */
+	/** Update enabled state of all texture controls. */
 	void UpdateTextureEnabled();
 	
-	/** \brief Updates the texture. */
+	/** Updates the texture. */
 	void UpdateTexture();
 	
-	/** \brief Select active texture property. */
+	/** Select active texture property. */
 	void SelectTexActiveProperty();
 	
-	/** \brief Update texture properties. */
+	/** Update texture properties. */
 	void UpdateTexPropertyKeys();
 	
-	/** \brief Update texture properties. */
+	/** Update texture properties. */
 	void UpdateTexProperties();
 	
 	
 	
-	/** \brief Update identifier list. */
+	/** Update identifier list. */
 	void UpdateIdentifierLists();
 	
-	/** \brief Update trigger target lists. */
+	/** Update trigger target lists. */
 	void UpdateTriggerTargetLists();
 	
-	/** \brief Update the intensity for the given distance. */
+	/** Update the intensity for the given distance. */
 	void UpdateIntensityForDistance();
 	
-	/** \brief Set default size. */
+	/** Set default size. */
 	void SetDefaultSize();
 	
-	/** \brief Game project game definition changed. */
+	/** Game project game definition changed. */
 	void OnGameDefinitionChanged();
 	
-	/** \brief For use by listeners only. */
+	/** For use by listeners only. */
 	void SlideLightProperty( igdeGDCLight::eProperties property, const char *value, bool scrubbing );
 	
 	

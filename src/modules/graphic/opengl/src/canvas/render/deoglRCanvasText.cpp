@@ -22,19 +22,13 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglRCanvasText.h"
-#include "../../font/deoglRFont.h"
 #include "../../rendering/deoglRenderCanvas.h"
 #include "../../rendering/deoglRenderCanvasContext.h"
 #include "../../renderthread/deoglRenderThread.h"
 #include "../../renderthread/deoglRTRenderers.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class deoglRCanvasText
@@ -45,16 +39,13 @@
 
 deoglRCanvasText::deoglRCanvasText( deoglRenderThread &renderThread ) :
 deoglRCanvas( renderThread ),
-pFont( NULL ),
-pFontSize( 1 ){
+pTextSize( 1 )
+{
 	LEAK_CHECK_CREATE( renderThread, CanvasText );
 }
 
 deoglRCanvasText::~deoglRCanvasText(){
 	LEAK_CHECK_FREE( GetRenderThread(), CanvasText );
-	if( pFont ){
-		pFont->FreeReference();
-	}
 }
 
 
@@ -62,25 +53,19 @@ deoglRCanvasText::~deoglRCanvasText(){
 // Management
 ///////////////
 
-void deoglRCanvasText::SetFont( deoglRFont *font ) {
-	if( font == pFont ){
-		return;
-	}
-	
-	if( pFont ){
-		pFont->FreeReference();
-	}
+void deoglRCanvasText::SetFont(deoglRFont *font){
 	pFont = font;
-	if( font ){
-		font->AddReference();
-	}
 }
 
-void deoglRCanvasText::SetFontSize( float size ){
-	pFontSize = decMath::max( size, 0.0f );
+void deoglRCanvasText::SetFontSize(deoglRFontSize *size){
+	pFontSize = size;
 }
 
-void deoglRCanvasText::SetText( const char *text ) {
+void deoglRCanvasText::SetTextSize( float size ){
+	pTextSize = decMath::max(size, 0.0f);
+}
+
+void deoglRCanvasText::SetText( const char *text ){
 	pText = text;
 }
 
@@ -89,9 +74,8 @@ void deoglRCanvasText::SetColor( const decColor &color ){
 }
 
 
-
 void deoglRCanvasText::Render( const deoglRenderCanvasContext &context ){
-	if( ! pFont || pText.IsEmpty() ){
+	if(!pFont || pText.IsEmpty()){
 		return;
 	}
 	

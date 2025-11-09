@@ -87,6 +87,7 @@ igdeUndo *gdeMAObjectClassSubclass::OnAction( gdeGameDefinition &gameDefinition 
 		soc.SetCategory( objectClass->GetCategory() );
 		soc.SetHideTags( objectClass->GetHideTags() );
 		soc.SetIsGhost( objectClass->GetIsGhost() );
+		soc.SetIsAttachableBehavior(objectClass->GetIsAttachableBehavior());
 		soc.SetCanInstantiate( objectClass->GetCanInstantiate() );
 		soc.SetPartialHideTags( objectClass->GetPartialHideTags() );
 		soc.SetScaleMode( objectClass->GetScaleMode() );

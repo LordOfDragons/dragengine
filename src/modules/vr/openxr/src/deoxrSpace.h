@@ -43,13 +43,20 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrSpace> Ref;
 	
+	/** Valid data. */
+	enum class eValidData{
+		space = 1 << 0,
+		position = 1 << 1,
+		orientation = 1 << 2,
+		linearVelocity = 1 << 3,
+		angularVelocity = 1 << 4
+	};
 	
 	
 private:
 	deoxrSession &pSession;
 	
 	XrSpace pSpace;
-	
 	
 	
 public:
@@ -71,6 +78,9 @@ public:
 	/** Create action space. */
 	deoxrSpace( deoxrSession &session, const deoxrAction &action );
 	
+	/** Create extension space. */
+	deoxrSpace(deoxrSession &session, XrSpace space);
+	
 protected:
 	/** Clean up space. */
 	virtual ~deoxrSpace();
@@ -90,22 +100,28 @@ public:
 	/**
 	 * Transform relative to another space. If time is not valid or data is not present
 	 * \em matrix is not changed.
+	 * 
+	 * \returns Valid data flags as combination of eValidData.
 	 */
-	void LocateSpace( const deoxrSpace &space, XrTime time,
+	int LocateSpace( const deoxrSpace &space, XrTime time,
 		decVector &position, decQuaternion &orientation ) const;
 	
 	/**
 	 * Transform relative to another space with velocities. If time is not valid or data
 	 * is not present \em matrix, \em linearVelocity and \em angularVelocity are not changed.
+	 * 
+	 * \returns Valid data flags as combination of eValidData.
 	 */
-	void LocateSpace( const deoxrSpace &space, XrTime time, decVector &position,
+	int LocateSpace( const deoxrSpace &space, XrTime time, decVector &position,
 		decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocity ) const;
 	
 	/**
 	 * Transform relative to another space with velocities. If time is not valid or data
 	 * is not present \em matrix, \em linearVelocity and \em angularVelocity are not changed.
+	 * 
+	 * \returns Valid data flags as combination of eValidData.
 	 */
-	void LocateSpaceEye( XrTime time, decVector &position, decQuaternion &orientation,
+	int LocateSpaceEye( XrTime time, decVector &position, decQuaternion &orientation,
 		decVector &linearVelocity, decVector &angularVelocity ) const;
 	/*@}*/
 	

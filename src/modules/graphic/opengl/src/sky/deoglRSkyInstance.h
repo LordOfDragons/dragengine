@@ -52,6 +52,7 @@ private:
 	
 	int pOrder;
 	decLayerMask pLayerMask;
+	float pPassthroughTransparency;
 	
 	float *pControllerStates;
 	int pControllerStateCount;
@@ -119,6 +120,11 @@ public:
 	/** Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
 	
+	/** Passthrough transparency factor. */
+	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
+	
+	/** Set passthrough transparency factor. */
+	void SetPassthroughTransparency(float transparency);
 	
 	
 	/** Number of controller states. */

@@ -34,6 +34,14 @@
  */
 class deoalConfiguration{
 public:
+	/** Log level. */
+	enum eLogLevels{
+		ellError,
+		ellWarning,
+		ellInfo,
+		ellDebug
+	};
+	
 	/** Auralization mode. */
 	enum eAuralizationModes{
 		/**
@@ -75,6 +83,8 @@ public:
 	
 private:
 	bool pDirty;
+	
+	eLogLevels pLogLevel;
 	
 	decString pDeviceName;
 	bool pEnableEFX;
@@ -124,6 +134,23 @@ public:
 	
 	/** Set configuration changed. */
 	void SetDirty( bool dirty );
+	
+	
+	
+	/** Log level. */
+	inline eLogLevels GetLogLevel() const{ return pLogLevel; }
+	
+	/** Helper method testing if warnings have to be logged. */
+	inline bool GetDoLogWarn() const{ return pLogLevel >= ellWarning; }
+	
+	/** Helper method testing if info have to be logged. */
+	inline bool GetDoLogInfo() const{ return pLogLevel >= ellInfo; }
+	
+	/** Helper method testing if debug have to be logged. */
+	inline bool GetDoLogDebug() const{ return pLogLevel >= ellDebug; }
+	
+	/** Set log level. */
+	void SetLogLevel(eLogLevels logLevel);
 	
 	
 	

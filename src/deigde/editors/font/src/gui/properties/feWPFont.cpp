@@ -35,6 +35,7 @@
 #include "../../font/glyph/feFontGlyph.h"
 #include "../../undosys/font/feUFontSetImagePath.h"
 #include "../../undosys/font/feUFontSetLineHeight.h"
+#include "../../undosys/font/feUFontSetBaseLine.h"
 #include "../../undosys/font/feUFontToggleColorFont.h"
 #include "../../undosys/font/feUFontImportImage.h"
 
@@ -56,6 +57,9 @@
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeTextFieldListenerReference.h>
+#include <deigde/gui/composed/igdeEditPoint.h>
+#include <deigde/gui/composed/igdeEditPointListener.h>
+#include <deigde/gui/composed/igdeEditPointListenerReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndoReference.h>
 
@@ -186,6 +190,16 @@ public:
 	}
 };
 
+class cTextBaseLine : public cBaseTextFieldListener{
+public:
+	cTextBaseLine(feWPFont &panel) : cBaseTextFieldListener(panel){}
+	
+	igdeUndo *OnChanged(igdeTextField *textField, feFont *font) override{
+		const int baseLine = textField->GetInteger();
+		return baseLine != font->GetBaseLine() ? new feUFontSetBaseLine(font, baseLine) : nullptr;
+	}
+};
+
 };
 
 
@@ -222,6 +236,9 @@ pListener( NULL )
 	helper.EditInteger( groupBox, "Line Height:", "Line height in pixels.",
 		pEditLineHeight, new cTextLineHeight( *this ) );
 	helper.CheckBox( groupBox, pChkColorFont, new cActionColorFont( *this ), true );
+	
+	helper.EditInteger(groupBox, "Base Line:", "Base line from top in pixels.",
+		pEditBaseLine, new cTextBaseLine(*this));
 }
 
 feWPFont::~feWPFont(){
@@ -265,10 +282,12 @@ void feWPFont::UpdateFont(){
 		pEditImagePath->SetText( pFont->GetFontImage()->GetFilename() );
 		pEditLineHeight->SetInteger( pFont->GetLineHeight() );
 		pChkColorFont->SetChecked( pFont->GetColorFont() );
+		pEditBaseLine->SetInteger(pFont->GetBaseLine());
 		
 	}else{
-		pEditImagePath->SetText( "" );
-		pEditLineHeight->SetText( "" );
+		pEditImagePath->ClearText();
+		pEditLineHeight->ClearText();
 		pChkColorFont->SetChecked( false );
+		pEditBaseLine->ClearText();
 	}
 }

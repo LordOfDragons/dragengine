@@ -112,6 +112,9 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetBaseLine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -128,6 +131,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetHeight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearingY.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -225,6 +234,9 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetLineHeight.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontSetBaseLine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\font\feUFontToggleColorFont.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -241,6 +253,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetWidth.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetHeight.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\deigde\editors\font\src\undosys\glyph\feUGlyphSetBearingY.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

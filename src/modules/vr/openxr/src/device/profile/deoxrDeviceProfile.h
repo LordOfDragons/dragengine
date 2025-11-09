@@ -154,6 +154,9 @@ public:
 	
 	/** Remove device if matching type. */
 	virtual void RemoveDevice( deInputDevice::eDeviceTypes type );
+	
+	/** Sessions ends. */
+	virtual void OnSessionEnd();
 	/*@}*/
 	
 	

@@ -26,6 +26,7 @@
 #define _PEEEMITTER_H_
 
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWCoordSysArrows.h>
 
 #include <dragengine/common/collection/decObjectSet.h>
@@ -39,7 +40,6 @@ class peeEmitterListener;
 class peeLoadSaveSystem;
 
 class igdeWSky;
-class igdeWObject;
 
 class deParticleEmitter;
 class deParticleEmitterInstance;
@@ -83,7 +83,7 @@ private:
 	deDebugDrawer *pDDEmitter;
 	
 	igdeWSky *pSky;
-	igdeWObject *pEnvObject;
+	igdeWObject::Ref pEnvObject;
 	
 	igdeWCoordSysArrows pDDSEmitter;
 	
@@ -133,7 +133,7 @@ public:
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
-	inline igdeWObject *GetEnvObject() const{ return pEnvObject; }
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the engine emitter. */
 	inline deParticleEmitter *GetEngineEmitter() const{ return pEngEmitter; }

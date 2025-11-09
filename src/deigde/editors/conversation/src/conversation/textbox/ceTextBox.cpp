@@ -57,15 +57,11 @@
 ceTextBox::ceTextBox( deEngine &engine, deLogger &logger ) :
 pEngine( engine ),
 pLogger( logger ),
-
-pEngFont( NULL ),
-
 pBackgroundColor( 0.0f, 0.0f, 0.0f, 0.5f ),
 pTextColor( 1.0f, 1.0f, 1.0f, 1.0f ),
 pTextSize( 18 ),
 pPadding( 10 ),
 pTextOffset( 200 ),
-
 pCanvasView( NULL )
 {
 	try{
@@ -89,17 +85,14 @@ ceTextBox::~ceTextBox(){
 // Management
 ///////////////
 
-void ceTextBox::SetPathFont( const char *path ){
-	if( ! path ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	if( pPathFont.Equals( path ) ){
+void ceTextBox::SetPathFont(const char *path){
+	if(pPathFont == path){
 		return;
 	}
 	
 	pPathFont = path;
 	pUpdateFont();
+	pUpdateFontSize();
 	UpdateCanvas();
 }
 
@@ -122,15 +115,14 @@ void ceTextBox::SetTextColor( const decColor &color ){
 }
 
 void ceTextBox::SetTextSize( int size ){
-	if( size < 1 ){
-		size = 1;
-	}
+	size = decMath::max(size, 1);
 	
-	if( size == pTextSize ){
+	if(size == pTextSize){
 		return;
 	}
 	
 	pTextSize = size;
+	pUpdateFontSize();
 	UpdateCanvas();
 }
 
@@ -241,31 +233,34 @@ void ceTextBox::pCleanUp(){
 	if( pCanvasView ){
 		pCanvasView->FreeReference();
 	}
-	
-	if( pEngFont ){
-		pEngFont->FreeReference();
-	}
 }
 
 
 
 void ceTextBox::pUpdateFont(){
-	deFont *font = NULL;
+	try{
+		if(!pPathFont.IsEmpty()){
+			pEngFont.TakeOver(pEngine.GetFontManager()->LoadFont(pPathFont, "/"));
+			
+		}else{
+			pEngFont = nullptr;
+		}
+		
+	}catch(const deException &e){
+		pLogger.LogException(LOGSOURCE, e);
+	}
+}
+
+void ceTextBox::pUpdateFontSize(){
+	if(!pEngFont){
+		pEngFontSize = nullptr;
+		return;
+	}
 	
 	try{
-		if( ! pPathFont.IsEmpty() ){
-			font = pEngine.GetFontManager()->LoadFont( pPathFont, "/" );
-		}
+		pEngFontSize = pEngFont->PrepareSize(pTextSize);
 		
-		if( pEngFont ){
-			pEngFont->FreeReference();
-		}
-		pEngFont = font;
-		
-	}catch( const deException &e ){
-		if( font ){
-			font->FreeReference();
-		}
-		pLogger.LogException( LOGSOURCE, e );
+	}catch(const deException &e){
+		pLogger.LogException(LOGSOURCE, e);
 	}
 }

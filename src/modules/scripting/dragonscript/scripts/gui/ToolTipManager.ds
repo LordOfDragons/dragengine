@@ -235,7 +235,6 @@ class ToolTipManager
 			dst.setPagedMode(false)
 			dst.setMinPageSize(Point.new(1, 1))
 			dst.setStyledTextDefinition(pToolTip cast StyledTextDefinition)
-			dst.setCanFocus(false)
 			dst.setDesignerSelector("StyledText.WindowToolTip")
 			pPopup.addWidget(dst)
 			

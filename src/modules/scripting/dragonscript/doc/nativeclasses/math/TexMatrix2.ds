@@ -80,6 +80,22 @@ fixed class TexMatrix2
 	end
 	
 	/**
+	 * \brief Create rotation-translation texture matrix composing of a rotation followed by a translation.
+	 * \version 1.29
+	 */
+	static func TexMatrix2 newRT(float rotation, Vector2 translation)
+		return null
+	end
+	
+	/**
+	 * \brief Create rotation-translation texture matrix composing of a rotation followed by a translation.
+	 * \version 1.29
+	 */
+	static func TexMatrix2 newRT(float rotation, float translationU, float translationV)
+		return null
+	end
+	
+	/**
 	 * \brief Create center scaling-rotation-translation texture matrix.
 	 * 
 	 * Composing of a scaling followed by a rotation and a translation. Similar to newSRT but the

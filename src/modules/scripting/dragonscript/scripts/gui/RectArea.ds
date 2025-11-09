@@ -22,40 +22,28 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Gui
 
 
 /**
  * \brief Immutable rectangular area.
+ * 
+ * Coordinate (x2,y2) is exclusive. Hence the rectangular area includes all points except
+ * row y2 and column x2.
  */
 fixed class RectArea
-	/** \brief X1-Coordinate of rectangular area. */
-	private var int pX1
-	
-	/** \brief Y1-Coordinate of rectangular area. */
-	private var int pY1
-	
-	/** \brief X2-Coordinate of rectangular area. */
-	private var int pX2
-	
-	/** \brief Y2-Coordinate of rectangular area. */
-	private var int pY2
+	var int pX1, pY1, pX2, pY2
 	
 	
 	
 	/** \name Constructors */
 	/*@{*/
 	/** \brief Create rectangular area with all coordinates set to 0. */
-	public func new()
-		pX1 = 0
-		pY1 = 0
-		pX2 = 0
-		pY2 = 0
+	func new()
 	end
 	
 	/** \brief Create rectangular area with initial coordinates. */
-	public func new(int x1, int y1, int x2, int y2)
+	func new(int x1, int y1, int x2, int y2)
 		pX1 = x1
 		pY1 = y1
 		pX2 = x2
@@ -63,7 +51,7 @@ fixed class RectArea
 	end
 	
 	/** \brief Create copy of rectangular area. */
-	public func new(RectArea rect)
+	func new(RectArea rect)
 		pX1 = rect.pX1
 		pY1 = rect.pY1
 		pX2 = rect.pX2
@@ -71,7 +59,7 @@ fixed class RectArea
 	end
 	
 	/** \brief Create recangular area from a point and size. */
-	public func new(Point position, Point size)
+	func new(Point position, Point size)
 		pX1 = position.getX()
 		pY1 = position.getY()
 		pX2 = pX1 + size.getX()
@@ -84,27 +72,27 @@ fixed class RectArea
 	/** \name Management */
 	/*@{*/
 	/** \brief X1-Coordinate. */
-	public func int getX1()
+	func int getX1()
 		return pX1
 	end
 	
 	/** \brief Y1-Coordinate. */
-	public func int getY1()
+	func int getY1()
 		return pY1
 	end
 	
 	/** \brief X2-Coordinate. */
-	public func int getX2()
+	func int getX2()
 		return pX2
 	end
 	
 	/** \brief Y2-Coordinate. */
-	public func int getY2()
+	func int getY2()
 		return pY2
 	end
 	
 	/** \brief Orientate rectangular area placing (x1,y1) top-left and (x2,y2) bottom-right. */
-	public func RectArea orientate()
+	func RectArea orientate()
 		var int x1, x2, y1, y2
 		
 		if pX2 > pX1
@@ -126,12 +114,12 @@ fixed class RectArea
 	end
 	
 	/** \brief Position. */
-	public func Point getPosition()
+	func Point getPosition()
 		return Point.new(pX1, pY1)
 	end
 	
 	/** \brief Size. */
-	public func Point getSize()
+	func Point getSize()
 		return Point.new(pX2 - pX1, pY2 - pY1)
 	end
 	
@@ -139,7 +127,7 @@ fixed class RectArea
 	 * \brief Width.
 	 * \version 1.13
 	 */
-	public func int getWidth()
+	func int getWidth()
 		return pX2 - pX1
 	end
 	
@@ -147,7 +135,7 @@ fixed class RectArea
 	 * \brief Height.
 	 * \version 1.13
 	 */
-	public func int getHeight()
+	func int getHeight()
 		return pY2 - pY1
 	end
 	
@@ -155,7 +143,7 @@ fixed class RectArea
 	 * \brief Top-left corner (x1, y1).
 	 * \version 1.13
 	 */
-	public func Point getTopLeft()
+	func Point getTopLeft()
 		return Point.new(pX1, pY1)
 	end
 	
@@ -163,7 +151,7 @@ fixed class RectArea
 	 * \brief Top-right corner (x2, y1).
 	 * \version 1.13
 	 */
-	public func Point getTopRight()
+	func Point getTopRight()
 		return Point.new(pX2, pY1)
 	end
 	
@@ -171,7 +159,7 @@ fixed class RectArea
 	 * \brief Bottom-left corner (x1, y2).
 	 * \version 1.13
 	 */
-	public func Point getBottomLeft()
+	func Point getBottomLeft()
 		return Point.new(pX1, pY2)
 	end
 	
@@ -179,74 +167,156 @@ fixed class RectArea
 	 * \brief Bottom-right corner (x2, y2).
 	 * \version 1.13
 	 */
-	public func Point getBottomRight()
+	func Point getBottomRight()
 		return Point.new(pX2, pY2)
 	end
 	
 	/** \brief Rectangular area moved by offset. */
-	public func RectArea move(int x, int y)
+	func RectArea move(int x, int y)
 		return new(pX1 + x, pY1 + y, pX2 + x, pY2 + y)
 	end
 	
 	/** \brief Rectangular area moved by offset. */
-	public func RectArea move(Point distance)
+	func RectArea move(Point distance)
 		return move(distance.getX(), distance.getY())
 	end
 	
 	/** \brief Rectangular area grown by size at bottom right. */
-	public func RectArea grow(int x, int y)
+	func RectArea grow(int x, int y)
 		return new(pX1, pY1, pX2 + x, pY2 + y)
 	end
 	
 	/** \brief Rectangular area grown by size at bottom right. */
-	public func RectArea grow(Point size)
+	func RectArea grow(Point size)
 		return grow(size.getX(), size.getY())
 	end
 	
 	/** \brief Rectangular area grown by size at top left. */
-	public func RectArea growInverse(int x, int y)
+	func RectArea growInverse(int x, int y)
 		return new(pX1 - x, pY1 - y, pX2, pY2)
 	end
 	
 	/** \brief Rectangular area grown by size at top left. */
-	public func RectArea growInverse(Point size)
+	func RectArea growInverse(Point size)
 		return growInverse(size.getX(), size.getY())
 	end
 	
 	/** \brief Rectangular area grown to include another rectangular area. */
-	public func RectArea include(RectArea rect)
+	func RectArea include(RectArea rect)
 		return RectArea.new(DEMath.min(pX1, rect.pX1), DEMath.min(pY1, rect.pY1), \
 			DEMath.max(pX2, rect.pX2), DEMath.max(pY2, rect.pY2))
 	end
 	
-	/** \brief Rectangular set to the intersection area between two rectangular areas. */
-	public func RectArea intersect(RectArea rect)
+	/** \brief Rectangular area set to the intersection area between two rectangular areas. */
+	func RectArea intersect(RectArea rect)
 		return RectArea.new(DEMath.max(pX1, rect.pX1), DEMath.max(pY1, rect.pY1), \
 			DEMath.min(pX2, rect.pX2), DEMath.min(pY2, rect.pY2))
 	end
 	
-	/** \brief Point clamped to rectangular area. */
-	public func Point clamp(Point point)
-		return Point.new(DEMath.clamp(point.getX(), pX1, pX2), DEMath.clamp(point.getY(), pY1, pY2))
+	/**
+	 * \brief Point clamped to rectangular area.
+	 * 
+	 * This excludes the row y2 and column x2 unless the width or height is 0.
+	 */
+	func Point clamp(Point point)
+		return Point.new(DEMath.clamp(point.getX(), pX1, pX2 - 1),\
+			DEMath.clamp(point.getY(), pY1, pY2 - 1))
 	end
 	
+	/**
+	 * \brief Width is 0 (x1=x2).
+	 * \version 1.29
+	 */
+	func bool isZeroWidth()
+		return pX1 == pX2
+	end
 	
+	/**
+	 * \brief Height is 0 (y1=y2).
+	 * \version 1.29
+	 */
+	func bool isZeroHeight()
+		return pY1 == pY2
+	end
 	
-	/** \brief Point is inside rectangular area. */
-	public func bool isInside(int x, int y)
+	/**
+	 * \brief Size is 0 (x1=x2, y1=y2).
+	 * \version 1.29
+	 */
+	func bool isZeroSize()
+		return pX1 == pX2 and pY1 == pY2
+	end
+	
+	/**
+	 * \brief Width or height is 0 (x1=x2 or y1=y2).
+	 * \version 1.29
+	 */
+	func bool isZeroWidthOrHeight()
+		return pX1 == pX2 or pY1 == pY2
+	end
+	
+	/**
+	 * \brief Point is inside rectangular area.
+	 * 
+	 * This excludes the row y2 and column x2. If the width or height is 0 the point is never inside.
+	 */
+	func bool isInside(int x, int y)
 		return x >= pX1 and x < pX2 and y >= pY1 and y < pY2
 	end
 	
+	/**
+	 * \brief Point is inside rectangular area along X axis.
+	 * \version 1.29
+	 * 
+	 * This excludes the column x2. If the width is 0 the point is never inside.
+	 */
+	func bool isInsideX(int x)
+		return x >= pX1 and x < pX2
+	end
+	
+	/**
+	 * \brief Point is inside rectangular area along Y axis.
+	 * \version 1.29
+	 * 
+	 * This excludes the row y2. If the height is 0 the point is never inside.
+	 */
+	func bool isInsideY(int y)
+		return y >= pY1 and y < pY2
+	end
+	
+	/**
+	 * \brief Rectangular areas overlap.
+	 * \version 1.29
+	 */
+	func bool isOverlapping(RectArea rect)
+		return rect.pX1 < pX2 and rect.pX2 > pX1 and rect.pY1 < pY2 and rect.pY2 > pY1
+	end
+	
+	/**
+	 * \brief Rectangular areas overlap in X direction.
+	 * \version 1.29
+	 */
+	func bool isOverlappingX(RectArea rect)
+		return rect.pX1 < pX2 and rect.pX2 > pX1
+	end
+	
+	/**
+	 * \brief Rectangular areas overlap in Y direction.
+	 * \version 1.29
+	 */
+	func bool isOverlappingY(RectArea rect)
+		return rect.pY1 < pY2 and rect.pY2 > pY1
+	end
 	
 	
-	/** \brief Rrectangular areas is equal to another rectangular area. */
-	public func bool isEqual(RectArea rect)
-		return pX1 == rect.pX1 and pY1 == rect.pY1 and \
-			pX2 == rect.pX2 and pY2 == rect.pY2
+	
+	/** \brief Rectangular areas is equal to another rectangular area. */
+	func bool isEqual(RectArea rect)
+		return pX1 == rect.pX1 and pY1 == rect.pY1 and pX2 == rect.pX2 and pY2 == rect.pY2
 	end
 	
 	/** \brief String representation. */
-	public func String toString()
+	func String toString()
 		return "RectArea({},{},{},{})".format(Array.newWith(pX1, pY1, pX2, pY2))
 	end
 	/*@}*/
@@ -256,7 +326,7 @@ fixed class RectArea
 	/** \name File Handling */
 	/*@{*/
 	/** \brief Read rectangular area from file reader. */
-	static public func RectArea readFromFile(FileReader reader)
+	static func RectArea readFromFile(FileReader reader)
 		var RectArea area = RectArea.new()
 		area.pX1 = reader.readInt()
 		area.pY1 = reader.readInt()
@@ -266,7 +336,7 @@ fixed class RectArea
 	end
 	
 	/** \brief Write rectangular area to file writer. */
-	public func void writeToFile(FileWriter writer)
+	func void writeToFile(FileWriter writer)
 		writer.writeInt(pX1)
 		writer.writeInt(pY1)
 		writer.writeInt(pX2)

@@ -42,11 +42,15 @@ class deEngine;
 class deLogger;
 
 
-
 /**
  * \brief Base class for IGDE UI Widgets.
  */
 class DE_DLL_EXPORT igdeWidget : public deObject{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeWidget> Ref;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	void *pNativeWidget;
@@ -54,7 +58,6 @@ private:
 	bool pVisible;
 	igdeGuiThemeReference pGuiTheme;
 	decString pGuiThemeName;
-	
 	
 	
 protected:
@@ -69,9 +72,8 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeWidget();
+	~igdeWidget() override;
 	/*@}*/
-	
 	
 	
 public:
@@ -105,7 +107,6 @@ public:
 	deLogger *GetLogger() const;
 	
 	
-	
 	/** \brief Widget specific GuiTheme or NULL to use parent GuiTheme. */
 	inline igdeGuiTheme *GetWidgetGuiTheme() const{ return pGuiTheme; }
 	
@@ -130,10 +131,8 @@ public:
 	igdeGuiTheme *GetGuiTheme() const;
 	
 	
-	
 	/** \brief Widget size changed. */
 	virtual void OnResize();
-	
 	
 	
 	/** \brief Convert widget position to screen position. */
@@ -142,7 +141,6 @@ public:
 	/** \brief Parent window. */
 	virtual igdeWindow *GetParentWindow();
 	/*@}*/
-	
 	
 	
 	/**
@@ -182,7 +180,6 @@ public:
 	
 	/** \brief GuiTheme changed. */
 	virtual void OnGuiThemeChanged();
-	
 	
 	
 protected:

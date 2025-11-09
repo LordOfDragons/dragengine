@@ -1,5 +1,7 @@
 from SConsCommon import *
 
+import os
+
 Import('parent_env parent_targets parent_report')
 
 envLauncher = parent_env.Clone()
@@ -125,34 +127,47 @@ for l in reversed(parent_targets['lib_fox']['runtimelibs']):
 	key = '{}/{}'.format(pathBinLib, l)
 	if not key in parent_targets['lib_fox']['globalInstallTracker']:
 		parent_targets['lib_fox']['globalInstallTracker'].append(key)
-		envLauncher.Depends(install, envLauncher.Install(pathBinLib, l))
+		install.append(envLauncher.Install(pathBinLib, l))
 		archive[os.path.join(pathBinLib, l.name)] = l
 
 
 if envLauncher['OSPosix'] and not envLauncher['OSBeOS']:
 	pathDataDir = envLauncher.subst('${datadir}')
 	
-	for s in ['128', '64', '32']:
+	for s in ['256', '128', '64', '32']:
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'apps', 'dragengine-delauncher-gui.png')
+			'{}x{}'.format(s, s), 'apps', 'ch.dragondreams.delauncher.png')
 		source = 'data/delauncher-gui{}.png'.format(s)
 		install.append(envLauncher.InstallAs(target, source))
 		archive[target] = envLauncher.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'pixmaps', 'dragengine-delauncher-gui.png')
-	source = 'data/delauncher-gui128.png'
+	target = os.path.join(pathDataDir, 'pixmaps', 'ch.dragondreams.delauncher.png')
+	source = 'data/delauncher-gui256.png'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'applications', 'dragengine-delauncher-gui.desktop')
+	target = os.path.join(pathDataDir, 'applications', 'ch.dragondreams.delauncher.desktop')
 	source = 'data/delauncher-gui.desktop'
 	install.append(envLauncher.InstallAs(target, source))
 	archive[target] = envLauncher.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'kservices5', 'dragengine-delauncher-gui-install.desktop')
-	source = 'data/delauncher-gui-install.desktop'
-	install.append(envLauncher.InstallAs(target, source))
-	archive[target] = envLauncher.File(source).srcnode()
+	replacements = [
+		{'action': 'text', 'keyword': '%{ENGINE_VERSION}',
+			'value': envLauncher['version']},
+		{'action': 'text', 'keyword': '%{DISTRO_MAINTAINED}',
+			'value': 'true' if envLauncher['distro_maintained_info_url'] else 'false'},
+		{'action': 'text', 'keyword': '%{DISTRO_MAINTAINED_UPDATE_URL}',
+			'value': envLauncher['distro_maintained_info_url']}
+	]
+	
+	metainfo = envLauncher.UpdateModuleManifest(
+		'data/ch.dragondreams.delauncher.metainfo.xml',
+		'data/delauncher-gui.metainfo.xml',
+		ManifestUpdates=replacements)
+	
+	target = os.path.join(pathDataDir, 'metainfo', 'ch.dragondreams.delauncher.metainfo.xml')
+	install.append(envLauncher.InstallAs(target, metainfo))
+	archive[target] = metainfo[0]
 
 if envLauncher['OSPosix']:
 	target = os.path.join(pathMan1, 'delauncher-gui.1')
@@ -171,8 +186,6 @@ srcdir = Dir('.').srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC(envLauncher, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
 buildCloc = envLauncher.Alias('launcher_gui_cloc', buildClocBare)
 
 # add the targets to the targets list

@@ -249,7 +249,7 @@ public:
 		refNode.TakeOver( new sePropertyNodeText( *pView.GetEngine() ) );
 		sePropertyNodeText * const node = ( sePropertyNodeText* )( deObject* )refNode;
 		node->SetPath( "/igde/fonts/regular_67px.defont" );
-		node->SetFontSize( 67.0f );
+		node->SetTextSize( 67.0f );
 		node->SetSize( decPoint3( 256, 67, 1 ) );
 		node->SetText( "Text" );
 		refNode->AddReference(); // because we need to hand over a reference
@@ -1284,7 +1284,7 @@ void seViewConstructedView::pUpdateContentCanvasParams( const sePropertyNodeGrou
 			
 			canvasText.SetColor( nodeText.GetColor() );
 			canvasText.SetFont( nodeText.GetFont() );
-			canvasText.SetFontSize( nodeText.GetFontSize() );
+			canvasText.SetFontSize( nodeText.GetTextSize() );
 			canvasText.SetText( nodeText.GetText() );
 			}break;
 			

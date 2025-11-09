@@ -1557,4 +1557,19 @@ class BehaviorFactoryHelper
 		addVRFactories(factories)
 		addRailFactories(factories)
 	end
+	
+	/**
+	 * \brief Add all attachable behavior factories to factory list.
+	 * \version 1.29
+	 */
+	func void addAllAttachableFactories(AttachableBehaviorFactoryList factories)
+		addCommonAttachableFactories(factories)
+	end
+	
+	/**
+	 * \brief Add common attachable behavior factories to factory list.
+	 * \version 1.29
+	 */
+	func void addCommonAttachableFactories(AttachableBehaviorFactoryList factories)
+	end
 end

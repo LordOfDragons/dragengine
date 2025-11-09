@@ -33,6 +33,7 @@
 
 class deoglRCamera;
 class deoglRFont;
+class deoglRFontSize;
 class deoglRImage;
 class deoglRModel;
 class deoglRenderThread;
@@ -95,7 +96,7 @@ private:
 	deMutex pMutexAsyncResInit;
 	bool pHasAsyncResInitOperations;
 	decPointerOrderedSet pAsyncResInitSkinList;
-	decPointerOrderedSet pAsyncResInitFontList;
+	decPointerOrderedSet pAsyncResInitFontList, pAsyncResInitFontSizeList;
 
 	deMutex pMutexRecreateRes;
 	decPointerOrderedSet pRecreateSkinList;
@@ -161,7 +162,7 @@ public:
 	 *          This is required to deal with accessing render objects in a safe way.
 	 *          Operates on the following lists:
 	 *          - Render Skins (deoglRSkin)
-	 *          - Render Fonts (deoglRFont)
+	 *          - Render Fonts (deoglRFont, deoglRFontSize)
 	 */
 	void ProcessAsyncResInitOperations();
 	
@@ -197,6 +198,17 @@ public:
 	
 	/** Remove font to async res initialize if existing (thread-safe). */
 	void RemoveAsyncResInitFont( deoglRFont *font );
+	
+	
+	
+	/** Async res init font size list (not thread-safe). */
+	inline const decPointerOrderedSet &GetAsyncResInitFontSizeList() const{ return pAsyncResInitFontSizeList; }
+	
+	/** Add font size to async res initialize if not existing already (thread-safe). */
+	void AddAsyncResInitFontSize(deoglRFontSize *size);
+	
+	/** Remove font size to async res initialize if existing (thread-safe). */
+	void RemoveAsyncResInitFontSize(deoglRFontSize *size);
 	/*@}*/
 	
 	

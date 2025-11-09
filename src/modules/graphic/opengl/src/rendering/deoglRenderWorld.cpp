@@ -80,6 +80,7 @@
 #include "../texture/deoglTextureStageManager.h"
 #include "../texture/arraytexture/deoglArrayTexture.h"
 #include "../texture/texture2d/deoglTexture.h"
+#include "../vr/deoglVR.h"
 #include "../world/deoglRCamera.h"
 #include "../world/deoglRWorld.h"
 
@@ -1224,6 +1225,10 @@ DBG_ENTER("RenderFinalizeFBO")
 		}else{
 			defren.SetShaderParamFSQuadUpsideDown( *shader, spfinTCTransform );
 		}
+	}
+	
+	if(plan.GetRenderVR() != deoglRenderPlan::ervrNone && renderThread.GetVRCamera()){
+		// const float ptransp = renderThread.GetVRCamera()->GetVR()->GetPassthroughTransparency();
 	}
 	
 	if( plan.GetRenderVR() == deoglRenderPlan::ervrStereo ){

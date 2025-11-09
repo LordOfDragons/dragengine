@@ -58,25 +58,22 @@ if envModule['OSWindows'] and envModule['CROSSCOMPILE_CLANG'] and envModule['wit
 	archive['{}/srveossdk.pdb'.format(pathPdb)] = envModule.File('srveossdk.pdb')
 
 manifestUpdates = [
-	{'action': 'filename', 'name': library[0].name, 'keyword': 'FILENAME'},
-	{'action': 'filesize', 'path': library[0].abspath, 'keyword': 'FILESIZE'},
-	{'action': 'filehash', 'path': library[0].abspath, 'keyword': 'SHA1SUM'},
+	{'action': 'filename', 'file': library[0], 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'file': library[0], 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'file': library[0], 'keyword': 'SHA1SUM'},
 	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 rtlibs = []
 rtlibs.extend(parent_targets['lib_eossdk']['runtimelibs'])
 
 for l in reversed(rtlibs):
-	manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
+	manifestUpdates.append({'action': 'preloadLibrary', 'library': l})
 	install.append(envModule.Install(pathModule, l))
 	archive[os.path.join(pathModule, l.name)] = l
 
 manifest = envModule.File('src/module.xml')
-updateManifest = envModule.Command(manifest, manifest.srcnode(),
-	Action(UpdateModuleManifest), ManifestUpdates=manifestUpdates)
-Depends(updateManifest, library)
-Depends(updateManifest, 'SConscript')
-Depends(updateManifest, rtlibs)
+updateManifest = envModule.UpdateModuleManifest(manifest,
+	manifest.srcnode(), ManifestUpdates=manifestUpdates)
 
 install.append(envModule.Install(pathModule, updateManifest))
 archive[os.path.join(pathModule, 'module.xml')] = updateManifest[0]
@@ -97,8 +94,6 @@ srcdir = Dir('.').srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC(envModule, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
 buildCloc = envModule.Alias('srv_eossdk_cloc', buildClocBare)
 
 # add the targets to the targets list

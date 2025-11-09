@@ -342,7 +342,7 @@ void seWPView::SetSkin( seSkin *skin ){
 		return;
 	}
 	
-	pWPEnvObject->SetObjectWrapper( NULL );
+	pWPEnvObject->SetObject(nullptr);
 	pWPSky->SetSky( NULL );
 	pWPCamera->SetCamera( NULL );
 	
@@ -361,7 +361,7 @@ void seWPView::SetSkin( seSkin *skin ){
 		skin->AddReference();
 		
 		pWPSky->SetSky( skin->GetSky() );
-		pWPEnvObject->SetObjectWrapper( skin->GetEnvObject() );
+		pWPEnvObject->SetObject(skin->GetEnvObject());
 		pWPCamera->SetCamera( skin->GetCamera() );
 		
 		defaultPath = skin->GetDirectoryPath();
@@ -444,7 +444,7 @@ void seWPView::UpdateSky(){
 }
 
 void seWPView::UpdateEnvObject(){
-	pWPEnvObject->UpdateObjectWrapper();
+	pWPEnvObject->UpdateObject();
 }
 
 void seWPView::UpdateCamera(){

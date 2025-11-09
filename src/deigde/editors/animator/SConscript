@@ -53,15 +53,14 @@ if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['wit
 	archive['{}/animator.pdb'.format(pathPdb)] = envEditor.File('animator.pdb')
 
 manifestUpdates = [
-	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
-	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'filename', 'file': library[0], 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'file': library[0], 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'file': library[0], 'keyword': 'SHA1SUM'},
 	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 manifest = envEditor.File( 'src/module.xml' )
-updateManifest = envEditor.Command( manifest, manifest.srcnode(),
-	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-Depends( updateManifest, library )
+updateManifest = envEditor.UpdateModuleManifest(manifest,
+	manifest.srcnode(), ManifestUpdates=manifestUpdates)
 
 install.append( envEditor.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
@@ -78,8 +77,6 @@ srcdir = Dir( '.' ).srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC( envEditor, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
-Depends( buildClocBare, sources )
-Depends( buildClocBare, headers )
 buildCloc = envEditor.Alias( 'editor_animator_cloc', buildClocBare )
 
 # add the targets to the targets list

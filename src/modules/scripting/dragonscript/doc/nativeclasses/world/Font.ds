@@ -26,13 +26,13 @@ fixed class Font
 	 * objects can point to the same loaded font resource. Once no object instance uses an
 	 * font file anymore it is released from memory.
 	 */
-	public func new(String filename, int fontSize)
+	func new(String filename, int fontSize)
 	end
 	
 	/**
 	 * \brief Use font with different size.
 	 */
-	public func new(Font font, int fontSize)
+	func new(Font font, int fontSize)
 	end
 	
 	/**
@@ -42,7 +42,7 @@ fixed class Font
 	 * is already loaded the listener is used to deliver the loaded font or \em null if the
 	 * loading failed.
 	 */
-	static public func void loadAsynchron(String filename, ResourceListener listener)
+	static func void loadAsynchron(String filename, ResourceListener listener)
 	end
 	/*@}*/
 	
@@ -51,27 +51,27 @@ fixed class Font
 	/** \name Management */
 	/*@{*/
 	/** \brief Normalized filename the font has been loaded from. */
-	public func String getFilename()
+	func String getFilename()
 		return null
 	end
 	
 	/** \brief Size of text in pixels using this font. */
-	public func Point getTextSize(String text)
+	func Point getTextSize(String text)
 		return null
 	end
 	
 	/** \brief Width of character in pixels using this font. */
-	public func float getCharWidth(int char)
+	func float getCharWidth(int char)
 		return 0.0
 	end
 	
 	/** \brief Advance of character in pixels using this font. */
-	public func float getCharAdvance(int char)
+	func float getCharAdvance(int char)
 		return 0.0
 	end
 	
 	/** \brief Bearing of character in pixels using this font. */
-	public func float getCharBearing(int char)
+	func float getCharBearing(int char)
 		return 0.0
 	end
 	
@@ -79,7 +79,7 @@ fixed class Font
 	 * \brief Font has glyph.
 	 * \version 1.16
 	 */
-	public func bool hasGlyph(int character)
+	func bool hasGlyph(int character)
 		return false
 	end
 	
@@ -88,12 +88,20 @@ fixed class Font
 	 * 
 	 * This is also the line height of the font.
 	 */
-	public func int getSize()
+	func int getSize()
 		return 0
 	end
 	
 	/** \brief Largest width in pixels of all characters supported by this font. */
-	public func float getMaxWidth()
+	func float getMaxWidth()
+		return 0.0
+	end
+	
+	/**
+	 * \brief Base line in pixels from top.
+	 * \version 1.29
+	 */
+	func float getBaseLine()
 		return 0.0
 	end
 	
@@ -106,7 +114,7 @@ fixed class Font
 	 * 
 	 * \returns \em true if \em other is of type Font and both point to the same engine font resource.
 	 */
-	public func bool equals(Object other)
+	func bool equals(Object other)
 		return false
 	end
 	
@@ -115,7 +123,7 @@ fixed class Font
 	 * 
 	 * Implements Object.hashCode().
 	 */
-	public func int hashCode()
+	func int hashCode()
 		return 0
 	end
 	/*@}*/

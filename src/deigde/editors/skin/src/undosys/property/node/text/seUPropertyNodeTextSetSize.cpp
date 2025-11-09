@@ -48,7 +48,7 @@ pNewValue( newValue )
 	
 	SetShortInfo( "Node text set font size" );
 	
-	pOldValue = node->GetFontSize();
+	pOldValue = node->GetTextSize();
 	
 	pNode = node;
 	node->AddReference();
@@ -66,9 +66,9 @@ seUPropertyNodeTextSetSize::~seUPropertyNodeTextSetSize(){
 ///////////////
 
 void seUPropertyNodeTextSetSize::Undo(){
-	pNode->SetFontSize( pOldValue );
+	pNode->SetTextSize( pOldValue );
 }
 
 void seUPropertyNodeTextSetSize::Redo(){
-	pNode->SetFontSize( pNewValue );
+	pNode->SetTextSize( pNewValue );
 }

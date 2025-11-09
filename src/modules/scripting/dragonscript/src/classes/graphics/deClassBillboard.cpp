@@ -34,6 +34,7 @@
 #include "../physics/deClassLayerMask.h"
 #include "../world/deClassSkin.h"
 #include "../world/deClassDynamicSkin.h"
+#include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -374,6 +375,18 @@ void deClassBillboard::nfSetLayerMask::RunFunction( dsRunTime *rt, dsValue *myse
 	billboard.SetLayerMask( ds.GetClassLayerMask()->GetLayerMask( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
+// func World getParentWorld()
+deClassBillboard::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsBillboard, "getParentWorld", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
+void deClassBillboard::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deBillboard &billboard = *(((sBillboardNatDat*)p_GetNativeData(myself))->billboard);
+	const deClassBillboard &clsBillboard = *((deClassBillboard*)GetOwnerClass());
+	const deScriptingDragonScript &ds = clsBillboard.GetDS();
+	
+	ds.GetClassWorld()->PushWorld(rt, billboard.GetParentWorld());
+}
 
 
 // Misc
@@ -453,6 +466,7 @@ void deClassBillboard::CreateClassMembers( dsEngine *engine ){
 	init.clsSkin = pDS.GetClassSkin();
 	init.clsDynamicSkin = pDS.GetClassDynamicSkin();
 	init.clsLayerMask = pDS.GetClassLayerMask();
+	init.clsWorld = pDS.GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -480,6 +494,7 @@ void deClassBillboard::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetVisible( init ) );
 	AddFunction( new nfGetLayerMask( init ) );
 	AddFunction( new nfSetLayerMask( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfEquals( init ) );
 	AddFunction( new nfHashCode( init ) );

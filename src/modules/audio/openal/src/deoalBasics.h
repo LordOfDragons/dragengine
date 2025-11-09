@@ -26,6 +26,7 @@
 #define _DEOALBASICS_H_
 
 
+#include <dragengine/dragengine_configuration.h>
 
 #include "extensions/al.h"
 #include "extensions/alc.h"

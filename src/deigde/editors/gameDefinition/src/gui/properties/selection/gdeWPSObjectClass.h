@@ -78,6 +78,7 @@ private:
 	igdeComboBoxReference pCBScaleMode;
 	igdeCheckBoxReference pChkIsGhost;
 	igdeCheckBoxReference pChkCanInstantiate;
+	igdeCheckBoxReference pChkIsAttachableBehavior;
 	igdeCheckBoxReference pChkInheritSOBillboards;
 	igdeCheckBoxReference pChkInheritSOComponents;
 	igdeCheckBoxReference pChkInheritSOLights;

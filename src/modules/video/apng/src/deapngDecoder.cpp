@@ -57,8 +57,9 @@ pReader( NULL )
 			pReader->GetFrameCount(), pReader->GetFrameRate() );
 		
 	}catch( const deException &e ){
+		module.LogErrorFormat("Failed to create decoder for file %s", file->GetFilename());
+		module.LogException(e);
 		pCleanUp();
-		e.PrintError();
 		throw;
 	}
 }

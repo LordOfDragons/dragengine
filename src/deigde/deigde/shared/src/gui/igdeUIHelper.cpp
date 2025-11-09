@@ -1061,6 +1061,11 @@ void igdeUIHelper::Button( igdeButtonReference &button, igdeAction *action, bool
 	}
 }
 
+void igdeUIHelper::Button(igdeContainer &parent, igdeButton::Ref &button, const igdeAction::Ref &action){
+	button.TakeOverWith(pEnvironment, action);
+	parent.AddChild(button);
+}
+
 
 
 void igdeUIHelper::ToggleButton( igdeContainer &parent, igdeAction *action, bool takeOverAction ){
@@ -1425,6 +1430,10 @@ void igdeUIHelper::MenuCommand( igdeMenuCascade &menu, igdeAction *action, bool 
 	menu.AddChild( entry );
 }
 
+void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, const igdeAction::Ref &action){
+	menu.AddChild(igdeMenuCommand::Ref::NewWith(pEnvironment, action));
+}
+
 void igdeUIHelper::MenuCheck( igdeMenuCascade &menu, igdeAction *action, bool takeOverAction ){
 	igdeWidgetReference entry;
 	entry.TakeOver( new igdeMenuCheck( pEnvironment, action ) );
@@ -1432,6 +1441,10 @@ void igdeUIHelper::MenuCheck( igdeMenuCascade &menu, igdeAction *action, bool ta
 		action->FreeReference();
 	}
 	menu.AddChild( entry );
+}
+
+void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, const igdeAction::Ref &action){
+	menu.AddChild(igdeMenuCheck::Ref::NewWith(pEnvironment, action));
 }
 
 void igdeUIHelper::MenuOption( igdeMenuCascade &menu, igdeAction *action, bool takeOverAction ){
@@ -1443,18 +1456,19 @@ void igdeUIHelper::MenuOption( igdeMenuCascade &menu, igdeAction *action, bool t
 	menu.AddChild( entry );
 }
 
-void igdeUIHelper::MenuSeparator( igdeMenuCascade &menu ){
-	igdeWidgetReference entry;
-	entry.TakeOver( new igdeMenuSeparator( pEnvironment ) );
-	menu.AddChild( entry );
+void igdeUIHelper::MenuOption(igdeMenuCascade &menu, const igdeAction::Ref &action){
+	menu.AddChild(igdeMenuOption::Ref::NewWith(pEnvironment, action));
 }
 
-void igdeUIHelper::MenuRecentFiles( igdeMenuCascade &menu, igdeRecentFiles &recentFiles, const char *text ){
-	igdeMenuCascadeReference subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( pEnvironment, text,
-		pEnvironment.GetStockIcon( igdeEnvironment::esiOpen ), text ) );
-	recentFiles.SetMenu( subMenu );
-	menu.AddChild( subMenu );
+void igdeUIHelper::MenuSeparator(igdeMenuCascade &menu){
+	menu.AddChild(igdeMenuSeparator::Ref::NewWith(pEnvironment));
+}
+
+void igdeUIHelper::MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recentFiles, const char *text){
+	const igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(pEnvironment,
+		text, pEnvironment.GetStockIcon(igdeEnvironment::esiOpen), text));
+	recentFiles.SetMenu(subMenu);
+	menu.AddChild(subMenu);
 }
 
 

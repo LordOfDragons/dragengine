@@ -54,6 +54,11 @@ class decShape;
  *          system and whatever target element holds the object shape list.
  */
 class meObjectShape : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meObjectShape> Ref;
+	
+	
 private:
 	igdeEnvironment *pEnvironment;
 	

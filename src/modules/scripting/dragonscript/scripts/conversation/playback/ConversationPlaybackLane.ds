@@ -155,7 +155,7 @@ class ConversationPlaybackLane
 		var ConversationAction action
 		var int i
 		
-		while true
+		while playback.getRunning()
 			action = null
 			
 			// check if any stack entry upwards contains a condition evaluating to false. in
