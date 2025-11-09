@@ -218,25 +218,25 @@ jobs:
       - name: Sign Artifacts
         run: |
           files=(
-            install-dragengine-${{ github.event.inputs.version }}-linux64.sh,
-            install-dragengine-dev-${{ github.event.inputs.version }}-linux64.sh,
-            dragengine-${{ github.event.inputs.version }}-linux64.tar.bz2,
-            dragengine-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2,
-            dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2,
-            install-deigde-${{ github.event.inputs.version }}-linux64.sh,
-            install-deigde-dev-${{ github.event.inputs.version }}-linux64.sh,
-            deigde-${{ github.event.inputs.version }}-linux64.tar.bz2,
-            deigde-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2,
-            deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2,
-            install-dragengine-${{ github.event.inputs.version }}-windows64.exe,
-            install-dragengine-sdk-${{ github.event.inputs.version }}-windows64.exe,
-            dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip,
-            install-deigde-${{ github.event.inputs.version }}-windows64.exe,
-            install-deigde-sdk-${{ github.event.inputs.version }}-windows64.exe,
-            deigde-sdk-${{ github.event.inputs.version }}-windows64.zip,
-            blender-addon-dragengine-${{ github.event.inputs.version }}.zip,
-            dragengine-live-${{ github.event.inputs.version }}.zip,
-            install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh,
+            install-dragengine-${{ github.event.inputs.version }}-linux64.sh
+            install-dragengine-dev-${{ github.event.inputs.version }}-linux64.sh
+            dragengine-${{ github.event.inputs.version }}-linux64.tar.bz2
+            dragengine-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2
+            dragengine-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
+            install-deigde-${{ github.event.inputs.version }}-linux64.sh
+            install-deigde-dev-${{ github.event.inputs.version }}-linux64.sh
+            deigde-${{ github.event.inputs.version }}-linux64.tar.bz2
+            deigde-dbg-${{ github.event.inputs.version }}-linux64.tar.bz2
+            deigde-dev-${{ github.event.inputs.version }}-linux64.tar.bz2
+            install-dragengine-${{ github.event.inputs.version }}-windows64.exe
+            install-dragengine-sdk-${{ github.event.inputs.version }}-windows64.exe
+            dragengine-sdk-${{ github.event.inputs.version }}-windows64.zip
+            install-deigde-${{ github.event.inputs.version }}-windows64.exe
+            install-deigde-sdk-${{ github.event.inputs.version }}-windows64.exe
+            deigde-sdk-${{ github.event.inputs.version }}-windows64.zip
+            blender-addon-dragengine-${{ github.event.inputs.version }}.zip
+            dragengine-live-${{ github.event.inputs.version }}.zip
+            install-dragengine-ci-${{ github.event.inputs.version }}-linux64.sh
             install-deigde-ci-${{ github.event.inputs.version }}-linux64.sh
             )
           for file in "${files[@]}"; do
