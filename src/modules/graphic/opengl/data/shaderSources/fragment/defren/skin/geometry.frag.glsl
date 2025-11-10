@@ -230,7 +230,7 @@ void main(void){
 		if(SkinClipPlane){
 			float skinClipDist = dot(vSkinClipCoord, vec3(pInstSkinClipPlaneNormal));
 			
-			float skinClipSolidity = getSkinClipPlaneBorder(vSPBIndex) > 0
+			float skinClipSolidity = getSkinClipPlaneBorder(vSPBIndex) > 0.0
 				? smoothstep(pInstSkinClipPlaneNormal.w,
 					pInstSkinClipPlaneNormal.w + getSkinClipPlaneBorder(vSPBIndex),
 					skinClipDist)
@@ -238,7 +238,7 @@ void main(void){
 					pInstSkinClipPlaneNormal.w,
 					skinClipDist);
 			
-			solidity *= mix(1, skinClipSolidity, getSkinClipPlane(vSPBIndex));
+			solidity *= mix(1.0, skinClipSolidity, getSkinClipPlane(vSPBIndex));
 		}
 		
 		if(MaskedSolidity){

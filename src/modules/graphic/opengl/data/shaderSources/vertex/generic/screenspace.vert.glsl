@@ -45,7 +45,7 @@ void main( void ){
 			}
 			
 			if(TexCoordFlipY){
-				texCoord.y = 1 - texCoord.y;
+				texCoord.y = 1.0 - texCoord.y;
 			}
 			
 			vec2 screenCoord = inPosition;

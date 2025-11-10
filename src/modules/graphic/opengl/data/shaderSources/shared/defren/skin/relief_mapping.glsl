@@ -57,7 +57,7 @@ void reliefMapping(inout vec2 tc, const in vec3 normal, const int spbIndex){
 		vec3 end = vec3( tc, 1 ); // top
 		for( i=0; i<reliefMappingConeStepCount; i++ ){
 			vec2 tap = TEXTURE_LOD(texHeight, end.st, 0.0).rg;
-			end += direction * ( tap.y * clamp( end.z - tap.x, 0, 1 ) / max( rayRatio + tap.y, 0.001 ) );
+			end += direction * ( tap.y * clamp(end.z - tap.x, 0.0, 1.0) / max( rayRatio + tap.y, 0.001 ) );
 		}
 	}
 	
