@@ -768,6 +768,7 @@ if parent_env['with_warnerrors']:
 if parent_env['platform_android'] != 'no':
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
 	parent_env.Append(CPPFLAGS = ['-Wno-tautological-constant-compare'])
+	parent_env.Append(CPPFLAGS = ['-Wno-nontrivial-memcall'])
 
 # clang uses some warnings we do not care about right now
 if parent_env['CROSSCOMPILE_CLANG']:

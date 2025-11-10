@@ -255,7 +255,7 @@ class RunDelgaActivity : GameActivity(),
         }
 
         state = State.InitEngine
-        /* DEBUG */ // val l = getLauncher() // force create launcher if not created already
+        val l = getLauncher() // force create launcher if not created already
 
         if (!DEBuildInfo.runDelgaNoFragment) {
             supportFragmentManager
