@@ -10,19 +10,35 @@
 #define WITH_SPECIALIZATIONS
 
 #define HIGHP highp
-#define ARG_SAMP_HIGHP
-#define ARG_SAMP_MEDP
-#define ARG_SAMP_LOWP
+
+#ifdef ANDROID
+	#define ARG_SAMP_HIGHP highp
+	#define ARG_SAMP_MEDP mediump
+	#define ARG_SAMP_LOWP lowp
+	#define RESTRICTED_IMAGE_BUFFER_FORMATS
+#else
+	#define ARG_SAMP_HIGHP
+	#define ARG_SAMP_MEDP
+	#define ARG_SAMP_LOWP
+#endif
+
 #define GLSL_450
 #define GS_INSTANCING
-#define SUPPORTS_VSLAYER
-#define SUPPORTS_VSDRAWPARAM
+
+#ifndef ANDROID
+	#define SUPPORTS_VSLAYER
+	#define SUPPORTS_VSDRAWPARAM
+#endif
+
 #define HW_DEPTH_COMPARE
 #define SHARED_SPB
 #define SHARED_SPB_USE_SSBO
 #define SPB_SSBO_INSTANCE_ARRAY
-#define USE_UNIFORM_CONST
-#define VARCONST const
+
+#ifndef ANDROID
+	#define USE_UNIFORM_CONST
+	#define VARCONST const
+#endif
 
 #define UNIFORM_BIND(index) layout(location=index)
 #define VARYING_BIND(index) layout(location=index)
@@ -226,7 +242,7 @@ layout(constant_id=169) const bool WithReflection = false;
 #define CT_COMPUTE_IN_SIZE_XY layout(local_size_x=LOCAL_SIZE_X, local_size_y=LOCAL_SIZE_Y) in;
 #define CT_COMPUTE_IN_SIZE_XYZ layout(local_size_x=LOCAL_SIZE_X, local_size_y=LOCAL_SIZE_Y, local_size_z=LOCAL_SIZE_Z) in;
 
-// nVidia has a problematic shader compiler which assigns and evaluates sampkers already
+// nVidia has a problematic shader compiler which assigns and evaluates samplers already
 // in the compile phase instead of the link phase as AMD does. this causes the maximum
 // sampler limit to be hit although after linking and dead code removal it would be clear
 // that the limit never can be reached. setting the symbol below enables a workaround for
@@ -258,21 +274,23 @@ this keeps the readability intact while avoiding problems with buggy compilers.
 NOTE: spir-v compilers are not affected by this bug only opengl drivers it seems.
 */
 
-#if LAYERED_RENDERING == 1
-	#define LAYERED_RENDERING_STEREO
-#elif LAYERED_RENDERING == 2
-	#define LAYERED_RENDERING_CUBE
-#elif LAYERED_RENDERING == 3
-	#define LAYERED_RENDERING_CASCADED
+#ifdef LAYERED_RENDERING
+	#if LAYERED_RENDERING == 1
+		#define LAYERED_RENDERING_STEREO
+	#elif LAYERED_RENDERING == 2
+		#define LAYERED_RENDERING_CUBE
+	#elif LAYERED_RENDERING == 3
+		#define LAYERED_RENDERING_CASCADED
+	#endif
 #endif
 
 #if defined LAYERED_RENDERING && ! defined VS_RENDER_LAYER
 	#define WITH_GEOMETRY_SHADER
 #endif
-#if GEOMETRY_MODE == 5 && ! defined WITH_GEOMETRY_SHADER
+#if defined GEOMETRY_MODE && GEOMETRY_MODE == 5 && ! defined WITH_GEOMETRY_SHADER
 	#define WITH_GEOMETRY_SHADER
 #endif
-#if LIGHT_MODE == 4 && ! defined WITH_GEOMETRY_SHADER
+#if defined LIGHT_MODE && LIGHT_MODE == 4 && ! defined WITH_GEOMETRY_SHADER
 	#define WITH_GEOMETRY_SHADER
 #endif
 
@@ -281,8 +299,10 @@ const bool WithGeometryShader = (LayeredRendering != LayeredRenderingNone && !VS
 
 
 // #define TESSELLATION_MODE_LINEAR 1
-#if TESSELLATION_MODE == 1
-	#define TESSELLATION_MODE_LINEAR
+#ifdef TESSELLATION_MODE
+	#if TESSELLATION_MODE == 1
+		#define TESSELLATION_MODE_LINEAR
+	#endif
 #endif
 
 #ifdef TESSELLATION_MODE

@@ -3,7 +3,7 @@
 precision HIGHP float;
 precision HIGHP int;
 
-#if LAYERED_RENDERING_STEREO
+#ifdef LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout(points, invocations=2) in;
 		layout(triangle_strip, max_vertices=4) out;
@@ -85,7 +85,7 @@ void main(void){
 	vec3 range = vec3(vGSParticleLightRange[0], -vGSParticleLightRange[0], 0);
 	
 	int layer;
-	#if LAYERED_RENDERING_STEREO
+	#ifdef LAYERED_RENDERING_STEREO
 		#ifdef GS_INSTANCING
 			layer = gl_InvocationID;
 		#else
@@ -119,7 +119,7 @@ void main(void){
 	// end emitParticle()
 	
 	
-	#if LAYERED_RENDERING_STEREO
+	#ifdef LAYERED_RENDERING_STEREO
 		#ifndef GS_INSTANCING
 			}
 		#endif

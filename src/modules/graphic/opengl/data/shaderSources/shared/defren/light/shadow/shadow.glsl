@@ -129,7 +129,7 @@ const in vec3 tcoffset, const in vec2 tcnoise, const in ivec2 tcnoiseOffset,
 const in mat2x3 tcnoiseMatrix){
 	tc.stp += tcoffset;
 	if(NoiseTap){
-		tc.stp += tcnoiseMatrix * sampleShadowNoise(tcnoise, tcnoiseOffset);
+		tc.stp += tcnoiseMatrix * sampleShadowNoise(tcnoise, vec2(tcnoiseOffset));
 	}
 	return texture(texsm, tc);
 }

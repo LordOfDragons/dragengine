@@ -17,7 +17,7 @@ void main( void ){
 	// shader since the rendered image requires non-flipped coordinates. flipping
 	// the y texture coordinate here is faster than calculating the texture coordinates
 	// from the screen coordinates (vScreenCoord)
-	vec2 tcDistort = vec2( vTexCoord.x, 1 - vTexCoord.y );
+	vec2 tcDistort = vec2(vTexCoord.x, 1.0 - vTexCoord.y);
 	
 	// distortion is stored as red(x) and green(y). this allows normal maps to be used
 	vec2 distortion = texture( texDistort, tcDistort ).rg;

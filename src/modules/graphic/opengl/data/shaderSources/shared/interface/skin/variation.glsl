@@ -25,7 +25,7 @@ vec3 tcTexVar(in vec2 tc, in int layerCount){
 }
 #endif
 
-vec4 textureVariation(in sampler2D tex2d, in sampler2DArray texarr, const in vec2 tc){
+vec4 textureVariation(in sampler2D tex2d, in ARG_SAMP_MEDP sampler2DArray texarr, const in vec2 tc){
 	// functions are defined right before main due to Shared-SPB support
 	if(WithVariations){
 		return texture(texarr, tcTexVar(tc, textureSize(texarr, 0).z));
@@ -35,7 +35,7 @@ vec4 textureVariation(in sampler2D tex2d, in sampler2DArray texarr, const in vec
 	}
 }
 
-vec4 textureVariationLod(in sampler2D tex2d, in sampler2DArray texarr, const in vec2 tc, const in float lod){
+vec4 textureVariationLod(in sampler2D tex2d, in ARG_SAMP_MEDP sampler2DArray texarr, const in vec2 tc, const in float lod){
 	// functions are defined right before main due to Shared-SPB support
 	if(WithVariations){
 		return textureLod(texarr, tcTexVar(tc, textureSize(texarr, 0).z), lod);
@@ -48,14 +48,14 @@ vec4 textureVariationLod(in sampler2D tex2d, in sampler2DArray texarr, const in 
 
 #ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
 	#ifdef WITH_VARIATION
-		#define TEXTURE(s,tc) texture(s##Array, tcTexVar(tc, textureSize(s##Array, 0).z))
-		#define TEXTURE_LOD(s,tc,l) textureLod(s##Array, tcTexVar(tc, textureSize(s##Array, 0).z), l)
+		#define TEXTURE(s,sarr,tc) texture(sarr, tcTexVar(tc, textureSize(sarr, 0).z))
+		#define TEXTURE_LOD(s,sarr,tc,l) textureLod(sarr, tcTexVar(tc, textureSize(sarr, 0).z), l)
 	#else
-		#define TEXTURE(s,tc) texture(s, tc)
-		#define TEXTURE_LOD(s,tc,l) textureLod(s, tc, l)
+		#define TEXTURE(s,sarr,tc) texture(s, tc)
+		#define TEXTURE_LOD(s, sarr,tc,l) textureLod(s, tc, l)
 	#endif
 	
 #else
-	#define TEXTURE(s,tc) textureVariation(s, s##Array, tc)
-	#define TEXTURE_LOD(s,tc,l) textureVariationLod(s, s##Array, tc, l)
+	#define TEXTURE(s,sarr,tc) textureVariation(s, sarr, tc)
+	#define TEXTURE_LOD(s,sarr,tc,l) textureVariationLod(s, sarr, tc, l)
 #endif

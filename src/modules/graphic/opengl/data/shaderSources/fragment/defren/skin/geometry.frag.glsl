@@ -180,29 +180,29 @@ void main(void){
 		if(TextureNonPbrAlbedo || TextureNonPbrMetalness){
 			nonpbrAlbedo = vec3(0.0);
 			if(TextureNonPbrAlbedo){
-				nonpbrAlbedo = vec3(TEXTURE(texNonPbrAlbedo, tcColor));
+				nonpbrAlbedo = vec3(TEXTURE(texNonPbrAlbedo, texNonPbrAlbedoArray, tcColor));
 			}
 			
 			nonpbrMetalness = 0.0;
 			if(TextureNonPbrMetalness){
-				nonpbrMetalness = TEXTURE(texNonPbrMetalness, tcReflectivity).r;
+				nonpbrMetalness = TEXTURE(texNonPbrMetalness, texNonPbrMetalnessArray, tcReflectivity).r;
 			}
 		}
 		
 		
 		// color
 		if(TextureTransparency){
-			color.a = TEXTURE(texTransparency, tcColor).r;
+			color.a = TEXTURE(texTransparency, texTransparencyArray, tcColor).r;
 		}
 		if(TextureNonPbrAlbedo || TextureNonPbrMetalness){
 			color.rgb = nonpbrMetalnessToColor(nonpbrAlbedo, nonpbrMetalness);
 			
 		}else if(TextureColor){
 			if(TextureTransparency){
-				color.rgb = vec3(TEXTURE(texColor, tcColor));
+				color.rgb = vec3(TEXTURE(texColor, texColorArray, tcColor));
 				
 			}else{
-				color = TEXTURE(texColor, tcColor);
+				color = TEXTURE(texColor, texColorArray, tcColor);
 			}
 			
 		}else if(WithOutline){
@@ -218,7 +218,8 @@ void main(void){
 		
 		// solidity
 		if(TextureSolidity){
-			solidity = TEXTURE(texSolidity, tcColor).r * getSolidityMultiplier(vSPBIndex);
+			solidity = TEXTURE(texSolidity, texSolidityArray, tcColor).r
+				* getSolidityMultiplier(vSPBIndex);
 			
 		}else if(WithOutline){
 			solidity = getOutlineSolidity(vSPBIndex);
@@ -249,7 +250,7 @@ void main(void){
 		
 		// normal
 		if(TextureNormal){
-			normal = TEXTURE(texNormal, tcNormal);
+			normal = TEXTURE(texNormal, texNormalArray, tcNormal);
 			normal.xyz = normal.rgb * vec3(1.9921569) + vec3(-0.9921722);
 			
 		}else{
@@ -259,7 +260,7 @@ void main(void){
 		
 		// ambient occlusion
 		if(TextureAO){
-			ao = TEXTURE(texAO, tcAO).r;
+			ao = TEXTURE(texAO, texAOArray, tcAO).r;
 			
 		}else{
 			ao = 1.0;
@@ -271,7 +272,7 @@ void main(void){
 			reflectivity = nonpbrMetalnessToReflectivity(nonpbrAlbedo, nonpbrMetalness);
 			
 		}else if(TextureReflectivity){
-			reflectivity = vec3(TEXTURE(texReflectivity, tcReflectivity))
+			reflectivity = vec3(TEXTURE(texReflectivity, texReflectivityArray, tcReflectivity))
 				* vec3(getDynamicReflectivityMultiplier(vSPBIndex));
 			
 		}else{
@@ -281,7 +282,7 @@ void main(void){
 		
 		// roughness
 		if(TextureRoughness){
-			roughness = TEXTURE(texRoughness, tcReflectivity).r;
+			roughness = TEXTURE(texRoughness, texRoughnessArray, tcReflectivity).r;
 			
 		}else{
 			roughness = 1.0;
@@ -290,7 +291,8 @@ void main(void){
 		
 		// refraction distortion
 		if(TextureRefractionDistort){
-			distort = vec2(TEXTURE(texRefractionDistort, tcRefractionDistort)) * vec2(2.0) + vec2(-1.0);
+			distort = vec2(TEXTURE(texRefractionDistort, texRefractionDistortArray,
+				tcRefractionDistort)) * vec2(2.0) + vec2(-1.0);
 			distort *= pScreenSpace.xy * vec2(getRefractionDistortStrength(vSPBIndex));
 		}
 	}
@@ -313,7 +315,7 @@ void main(void){
 			}
 			
 			if(TextureEnvRoomMask){
-				envRoomMask = TEXTURE(texEnvRoomMask, tcColor).r;
+				envRoomMask = TEXTURE(texEnvRoomMask, texEnvRoomMaskArray, tcColor).r;
 				color.rgb = mix(color.rgb, envRoomColor, vec3(envRoomMask));
 				
 			}else{
@@ -360,7 +362,7 @@ void main(void){
 			
 		}else if(TextureColorTintMask){
 			color.rgb = mix(color.rgb, color.rgb * getColorTint(vSPBIndex),
-				TEXTURE(texColorTintMask, tcColorTintMask).r);
+				TEXTURE(texColorTintMask, texColorTintMaskArray, tcColorTintMask).r);
 			
 		}else{
 			color.rgb *= getColorTint(vSPBIndex);
@@ -609,7 +611,8 @@ void main(void){
 			outMaterialSubSurface = vec4(vec3(pTexAbsorptionRange), color.a);
 			if(TextureAbsorption){
 				// hack, needs pAbsorptionGamma
-				outMaterialSubSurface.rgb *= pow(vec3(TEXTURE(texAbsorption, tcAbsorption)),
+				outMaterialSubSurface.rgb *= pow(
+					vec3(TEXTURE(texAbsorption, texAbsorptionArray, tcAbsorption)),
 					vec3(getColorGamma(vSPBIndex)));
 			}
 		}
@@ -630,7 +633,7 @@ void main(void){
 			}else{
 				scale = vec3(finalEmissivityIntensity(getEmissivityIntensity(vSPBIndex)));
 			}
-			writeColor.rgb += pow(vec3(TEXTURE(texEmissivity, tcEmissivity)),
+			writeColor.rgb += pow(vec3(TEXTURE(texEmissivity, texEmissivityArray, tcEmissivity)),
 				vec3(getColorGamma(vSPBIndex))) * scale;
 		}
 		
@@ -647,7 +650,7 @@ void main(void){
 				// 
 				// using "normal" is not giving the results one expects especially if close up.
 				// instead the normal is dotted with the normalized fragment direction.
-				writeColor.rgb += pow(vec3(TEXTURE(texRimEmissivity, tcEmissivity)),
+				writeColor.rgb += pow(vec3(TEXTURE(texRimEmissivity, texRimEmissivityArray, tcEmissivity)),
 					vec3(getColorGamma(vSPBIndex)))
 						* finalEmissivityIntensity(getRimEmissivityIntensity(vSPBIndex))
 						* vec3(max(1.0 - pow(asin(abs(dot(fragmentDirection, normal.xyz)))

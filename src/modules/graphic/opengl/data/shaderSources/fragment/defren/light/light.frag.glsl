@@ -687,7 +687,7 @@ void main(void){
 				shadow = 0.0;
 				
 			}else{
-				shadow = clamp(dotval * shadowThresholdInv + 1, 0, 1);
+				shadow = clamp(dotval * shadowThresholdInv + 1.0, 0.0, 1.0);
 			}
 			
 		}else{

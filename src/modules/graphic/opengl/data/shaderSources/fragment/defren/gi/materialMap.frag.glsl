@@ -29,7 +29,7 @@ layout(location=2) out vec4 outEmissivity; // emissivity=rgb, solidity=a
 // Main Function
 //////////////////
 
-vec4 textureVariation(in sampler2D tex2d, in sampler2DArray texarr, const in vec2 tc){
+vec4 textureVariation(in ARG_SAMP_MEDP sampler2D tex2d, in ARG_SAMP_MEDP sampler2DArray texarr, const in vec2 tc){
 	// functions are defined right before main due to Shared-SPB support
 	if(WithVariations){
 		return textureLod(texarr, vec3(tc, 0.0), 0.0);
@@ -42,13 +42,13 @@ vec4 textureVariation(in sampler2D tex2d, in sampler2DArray texarr, const in vec
 
 #ifdef NVIDIA_SAMPLER_COUNT_WORKAROUND
 	#ifdef WITH_VARIATION
-		#define TEXTURE(s,tc) textureLod(s##Array, vec3(tc, 0.0), 0.0)
+		#define TEXTURE(s,sarr,tc) textureLod(sarr, vec3(tc, 0.0), 0.0)
 	#else
-		#define TEXTURE(s,tc) textureLod(s, tc, 0.0)
+		#define TEXTURE(s,sarr,tc) textureLod(s, tc, 0.0)
 	#endif
 	
 #else
-	#define TEXTURE(s,tc) textureVariation(s, s##Array, tc)
+	#define TEXTURE(s,sarr,tc) textureVariation(s, sarr, tc)
 #endif
 
 
@@ -59,12 +59,12 @@ void main( void ){
 	if(TextureNonPbrAlbedo || TextureNonPbrMetalness){
 		nonpbrAlbedo = vec3(0.0);
 		if(TextureNonPbrAlbedo){
-			nonpbrAlbedo = vec3(TEXTURE(texNonPbrAlbedo, vTexCoord));
+			nonpbrAlbedo = vec3(TEXTURE(texNonPbrAlbedo, texNonPbrAlbedoArray, vTexCoord));
 		}
 		
 		nonpbrMetalness = 0.0;
 		if(TextureNonPbrMetalness){
-			nonpbrMetalness = TEXTURE(texNonPbrMetalness, vTexCoord).r;
+			nonpbrMetalness = TEXTURE(texNonPbrMetalness, texNonPbrMetalnessArray, vTexCoord).r;
 		}
 	}
 	
@@ -74,18 +74,18 @@ void main( void ){
 		
 	}else if(TextureColor){
 		if(TextureTransparency){
-			outDiffuse.rgb = vec3(TEXTURE(texColor, vTexCoord));
-			//outDiffuse.a = TEXTURE(texTransparency, vTexCoord).r;
+			outDiffuse.rgb = vec3(TEXTURE(texColor, texColorArray, vTexCoord));
+			//outDiffuse.a = TEXTURE(texTransparency, texTransparencyArray, vTexCoord).r;
 			
 		}else{
-			//outDiffuse = TEXTURE(texColor, vTexCoord);
-			outDiffuse.rgb = vec3(TEXTURE(texColor, vTexCoord));
+			//outDiffuse = TEXTURE(texColor, texColorArray, vTexCoord);
+			outDiffuse.rgb = vec3(TEXTURE(texColor, texColorArray, vTexCoord));
 		}
 		
 	}else{
 		if(TextureTransparency){
 			outDiffuse.rgb = vec3(0.0);
-			//outDiffuse.a = TEXTURE(texTransparency, vTexCoord).r;
+			//outDiffuse.a = TEXTURE(texTransparency, texTransparencyArray, vTexCoord).r;
 			
 		}else{
 			outDiffuse = vec4(0.0, 0.0, 0.0, 1.0);
@@ -94,7 +94,7 @@ void main( void ){
 	
 	// texture property "color.tint.mask"
 	if(TextureColorTintMask){
-		outDiffuse.a = TEXTURE(texColorTintMask, vTexCoord).r;
+		outDiffuse.a = TEXTURE(texColorTintMask, texColorTintMaskArray, vTexCoord).r;
 		
 	}else{
 		outDiffuse.a = 1.0;
@@ -105,7 +105,7 @@ void main( void ){
 		outReflectivity.rgb = nonpbrMetalnessToReflectivity(nonpbrAlbedo, nonpbrMetalness);
 		
 	}else if(TextureReflectivity){
-		outReflectivity.rgb = vec3(TEXTURE(texReflectivity, vTexCoord));
+		outReflectivity.rgb = vec3(TEXTURE(texReflectivity, texReflectivityArray, vTexCoord));
 		
 	}else{
 		outReflectivity.rgb = vec3(0.0);
@@ -113,7 +113,7 @@ void main( void ){
 	
 	// texture property "roughness"
 	if(TextureRoughness){
-		outReflectivity.a = TEXTURE(texRoughness, vTexCoord).r;
+		outReflectivity.a = TEXTURE(texRoughness, texRoughnessArray, vTexCoord).r;
 		
 	}else{
 		outReflectivity.a = 1.0;
@@ -121,7 +121,7 @@ void main( void ){
 	
 	// texture property "emissivity"
 	if(TextureEmissivity){
-		outEmissivity.rgb = vec3(TEXTURE(texEmissivity, vTexCoord));
+		outEmissivity.rgb = vec3(TEXTURE(texEmissivity, texEmissivityArray, vTexCoord));
 		
 	}else{
 		outEmissivity.rgb = vec3(0.0);
@@ -129,7 +129,7 @@ void main( void ){
 	
 	// texture property "solidity"
 	if(TextureSolidity){
-		outEmissivity.a = TEXTURE(texSolidity, vTexCoord).r;
+		outEmissivity.a = TEXTURE(texSolidity, texSolidityArray, vTexCoord).r;
 		
 	}else{
 		outEmissivity.a = 1.0;
@@ -152,7 +152,7 @@ void main( void ){
 		}
 		
 		if(TextureEnvRoomMask){
-			envRoomMask = TEXTURE(texEnvRoomMask, vTexCoord).r;
+			envRoomMask = TEXTURE(texEnvRoomMask, texEnvRoomMaskArray, vTexCoord).r;
 			outDiffuse.rgb = mix(outDiffuse.rgb, envRoomColor, vec3(envRoomMask));
 			
 		}else{
