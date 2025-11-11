@@ -15,7 +15,7 @@ void main( void ){
 		#if ! defined SPLIT_LAYERS && defined SUPPORTS_VSDRAWPARAM
 		vLayer = gl_DrawID;
 		#endif
-		#ifdef SUPPORTS_VSLAYER
+		#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 		gl_Layer = vLayer;
 		#endif
 	}

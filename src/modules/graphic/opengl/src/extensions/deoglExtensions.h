@@ -392,6 +392,9 @@ public:
 		ext_WGL_EXT_swap_control,
 		ext_WGL_EXT_swap_control_tear,
 		
+		ext_OVR_multiview,
+		ext_OVR_multiview2,
+		
 		/** Dummy entry containing the number of extensions. */
 		EXT_COUNT
 	};

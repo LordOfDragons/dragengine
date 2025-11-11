@@ -240,8 +240,9 @@ def transpileOpenGLSpirV(env):
 		parts.append('-P"#extension GL_ARB_shading_language_include : require"')
 		parts.append('-P"#extension GL_EXT_shader_integer_mix : require"')
 		if source[0].get_path().endswith('.vert.glsl'):
-			parts.append('-P"#extension GL_ARB_shader_viewport_layer_array : require"')
-			parts.append('-P"#extension GL_ARB_shader_draw_parameters : require"')
+			if env['platform_android'] == 'no':
+				parts.append('-P"#extension GL_ARB_shader_viewport_layer_array : require"')
+				parts.append('-P"#extension GL_ARB_shader_draw_parameters : require"')
 		elif source[0].get_path().endswith('.geom.glsl'):
 			#parts.append('-P"#extension GL_ARB_gpu_shader5 : require"')
 			pass
