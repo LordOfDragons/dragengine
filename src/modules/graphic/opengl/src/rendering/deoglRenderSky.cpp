@@ -607,7 +607,6 @@ deoglEnvironmentMap &envmap ){
 	deoglFramebuffer *oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglCubeMap *cubemap = envmap.GetEnvironmentMap();
 	deoglRenderPlan plan( renderThread );
-	deoglFramebuffer *fbo = NULL;
 	int size = envmap.GetSize();
 	decDMatrix matrixCamera;
 	int cmf, l, s;
@@ -634,7 +633,8 @@ deoglEnvironmentMap &envmap ){
 	//defren.Resize( size, size );
 	
 	try{
-		fbo = renderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+		const deoglFramebufferManager::Usage fbo(
+			renderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size));
 		renderThread.GetFramebuffer().Activate( fbo );
 		
 		fbo->DetachAllImages();
@@ -730,17 +730,11 @@ deoglEnvironmentMap &envmap ){
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
 		renderThread.GetFramebuffer().Activate( oldfbo );
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
 		
 		cubemap->CreateMipMaps();
 		
 	}catch( const deException & ){
 		renderThread.GetFramebuffer().Activate( oldfbo );
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
 		throw;
 	}
 }
@@ -751,7 +745,6 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 	deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
 	deoglPipelineState &state = renderThread.GetPipelineManager().GetState();
 	deoglCubeMap * const cubemap = envmap.GetEnvironmentMap();
-	deoglFramebuffer *fbo = NULL;
 	const int size = envmap.GetSize();
 	int cmf;
 	
@@ -763,7 +756,8 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 	const decColor skyColor( 0.0f, 0.0f, 0.0f );
 	
 	try{
-		fbo = renderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+		const deoglFramebufferManager::Usage fbo(
+			renderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size));
 		renderThread.GetFramebuffer().Activate( fbo );
 		
 		fbo->DetachAllImages();
@@ -787,17 +781,11 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 		}
 		
 		renderThread.GetFramebuffer().Activate( oldfbo );
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
 		
 		cubemap->CreateMipMaps();
 		
 	}catch( const deException & ){
 		renderThread.GetFramebuffer().Activate( oldfbo );
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
 		throw;
 	}
 }

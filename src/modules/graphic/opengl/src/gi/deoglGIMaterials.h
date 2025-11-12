@@ -66,7 +66,7 @@ private:
 	deoglTexture *pTexDiffuse;
 	deoglTexture *pTexReflectivity;
 	deoglTexture *pTexEmissivity;
-	deoglFramebuffer pFBOMaterial;
+	const deoglFramebuffer::Ref pFBOMaterial;
 	
 	
 	
@@ -147,7 +147,7 @@ public:
 	inline const deoglTexture &GetTextureEmissivity() const{ return *pTexEmissivity; }
 	
 	/** Material FBO. */
-	inline deoglFramebuffer &GetFBOMaterial(){ return pFBOMaterial; }
+	inline const deoglFramebuffer::Ref &GetFBOMaterial(){ return pFBOMaterial; }
 	/*@}*/
 // 	void DEBUG();
 	

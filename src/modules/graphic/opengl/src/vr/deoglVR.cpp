@@ -93,7 +93,6 @@ pTimeHistoryFrame( 9, 2 ),
 pTargetFPS( 90 ),
 pTargetFPSHysteresis( 0.1f ), // 0.2f
 pUseRenderStereo( false ),
-pFBOStereo( nullptr ),
 pDebugPanelSize( 1024, 512 ),
 pDebugPanelRenderSize( 0.4f, 0.2f )
 {
@@ -105,10 +104,6 @@ pDebugPanelRenderSize( 0.4f, 0.2f )
 }
 
 deoglVR::~deoglVR(){
-	if( pFBOStereo ){
-		delete pFBOStereo;
-		pFBOStereo = nullptr;
-	}
 }
 
 
@@ -147,10 +142,7 @@ void deoglVR::UpdateTargetFPS( float elapsed ){
 }
 
 void deoglVR::DropFBOStereo(){
-	if( pFBOStereo ){
-		delete pFBOStereo;
-		pFBOStereo = nullptr;
-	}
+	pFBOStereo = nullptr;
 }
 
 
@@ -363,17 +355,17 @@ void deoglVR::pRenderStereo(){
 	pLeftEye.GetRenderTarget()->PrepareFramebuffer();
 	pRightEye.GetRenderTarget()->PrepareFramebuffer();
 	
-	if( ! pFBOStereo ){
-		pFBOStereo = new deoglFramebuffer( renderThread, false );
+	if(!pFBOStereo){
+		pFBOStereo.TakeOverWith(renderThread, false);
 		
-		renderThread.GetFramebuffer().Activate( pFBOStereo );
+		renderThread.GetFramebuffer().Activate(pFBOStereo);
 		
-		pFBOStereo->AttachColorTexture( 0, pLeftEye.GetRenderTarget()->GetTexture() );
-		pFBOStereo->AttachColorTexture( 1, pRightEye.GetRenderTarget()->GetTexture() );
+		pFBOStereo->AttachColorTexture(0, pLeftEye.GetRenderTarget()->GetTexture());
+		pFBOStereo->AttachColorTexture(1, pRightEye.GetRenderTarget()->GetTexture());
 		
-		const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-		OGL_CHECK( renderThread, pglDrawBuffers( 2, buffers ) );
-		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		const GLenum buffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+		OGL_CHECK(renderThread, pglDrawBuffers(2, buffers));
+		OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 		
 		pFBOStereo->Verify();
 	}
@@ -389,7 +381,7 @@ void deoglVR::pRenderStereo(){
 	plan.SetCameraMatrix( pCamera.GetCameraMatrix().QuickMultiply( matrixViewToLeftEye ) );
 	plan.SetCameraStereoMatrix( matrixViewToLeftEye.QuickInvert().QuickMultiply( matrixViewToRightEye ) );
 	
-	plan.SetFBOTarget( pFBOStereo );
+	plan.SetFBOTarget(pFBOStereo);
 	
 	const deoglDeveloperMode &devmode = renderThread.GetDebug().GetDeveloperMode();
 	plan.SetDebugTiming( devmode.GetEnabled() && devmode.GetShowDebugInfo() );

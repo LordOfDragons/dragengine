@@ -25,10 +25,11 @@
 #ifndef _DEOGLRWDEPTHMINMAX_H_
 #define _DEOGLRWDEPTHMINMAX_H_
 
+#include <dragengine/common/collection/decObjectList.h>
+
 class deoglRenderThread;
 class deoglArrayTexture;
 class deoglFramebuffer;
-
 
 
 /**
@@ -45,12 +46,10 @@ private:
 	deoglRenderThread &pRenderThread;
 	
 	deoglArrayTexture *pTexture;
-	deoglFramebuffer **pFBOs;
+	decObjectList pFBOs;
 	
-	deoglArrayTexture *pTextureMin;
-	deoglFramebuffer **pFBOMin;
-	deoglArrayTexture *pTextureMax;
-	deoglFramebuffer **pFBOMax;
+	deoglArrayTexture *pTextureMin, *pTextureMax;
+	decObjectList pFBOMin, pFBOMax;
 	
 	int pWidth;
 	int pHeight;

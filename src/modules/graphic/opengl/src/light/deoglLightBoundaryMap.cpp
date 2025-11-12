@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglLightBoundaryMap.h"
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
@@ -53,17 +48,14 @@ pRenderThread( renderThread  ),
 
 pTextureMin( NULL ),
 pTextureMax( NULL ),
-pFBOs( NULL ),
 
-pPixBufBoundaryMin( deoglPixelBuffer::Ref::New( new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 ) ) ),
-pPixBufBoundaryMax( deoglPixelBuffer::Ref::New( new deoglPixelBuffer( deoglPixelBuffer::epfFloat3, 1, 1, 1 ) ) ),
+pPixBufBoundaryMin(deoglPixelBuffer::Ref::NewWith(deoglPixelBuffer::epfFloat3, 1, 1, 1)),
+pPixBufBoundaryMax(deoglPixelBuffer::Ref::NewWith(deoglPixelBuffer::epfFloat3, 1, 1, 1)),
 
 pSize( size ),
 pLevelCount( 1 )
 {
-	if( pSize < 2 ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_TRUE(pSize >= 2)
 	
 	try{
 		pCreateTextures();
@@ -99,11 +91,7 @@ int deoglLightBoundaryMap::GetBaseLevel( int baseSize ){
 
 
 deoglFramebuffer *deoglLightBoundaryMap::GetFBOAt( int level ){
-	if( level < 0 || level >= pLevelCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pFBOs[ level ];
+	return (deoglFramebuffer*)pFBOs.GetAt(level);
 }
 
 
@@ -130,18 +118,7 @@ void deoglLightBoundaryMap::GetResult( decVector &boundaryMin, decVector &bounda
 //////////////////////
 
 void deoglLightBoundaryMap::pCleanUp(){
-	if( pFBOs ){
-		int i;
-		
-		for( i=0; i<pLevelCount; i++ ){
-			if( pFBOs[ i ] ){
-				delete pFBOs[ i ];
-			}
-		}
-		
-		delete [] pFBOs;
-	}
-	
+	pFBOs.RemoveAll();
 	if( pTextureMax ){
 		delete pTextureMax;
 	}
@@ -169,26 +146,21 @@ void deoglLightBoundaryMap::pCreateTextures(){
 }
 
 void deoglLightBoundaryMap::pCreateFBOs(){
-	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
-	const GLenum buffers[ 2 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	const GLenum buffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+	const deoglRestoreFramebuffer restoreFbo(pRenderThread);
 	int i;
 	
-	pFBOs = new deoglFramebuffer*[ pLevelCount ];
-	
 	for( i=0; i<pLevelCount; i++ ){
-		pFBOs[ i ] = NULL;
-	}
-	
-	for( i=0; i<pLevelCount; i++ ){
-		pFBOs[ i ] = new deoglFramebuffer( pRenderThread, false );
+		const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
 		
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ i ] );
+		pRenderThread.GetFramebuffer().Activate(fbo);
 		
-		pFBOs[ i ]->AttachColorTextureLevel( 0, pTextureMin, i );
-		pFBOs[ i ]->AttachColorTextureLevel( 1, pTextureMax, i );
+		fbo->AttachColorTextureLevel(0, pTextureMin, i);
+		fbo->AttachColorTextureLevel(1, pTextureMax, i);
 		
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 2, &buffers[ 0 ] ) );
+		OGL_CHECK(pRenderThread, pglDrawBuffers(2, &buffers[0]));
 		
-		pFBOs[ i ]->Verify();
+		fbo->Verify();
+		pFBOs.Add(fbo);
 	}
 }

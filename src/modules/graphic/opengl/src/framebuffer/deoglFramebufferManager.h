@@ -22,14 +22,13 @@
  * SOFTWARE.
  */
 
-// include only once
 #ifndef _DEOGLFRAMEBUFFERMANAGER_H_
 #define _DEOGLFRAMEBUFFERMANAGER_H_
 
-// predefinitions
+#include <dragengine/common/collection/decObjectList.h>
+
 class deoglRenderThread;
 class deoglFramebuffer;
-
 
 
 /**
@@ -42,35 +41,83 @@ class deoglFramebuffer;
  * out.
  */
 class deoglFramebufferManager{
+public:
+	/** Framebuffer usage. */
+	class Usage{
+	private:
+		deoglFramebuffer *pFBO;
+		
+		
+	public:
+		/** \name Constructors and Destructors */
+		/*@{*/
+		/** Create empty usage. */
+		Usage();
+		
+		/** Create usage for framebuffer. */
+		explicit Usage(const Usage &usage);
+		
+		/** Cleans up usage of framebuffer. */
+		~Usage();
+		/*@}*/
+		
+		
+		/** \name Management */
+		/*@{*/
+		/** Framebuffer or nullptr. */
+		inline deoglFramebuffer* Get() const{ return pFBO; }
+		inline operator deoglFramebuffer*() const{ return pFBO; }
+		inline deoglFramebuffer* operator->() const { return pFBO; }
+		
+		/** Check if empty. */
+		inline bool IsNull() const{ return pFBO == nullptr; }
+		inline bool IsNotNull() const{ return pFBO != nullptr; }
+		inline operator bool() const{ return pFBO != nullptr; }
+		
+		/** Clear. */
+		void Clear();
+		
+		/** Copy operator. */
+		Usage &operator=(const Usage &usage);
+		/*@}*/
+		
+		
+	private:
+		Usage(deoglFramebuffer *fbo);
+		friend class deoglFramebufferManager;
+	};
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
+	decObjectList pFBOs;
 	
-	deoglFramebuffer **pFBOs;
-	int pFBOCount;
-	int pFBOSize;
 	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new framebuffer manager. */
-	deoglFramebufferManager( deoglRenderThread &renderThread );
-	/** Cleans up the framebuffer manager. */
-	~deoglFramebufferManager();
+	/** Create framebuffer manager. */
+	deoglFramebufferManager(deoglRenderThread &renderThread);
+	
+	/** Clean up framebuffer manager. */
+	~deoglFramebufferManager() = default;
 	/*@}*/
+	
 	
 	/** \name Management */
 	/*@{*/
-	/*@}*/
+	/** Count of framebuffers. */
+	int GetFBOCount() const;
 	
-	/** \name Management */
-	/*@{*/
-	/** Retrieves the number of framebuffers. */
-	inline int GetFBOCount() const{ return pFBOCount; }
-	/** Retrieves the framebuffer for reading only at the given location. */
-	const deoglFramebuffer *GetFBOAt( int index ) const;
+	/**
+	 * Framebuffer for reading only at the given location.
+	 * 
+	 * \warning Debug use only.
+	 */
+	const deoglFramebuffer &GetFBOAt(int index) const;
 	
-	/** Retrieves the framebuffer for the given resolution. */
-	deoglFramebuffer *GetFBOWithResolution( int width, int height );
+	/** Framebuffer for the given resolution. */
+	Usage GetFBOWithResolution(int width, int height);
 	/*@}*/
 };
 

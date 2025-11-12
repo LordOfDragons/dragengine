@@ -58,7 +58,7 @@ pMaxMaterialCount( pMaxMaterialsPerRow * pMaxRowsPerImage ),
 pTexDiffuse( NULL ),
 pTexReflectivity( NULL ),
 pTexEmissivity( NULL ),
-pFBOMaterial( renderThread, false )
+pFBOMaterial(deoglFramebuffer::Ref::NewWith(renderThread, false))
 {
 	try{
 		pTUCs.Add( NULL ); // index 0 is fallback
@@ -182,14 +182,14 @@ void deoglGIMaterials::pCreateFBOMaterial(){
 	pTexEmissivity->CreateTexture();
 	
 	pRenderThread.GetRenderers().GetLight().GetRenderGI().GetPipelineClearBuffers()->Activate();
-	pRenderThread.GetFramebuffer().Activate( &pFBOMaterial );
-	pFBOMaterial.DetachAllImages();
-	pFBOMaterial.AttachColorTexture( 0, pTexDiffuse );
-	pFBOMaterial.AttachColorTexture( 1, pTexReflectivity );
-	pFBOMaterial.AttachColorTexture( 2, pTexEmissivity );
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 3, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-	pFBOMaterial.Verify();
+	pRenderThread.GetFramebuffer().Activate(pFBOMaterial);
+	pFBOMaterial->DetachAllImages();
+	pFBOMaterial->AttachColorTexture(0, pTexDiffuse);
+	pFBOMaterial->AttachColorTexture(1, pTexReflectivity);
+	pFBOMaterial->AttachColorTexture(2, pTexEmissivity);
+	OGL_CHECK(pRenderThread, pglDrawBuffers(3, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
+	pFBOMaterial->Verify();
 	
 	const GLfloat clearDiffTintMask[ 4 ] = { 0.85f, 0.85f, 0.85f, 1.0f };
 	const GLfloat clearReflRough[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.5f };

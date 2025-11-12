@@ -160,7 +160,7 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel( deoglTexture &texture, int le
 	deoglDelayedSaveImage *saveImage = NULL;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
-	deoglFramebuffer *fbo = NULL;
+	deoglFramebuffer::Ref fbo;
 	decString fileTitle;
 	decPath pathFile;
 	int y, x;
@@ -189,7 +189,7 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel( deoglTexture &texture, int le
 		deoglPixelBuffer::sFloat1 * const pbdata = pixbuf->GetPointerFloat1();
 		
 		if( true ){
-			fbo = new deoglFramebuffer( pRenderThread, false );
+			fbo.TakeOverWith(pRenderThread, false);
 			pRenderThread.GetFramebuffer().Activate( fbo );
 			fbo->AttachDepthTextureLevel( &texture, level );
 			const GLenum buffers[ 1 ] = { GL_NONE };
@@ -249,16 +249,10 @@ void deoglDebugSaveTexture::SaveDepthTextureLevel( deoglTexture &texture, int le
 		pRenderThread.GetDelayedOperations().AddSaveImage( saveImage );
 		saveImage = NULL;
 		
-		if( fbo ){
-			pRenderThread.GetFramebuffer().Activate( oldFBO );
-			delete fbo;
-		}
+		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
 	}catch( const deException &e ){
-		if( fbo ){
-			pRenderThread.GetFramebuffer().Activate( oldFBO );
-			delete fbo;
-		}
+		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		if( saveImage ){
 			delete saveImage;
 		}
@@ -281,7 +275,7 @@ void deoglDebugSaveTexture::SaveStencilTexture( deoglTexture &texture, const cha
 	deoglDelayedSaveImage *saveImage = NULL;
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
-	deoglFramebuffer *fbo = NULL;
+	deoglFramebuffer::Ref fbo;
 	decString fileTitle;
 	decPath pathFile;
 	int y, x;
@@ -299,7 +293,7 @@ void deoglDebugSaveTexture::SaveStencilTexture( deoglTexture &texture, const cha
 		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
 		
 		if( true ){
-			fbo = new deoglFramebuffer( pRenderThread, false );
+			fbo.TakeOverWith(pRenderThread, false);
 			pRenderThread.GetFramebuffer().Activate( fbo );
 			fbo->AttachDepthTextureLevel( &texture, 0 );
 			fbo->AttachStencilTextureLevel( &texture, 0 );
@@ -341,16 +335,10 @@ void deoglDebugSaveTexture::SaveStencilTexture( deoglTexture &texture, const cha
 		delete [] pbdata;
 		pbdata = NULL;
 		
-		if( fbo ){
-			pRenderThread.GetFramebuffer().Activate( oldFBO );
-			delete fbo;
-		}
+		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
 	}catch( const deException &e ){
-		if( fbo ){
-			pRenderThread.GetFramebuffer().Activate( oldFBO );
-			delete fbo;
-		}
+		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		if( saveImage ){
 			delete saveImage;
 		}
@@ -377,7 +365,7 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture( deoglArrayTexture &texture,
 	int height = texture.GetHeight();
 	int width = texture.GetWidth();
 	int layers = texture.GetLayerCount();
-	deoglFramebuffer *fbo = NULL;
+	deoglFramebuffer::Ref fbo;
 	decString fileTitle;
 	decPath pathFile;
 	int y, x, l;
@@ -395,7 +383,7 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture( deoglArrayTexture &texture,
 		OGL_CHECK( pRenderThread, glPixelStorei( GL_PACK_ALIGNMENT, 1 ) );
 		
 		if( true ){
-			fbo = new deoglFramebuffer( pRenderThread, false );
+			fbo.TakeOverWith(pRenderThread, false);
 			pRenderThread.GetFramebuffer().Activate( fbo );
 			fbo->AttachDepthArrayTextureLevel( &texture, 0 );
 			fbo->AttachStencilArrayTextureLevel( &texture, 0 );
@@ -439,16 +427,10 @@ void deoglDebugSaveTexture::SaveStencilArrayTexture( deoglArrayTexture &texture,
 		delete [] pbdata;
 		pbdata = NULL;
 		
-		if( fbo ){
-			pRenderThread.GetFramebuffer().Activate( oldFBO );
-			delete fbo;
-		}
+		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		
 	}catch( const deException &e ){
-		if( fbo ){
-			pRenderThread.GetFramebuffer().Activate( oldFBO );
-			delete fbo;
-		}
+		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		if( saveImage ){
 			delete saveImage;
 		}

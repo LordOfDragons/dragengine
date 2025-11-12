@@ -453,13 +453,13 @@ void deoglEnvironmentMap::PrepareForRender(){
 	pEnvMap->SetSize( pSize );
 	pEnvMap->CreateCubeMap();
 	
-	deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
+	const deoglFramebuffer::Ref &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
 	const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	
-	pRenderThread.GetFramebuffer().Activate( &fbo );
-	fbo.DetachAllImages();
-	fbo.AttachColorCubeMap( 0, pEnvMap );
-	fbo.Verify();
+	pRenderThread.GetFramebuffer().Activate(fbo);
+	fbo->DetachAllImages();
+	fbo->AttachColorCubeMap( 0, pEnvMap );
+	fbo->Verify();
 	OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 	
 	pEnvMap->CreateMipMaps();
@@ -656,26 +656,26 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 		// rendering. this can lead to problems
 		pRenderThread.GetRenderers().GetWorld().GetPipelineClearBuffers()->Activate();
 		
-		deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
-		pRenderThread.GetFramebuffer().Activate( &fbo );
-		fbo.DetachAllImages();
-		fbo.AttachColorArrayTexture( 0, pEnvMapEmissive );
-		fbo.Verify();
+		const deoglFramebuffer::Ref &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
+		pRenderThread.GetFramebuffer().Activate(fbo);
+		fbo->DetachAllImages();
+		fbo->AttachColorArrayTexture( 0, pEnvMapEmissive );
+		fbo->Verify();
 		
 		const GLfloat clearColor[ 4 ] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearColor[ 0 ] ) );
 		
-		deoglFramebuffer &fboMaterial = pRenderThread.GetFramebuffer().GetEnvMapMaterial();
+		const deoglFramebuffer::Ref &fboMaterial = pRenderThread.GetFramebuffer().GetEnvMapMaterial();
 		const GLfloat clearPosition[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		const GLfloat clearDiffuse[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f };
 		const GLfloat clearNormal[ 4 ] = { 0.0f, 0.0f, 0.0f, 0.0f }; // int-shifted
 		
-		pRenderThread.GetFramebuffer().Activate( &fboMaterial );
-		fboMaterial.DetachAllImages();
-		fboMaterial.AttachColorArrayTexture( 0, pEnvMapPosition );
-		fboMaterial.AttachColorArrayTexture( 1, pEnvMapDiffuse );
-		fboMaterial.AttachColorArrayTexture( 2, pEnvMapNormal );
-		fboMaterial.Verify();
+		pRenderThread.GetFramebuffer().Activate(fboMaterial);
+		fboMaterial->DetachAllImages();
+		fboMaterial->AttachColorArrayTexture( 0, pEnvMapPosition );
+		fboMaterial->AttachColorArrayTexture( 1, pEnvMapDiffuse );
+		fboMaterial->AttachColorArrayTexture( 2, pEnvMapNormal );
+		fboMaterial->Verify();
 		
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 0, &clearPosition[ 0 ] ) );
 		OGL_CHECK( pRenderThread, pglClearBufferfv( GL_COLOR, 1, &clearDiffuse[ 0 ] ) );

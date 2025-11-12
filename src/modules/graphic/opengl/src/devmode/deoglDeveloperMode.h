@@ -25,13 +25,13 @@
 #ifndef _DEOGLDEVELOPERMODE_H_
 #define _DEOGLDEVELOPERMODE_H_
 
+#include "../framebuffer/deoglFramebuffer.h"
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
 class decUnicodeArgumentList;
 class decUnicodeString;
 class deoglTexture;
-class deoglFramebuffer;
 
 
 
@@ -102,7 +102,7 @@ private:
 	bool pGIShowProbeRays;
 	
 	deoglTexture *pTextureDebugImage;
-	deoglFramebuffer *pFBODebugImage;
+	deoglFramebuffer::Ref pFBODebugImage;
 	bool pDebugImageUsed;
 	
 	
@@ -205,7 +205,7 @@ public:
 	 * Retrieves the debug image framebuffer for the given size. Attached the debug image texture to the
 	 * framebuffer. If the texture does not exist or the size does not match it is created first.
 	 */
-	deoglFramebuffer *GetFBODebugImageWith( int width, int height );
+	const deoglFramebuffer::Ref &GetFBODebugImageWith( int width, int height );
 	/** Check if the debug image has been used since the last time deleting it if so. */
 	void CheckDebugImageUse();
 	

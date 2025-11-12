@@ -524,9 +524,9 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 	// this is called if the format is 4 channels
 	deoglRTFramebuffer &rtframebuffer = pRenderThread.GetFramebuffer();
 	deoglFramebuffer * const oldFbo = rtframebuffer.GetActive();
-	deoglFramebuffer *fbo = NULL;
 	try{
-		fbo = rtframebuffer.GetManager().GetFBOWithResolution(width, height);
+		const deoglFramebufferManager::Usage fbo(
+			rtframebuffer.GetManager().GetFBOWithResolution(width, height));
 		//fbo = new deoglFramebuffer(pRenderThread, false);
 		rtframebuffer.Activate(fbo);
 		fbo->DetachAllImages();
@@ -553,16 +553,8 @@ void deoglTexture::GetPixelsLevel(int level, deoglPixelBuffer &pixelBuffer) cons
 		
 		rtframebuffer.Activate(oldFbo);
 		
-		fbo->DecreaseUsageCount();
-		//delete fbo;
-		fbo = NULL;
-		
 	}catch(const deException &){
 		rtframebuffer.Activate(oldFbo);
-		if(fbo){
-			fbo->DecreaseUsageCount();
-			//delete fbo;
-		}
 		throw;
 	}
 	

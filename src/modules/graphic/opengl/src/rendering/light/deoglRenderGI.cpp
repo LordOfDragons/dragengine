@@ -695,7 +695,7 @@ void deoglRenderGI::RenderMaterials( deoglRenderPlan &plan, const deoglRenderTas
 		DebugTimer1Reset( plan, true );
 	}
 	
-	renderThread.GetFramebuffer().Activate( &materials.GetFBOMaterial() );
+	renderThread.GetFramebuffer().Activate(materials.GetFBOMaterial());
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	SetViewport( width, height );
@@ -761,7 +761,7 @@ deoglTexture &texEmissivity, int mapsPerRow, int rowsPerImage ){
 	deoglGIMaterials &materials = renderThread.GetGI().GetMaterials();
 	
 	pPipelineResizeMaterials->Activate();
-	renderThread.GetFramebuffer().Activate( &materials.GetFBOMaterial() );
+	renderThread.GetFramebuffer().Activate(materials.GetFBOMaterial());
 	
 	SetViewport( materials.GetMaterialMapSize() * materials.GetMaterialsPerRow(),
 		materials.GetMaterialMapSize() * materials.GetRowsPerImage() );

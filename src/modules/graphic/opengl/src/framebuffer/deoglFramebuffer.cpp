@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglFramebuffer.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
@@ -922,13 +918,17 @@ void deoglFramebuffer::SetDebugObjectLabel( const char *name ){
 //////////////////////
 
 void deoglFramebuffer::pCleanUp(){
-	if( pUsageCount > 0 ){
+	if(pUsageCount > 0){
 		pRenderThread.GetLogger().LogWarnFormat(
-			"Framebuffer ( %i x %i ) has %i usage count on deletion!",
-			pUsageWidth, pUsageHeight, pUsageCount );
+			"Framebuffer (%d x %d) has %d usage count on deletion!",
+			pUsageWidth, pUsageHeight, pUsageCount);
 	}
 	
-	if( ! pPrimary ){
-		pRenderThread.GetDelayedOperations().DeleteOpenGLFramebuffer( pFBO );
+	if(!pPrimary){
+		if(pRenderThread.HasFramebuffer() && pRenderThread.GetFramebuffer().GetActive() == this){
+			pRenderThread.GetFramebuffer().Activate(nullptr);
+		}
+		
+		pRenderThread.GetDelayedOperations().DeleteOpenGLFramebuffer(pFBO);
 	}
 }

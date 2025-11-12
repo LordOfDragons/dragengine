@@ -418,11 +418,11 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 	const int faceStride = pixelBuffer.GetLayerStride();
 	deoglRTFramebuffer &rtframebuffer = pRenderThread.GetFramebuffer();
 	deoglFramebuffer * const oldFbo = rtframebuffer.GetActive();
-	deoglFramebuffer *fbo = NULL;
 	int i;
 	
 	try{
-		fbo = rtframebuffer.GetManager().GetFBOWithResolution( width, height );
+		const deoglFramebufferManager::Usage fbo(
+			rtframebuffer.GetManager().GetFBOWithResolution(width, height));
 		//fbo = new deoglFramebuffer( pRenderThread, false );
 		rtframebuffer.Activate( fbo );
 		fbo->DetachAllImages();
@@ -455,16 +455,8 @@ void deoglArrayTexture::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer
 		
 		rtframebuffer.Activate( oldFbo );
 		
-		fbo->DecreaseUsageCount();
-		//delete fbo;
-		fbo = NULL;
-		
 	}catch( const deException & ){
 		rtframebuffer.Activate( oldFbo );
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-			//delete fbo;
-		}
 		throw;
 	}
 	

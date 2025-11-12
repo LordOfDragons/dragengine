@@ -189,7 +189,6 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 	deoglPipelineConfiguration pipconf;
 	const deoglShaderSources *sources;
 	
-	pFBOToneMapParams = NULL;
 	pTextureToneMapParams = NULL;
 	
 	try{
@@ -387,7 +386,7 @@ deoglRenderToneMap::deoglRenderToneMap( deoglRenderThread &renderThread ) : deog
 		pAsyncGetPipeline(pPipelineLumPrepareStereo, pipconf, sources, defines);
 		
 		
-		pFBOToneMapParams = new deoglFramebuffer( renderThread, false );
+		pFBOToneMapParams.TakeOverWith(renderThread, false);
 		
 		pTextureToneMapParams = new deoglTexture( renderThread );
 		pTextureToneMapParams->SetSize( 1, 1 );
@@ -590,7 +589,7 @@ DEBUG_PRINT_TIMER( "ToneMap: LogLum" );
 DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	
 	// determine tone map parameters to use for this scene
-	renderThread.GetFramebuffer().Activate( pFBOToneMapParams );
+	renderThread.GetFramebuffer().Activate(pFBOToneMapParams);
 	
 	deoglRCamera &oglCamera = *plan.GetCamera();
 	deoglTexture * const lastParams = oglCamera.GetToneMapParamsTexture();
@@ -640,10 +639,10 @@ DEBUG_PRINT_TIMER( "ToneMap: Average" );
 	oglCamera.ResetElapsedToneMapAdaption();
 	
 	pFBOToneMapParams->DetachAllImages();
-	pFBOToneMapParams->AttachColorTexture( 0, pTextureToneMapParams );
-	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-	OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+	pFBOToneMapParams->AttachColorTexture(0, pTextureToneMapParams);
+	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
+	OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 	pFBOToneMapParams->Verify();
 	
 	OGL_CHECK( renderThread, glViewport( 0, 0, 1, 1 ) );
@@ -959,8 +958,5 @@ void deoglRenderToneMap::RenderLDR( deoglRenderPlan &plan ){
 void deoglRenderToneMap::pCleanUp(){
 	if( pTextureToneMapParams ){
 		delete pTextureToneMapParams;
-	}
-	if( pFBOToneMapParams ){
-		delete pFBOToneMapParams;
 	}
 }

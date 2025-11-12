@@ -433,11 +433,11 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 	const int faceStride = pixelBuffer.GetLayerStride();
 	deoglRTFramebuffer &rtframebuffer = pRenderThread.GetFramebuffer();
 	deoglFramebuffer * const oldFbo = rtframebuffer.GetActive();
-	deoglFramebuffer *fbo = NULL;
 	int i;
 	
 	try{
-		fbo = rtframebuffer.GetManager().GetFBOWithResolution( size, size );
+		const deoglFramebufferManager::Usage fbo(
+			rtframebuffer.GetManager().GetFBOWithResolution(size, size));
 		//fbo = new deoglFramebuffer( pRenderThread, false );
 		rtframebuffer.Activate( fbo );
 		fbo->DetachAllImages();
@@ -470,16 +470,8 @@ void deoglCubeMap::GetPixelsLevel( int level, deoglPixelBuffer &pixelBuffer ) co
 		
 		rtframebuffer.Activate( oldFbo );
 		
-		fbo->DecreaseUsageCount();
-		//delete fbo;
-		fbo = NULL;
-		
 	}catch( const deException & ){
 		rtframebuffer.Activate( oldFbo );
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-			//delete fbo;
-		}
 		throw;
 	}
 	

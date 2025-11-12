@@ -297,6 +297,12 @@ void devkDevice::pCreateDevice(){
 		if(flags & VK_QUEUE_PROTECTED_BIT){
 			text.Append(" protected");
 		}
+		if(flags & 0x00000020){
+			text.Append(" video-decode");
+		}
+		if(flags & 0x00000040){
+			text.Append(" video-encode");
+		}
 		text.AppendFormat(": %d", queueFamilyProperties[ i ].queueCount);
 		module.LogInfo(text);
 		
@@ -433,7 +439,7 @@ void devkDevice::pDetectExtensions(){
 	
 	VkExtensionProperties * const extensions = new VkExtensionProperties[ count ];
 	try{
-		uint32_t writtenCount = 0;
+		uint32_t writtenCount = count;
 		VK_CHECK(vulkan, pInstance.vkEnumerateDeviceExtensionProperties(
 			pPhysicalDevice, VK_NULL_HANDLE, &writtenCount, extensions));
 		DEASSERT_TRUE(writtenCount <= count);
