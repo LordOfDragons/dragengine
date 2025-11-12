@@ -27,6 +27,7 @@
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTDebug.h"
@@ -343,7 +344,7 @@ void deoglFramebuffer::AttachColorArrayTextureLevel( int index, deoglArrayTextur
 		DetachColorImage( index );
 		
 #ifdef WITH_OPENGLES
-		if(pglFramebufferTextureMultiviewOVR){
+		if(pglFramebufferTextureMultiviewOVR && false){
 			OGL_CHECK(pRenderThread, pglFramebufferTextureMultiviewOVR(GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + index, image, level, 0, texture->GetLayerCount()));
 		}else
@@ -571,7 +572,7 @@ void deoglFramebuffer::AttachDepthArrayTextureLevel( deoglArrayTexture *texture,
 		DetachDepthImage();
 		
 #ifdef WITH_OPENGLES
-		if(pglFramebufferTextureMultiviewOVR){
+		if(pglFramebufferTextureMultiviewOVR && false){
 			OGL_CHECK(pRenderThread, pglFramebufferTextureMultiviewOVR(GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT, image, level, 0, texture->GetLayerCount()));
 		}else
@@ -695,7 +696,7 @@ void deoglFramebuffer::AttachStencilArrayTextureLevel( deoglArrayTexture *textur
 		DetachStencilImage();
 		
 #ifdef WITH_OPENGLES
-		if(pglFramebufferTextureMultiviewOVR){
+		if(pglFramebufferTextureMultiviewOVR && false){
 			OGL_CHECK(pRenderThread, pglFramebufferTextureMultiviewOVR(GL_FRAMEBUFFER,
 				GL_STENCIL_ATTACHMENT, image, level, 0, texture->GetLayerCount()));
 		}else
