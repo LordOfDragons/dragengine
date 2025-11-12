@@ -689,25 +689,25 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 	
 	try{
 		// prepare material fbo
-		deoglFramebuffer &fboMaterial = pRenderThread.GetFramebuffer().GetEnvMapMaterial();
+		const deoglFramebuffer::Ref &fboMaterial = pRenderThread.GetFramebuffer().GetEnvMapMaterial();
 		const GLenum buffers[ 3 ] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 		
-		pRenderThread.GetFramebuffer().Activate( &fboMaterial );
-		fboMaterial.DetachAllImages();
+		pRenderThread.GetFramebuffer().Activate(fboMaterial);
+		fboMaterial->DetachAllImages();
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 3, buffers ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 		
-		plan.SetFBOMaterial( &fboMaterial );
+		plan.SetFBOMaterial(fboMaterial);
 		
 		// prepare fbo
-		deoglFramebuffer &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
+		const deoglFramebuffer::Ref &fbo = pRenderThread.GetFramebuffer().GetEnvMap();
 		
-		pRenderThread.GetFramebuffer().Activate( &fbo );
-		fbo.DetachAllImages();
+		pRenderThread.GetFramebuffer().Activate(fbo);
+		fbo->DetachAllImages();
 		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
 		OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 		
-		plan.SetFBOTarget( &fbo );
+		plan.SetFBOTarget(fbo);
 		plan.SetUpsideDown( false );
 		
 		// render
@@ -743,17 +743,17 @@ void deoglEnvironmentMap::RenderEnvCubeMap( deoglRenderPlan &parentPlan ){
 			
 			defren.Resize( pSize, pSize );
 			
-			pRenderThread.GetFramebuffer().Activate( &fboMaterial );
-			fboMaterial.DetachAllImages();
-			fboMaterial.AttachColorArrayTextureLayer( 0, pEnvMapPosition, cmf );
-			fboMaterial.AttachColorArrayTextureLayer( 1, pEnvMapDiffuse, cmf );
-			fboMaterial.AttachColorArrayTextureLayer( 2, pEnvMapNormal, cmf );
-			fboMaterial.Verify();
+			pRenderThread.GetFramebuffer().Activate(fboMaterial);
+			fboMaterial->DetachAllImages();
+			fboMaterial->AttachColorArrayTextureLayer( 0, pEnvMapPosition, cmf );
+			fboMaterial->AttachColorArrayTextureLayer( 1, pEnvMapDiffuse, cmf );
+			fboMaterial->AttachColorArrayTextureLayer( 2, pEnvMapNormal, cmf );
+			fboMaterial->Verify();
 			
-			pRenderThread.GetFramebuffer().Activate( &fbo );
-			fbo.DetachAllImages();
-			fbo.AttachColorArrayTextureLayer( 0, pEnvMapEmissive, cmf );
-			fbo.Verify();
+			pRenderThread.GetFramebuffer().Activate(fbo);
+			fbo->DetachAllImages();
+			fbo->AttachColorArrayTextureLayer(0, pEnvMapEmissive, cmf);
+			fbo->Verify();
 			
 			plan.Render();
 			pRenderThread.GetRenderers().GetWorld().RenderFinalizeFBO( plan, false, false );
