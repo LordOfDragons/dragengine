@@ -192,6 +192,8 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFontGlyphs.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFontSize.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebuffer.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferArray.h" />
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferCube.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferManager.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglRestoreFramebuffer.h" />
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGI.h" />
@@ -824,6 +826,8 @@
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFontGlyphs.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\font\deoglRFontSize.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebuffer.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferArray.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferCube.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferManager.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglRestoreFramebuffer.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\gi\deoglGI.cpp" />
