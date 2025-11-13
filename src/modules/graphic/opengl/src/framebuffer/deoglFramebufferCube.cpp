@@ -42,7 +42,7 @@
 deoglFramebufferCube::deoglFramebufferCube(deoglRenderThread &renderThread) :
 pRenderThread(renderThread)
 {
-	if(renderThread.GetChoices().GetFBOCubeUseLayered()){
+	if(/*renderThread.GetChoices().GetFBOCubeUseLayered()*/ false){
 		int i;
 		for(i=0; i<6; i++){
 			pFaceFBOs.Add(deoglFramebuffer::Ref::NewWith(renderThread, false));

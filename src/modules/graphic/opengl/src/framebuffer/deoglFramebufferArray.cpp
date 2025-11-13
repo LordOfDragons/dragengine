@@ -45,7 +45,7 @@ pLayerCount(layerCount)
 {
 	DEASSERT_TRUE(layerCount > 0)
 	
-	if(layerCount > 1 && renderThread.GetChoices().GetFBOArrayUseLayered()){
+	if(layerCount > 1 && /*renderThread.GetChoices().GetFBOArrayUseLayered()*/false){
 		int i;
 		for(i=0; i<layerCount; i++){
 			pLayerFBOs.Add(deoglFramebuffer::Ref::NewWith(renderThread, false));
