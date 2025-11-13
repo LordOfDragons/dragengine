@@ -30,6 +30,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include <dragengine/common/string/decStringList.h>
 
 class meObject;
 
@@ -47,6 +48,7 @@ private:
 	decVector pRotation;
 	decVector pScale;
 	decStringDictionary pProperties;
+	decStringList pAttachBehaviors;
 	meObjectTextureList pTextures;
 	int pAttachToIndex;
 	decString pAttachToID;

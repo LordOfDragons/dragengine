@@ -46,6 +46,7 @@ pPosition( object.GetPosition() ),
 pRotation( object.GetRotation() ),
 pScale( object.GetScaling() ),
 pProperties( object.GetProperties() ),
+pAttachBehaviors(object.GetAttachBehaviors()),
 pAttachToIndex( -1 )
 {
 	const int count = object.GetTextureCount();
@@ -90,6 +91,7 @@ void meCDOObject::UpdateObject( meObject &object ) const{
 	object.SetScaling( pScale );
 	object.SetRotation( pRotation );
 	object.SetProperties( pProperties );
+	object.SetAttachBehaviors(pAttachBehaviors);
 	
 	const int count = pTextures.GetTextureCount();
 	meObjectTexture *texture = NULL;
