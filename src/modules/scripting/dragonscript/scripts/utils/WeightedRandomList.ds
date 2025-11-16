@@ -211,17 +211,6 @@ class WeightedRandomList
 	 * \throws EInvalidParam List is empty.
 	 */
 	func Object random()
-		return random(DEMath.random())
-	end
-	
-	/**
-	 * \brief Random object using random value in the range from 0 to 1.
-	 * \throws EInvalidParam List is empty.
-	 * \version 1.30
-	 * 
-	 * This function is useful to create reproducible results for example game saves.
-	 */
-	func Object random(float randomValue)
 		var int upper = pEntries.getCount() - 1
 		if upper == -1
 			throw EInvalidParam.new("empty list")
@@ -231,8 +220,7 @@ class WeightedRandomList
 			updateThresholds()
 		end
 		
-		randomValue = DEMath.clamp(randomValue, 0.0, 1.0) * pMaxThreshold
-		
+		var float randomValue = DEMath.random() * pMaxThreshold
 		var int lower, middle
 		var Entry entry
 		
