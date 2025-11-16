@@ -208,28 +208,60 @@ void deoxrGraphicApiOpenGL::pLoadLibrary(){
 	
 #elif defined HAS_LIB_DL
 	#ifdef OS_ANDROID
+		pOxr.LogInfo("GraphicApiOpenGL: Try loading libGLESv3.so");
 		pLibHandle = dlopen("libGLESv3.so", RTLD_NOW);
+		if(pLibHandle){
+			pOxr.LogInfo("GraphicApiOpenGL: Loading libGLESv3.so succeeded");
+			
+		}else{
+			pOxr.LogErrorFormat("GraphicApiOpenGL: dlerror: %s.", dlerror());
+			
+			pOxr.LogInfo("GraphicApiOpenGL: Try loading libGLESv3.so.1");
+			pLibHandle = dlopen("libGLESv3.so.1", RTLD_NOW);
+			
+			if(pLibHandle){
+				pOxr.LogInfo("GraphicApiOpenGL: Loading libGLESv3.so.1 succeeded");
+			}
+		}
 	#else
+		pOxr.LogInfo("GraphicApiOpenGL: Try loading libGL.so");
 		pLibHandle = dlopen("libGL.so", RTLD_NOW);
+		if(pLibHandle){
+			pOxr.LogInfo("GraphicApiOpenGL: Loading libGL.so succeeded");
+			
+		}else{
+			pOxr.LogErrorFormat("GraphicApiOpenGL: dlerror: %s.", dlerror());
+			
+			pOxr.LogInfo("GraphicApiOpenGL: Try loading libGL.so.1");
+			pLibHandle = dlopen("libGL.so.1", RTLD_NOW);
+			
+			if(pLibHandle){
+				pOxr.LogInfo("GraphicApiOpenGL: Loading libGL.so.1 succeeded");
+			}
+		}
 	#endif
-	if( ! pLibHandle ){
-		pOxr.LogErrorFormat( "dlerror: %s.", dlerror() );
-		DETHROW_INFO( deeInvalidAction, "Load OpenGL library failed" );
+	if(!pLibHandle){
+		pOxr.LogErrorFormat("GraphicApiOpenGL: dlerror: %s.", dlerror());
+		DETHROW_INFO(deeInvalidAction, "Load OpenGL library failed");
 	}
 	
 #elif defined OS_W32
+	pOxr.LogInfo("GraphicApiOpenGL: Try loading OpenGL32.dll");
 	pLibHandle = LoadLibrary( L"OpenGL32" );
-	if( ! pLibHandle ){
+	if(pLibHandle){
+		pOxr.LogInfo("GraphicApiOpenGL: Loading OpenGL32.dll succeeded");
+		
+	}else{
 		int err = GetLastError();
-		wchar_t messageBuffer[ 251 ];
-		FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, err, MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
-			messageBuffer, 250, NULL );
+		wchar_t messageBuffer[251];
+		FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, err, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			messageBuffer, 250, NULL);
 		
-		pOxr.LogErrorFormat( "LoadLibrary(err=%i): %s.",
-			err, deOSWindows::WideToUtf8( messageBuffer ).GetString() );
+		pOxr.LogErrorFormat("GraphicApiOpenGL: LoadLibrary(err=%i): %s.",
+			err, deOSWindows::WideToUtf8(messageBuffer).GetString());
 		
-		DETHROW_INFO( deeInvalidAction, "Load OpenGL DLL failed" );
+		DETHROW_INFO(deeInvalidAction, "Load OpenGL DLL failed");
 	}
 #endif
 }
