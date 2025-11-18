@@ -4,7 +4,6 @@ import os
 import sys
 import fnmatch
 import subprocess
-import hashlib
 import tempfile
 import tarfile
 import zipfile
