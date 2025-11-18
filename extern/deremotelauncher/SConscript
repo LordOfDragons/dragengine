@@ -12,7 +12,7 @@ if parent_env['platform_webwasm']:
 
 envLibrary = parent_env.Clone()
 
-srcVersion = '1.0'
+srcVersion = '1.1'
 
 if envLibrary['platform_android'] != 'no':
 	sysarch = 'android-{}'.format(envLibrary['ANDROID_ARCH_ID'])

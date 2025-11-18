@@ -1,6 +1,5 @@
 import os
 import SCons
-import zipfile
 
 from SConsCommon import *
 from SConsExternCommon import *
@@ -12,7 +11,7 @@ if parent_env['platform_webwasm']:
 
 envLibrary = parent_env.Clone()
 
-srcVersion = '1.1.1'
+srcVersion = '1.2'
 
 if envLibrary['platform_android'] != 'no':
 	sysarch = 'android-{}'.format(envLibrary['ANDROID_ARCH_ID'])
@@ -26,7 +25,7 @@ libFileName = envLibrary.subst('{}/lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(sr
 
 baseUrl = 'https://github.com/LordOfDragons/denetwork/releases/download'
 
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.zip'.format(srcdir),
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir),
 	'v{}'.format(srcVersion), 'lib_denetwork_fetch', baseUrl=baseUrl)
 
 if 'with_denetwork_inc' in envLibrary and envLibrary['with_denetwork_inc']:
@@ -53,8 +52,7 @@ if hasSystemLib:
 	library.append(libLinkName)
 else:
 	def denetworkUnpack(target, source, env):
-		with zipfile.ZipFile(source[0].abspath, 'r') as zf:
-			zf.extractall(path=target[0].get_dir().up().up().abspath)
+		untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
 
 	with open(envLibrary.File('header_file_list/denetwork').srcnode().abspath, 'r') as f:
 		for x in f.readlines():
