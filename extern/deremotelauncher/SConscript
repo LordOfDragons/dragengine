@@ -26,7 +26,7 @@ libFileName = envLibrary.subst('{}/lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(sr
 
 baseUrl = 'https://github.com/LordOfDragons/deremotelauncher/releases/download'
 
-nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.zip'.format(srcdir),
+nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir),
 	'v{}'.format(srcVersion), 'lib_deremotelauncher_fetch', baseUrl=baseUrl)
 
 if 'with_deremotelauncher_inc' in envLibrary and envLibrary['with_deremotelauncher_inc']:
@@ -53,8 +53,7 @@ if hasSystemLib:
 	library.append(libLinkName)
 else:
 	def deremotelauncherUnpack(target, source, env):
-		with zipfile.ZipFile(source[0].abspath, 'r') as zf:
-			zf.extractall(path=target[0].get_dir().up().up().abspath)
+		untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
 
 	with open(envLibrary.File('header_file_list/deremotelauncher').srcnode().abspath, 'r') as f:
 		for x in f.readlines():
