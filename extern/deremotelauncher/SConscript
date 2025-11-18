@@ -1,5 +1,6 @@
 import os
 import SCons
+import zipfile
 
 from SConsCommon import *
 from SConsExternCommon import *
@@ -11,7 +12,8 @@ if parent_env['platform_webwasm']:
 
 envLibrary = parent_env.Clone()
 
-srcVersion = 'nightly'
+srcVersion = '1.0'
+
 if envLibrary['platform_android'] != 'no':
 	sysarch = 'android-{}'.format(envLibrary['ANDROID_ARCH_ID'])
 else:
@@ -25,7 +27,7 @@ libFileName = envLibrary.subst('{}/lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(sr
 baseUrl = 'https://github.com/LordOfDragons/deremotelauncher/releases/download'
 
 nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir),
-	srcVersion, 'lib_deremotelauncher_fetch', baseUrl=baseUrl)
+	'v{}'.format(srcVersion), 'lib_deremotelauncher_fetch', baseUrl=baseUrl)
 
 if 'with_deremotelauncher_inc' in envLibrary and envLibrary['with_deremotelauncher_inc']:
 	envLibrary.Append(CPPPATH = [envLibrary['with_deremotelauncher_inc']])
@@ -51,7 +53,8 @@ if hasSystemLib:
 	library.append(libLinkName)
 else:
 	def deremotelauncherUnpack(target, source, env):
-		untarArchive(target[0].get_dir().up().up().abspath, source[0].abspath)
+		with zipfile.ZipFile(source[0].abspath, 'r') as zf:
+			zf.extractall(path=target[0].get_dir().up().up().abspath)
 
 	with open(envLibrary.File('header_file_list/deremotelauncher').srcnode().abspath, 'r') as f:
 		for x in f.readlines():
