@@ -1,0 +1,152 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Scenery
+
+pin Dragengine.Gui
+pin Dragengine.Utils
+pin Dragengine.Preloading
+
+
+/**
+ * \brief Enumeration value list element class property for use with XML loading.
+ * \version 1.30
+ * 
+ * Value is an Array of Enumeration values using a dictionary mapping string values
+ * to enumeration values.
+ */
+class ECPEnumerationList extends ElementClassProperty
+	var Array pEntries
+	var Dictionary pMapping
+	
+	
+	/** \brief Create property. */
+	func new(String name) super(name)
+		pEntries = Array.new()
+		pMapping = Dictionary.new()
+	end
+	
+	func new(String name, Set enumerationValues) this(name)
+		setMapping(enumerationValues)
+	end
+	
+	
+	/** \brief Mapping between strings and enumerations. */
+	func Dictionary getMapping()
+		return pMapping
+	end
+	
+	/** \brief Set mapping between strings and enumerations. */
+	func void setMapping(Dictionary mapping)
+		pMapping = mapping
+	end
+	
+	/**
+	 * \brief Set mapping from set of enumeration values.
+	 * 
+	 * Uses enumeration name as mapping name.
+	 */
+	func void setMapping(Set enumerationValues)
+		pMapping.removeAll()
+		enumerationValues.forEach(block Enumeration each
+			pMapping.setAt(each.name(), each)
+		end)
+	end
+	
+	
+	/** \brief Count of entries. */
+	func int getCount()
+		return pEntries.getCount()
+	end
+	
+	/** \brief Entry at index. */
+	func Enumeration getAt(int index)
+		return pEntries.getAt(index) cast Enumeration
+	end
+	
+	/** \brief Index of first entry or -1 if absent. */
+	func int indexOf(Enumeration entry)
+		return pEntries.indexOf(entry)
+	end
+	
+	/** \brief Entry is present. */
+	func bool has(Enumeration entry)
+		return pEntries.has(entry)
+	end
+	
+	/** \brief Get random entry or \em null if no entries are present. */
+	func Enumeration getRandom()
+		return pEntries.getCount() > 0 if pEntries.random() cast Enumeration else null
+	end
+	
+	/** \brief For each entry with block with Enumeration as parameter. */
+	func void forEach(Block ablock)
+		pEntries.forEach(ablock)
+	end
+	
+	/** \brief Remove all entries. */
+	func void removeAll()
+		pEntries.removeAll()
+	end
+	
+	/** \brief Add entry. */
+	func void add(Enumeration entry)
+		pEntries.add(entry)
+	end
+	
+	
+	/** \brief Set value of property from XML decoded value. */
+	func void setValue(Object value)
+		pEntries.removeAll()
+		(value cast Array).forEach(block String each
+			pEntries.add(pMapping.getAt(each) cast Enumeration)
+		end)
+	end
+	
+	/** \brief Copy value from another element class property of the same type. */
+	func void copyValue(ElementClass elementClass, ElementClassProperty property)
+		pEntries = Array.new((property cast ECPEnumerationList).pEntries)
+	end
+	
+	
+	/**
+	 * \brief Entry list modified by stub property if present.
+	 * 
+	 * If named stub property is not present or empty string the stored list is returned.
+	 * If the named stub property is present it is decoded using codec.
+	 * 
+	 * - "enum1 enum2 ... enumN"
+	 */
+	func Array getList(StubWithProperties stub, CodecPropertyString codec)
+		var String value = stub.getPropertyValueFor(getName(), null)
+		if value == null or value.empty()
+			return pEntries
+			
+		else
+			return codec.decodeStringList(value).map(block String each
+				return pMapping.getAt(each) cast Enumeration
+			end)
+		end
+	end
+end
