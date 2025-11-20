@@ -71,12 +71,15 @@ fetchExternals
 writeIncludeBinaries
 cleanScons
 
-rm -rf /sources/dragengine_*.orig.tar.gz
-rm -rf /sources/dragengine_*.orig.tar
-rm -rf /sources/dragengine_*-ppa*
-rm -rf /sources/deigde*.deb
-rm -rf /sources/delauncher*.deb
-rm -rf /sources/dragengine*.deb
+rm -f /sources/dragengine_*.orig.tar.gz
+rm -f /sources/dragengine_*.orig.tar
+rm -f /sources/dragengine_*-ppa*
+rm -f /sources/deigde*.deb /sources/deigde*.ddeb
+rm -f /sources/delauncher*.deb /sources/delauncher*.ddeb
+rm -f /sources/dragengine*.deb /sources/dragengine*.ddeb
+rm -f /sources/libdragengine*.deb /sources/libdragengine*.ddeb
+rm -f /sources/libdelauncher*.deb /sources/libdelauncher*.ddeb
+rm -f /sources/libdeigdeshared*.deb /sources/libdeigdeshared*.ddeb
 
 mv libdragengine1.postinst _libdragengine1.postinst
 rm -rf /sources/debian/libdragengine*
