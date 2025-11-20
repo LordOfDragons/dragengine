@@ -13,6 +13,12 @@ if parent_env['platform_webwasm']:
 # setup the environment matching the OS
 envLauncher = parent_env.Clone()
 
+buildLauncher = envLauncher['build_consolelauncher'] != TernaryVariableNo
+
+parent_report['build Console Launcher'] = 'yes' if buildLauncher else 'no'
+if not buildLauncher or parent_env['platform_android'] != 'no':
+	Return()
+
 libs = []
 
 if envLauncher['OSBeOS']:
