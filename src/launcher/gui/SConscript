@@ -193,7 +193,6 @@ parent_targets['launcher_gui'] = {
 	'name' : 'Drag[en]gine GUI Launcher',
 	'build' : targetBuild,
 	'install' : targetInstall,
-	'install-engine-runtime' : targetInstall,
 	'archive-launcher' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}
