@@ -50,6 +50,11 @@ class igdeActionListener;
  * parameters "Up Ahead" all the time. Certain ToolKits can take advantage of this feature.
  */
 class DE_DLL_EXPORT igdeAction : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeAction> Ref;
+	
+	
 private:
 	decString pText;
 	decString pDescription;

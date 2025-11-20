@@ -36,7 +36,6 @@
 #include "../../systems/modules/graphic/deBaseGraphicSkyInstance.h"
 
 
-
 // Class deSkyInstance
 ////////////////////////
 
@@ -47,20 +46,22 @@ deSkyInstance::deSkyInstance( deSkyInstanceManager *manager ) :
 deResource( manager ),
 pOrder( 0 ),
 
-pControllers( NULL ),
+pControllers(nullptr),
 pControllerCount( 0 ),
 
-pPeerGraphic( NULL ),
+pPassthroughTransparency(0.0f),
 
-pParentWorld( NULL ),
-pLLWorldPrev( NULL ),
-pLLWorldNext( NULL ){
+pPeerGraphic(nullptr),
+
+pParentWorld(nullptr),
+pLLWorldPrev(nullptr),
+pLLWorldNext(nullptr){
 }
 
 deSkyInstance::~deSkyInstance(){
 	if( pPeerGraphic ){
 		delete pPeerGraphic;
-		pPeerGraphic = NULL;
+		pPeerGraphic = nullptr;
 	}
 	
 	if( pControllers ){
@@ -159,6 +160,18 @@ void deSkyInstance::SetLayerMask( const decLayerMask &layerMask ){
 	}
 }
 
+void deSkyInstance::SetPassthroughTransparency(float transparency){
+	transparency = decMath::clamp(transparency, 0.0f, 1.0f);
+	if(fabsf(transparency - pPassthroughTransparency) < FLOAT_SAFE_EPSILON){
+		return;
+	}
+	
+	pPassthroughTransparency = transparency;
+	
+	if(pPeerGraphic){
+		pPeerGraphic->PassthroughTransparencyChanged();
+	}
+}
 
 
 // System Peers
@@ -175,7 +188,6 @@ void deSkyInstance::SetPeerGraphic( deBaseGraphicSkyInstance *peer ){
 	
 	pPeerGraphic = peer;
 }
-
 
 
 // Linked List

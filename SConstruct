@@ -114,6 +114,7 @@ if parent_env['LogStdOut_Enabled']:
 parent_env.Tool('runExternalCommand')
 parent_env.Tool('macos_bundle')
 parent_env.Tool('downloadArtifact')
+parent_env.Tool('updateModuleManifest')
 
 InitCommon(parent_env)
 #print('os.name', os.name)
@@ -170,6 +171,8 @@ params.Add(StringVariable('force_version', 'Force version (empty to disable)', '
 params.Add(StringVariable('with_threads', 'Count of threads to use for building external packages', '1'))
 params.Add(StringVariable('with_cmake_flags', 'Additional flags for external CMake builds', ''))
 params.Add(StringVariable('with_cmake_c_flags', 'Additional C flags for external CMake builds', ''))
+params.Add(BoolVariable('with_engine_module_checks', 'Check engine module file before loading', True))
+params.Add(StringVariable('distro_maintained_info_url', 'Package is distribution maintaned and URL contains update information', ''))
 
 params.Add(StringVariable('url_extern_artifacts',
 	'Base URL to download external artifacts from if missing',
@@ -820,7 +823,8 @@ parent_report['platform_webwasm'] = 'yes' if parent_env['platform_webwasm'] else
 
 parent_report['build dragengine tests'] = 'yes' if parent_env['with_tests'] else 'no'
 parent_report['treat warnings as errors'] = 'yes' if parent_env['with_warnerrors'] else 'no'
-parent_report['build with debug symbols'] = 'yes' if parent_env['with_debug'] else 'no'
+parent_report['build with debug symbols'] = 'yes' if (
+	parent_env['with_debug'] or parent_env['with_debug_symbols']) else 'no'
 parent_report['build with sanitizing'] = 'yes' if parent_env['with_sanitize'] else 'no'
 parent_report['build with thread sanitizing'] = 'yes' if parent_env['with_sanitize_thread'] else 'no'
 parent_report['version'] = parent_env['version']

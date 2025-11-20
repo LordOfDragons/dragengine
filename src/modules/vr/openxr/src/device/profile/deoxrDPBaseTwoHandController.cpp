@@ -121,7 +121,6 @@ void deoxrDPBaseTwoHandController::pRemoveDevice( bool left ){
 		return;
 	}
 	
-	deVROpenXR &oxr = GetInstance().GetOxr();
-	oxr.GetDevices().Remove( device );
+	GetInstance().GetOxr().GetDevices().Remove( device );
 	device = nullptr;
 }

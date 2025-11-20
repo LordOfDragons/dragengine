@@ -221,6 +221,7 @@ class STDTagResolver extends DefaultSTDNodeVisitor
 	public func void visitText(STDNText node)
 		var STDNText resolved = STDNText.new()
 		resolved.setStyle(node.getStyle())
+		resolved.setNewPage(node.getNewPage())
 		
 		node.forEachSpan(block int index, STDNTextSpan each
 			resolveTags(resolved, each, index == 0)

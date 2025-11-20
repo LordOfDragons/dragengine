@@ -90,7 +90,7 @@ if envArchive['archive_name_special']:
 
 for target in parent_targets.values():
 	if 'archive' in target:
-		envArchive.Depends(archive, target['build'])
+		archive.append(target['build'])
 
 envArchive.Alias('archive', archive)
 

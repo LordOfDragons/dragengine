@@ -50,6 +50,9 @@ while len(libVersionString.split('.')) < 3:
 envIGDELib.Append(CXXFLAGS = ['-I{}'.format(envIGDELib.Dir('shared/src').srcnode().abspath)])
 envIGDELib.Replace(WINDOWS_INSERT_DEF = 1) # generated .def file if dll is build
 
+if not envIGDELib['with_engine_module_checks']:
+	envIGDELib.Append(CXXFLAGS = ['-DNO_ENGINE_MODULE_CHECKS'])
+
 # create environment for the progam
 envIGDEApp = envIGDELib.Clone()
 
@@ -144,13 +147,11 @@ if envIGDELib['OSPosix']:
 buildLibrary = envIGDELib.SharedLibrary(target='deigdeshared', source=objects, LIBS=libsLib)
 targetBuildLib = envIGDELib.Alias('deigde_shared_build', buildLibrary)
 
-copySharedHeaders = []
 refDir = envIGDELib.Dir('shared/src').srcnode()
 for h in sharedHeaders:
-	copySharedHeaders.append(envIGDELib.Command(
+	envIGDELib.Command(
 		os.path.join('include', 'deigde', refDir.rel_path(h)),
-		h, Copy('$TARGET', '$SOURCE')))
-envIGDELib.Depends(buildLibrary, copySharedHeaders)
+		h, Copy('$TARGET', '$SOURCE'))
 
 installLibDevelop = [envIGDELib.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in sharedHeaders]
 
@@ -200,7 +201,7 @@ if envIGDELib['igde_toolkit'] == 'fox':
 		key = '{}/{}'.format(foxRuntimePath, l)
 		if not key in parent_targets['lib_fox']['globalInstallTracker']:
 			parent_targets['lib_fox']['globalInstallTracker'].append(key)
-			envIGDELib.Depends(installLibRuntime, envIGDELib.Install(foxRuntimePath, l))
+			installLibRuntime.append(envIGDELib.Install(foxRuntimePath, l))
 			archiveLib[os.path.join(foxRuntimePath, l.name)] = l
 
 targetInstallLibDevelop = envIGDELib.Alias('deigde_shared_develop', installLibDevelop)
@@ -222,8 +223,8 @@ linklibs.extend(parent_targets['delauncher']['libs'])
 #if not envIGDELib['OSWindows']:
 #	linklibs.extend(parent_targets['lib_fox']['libs'])
 
-doxyfile = envIGDELib.Command(envIGDELib.File('Doxyfile').srcnode(), 'Doxyfile.in',
-	Action(UpdateModuleManifest),
+doxyfile = envIGDELib.UpdateModuleManifest(
+	envIGDELib.File('Doxyfile').srcnode(), 'Doxyfile.in',
 	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
 
 targetDoxygen = envIGDELib.Alias('deigde_shared_doc', envIGDELib.Command(
@@ -295,36 +296,41 @@ if 'lib_mingw_runtime' in parent_targets:
 	for l in parent_targets['lib_mingw_runtime']['runtimelibs']:
 		archiveApp[os.path.join(pathBin, l.name)] = l
 
-envIGDEApp.Depends(installApp, targetInstallLibRuntime)
+installApp.append(targetInstallLibRuntime)
 
 
 if envIGDEApp['OSPosix']:
 	pathDataDir = envIGDEApp.subst('${datadir}')
 	
-	for s in ['128', '64', '32']:
+	for s in ['256', '128', '64', '32']:
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'apps', 'dragengine-deigde.png')
+			'{}x{}'.format(s, s), 'apps', 'ch.dragondreams.deigde.png')
 		source = 'data/deigde{}.png'.format(s)
 		installApp.append(envIGDEApp.InstallAs(target, source))
 		archiveApp[target] = envIGDEApp.File(source).srcnode()
 		
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'mimetypes', 'dragengine-deigde.png')
+			'{}x{}'.format(s, s), 'mimetypes', 'ch.dragondreams.deigde.png')
 		source = 'data/deigde{}.png'.format(s)
 		installApp.append(envIGDEApp.InstallAs(target, source))
 		archiveApp[target] = envIGDEApp.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'pixmaps', 'dragengine-deigde.png')
-	source = 'data/deigde128.png'
+	target = os.path.join(pathDataDir, 'pixmaps', 'ch.dragondreams.deigde.png')
+	source = 'data/deigde256.png'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'applications', 'dragengine-deigde.desktop')
+	target = os.path.join(pathDataDir, 'applications', 'ch.dragondreams.deigde.desktop')
 	source = 'data/deigde.desktop'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'mime', 'packages', 'dragengine-deigde.xml')
+	target = os.path.join(pathDataDir, 'metainfo', 'ch.dragondreams.deigde.metainfo.xml')
+	source = 'data/deigde.metainfo.xml'
+	installApp.append(envIGDEApp.InstallAs(target, source))
+	archiveApp[target] = envIGDEApp.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'mime', 'packages', 'ch.dragondreams.deigde-mime.xml')
 	source = 'data/mimetypes.xml'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
@@ -348,10 +354,6 @@ srcdir = Dir('.').srcnode().abspath
 buildClocBare = BuildCLOC(envIGDEApp,
 	['{}/src'.format(srcdir), '{}/shared'.format(srcdir)],
 	'{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
-Depends(buildClocBare, sharedSources)
-Depends(buildClocBare, sharedHeaders)
 buildCloc = envIGDEApp.Alias('deigde_cloc', buildClocBare)
 
 # add the targets to the targets list

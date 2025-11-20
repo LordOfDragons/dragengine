@@ -25,8 +25,7 @@
 #ifndef _DEOALATCONTEXT_H_
 #define _DEOALATCONTEXT_H_
 
-#include <AL/al.h>
-#include <AL/alc.h>
+#include "../deoalBasics.h"
 
 class deoalAudioThread;
 

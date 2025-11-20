@@ -34,62 +34,58 @@
 #include "dragengine/common/exceptions.h"
 
 
-
 // Class meWPViewListener
 ///////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-meWPViewListener::meWPViewListener( meWPView &panel ) :
-pPanel( panel ){
+meWPViewListener::meWPViewListener(meWPView &panel) : pPanel(panel){
 }
 
 meWPViewListener::~meWPViewListener(){
 }
 
 
-
 // Notifications
 //////////////////
 
-void meWPViewListener::SkyChanged( meWorld* ){
+void meWPViewListener::SkyChanged(meWorld*){
 	pPanel.UpdateSky();
 }
 
-void meWPViewListener::BgObjectChanged( meWorld* ){
+void meWPViewListener::BgObjectChanged(meWorld*){
 	pPanel.UpdateBgObject();
 }
 
-void meWPViewListener::EditingChanged( meWorld* ){
+void meWPViewListener::LimitBoxChanged(meWorld*){
+	pPanel.UpdateLimitBox();
+}
+
+void meWPViewListener::EditingChanged(meWorld*){
 	pPanel.UpdateView();
 }
 
-void meWPViewListener::TriggerTableChanged( meWorld* ){
+void meWPViewListener::TriggerTableChanged(meWorld*){
 	pPanel.UpdateTriggerTable();
 }
 
-void meWPViewListener::ClassHideTagsChanged( meWorld* ) {
-    pPanel.UpdateClassHideTagLists();
+void meWPViewListener::ClassHideTagsChanged(meWorld*){
+	pPanel.UpdateClassHideTagLists();
 }
 
-
-
-void meWPViewListener::ObjectChanged( meWorld*, meObject* ){
+void meWPViewListener::ObjectChanged(meWorld*,meObject*){
 	pPanel.UpdateCameraList();
 }
 
-void meWPViewListener::ObjectPropertiesChanged( meWorld*, meObject* ){
+void meWPViewListener::ObjectPropertiesChanged(meWorld*,meObject*){
 	pPanel.UpdateCameraList();
 }
 
-
-
-void meWPViewListener::ActiveCameraChanged( meWorld* ){
+void meWPViewListener::ActiveCameraChanged(meWorld*){
 	pPanel.UpdateCamera();
 }
 
-void meWPViewListener::CameraChanged( meWorld*, meCamera* ){
+void meWPViewListener::CameraChanged(meWorld*,meCamera*){
 	pPanel.UpdateCamera();
 }
-

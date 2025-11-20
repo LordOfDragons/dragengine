@@ -216,4 +216,17 @@ class CheckBox extends ToggleButton
 		super.updateWidgetImage()
 		pPanelCheckTextImage.setVisible(getWidgetText().getVisible() or getWidgetImage().getVisible())
 	end
+	
+	
+	func Point getFocusMouseLocation()
+		if pWidgetCheckBox != null
+			return pWidgetCheckBox.getRelativePosition(this) + pWidgetCheckBox.getSize() * 3 / 4
+			
+		elif pWidgetCheck != null
+			return pWidgetCheck.getRelativePosition(this) + pWidgetCheck.getSize() * 3 / 4
+			
+		else
+			return super.getFocusMouseLocation()
+		end
+	end
 end

@@ -36,6 +36,7 @@
 #include "prop/cePropList.h"
 #include "../langpack/ceLangPack.h"
 
+#include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/editableentity/igdeEditableEntity.h>
 
 #include <dragengine/common/collection/decObjectSet.h>
@@ -59,7 +60,6 @@ class cePlayback;
 class ceLoadSaveSystem;
 
 class igdeWSky;
-class igdeWObject;
 class igdeCamera;
 class deComponent;
 class deAnimator;
@@ -101,7 +101,7 @@ private:
 	deWorld::Ref pEngWorld;
 	
 	igdeWSky *pSky;
-	igdeWObject *pEnvObject;
+	igdeWObject::Ref pEnvObject;
 	
 	deMicrophone::Ref pEngMicrophone;
 	deSpeaker::Ref pEngSpeakerVAPreview;
@@ -178,7 +178,7 @@ public:
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
-	inline igdeWObject *GetEnvObject() const{ return pEnvObject; }
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the camera. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }

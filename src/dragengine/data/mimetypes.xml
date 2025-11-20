@@ -2,12 +2,12 @@
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
 	<mime-type type='application/dragengine-game'>
 		<comment>Drag[en]gine Game</comment>
-		<icon name='dragengine-game'/>
+		<icon name='ch.dragondreams.delauncher-game'/>
 		<glob pattern='*.degame'/>
 	</mime-type>
 	<mime-type type='application/dragengine-delga'>
 		<comment>Drag[en]gine DELGA</comment>
-		<icon name='dragengine-delga'/>
+		<icon name='ch.dragondreams.delauncher-delga'/>
 		<glob pattern='*.delga'/>
 	</mime-type>
 </mime-info>

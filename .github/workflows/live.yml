@@ -1,0 +1,57 @@
+name: Live
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch'
+        required: true
+        type: string
+        default: 'master'
+      version:
+        description: 'Version'
+        required: true
+        type: string
+        default: 'X.Y{.Z}'
+
+jobs:
+  generate_buildnumbers:
+    runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.buildnumber.outputs.build_number }}
+    steps:
+      - name: Generate build number
+        id: buildnumber
+        uses: onyxmueller/build-tag-number@v1
+        with:
+          token: ${{ secrets.github_token }}
+          prefix: github
+  
+  build_linux:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_linux.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-linux
+      artifactInstaller: installers-linux
+      artifactTools: tools-crossplatform
+  
+  build_windows:
+    needs: [generate_buildnumbers]
+    uses: ./.github/workflows/build_windows_vs.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      releaseVersion: ${{ github.event.inputs.version }}
+      buildVersion: ${{ github.event.inputs.version }}
+      artifactArchive: archives-windows
+  
+  build_live:
+    needs: [build_linux, build_windows]
+    uses: ./.github/workflows/build_live.yml
+    with:
+      releaseVersion: ${{ github.event.inputs.version }}
+      artifactLinux: archives-linux
+      artifactWindows: archives-windows
+      artifactLauncher: archive-livelauncher

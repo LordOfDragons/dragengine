@@ -60,26 +60,22 @@ private:
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	
-	int pMinimum;
-	int pMaximum;
-	int pDeadZoneLower;
-	int pDeadZoneUpper;
-	int pFuzz;
-	int pFlat;
-	bool pAbsolute;
-	bool pWheelOtherAxis;
+	int pMinimum, pMaximum;
+	int pDeadZoneLower, pDeadZoneUpper;
+	int pFuzz, pFlat;
+	bool pAbsolute, pWheelOtherAxis;
 	int pWheelChange;
 	
-	float pValue;
-	float pChangedValue;
+	float pValue, pChangedValue;
 	int pLastModifiers;
 	DWORD pLastEventTime;
 	
 	int pWICode;
 	int pWinRTReadingIndexAxis;
 	bool pWinRTInverseAxis;
-	int pWinRTReadingIndexSwitch;
-	int pWinRTReadingDirectionSwitch;
+	int pWinRTReadingIndexSwitch, pWinRTReadingDirectionSwitch;
+	int pWinRTReadingButtonPositive, pWinRTReadingButtonNegative;
+	bool pWinRTButtonPositivePressed, pWinRTButtonNegativePressed;
 	bool pIsBatteryLevel;
 	
 	
@@ -228,6 +224,18 @@ public:
 
 	/** Set WinRT reading switch direction. */
 	void SetWinRTReadingDirectionSwitch( int direction );
+
+	/** WinRT reading positive button index. */
+	inline int GetWinRTReadingButtonPositive() const { return pWinRTReadingButtonPositive; }
+
+	/** Set WinRT reading positive button index. */
+	void SetWinRTReadingButtonPositive(int index);
+
+	/** WinRT reading negative button index. */
+	inline int GetWinRTReadingButtonNegative() const { return pWinRTReadingButtonNegative; }
+	
+	/** Set WinRT reading negative button index. */
+	void SetWinRTReadingButtonNegative(int index);
 
 	/** Is battery level. */
 	inline bool GetIsBatteryLevel() const{ return pIsBatteryLevel; }

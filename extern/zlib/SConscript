@@ -31,7 +31,7 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper(
 hasSystemZLib = False
 conf = envLibrary.Configure()
 if envLibrary[ 'with_system_zlib' ] != TernaryVariableNo:
-	hasSystemZLib = conf.CheckLibWithHeader( libLinkName, 'zlib.h', 'c++', 'zlibVersion();' )
+	hasSystemZLib = conf.CheckLibWithHeader(libLinkName, 'zlib.h', 'c++', call='zlibVersion();')
 conf.Finish()
 
 if not hasSystemZLib and envLibrary[ 'with_system_zlib' ] == TernaryVariableYes:

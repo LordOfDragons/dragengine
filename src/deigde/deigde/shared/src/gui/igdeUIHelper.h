@@ -25,6 +25,8 @@
 #ifndef _IGDEUIHELPER_H_
 #define _IGDEUIHELPER_H_
 
+#include "igdeButton.h"
+#include "event/igdeAction.h"
 #include "../environment/igdeEnvironment.h"
 
 #include <stdint.h>
@@ -771,6 +773,8 @@ public:
 	
 	void Button( igdeButtonReference &button, igdeAction *action, bool takeOverAction = false );
 	
+	void Button(igdeContainer &parent, igdeButton::Ref &button, const igdeAction::Ref &action);
+	
 	
 	
 	/**
@@ -966,19 +970,22 @@ public:
 	
 	/** \brief Add menu command. */
 	void MenuCommand( igdeMenuCascade &menu, igdeAction *action, bool takeOverAction = false );
+	void MenuCommand(igdeMenuCascade &menu, const igdeAction::Ref &action);
 	
 	/** \brief Add menu check. */
 	void MenuCheck( igdeMenuCascade &menu, igdeAction *action, bool takeOverAction = false );
+	void MenuCheck(igdeMenuCascade &menu, const igdeAction::Ref &action);
 	
 	/** \brief Add menu option. */
 	void MenuOption( igdeMenuCascade &menu, igdeAction *action, bool takeOverAction = false );
+	void MenuOption(igdeMenuCascade &menu, const igdeAction::Ref &action);
 	
 	/** \brief Add menu separator. */
-	void MenuSeparator( igdeMenuCascade &menu );
+	void MenuSeparator(igdeMenuCascade &menu);
 	
 	/** \brief Add menu recent files sub menu. */
-	void MenuRecentFiles( igdeMenuCascade &menu, igdeRecentFiles &recentFiles,
-		const char *text = "Open Recent File" );
+	void MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recentFiles,
+		const char *text = "Open Recent File");
 	
 	
 	

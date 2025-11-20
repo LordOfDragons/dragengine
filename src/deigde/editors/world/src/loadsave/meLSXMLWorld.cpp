@@ -195,23 +195,87 @@ void meLSXMLWorld::pWriteWorld( decXmlWriter &writer, const meWorld &world ){
 	writer.WriteClosingTag( "world" );
 }
 
-void meLSXMLWorld::pWriteWorldEditor( decXmlWriter &writer, const meWorld &world ){
-	writer.WriteOpeningTag( "worldEditor" );
+void meLSXMLWorld::pWriteWorldEditor(decXmlWriter &writer, const meWorld &world){
+	writer.WriteOpeningTag("worldEditor");
 	
 	const igdeWSky &sky = *world.GetSky();
-	writer.WriteDataTagString( "skyPath", sky.GetPath() );
+	writer.WriteDataTagString("skyPath", sky.GetPath());
 	const int skyControllerCount = sky.GetControllerCount();
 	int i;
-	for( i=0; i<skyControllerCount; i++ ){
-		const deSkyController &controller = sky.GetControllerAt( i );
-		writer.WriteOpeningTagStart( "skyController" );
-		writer.WriteAttributeString( "name", controller.GetName() );
-		writer.WriteOpeningTagEnd( false, false );
-		writer.WriteTextFloat( controller.GetCurrentValue() );
-		writer.WriteClosingTag( "skyController", false );
+	for(i=0; i<skyControllerCount; i++){
+		const deSkyController &controller = sky.GetControllerAt(i);
+		writer.WriteOpeningTagStart("skyController");
+		writer.WriteAttributeString("name", controller.GetName());
+		writer.WriteOpeningTagEnd(false, false);
+		writer.WriteTextFloat(controller.GetCurrentValue());
+		writer.WriteClosingTag("skyController", false);
 	}
 	
-	writer.WriteClosingTag( "worldEditor" );
+	if(world.GetBgObject()->GetGDClass()){
+		pWriteWorldEditorBackgroundObject(writer, world);
+	}
+	
+	if(!(world.GetLimitBoxMaxExtend() - world.GetLimitBoxMinExtend()).IsZero()){
+		pWriteWorldEditorLimitBox(writer, world);
+	}
+	
+	writer.WriteClosingTag("worldEditor");
+}
+
+void meLSXMLWorld::pWriteWorldEditorBackgroundObject(decXmlWriter &writer, const meWorld &world){
+	const igdeWObject &bgObject = *world.GetBgObject();
+	writer.WriteOpeningTag("backgroundObject");
+	
+	writer.WriteDataTagString("class", bgObject.GetGDClass()->GetName());
+	
+	const decVector &position = bgObject.GetPosition();
+	if(!position.IsZero()){
+		writer.WriteOpeningTagStart("position");
+		writer.WriteAttributeDouble("x", position.x);
+		writer.WriteAttributeDouble("y", position.y);
+		writer.WriteAttributeDouble("z", position.z);
+		writer.WriteOpeningTagEnd(true);
+	}
+	
+	const decVector rotation(bgObject.GetOrientation().GetEulerAngles() * RAD2DEG);
+	if(!rotation.IsZero()){
+		writer.WriteOpeningTagStart("rotation");
+		writer.WriteAttributeDouble("x", rotation.x);
+		writer.WriteAttributeDouble("y", rotation.y);
+		writer.WriteAttributeDouble("z", rotation.z);
+		writer.WriteOpeningTagEnd(true);
+	}
+	
+	const decVector &scaling = bgObject.GetScaling();
+	if(!scaling.IsEqualTo(decVector(1.0f, 1.0f, 1.0f))){
+		writer.WriteOpeningTagStart("scaling");
+		writer.WriteAttributeDouble("x", scaling.x);
+		writer.WriteAttributeDouble("y", scaling.y);
+		writer.WriteAttributeDouble("z", scaling.z);
+		writer.WriteOpeningTagEnd(true);
+	}
+	
+	writer.WriteClosingTag("backgroundObject");
+}
+
+void meLSXMLWorld::pWriteWorldEditorLimitBox(decXmlWriter &writer, const meWorld &world){
+	writer.WriteOpeningTag("limitBox");
+	
+	const decVector &minExtend = world.GetLimitBoxMinExtend();
+	writer.WriteOpeningTagStart("minExtend");
+	writer.WriteAttributeDouble("x", minExtend.x);
+	writer.WriteAttributeDouble("y", minExtend.y);
+	writer.WriteAttributeDouble("z", minExtend.z);
+	writer.WriteOpeningTagEnd(true);
+	
+	const decVector &maxExtend = world.GetLimitBoxMaxExtend();
+	writer.WriteOpeningTagStart("maxExtend");
+	writer.WriteAttributeDouble("x", maxExtend.x);
+	writer.WriteAttributeDouble("y", maxExtend.y);
+	writer.WriteAttributeDouble("z", maxExtend.z);
+	writer.WriteOpeningTagEnd(true);
+	
+	writer.WriteClosingTag("limitBox");
 }
 
 void meLSXMLWorld::pWriteObject( decXmlWriter &writer, const meObject &object ){
@@ -219,7 +283,7 @@ void meLSXMLWorld::pWriteObject( decXmlWriter &writer, const meObject &object ){
 	const decDVector &position = object.GetPosition();
 	const decVector &rotation = object.GetRotation();
 	const decVector &scaling = object.GetScaling();
-	int t;
+	int i;
 	
 	writer.WriteOpeningTagStart( "object" );
 	writer.WriteAttributeString( "id", object.GetID().ToHexString() );
@@ -233,7 +297,7 @@ void meLSXMLWorld::pWriteObject( decXmlWriter &writer, const meObject &object ){
 	writer.WriteAttributeDouble( "z", position.z );
 	writer.WriteOpeningTagEnd( true );
 	
-	if( ! rotation.IsEqualTo( decVector( 0.0f, 0.0f, 0.0f ) ) ){
+	if(!rotation.IsZero()){
 		writer.WriteOpeningTagStart( "rotation" );
 		writer.WriteAttributeDouble( "x", rotation.x );
 		writer.WriteAttributeDouble( "y", rotation.y );
@@ -251,12 +315,18 @@ void meLSXMLWorld::pWriteObject( decXmlWriter &writer, const meObject &object ){
 	
 	pWriteProperties( writer, object.GetProperties() );
 	
-	for( t=0; t<textureCount; t++ ){
-		pWriteObjectTexture( writer, *object.GetTextureAt( t ) );
+	for( i=0; i<textureCount; i++ ){
+		pWriteObjectTexture( writer, *object.GetTextureAt( i ) );
 	}
 	
 	if( object.GetAttachedTo() ){
 		writer.WriteDataTagString( "attachTo", object.GetAttachedTo()->GetID().ToHexString() );
+	}
+	
+	const decStringList &attachBehaviors = object.GetAttachBehaviors();
+	const int attachBehaviorCount = attachBehaviors.GetCount();
+	for(i=0; i<attachBehaviorCount; i++){
+		writer.WriteDataTagString("attachBehavior", attachBehaviors.GetAt(i));
 	}
 	
 	writer.WriteClosingTag( "object" );

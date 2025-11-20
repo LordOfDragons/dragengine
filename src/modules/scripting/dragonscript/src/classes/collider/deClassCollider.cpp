@@ -52,6 +52,7 @@
 #include "../physics/deClassTouchSensor.h"
 #include "../utils/deClassShapeList.h"
 #include "../world/deClassRig.h"
+#include "../world/deClassWorld.h"
 #include "../debug/deClassDebugDrawer.h"
 #include "../sound/deClassMicrophone.h"
 #include "../sound/deClassSpeaker.h"
@@ -569,6 +570,20 @@ void deClassCollider::nfSetUseLocalGravity::RunFunction( dsRunTime *rt, dsValue 
 	nd.collider->SetUseLocalGravity( rt->GetValue( 0 )->GetBool() );
 }
 
+// func World getParentWorld()
+deClassCollider::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsCol, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld) {
+}
+
+void deClassCollider::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself) {
+	const sColNatDat &nd = *((sColNatDat*)p_GetNativeData(myself));
+	if(!nd.collider){
+		DSTHROW(dueNullPointer);
+	}
+	
+	((deClassCollider*)GetOwnerClass())->GetDS().GetClassWorld()->
+		PushWorld(rt, nd.collider->GetParentWorld());
+}
 
 
 // public func Object getOwner()
@@ -1956,6 +1971,7 @@ void deClassCollider::CreateClassMembers( dsEngine *engine ){
 	init.clsCBL = pDS.GetClassColliderBreakingListener();
 	init.clsCCT = pDS.GetClassColliderCollisionTest();
 	init.clsCollisionResponse = pClsCollisionResponse;
+	init.clsWorld = pDS.GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -1988,6 +2004,7 @@ void deClassCollider::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetResponseType( init ) );
 	AddFunction( new nfGetUseLocalGravity( init ) );
 	AddFunction( new nfSetUseLocalGravity( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfGetOwner( init ) );
 	AddFunction( new nfSetOwner( init ) );

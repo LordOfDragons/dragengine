@@ -77,6 +77,10 @@ public:
 	virtual void SkyChanged( meWorld *world );
 	/** Background object changed. */
 	virtual void BgObjectChanged( meWorld *world );
+	
+	/** Limit box changed. */
+	virtual void LimitBoxChanged(meWorld *world);
+	
 	/** Element or workd mode changed. */
 	virtual void ModeChanged( meWorld *world );
 	/** Changed or saved state changed. */
@@ -213,6 +217,13 @@ public:
 	virtual void ObjectPropertiesChanged( meWorld *world, meObject *object );
 	/** Object active property changed. */
 	virtual void ObjectActivePropertyChanged( meWorld *world, meObject *object );
+	
+	/** Object attach behaviors changed. */
+	virtual void ObjectAttachBehaviorsChanged(meWorld *world, meObject *object);
+	
+	/** Object active attach behavior changed. */
+	virtual void ObjectActiveAttachBehaviorChanged(meWorld *world, meObject *object);
+	
 	/** Object added. */
 	virtual void ObjectAdded( meWorld *world, meObject *object );
 	/** Object removed. */

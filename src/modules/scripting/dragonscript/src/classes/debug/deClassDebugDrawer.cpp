@@ -34,6 +34,7 @@
 #include "../math/deClassMatrix.h"
 #include "../utils/deClassShapeList.h"
 #include "../world/deClassModel.h"
+#include "../world/deClassWorld.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
 
@@ -171,7 +172,15 @@ void deClassDebugDrawer::nfSetScale::RunFunction( dsRunTime *rt, dsValue *myself
 	ddrawer.SetScale( ds.GetClassVector()->GetVector( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
-
+// func World getParentWorld()
+deClassDebugDrawer::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsDD, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
+void deClassDebugDrawer::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deDebugDrawer &ddrawer = *(((sDDNatDat*)p_GetNativeData(myself))->ddrawer);
+	deClassWorld &clsWorld = *(((deClassDebugDrawer*)GetOwnerClass())->GetDS()->GetClassWorld());
+	clsWorld.PushWorld(rt, ddrawer.GetParentWorld());
+}
 
 // public func bool getVisible()
 deClassDebugDrawer::nfGetVisible::nfGetVisible( const sInitData &init ) : dsFunction( init.clsDD,
@@ -592,6 +601,7 @@ void deClassDebugDrawer::CreateClassMembers( dsEngine *engine ){
 	init.clsShapeList = pDS->GetClassShapeList();
 	init.clsModel = pDS->GetClassModel();
 	init.clsMatrix = pDS->GetClassMatrix();
+	init.clsWorld = pDS->GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -603,6 +613,7 @@ void deClassDebugDrawer::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetOrientation( init ) );
 	AddFunction( new nfGetScale( init ) );
 	AddFunction( new nfSetScale( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfGetVisible( init ) );
 	AddFunction( new nfSetVisible( init ) );

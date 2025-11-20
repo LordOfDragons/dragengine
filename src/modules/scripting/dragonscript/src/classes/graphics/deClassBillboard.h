@@ -87,6 +87,7 @@ private:
 		dsClass *clsSkin;
 		dsClass *clsDynamicSkin;
 		dsClass *clsLayerMask;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -119,6 +120,7 @@ private:
 	DEF_NATFUNC( nfSetVisible );
 	DEF_NATFUNC( nfGetLayerMask );
 	DEF_NATFUNC( nfSetLayerMask );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfEquals );
 	DEF_NATFUNC( nfHashCode );

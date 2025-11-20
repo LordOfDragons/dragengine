@@ -25,9 +25,7 @@
 #ifndef _DECOBJECTORDEREDSET_H_
 #define _DECOBJECTORDEREDSET_H_
 
-#include "../../dragengine_export.h"
-
-class deObject;
+#include "decCollectionInterfaces.h"
 
 
 /**
@@ -196,6 +194,65 @@ public:
 	 * \throws deeInvalidParam \em step is less than 1.
 	 */
 	void GetSliced( decObjectOrderedSet &set, int from, int to, int step ) const;
+	
+	
+	
+	/**
+	 * \brief Visit objects.
+	 * \param[in] visitor Visitor.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	void Visit(decObjectVisitor &visitor, int from, int to = -1, int step = 1) const;
+	
+	inline void Visit(decObjectVisitor &visitor) const{ Visit(visitor, 0, pObjectCount); }
+	
+	/**
+	 * \brief Find object.
+	 * \param[in] evaluator Evaluator.
+	 * \param[out] found Found object if true is returned.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	bool Find(decObjectEvaluator &evaluator, deObject *&found,
+		int from = 0, int to = -1, int step = 1) const;
+	
+	inline bool Find(decObjectEvaluator &evaluator, deObject *&found) const{
+		return Find(evaluator, found, 0, pObjectCount);
+	}
+	
+	/**
+	 * \brief Collect object into a new list.
+	 * \param[in] evaluator Evaluator.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	decObjectOrderedSet Collect(decObjectEvaluator &evaluator,
+		int from = 0, int to = -1, int step = 1) const;
+	
+	inline decObjectOrderedSet Collect(decObjectEvaluator &evaluator) const{
+		return Collect(evaluator, 0, pObjectCount);
+	}
+	
+	/**
+	 * \brief Remove objects matching condition.
+	 * \param[in] evaluator Evaluator.
+	 * \param[in] from First index to visit. Negative counts from end of list.
+	 * \param[in] to One past last index to visit. Negative counts from end of list.
+	 * \param[in] step Step size. Can be negative but not 0.
+	 */
+	void RemoveIf(decObjectEvaluator &evaluator, int from, int to = -1, int step = 1);
+	
+	inline void RemoveIf(decObjectEvaluator &evaluator){ RemoveIf(evaluator, 0, pObjectCount); }
+	
+	/** \brief Sort objects in place. */
+	void Sort(decObjectComparator &comparator);
+	
+	/** \brief Sort objects as new list. */
+	decObjectOrderedSet GetSorted(decObjectComparator &comparator) const;
 	/*@}*/
 	
 	
@@ -220,6 +277,10 @@ public:
 	/** \brief Append objects of set to this set. */
 	decObjectOrderedSet &operator+=( const decObjectOrderedSet &set );
 	/*@}*/
+	
+	
+private:
+	void pSort(decObjectComparator &comparator, int left, int right);
 };
 
 #endif

@@ -42,7 +42,7 @@ hasSystemOpenXR = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_openxr'] != TernaryVariableNo:
 	hasSystemOpenXR = conf.CheckLibWithHeader(libLinkName,
-		'openxr/openxr.h', 'c++', 'xrCreateInstance(nullptr,nullptr);')
+		'openxr/openxr.h', 'c++', call='xrCreateInstance(nullptr,nullptr);')
 conf.Finish()
 
 if not hasSystemOpenXR and envLibrary['with_system_openxr'] == TernaryVariableYes:
@@ -157,10 +157,9 @@ targets.extend([
 	'include/openxr/openxr_reflection.h',
 	'include/openxr/openxr.h'])
 
-library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(openxrBuild, 'Build OpenXR'))
-
-if parent_targets['lib_jsoncpp']['depends']:
-	envLibrary.Depends(library, parent_targets['lib_jsoncpp']['depends'])
+library = envLibrary.Command(targets,
+	[nodeArtifacts, parent_targets['lib_jsoncpp']['depends']],
+	envLibrary.Action(openxrBuild, 'Build OpenXR'))
 
 envLibrary.SideEffect('#notParallelCMake', library)
 

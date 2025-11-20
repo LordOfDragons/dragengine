@@ -33,25 +33,23 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class meWPAddListener
 //////////////////////////
 
 // Constructor, destructor
 ////////////////////////////
 
-meWPAddListener::meWPAddListener( meWPAdd &panel ) :
-pPanel( panel ){
+meWPAddListener::meWPAddListener(meWPAdd &panel) :
+pPanel(panel){
 }
 
 meWPAddListener::~meWPAddListener(){
 }
 
 
-
 // Notifications
 //////////////////
 
-void meWPAddListener::EditingChanged( meWorld* ){
-	pPanel.UpdateObjectFilter();
+void meWPAddListener::EditingChanged(meWorld*){
+	pPanel.UpdateParameters();
 }

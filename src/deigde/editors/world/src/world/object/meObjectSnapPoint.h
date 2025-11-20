@@ -46,6 +46,11 @@ class deColliderVolume;
  * \brief Object snap point.
  */
 class meObjectSnapPoint : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meObjectSnapPoint> Ref;
+	
+	
 private:
 	meWorld *pWorld;
 	meObject *pObject;

@@ -52,14 +52,10 @@ pin Dragengine.Scenery
  * without the need to alter the instance itself.
  */
 class Desktop extends Container
-	var Widget pFocusWidget
-	var Widget pFocusInProgress
+	var Widget pFocusWidget, pFocusInProgress, pHoverWidget, pCaptureWidget, pDirectionalCaptureWidget
 	
-	var Widget pHoverWidget
 	var Window pTrackDecoration
 	var Decoration.Area pTrackDecorationAreaHover
-	
-	var Widget pCaptureWidget
 	
 	var Point pMouseLocation
 	var MousePointerFactory pActiveMousePointer
@@ -122,7 +118,7 @@ class Desktop extends Container
 		pHoverWidget = null
 		pTrackDecoration = null
 		
-		pCaptureWidget = null
+		pCaptureWidget = pDirectionalCaptureWidget = null
 		
 		super.dispose()
 	end
@@ -382,6 +378,9 @@ class Desktop extends Container
 		return pCaptureWidget
 	end
 	
+	func Widget getDirectionalCaptureWidget()
+		return pDirectionalCaptureWidget
+	end
 	
 	
 	/** \brief Location of mouse pointer. */
@@ -458,6 +457,27 @@ class Desktop extends Container
 	 */
 	func void warpCenterMouseIn(Widget widget)
 		warpMouseIn(widget, widget.getSize() / 2)
+	end
+	
+	/**
+	 * \brief Warp mouse pointer on widget using directional focus location.
+	 * \version 1.29
+	 */
+	func void warpMouseFocusLocation(Widget widget)
+		warpMouseIn(widget, widget.getFocusMouseLocation())
+	end
+	
+	/**
+	 * \brief Warp mouse pointer on focus widget using directional focus location.
+	 * \version 1.29
+	 * 
+	 * Does nothing if focus widget is not present.
+	 */
+	func void warpMouseFocusLocation()
+		var Widget focusWidget = getFocusWidget()
+		if focusWidget != null
+			warpMouseFocusLocation(focusWidget)
+		end
 	end
 	
 	/** \brief Active mouse pointer factory or \em null. */
@@ -745,6 +765,41 @@ class Desktop extends Container
 		end
 	end
 	
+	func void focusDirectional(int direction)
+		if pDirectionalCaptureWidget != null
+			pDirectionalCaptureWidget.focusDirectional(direction)
+			return
+		end
+		
+		var Window window = getActiveWindow()
+		if window == null
+			focusActiveWidgetOfFirstUsableWindow()
+			window = getActiveWindow()
+			
+			if window == null
+				return
+			end
+		end
+		
+		var Widget widget = getHoverWidget()
+		while widget != null and not widget.getCanFocusDirectional()
+			widget = widget.getParent()
+		end
+		if widget != null and (widget == window or widget.hasParent(window))
+			// BaseGameApp.getApp().getConsole().addMessage("USE HOVER: " + Array.newWith(widget, widget.getDesktopBoundary()))
+			widget.focusDirectional(direction)
+			return
+		end
+		
+		// BaseGameApp.getApp().getConsole().addMessage("BEGIN MLOC: " + Array.newWith(this, getDesktopBoundary(), pMouseLocation, direction))
+		window.focusDirectionalInside(direction)
+	end
+	
+	func void ensureVisible()
+	end
+	
+	func void ensureVisible(RectArea box)
+	end
 	
 	
 	/** Request to focus the specified widget. */
@@ -803,9 +858,6 @@ class Desktop extends Container
 		return parent.allowsChildGrabFocus()
 	end
 	
-	/**
-	 * \brief Request to capture the mouse for the specified widget.
-	 */
 	func bool requestCaptureMouse(Widget widget)
 		if widget == null //or pCaptureWidget != null
 			return false
@@ -817,10 +869,6 @@ class Desktop extends Container
 		return true
 	end
 	
-	/**
-	 * \brief Request to release mouse capture.
-	 * \returns \em true if the widget is the capture widget otherwise \em false.
-	 */
 	func bool requestReleaseMouse(Widget widget)
 		if widget != pCaptureWidget
 			return false
@@ -832,6 +880,23 @@ class Desktop extends Container
 		return true
 	end
 	
+	func bool requestCaptureDirectional(Widget widget)
+		if widget == null
+			return false
+		end
+		
+		pDirectionalCaptureWidget = widget
+		return true
+	end
+	
+	func bool requestReleaseDirectional(Widget widget)
+		if widget != pDirectionalCaptureWidget
+			return false
+		end
+		
+		pDirectionalCaptureWidget = null
+		return true
+	end
 	
 	
 	/**
@@ -1019,6 +1084,10 @@ class Desktop extends Container
 		return Point.new()
 	end
 	
+	func RectArea getVisibleDesktopBoundary()
+		return getBoundary()
+	end
+	
 	
 	
 	/**
@@ -1030,10 +1099,12 @@ class Desktop extends Container
 	 */
 	func void layoutParent()
 		// check if capture widget is no more existing
-		if pCaptureWidget != null
-			if not pCaptureWidget.hasParent(this)
-				pCaptureWidget = null
-			end
+		if pCaptureWidget != null and not pCaptureWidget.hasParent(this)
+			pCaptureWidget = null
+		end
+		
+		if pDirectionalCaptureWidget != null and not pDirectionalCaptureWidget.hasParent(this)
+			pDirectionalCaptureWidget = null
 		end
 		
 		// check if hover widget changed

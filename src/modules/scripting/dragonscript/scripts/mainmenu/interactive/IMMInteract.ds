@@ -37,19 +37,163 @@ pin Dragengine.Utils
  * mouse button is pressed.
  */
 class IMMInteract implements ColliderListener
-	/** \brief Interactive main menu. */
-	private var InteractiveMainMenu pMainMenu
+	/** \brief Directional focus finder adapted for interactive main menu usage. */
+	class IMMClosestDirectionFocusFinder extends ClosestDirectionFocusFinder
+		protected var Array pIgnoreHotSpots
+		protected var WorldRenderer pRenderer
+		protected var Point pOrigin
+		protected var IMMBehaviorHotSpot.Instance pBestHotSpot
+		protected var float pBestAngle, pBestScore, pHitAngle, pHitScore
+		
+		func new(WorldRenderer renderer, Point origin, int direction) super(direction, Point.new(), Point.new())
+			if renderer == null
+				throw ENullPointer.new("renderer")
+			end
+			
+			pRenderer = renderer
+			pOrigin = origin
+			pIgnoreHotSpots = Array.new()
+		end
+		
+		func void reset()
+			super.reset()
+			pBestHotSpot = null
+		end
+		
+		/** \brief Best hot spot. */
+		func IMMBehaviorHotSpot.Instance getBestHotSpot()
+			return pBestHotSpot
+		end
+		
+		/** \brief Add hot spot to ignore. */
+		func void addIgnoreHotSpot(IMMBehaviorHotSpot.Instance hotSpot)
+			if hotSpot == null
+				throw ENullPointer.new("hotSpot")
+			end
+			pIgnoreHotSpots.add(hotSpot)
+		end
+		
+		/** \brief Proces hot spot. */
+		func void processHotSpot(IMMBehaviorHotSpot.Instance hotSpot)
+			if hotSpot == null
+				throw ENullPointer.new("hotSpot")
+			end
+			if pIgnoreHotSpots.has(hotSpot)
+				return
+			end
+			
+			pHitBox = pNearestBox = null
+			pHitX = pNearestX = 0
+			
+			var Point position = pRenderer.project(hotSpot.getCenterPosition()) - pOrigin
+			
+			var int y = pDirY * position
+			if y < 1
+				return
+			end
+			
+			var int x = DEMath.abs(pDirX * position)
+			var float angle = DEMath.acos(y / Vector2.new(x, y).getLength())
+			if angle > 60
+				// return
+			end
+			
+			pHitX = x
+			pHitBox = RectArea.new(pHitX, y, pHitX, y)
+			pHitAngle = angle
+			pHitScore = y / 100 + angle / 5
+			
+			challengeBest(hotSpot)
+		end
+		
+		/** \brief Process all hot spots in world. */
+		func void processHotSpots(GameWorld world)
+			var IMMBehaviorHotSpot.Instance hotSpot
+			
+			world.forEachElement(block Element each
+				if each castable BehaviorElement
+					hotSpot = IMMBehaviorHotSpot.getInstanceIn(each cast BehaviorElement)
+					if hotSpot != null
+						processHotSpot(hotSpot)
+					end
+				end
+			end)
+		end
+		
+		/** \brief Compare processed widget against best widget and keep the winner. */
+		protected func void challengeBest(IMMBehaviorHotSpot.Instance hotSpot)
+			var bool replace
+			
+			if pBestHitBox == null
+				replace = true
+				
+			//elif pHitBox.getY1() < pBestHitBox.getY1()
+			elif pHitScore < pBestScore
+				replace = true
+			end
+			
+			if replace
+				pBestHotSpot = hotSpot
+				pBestHitBox = pHitBox
+				pBestHitX = pHitX
+				pBestAngle = pHitAngle
+				pBestScore = pHitScore
+			end
+		end
+	end
 	
-	/** \brief Collision filter. */
-	private var CollisionFilter pCollisionFilter
+	/**
+	 * \brief Find hot spot with center position closest to mouse location.
+	 * \version 1.29
+	 */
+	class ClosestHotSpotFinder
+		var WorldRenderer pRenderer
+		var IMMBehaviorHotSpot.Instance pBestHotSpot
+		var float pBestDistance
+		
+		func new(WorldRenderer renderer)
+			if renderer == null
+				throw ENullPointer.new("renderer")
+			end
+			
+			pRenderer = renderer
+			pBestDistance = 10000
+		end
+		
+		/** \brief Best hot spot. */
+		func IMMBehaviorHotSpot.Instance getBestHotSpot()
+			return pBestHotSpot
+		end
+		
+		/** \brief Process hotspots in game world. */
+		func void processHotSpots(GameWorld world, Point origin)
+			world.forEachElement(block Element each
+				if each castable BehaviorElement
+					var IMMBehaviorHotSpot.Instance hotSpot =\
+						IMMBehaviorHotSpot.getInstanceIn(each cast BehaviorElement)
+					if hotSpot != null
+						var Point position = pRenderer.project(hotSpot.getCenterPosition())
+						var float distance = Vector2.new(position - origin).getLength()
+						
+						if distance < pBestDistance
+							pBestHotSpot = hotSpot
+							pBestDistance = distance
+						end
+					end
+				end
+			end)
+		end
+	end
 	
-	/** \brief Hot-spot under cursor or null. */
-	private var IMMBehaviorHotSpot.Instance pHoverHotSpot
+	
+	var InteractiveMainMenu pMainMenu
+	var CollisionFilter pCollisionFilter
+	var IMMBehaviorHotSpot.Instance pHoverHotSpot
 	
 	
 	
 	/** \brief Create interact handler for interactive main menu. */
-	public func new(InteractiveMainMenu mainMenu)
+	func new(InteractiveMainMenu mainMenu)
 		if mainMenu == null
 			throw EInvalidParam.new()
 		end
@@ -59,7 +203,7 @@ class IMMInteract implements ColliderListener
 	end
 	
 	/** \brief Dispose of widget. */
-	public func void dispose()
+	func void dispose()
 		pHoverHotSpot = null
 		pMainMenu = null
 	end
@@ -67,19 +211,19 @@ class IMMInteract implements ColliderListener
 	
 	
 	/** \brief Interactive main menu. */
-	public func InteractiveMainMenu getMainMenu()
+	func InteractiveMainMenu getMainMenu()
 		return pMainMenu
 	end
 	
 	/** \brief Hot-spot under cursor or null. */
-	public func IMMBehaviorHotSpot.Instance getHoverHotSpot()
+	func IMMBehaviorHotSpot.Instance getHoverHotSpot()
 		return pHoverHotSpot
 	end
 	
 	
 	
 	/** \brief Update camera. */
-	public func void update(float elapsed)
+	func void update(float elapsed)
 		// hovering over hot-spot is only enabled if no hot-spot is active, activating
 		// or deactivating. basically only in pure main menu mode
 		if pMainMenu.getActiveHotSpot() == null
@@ -91,7 +235,7 @@ class IMMInteract implements ColliderListener
 	end
 	
 	/** \brief Mouse button pressed. */
-	public func void onButtonPress(MouseEvent event)
+	func void onButtonPress(MouseEvent event)
 		select event.getButton()
 		case InputEventMouseButton.left
 			if pHoverHotSpot != null and pMainMenu.getActiveHotSpot() == null
@@ -106,7 +250,7 @@ class IMMInteract implements ColliderListener
 	end
 	
 	/** \brief Key pressed. */
-	public func void onKeyPress(KeyEvent event)
+	func void onKeyPress(KeyEvent event)
 		select event.getKeyCode()
 		case InputEventKey.escape
 			if pMainMenu.getActiveHotSpot() != null
@@ -115,6 +259,64 @@ class IMMInteract implements ColliderListener
 		end
 	end
 	
+	/**
+	 * \brief Gamepad button has been pressed.
+	 * \version 1.29
+	 */
+	func void onGamepadButtonPressed(GamepadEvent event)
+		if event.getCode() == 1
+			if pMainMenu.getActiveHotSpot() != null
+				pMainMenu.deactivateHotSpot()
+			end
+		end
+	end
+	
+	/**
+	 * \brief Focus widget in direction that can grab the focus.
+	 * \version 1.29
+	 * \param direction Direction as \ref InputEventKey#arrowLeft, \ref InputEventKey#arrowRight,
+	 *                  \ref InputEventKey#arrowUp or \ref InputEventKey#arrowDown.
+	 */
+	func void focusDirectional(int direction)
+		var WorldRenderer worldRenderer = pMainMenu.getWorldRenderer()
+		var IMMClosestDirectionFocusFinder finder
+		
+		var Point origin
+		if pHoverHotSpot != null
+			origin = worldRenderer.project(pHoverHotSpot.getCenterPosition())
+			finder = IMMClosestDirectionFocusFinder.new(worldRenderer, origin, direction)
+			finder.addIgnoreHotSpot(pHoverHotSpot)
+			
+		else
+			origin = worldRenderer.getLocalMouseLocation()
+			
+			var ClosestHotSpotFinder finder2 = ClosestHotSpotFinder.new(worldRenderer)
+			finder2.processHotSpots(pMainMenu.getWorld(), origin)
+			var IMMBehaviorHotSpot.Instance hotSpot = finder2.getBestHotSpot()
+			if hotSpot != null
+				origin = worldRenderer.project(hotSpot.getCenterPosition())
+				finder = IMMClosestDirectionFocusFinder.new(worldRenderer, origin, direction)
+				finder.addIgnoreHotSpot(hotSpot)
+				
+			else
+				finder = IMMClosestDirectionFocusFinder.new(worldRenderer, origin, direction)
+			end
+		end
+		
+		finder.processHotSpots(pMainMenu.getWorld())
+		var IMMBehaviorHotSpot.Instance hotSpot = finder.getBestHotSpot()
+		if hotSpot == null or pHoverHotSpot == hotSpot
+			return
+		end
+		
+		var Desktop desktop = pMainMenu.getDesktop()
+		if desktop == null
+			return
+		end
+		
+		desktop.setMouseLocation(worldRenderer.getDesktopPosition()\
+			+ worldRenderer.project(hotSpot.getCenterPosition()))
+	end
 	
 	
 	/** \brief Create collision filter. */
@@ -165,9 +367,8 @@ class IMMInteract implements ColliderListener
 	end
 	
 	
-	
 	/** \brief Store hot-spot if hit collider is a hot-spot. */
-	public func void collisionResponse(Collider owner, CollisionInfo info)
+	func void collisionResponse(Collider owner, CollisionInfo info)
 		if not info.isCollider()
 			return
 		end
@@ -188,11 +389,11 @@ class IMMInteract implements ColliderListener
 	end
 	
 	/** \brief All colliders can be hit. */
-	public func bool canHitCollider(Collider owner, Collider collider)
+	func bool canHitCollider(Collider owner, Collider collider)
 		return true
 	end
 	
 	/** \brief Not used. */
-	public func void colliderChanged(Collider owner)
+	func void colliderChanged(Collider owner)
 	end
 end

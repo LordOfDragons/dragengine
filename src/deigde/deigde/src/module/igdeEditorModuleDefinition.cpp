@@ -386,11 +386,13 @@ void igdeEditorModuleDefinition::pVerify(){
 	}
 	
 	// check that the file size matches the one specified
+#ifndef NO_ENGINE_MODULE_CHECKS
 	if( fs.st_size != pLibSize ){
 		pErrorCode = eecLibFileSizeMismatch;
 		pCanLoad = false;
 		return;
 	}
+#endif
 	
 	// check that the sha1 sum is the same
 	

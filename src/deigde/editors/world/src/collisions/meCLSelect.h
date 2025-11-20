@@ -160,11 +160,15 @@ public:
 	/** \brief Store current selection for rectangular selection. */
 	void StoreRectSelect();
 	
+	/** \brief Get hit list. */
+	inline meCLHitList &GetHitList(){ return pHitList; }
+	inline const meCLHitList &GetHitList() const{ return pHitList; }
+	
 	/** \brief Prepare for a test clearing only the hit list. */
 	void Prepare();
 	
 	/** \brief Run action after testing. */
-	void RunAction();
+	void RunAction(int selectIndex = 0);
 	/*@}*/
 	
 	

@@ -43,7 +43,7 @@ hasSystemWebp = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_libwebp'] != TernaryVariableNo:
 	hasSystemWebp = conf.CheckLibWithHeader(libLinkName,
-		'webp/decode.h', 'c++', 'WebPGetDecoderVersion();')
+		'webp/decode.h', 'c++', call='WebPGetDecoderVersion();')
 conf.Finish()
 
 if not hasSystemWebp and envLibrary['with_system_libwebp'] == TernaryVariableYes:

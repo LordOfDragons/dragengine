@@ -25,29 +25,36 @@
 #ifndef _MECLHITLISTENTRY_H_
 #define _MECLHITLISTENTRY_H_
 
+#include "../world/decal/meDecal.h"
+#include "../world/object/meObject.h"
+#include "../world/object/meObjectSnapPoint.h"
+#include "../world/objectshape/meObjectShape.h"
+#include "../world/navspace/meNavigationSpace.h"
+#include "../world/terrain/meHeightTerrainSector.h"
+
 #include <dragengine/common/math/decMath.h>
-
-class meObject;
-class meObjectShape;
-class meDecal;
-class meNavigationSpace;
-
 
 
 /**
  * \brief Hit list entry.
  */
-class meCLHitListEntry{
+class meCLHitListEntry : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meCLHitListEntry> Ref;
+	
+	
 private:
-	meObject *pObject;
-	meObjectShape *pObjectShape;
-	meDecal *pDecal;
-	meNavigationSpace *pNavSpace;
+	meObject::Ref pObject;
+	meObjectShape::Ref pObjectShape;
+	meDecal::Ref pDecal;
+	meNavigationSpace::Ref pNavSpace;
 	int pHTNavSpacePoint;
+	meHeightTerrainSector::Ref pHTSector;
+	meObjectSnapPoint::Ref pSnapPoint;
 	
 	float pDistance;
 	decVector pNormal;
-	
 	
 	
 public:
@@ -56,61 +63,72 @@ public:
 	/** \brief Create hit list entry. */
 	meCLHitListEntry();
 	
+protected:
 	/** \brief Clean up hit list entry. */
-	~meCLHitListEntry();
+	~meCLHitListEntry() override = default;
 	/*@}*/
 	
 	
-	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Clear entry. */
 	void Clear();
 	
-	/** \brief Object or \em NULL. */
-	inline meObject *GetObject() const{ return pObject; }
+	/** \brief Object or nullptr. */
+	inline const meObject::Ref &GetObject() const{ return pObject; }
 	
-	/** \brief Set object or \em NULL. */
-	void SetObject( meObject *object );
+	/** \brief Set object or nullptr. */
+	void SetObject(meObject *object);
 	
-	/** \brief Object shape or \em NULL. */
-	inline meObjectShape *GetObjectShape() const{ return pObjectShape; }
+	/** \brief Object shape or nullptr. */
+	inline const meObjectShape::Ref &GetObjectShape() const{ return pObjectShape; }
 	
-	/** \brief Set object shape or \em NULL. */
-	void SetObjectShape( meObjectShape *objectShape );
+	/** \brief Set object shape or nullptr. */
+	void SetObjectShape(meObjectShape *objectShape);
 	
-	/** \brief Decal or \em NULL. */
-	inline meDecal *GetDecal() const{ return pDecal; }
+	/** \brief Decal or nullptr. */
+	inline const meDecal::Ref &GetDecal() const{ return pDecal; }
 	
-	/** \brief Set decal or \em NULL. */
-	void SetDecal( meDecal *decal );
+	/** \brief Set decal or nullptr. */
+	void SetDecal(meDecal *decal);
 	
-	/** \brief Navigation space or \em NULL. */
-	inline meNavigationSpace *GetNavigationSpace() const{ return pNavSpace; }
+	/** \brief Navigation space or nullptr. */
+	inline const meNavigationSpace::Ref &GetNavigationSpace() const{ return pNavSpace; }
 	
-	/** \brief Set navigation space or \em NULL. */
-	void SetNavigationSpace( meNavigationSpace *navspac3 );
+	/** \brief Set navigation space or nullptr. */
+	void SetNavigationSpace(meNavigationSpace *navspace);
 	
 	/** \brief Height terrain navigation space point or -1. */
 	inline int GetHTNavSpacePoint() const{ return pHTNavSpacePoint; }
 	
 	/** \brief Set height terrain navigation space point or -1. */
-	void SetHTNavSpacePoint( int point );
+	void SetHTNavSpacePoint(int point);
 	
+	/** \brief Height terrain sector or nullptr. */
+	inline const meHeightTerrainSector::Ref &GetHTSector() const{ return pHTSector; }
+	
+	/** \brief Set height terrain sector or nullptr. */
+	void SetHTSector(meHeightTerrainSector *sector);
+	
+	/** \brief Snap point or nullptr. */
+	inline const meObjectSnapPoint::Ref &GetSnapPoint() const{ return pSnapPoint; }
+	
+	/** \brief Set snap point or nullptr. */
+	void SetSnapPoint(meObjectSnapPoint *snapPoint);
 	
 	
 	/** \brief Distance. */
 	inline float GetDistance() const{ return pDistance; }
 	
 	/** \brief Set distance. */
-	void SetDistance( float distance );
+	void SetDistance(float distance);
 	
 	/** \brief Normal. */
 	inline const decVector &GetNormal() const{ return pNormal; }
 	
 	/** \brief Set normal. */
 	void SetNormal( const decVector &normal );
-	
 	
 	
 	/** \brief Sort decals. */
@@ -120,7 +138,10 @@ public:
 	 * \brief Compare entry to another one.
 	 * \returns 1 if entry is ordinally larger, -1 if smaller or 0 if equal.
 	 */
-	int CompareTo( const meCLHitListEntry &entry ) const;
+	int CompareTo(const meCLHitListEntry &entry) const;
+	
+	/** Same element. */
+	bool IsSame(const meCLHitListEntry &entry) const;
 	/*@}*/
 };
 

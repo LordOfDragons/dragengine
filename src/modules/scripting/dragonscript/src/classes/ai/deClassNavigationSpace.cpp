@@ -32,6 +32,7 @@
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
 #include "../utils/deClassShapeList.h"
+#include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -303,7 +304,18 @@ void deClassNavigationSpace::nfSetBlockingPriority::RunFunction( dsRunTime *rt, 
 	navspace.SetBlockingPriority( rt->GetValue( 0 )->GetInt() );
 }
 
+// func World getParentWorld()
+deClassNavigationSpace::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsNavSpace, "getParentWorld", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
 
+void deClassNavigationSpace::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deNavigationSpace &navspace = *((const sNavSpaceNatDat *)p_GetNativeData(myself))->navspace;
+	const deScriptingDragonScript &ds = *((deClassNavigationSpace *)GetOwnerClass())->GetDS();
+	
+	ds.GetClassWorld()->PushWorld(rt, navspace.GetParentWorld());
+}
 
 // public func int getVertexCount()
 deClassNavigationSpace::nfGetVertexCount::nfGetVertexCount( const sInitData &init ) : dsFunction( init.clsNavSpace,
@@ -865,6 +877,7 @@ void deClassNavigationSpace::CreateClassMembers( dsEngine *engine ){
 	init.clsQuat = pDS->GetClassQuaternion();
 	init.clsShaList = pDS->GetClassShapeList();
 	init.clsNavigationSpaceType = pClsNavigationSpaceType;
+	init.clsWorld = pDS->GetClassWorld();
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfNewCopy( init ) );
@@ -880,6 +893,7 @@ void deClassNavigationSpace::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetType( init ) );
 	AddFunction( new nfGetBlockingPriority( init ) );
 	AddFunction( new nfSetBlockingPriority( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfGetVertexCount( init ) );
 	AddFunction( new nfSetVertexCount( init ) );

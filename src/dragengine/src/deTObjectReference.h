@@ -46,12 +46,11 @@ private:
 	T *pObject;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create empty object reference holder. */
-	deTObjectReference() : pObject( nullptr ){
+	deTObjectReference() : pObject(nullptr){
 	}
 	
 	/**
@@ -59,8 +58,8 @@ public:
 	 * 
 	 * Reference is added if object is not nullptr.
 	 */
-	deTObjectReference( T *object ) : pObject( object ){
-		if( pObject ){
+	deTObjectReference(T *object) : pObject(object){
+		if(pObject){
 			pObject->AddReference();
 		}
 	}
@@ -70,8 +69,8 @@ public:
 	 * 
 	 * Reference is added if object in holder is not nullptr.
 	 */
-	deTObjectReference( const deTObjectReference &reference ) : pObject( reference.pObject ){
-		if( pObject ){
+	deTObjectReference(const deTObjectReference &reference) : pObject(reference.pObject){
+		if(pObject){
 			pObject->AddReference();
 		}
 	}
@@ -82,12 +81,11 @@ public:
 	 * Releases reference if object is not nullptr.
 	 */
 	~deTObjectReference(){
-		if( pObject ){
+		if(pObject){
 			pObject->FreeReference();
 		}
 	}
 	/*@}*/
-	
 	
 	
 	/** \name Management */
@@ -102,9 +100,9 @@ public:
 	 * 
 	 * It is allowed for object to be a nullptr object.
 	 */
-	void TakeOver( T *object ){
-		if( object == pObject ){
-			if( object ){
+	void TakeOver(T *object){
+		if(object == pObject){
+			if(object){
 				// this is required since we are asked to take over the reference. since we
 				// have the same reference already we refuse to take over the reference and
 				// thus without releasing it this reference would be dangling
@@ -113,17 +111,15 @@ public:
 			return;
 		}
 		
-		if( pObject ){
+		if(pObject){
 			pObject->FreeReference();
 		}
 		pObject = object;
 	}
 	
-	/**
-	 * \brief Move reference.
-	 */
-	void TakeOver( deTObjectReference &reference ){
-		if( pObject ){
+	/** \brief Move reference. */
+	void TakeOver(deTObjectReference &reference){
+		if(pObject){
 			pObject->FreeReference();
 		}
 		
@@ -131,11 +127,39 @@ public:
 		reference.pObject = nullptr;
 	}
 	
-	/**
-	 * \brief Add reference.
-	 */
-	void TakeOver( const deTObjectReference &reference ){
+	/** \brief Take over reference. */
+	void TakeOver(const deTObjectReference &reference){
 		*this = reference;
+	}
+	
+	/**
+	 * \brief Create instance taking over reference.
+	 * 
+	 * Same as calling TakeOver() but using provided arguments with a 'new' call.
+	 */
+	template<typename... A> void TakeOverWith(A&&... args){
+		TakeOver(new T(static_cast<A>(args)...));
+	}
+	
+	/** \brief Pointer to object. */
+	inline T* Pointer() const{
+		return pObject;
+	}
+	
+	/** \brief Reference to object. */
+	inline T& Reference() const{
+		DEASSERT_NOTNULL(pObject)
+		return *pObject;
+	}
+	
+	/** \brief Object is nullptr. */
+	inline bool IsNull() const{
+		return pObject == nullptr;
+	}
+	
+	/** \brief Object is not nullptr. */
+	inline bool IsNotNull() const{
+		return pObject != nullptr;
 	}
 	
 	/**
@@ -143,24 +167,33 @@ public:
 	 * 
 	 * Same as calling TakeOver() on a new instance but allows for inline use.
 	 */
-	static deTObjectReference New( T *object ){
+	static deTObjectReference New(T *object){
 		deTObjectReference reference;
-		reference.TakeOver( object );
+		reference.TakeOver(object);
 		return reference;
 	}
 	
 	/**
 	 * \brief Returns reference to protect against problems.
 	 */
-	static deTObjectReference New( const deTObjectReference &reference ){
+	static deTObjectReference New(const deTObjectReference &reference){
 		return reference;
 	}
 	
 	/**
 	 * \brief Returns reference to protect against problems.
 	 */
-	static deTObjectReference New( deTObjectReference &reference ){
+	static deTObjectReference New(deTObjectReference &reference){
 		return reference;
+	}
+	
+	/**
+	 * \brief Create instance taking over reference.
+	 * 
+	 * Same as calling New() but using provided arguments with a 'new' call.
+	 */
+	template<typename... A> static deTObjectReference NewWith(A&&... args){
+		return New(new T(static_cast<A>(args)...));
 	}
 	
 	/** \brief Object is nullptr. */
@@ -179,11 +212,11 @@ public:
 	}
 	
 	/**
-	 * \brief C to object.
+	 * \brief Reference to object.
 	 * \throws deeNullPointer if object is nullptr.
 	 */
 	inline operator T&() const{
-		DEASSERT_NOTNULL( pObject )
+		DEASSERT_NOTNULL(pObject)
 		return *pObject;
 	}
 	
@@ -192,7 +225,7 @@ public:
 	 * \throws deeNullPointer if object is nullptr.
 	 */
 	inline T* operator->() const{
-		DEASSERT_NOTNULL( pObject )
+		DEASSERT_NOTNULL(pObject)
 		return pObject;
 	}
 	
@@ -202,18 +235,18 @@ public:
 	 * If an object is already held its reference is release and the new object
 	 * stored. If the new object is not nullptr a reference is added.
 	 */
-	deTObjectReference &operator=( T *object ){
-		if( object == pObject ){
+	deTObjectReference &operator=(T *object){
+		if(object == pObject){
 			return *this;
 		}
 		
-		if( pObject ){
+		if(pObject){
 			pObject->FreeReference();
 		}
 		
 		pObject = object;
 		
-		if( object ){
+		if(object){
 			object->AddReference();
 		}
 		
@@ -226,27 +259,27 @@ public:
 	 * If an object is already held its reference is release and the new object
 	 * stored. If the new object is not nullptr a reference is added.
 	 */
-	inline deTObjectReference &operator=( const deTObjectReference &reference ){
-		return operator=( reference.pObject );
+	inline deTObjectReference &operator=(const deTObjectReference &reference){
+		return operator=(reference.pObject);
 	}
 	
 	/** \brief Test if object is held by this holder. */
-	inline bool operator==( T *object ) const{
+	inline bool operator==(T *object) const{
 		return pObject == object;
 	}
 	
 	/** \brief Test if object is held by this holder. */
-	inline bool operator==( const deTObjectReference &reference ) const{
+	inline bool operator==(const deTObjectReference &reference) const{
 		return pObject == reference.pObject;
 	}
 	
 	/** \brief Test if object is not held by this holder. */
-	inline bool operator!=( T *object ) const{
+	inline bool operator!=(T *object) const{
 		return pObject != object;
 	}
 	
 	/** \brief Test if object is not held by this holder. */
-	inline bool operator!=( const deTObjectReference &reference ) const{
+	inline bool operator!=(const deTObjectReference &reference) const{
 		return pObject != reference.pObject;
 	}
 	/*@}*/

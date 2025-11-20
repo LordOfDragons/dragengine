@@ -109,7 +109,7 @@ void aeLoadSaveAttachmentConfig::pWriteConfiguration( decXmlWriter &writer, cons
 }
 
 void aeLoadSaveAttachmentConfig::pWriteAttachment( decXmlWriter &writer, const aeAttachment &attachment ){
-	const igdeWObject &wpobject = *attachment.GetObjectWrapper();
+	const igdeWObject &wpobject = attachment.GetObjectWrapper();
 	const decDVector &position = wpobject.GetPosition();
 	const decVector orientation( wpobject.GetOrientation().GetEulerAngles() / DEG2RAD );
 	const decVector &scaling = wpobject.GetScaling();

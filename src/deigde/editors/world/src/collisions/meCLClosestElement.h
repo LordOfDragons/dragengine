@@ -85,16 +85,16 @@ public:
 	
 	/** \name Management */
 	/*@{*/
-	/**  Set if height terrain are tested. */
+	/** Set if height terrain are tested. */
 	void SetTestHeightTerrain( bool test );
 	
-	/**  Set if objects are tested. */
+	/** Set if objects are tested. */
 	void SetTestObjects( bool test );
 	
-	/**  Set if decals are tested. */
+	/** Set if decals are tested. */
 	void SetTestDecals( bool test );
 	
-	/**  Set if object snap points are tested. */
+	/** Set if object snap points are tested. */
 	void SetTestSnapPoints( bool test );
 	
 	

@@ -997,7 +997,7 @@
 	
 	<xs:simpleType name='variable_test_value'>
 		<xs:restriction base='xs:string'>
-			<xs:pattern value='(!=|&lt;=|>=|=|&lt;|>)?\d+'/>
+			<xs:pattern value='(!=|&lt;=|>=|=|&lt;|>)?(\+|-)?\d+'/>
 		</xs:restriction>
 	</xs:simpleType>
 	

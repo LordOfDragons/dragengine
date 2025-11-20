@@ -1,5 +1,6 @@
 import os
 import sys
+import shlex
 import SCons
 
 from SConsCommon import *
@@ -33,12 +34,28 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.xz'.format(srcdir), 'f
 # NOTE some OS have compilers causing errors on the check below because "true" is used.
 #      the error looks like "cannot convert bool to boolean". to prevent this "TRUE" is
 #      used instead
+
+# freetype does bad things with the header path causing build to fail.
+# we have to ugly hack around this to get somewhere. why do people do
+# such crap in the first place?
+output = os.popen('pkg-config --cflags-only-I freetype2').read()
+if output.endswith('\n'):
+	output = output[:-1]
+
 hasSystemFreetype = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_freetype'] != TernaryVariableNo:
+	hasSystemFreetype = conf.CheckLib(libLinkName, 'FT_Open_Face', None, 'c++')
+	"""
 	hasSystemFreetype = conf.CheckLibWithHeader(libLinkName,
 		['stdio.h', 'stdlib.h', 'ft2build.h'], 'c++',
-		'FT_Library l; FT_Open_Face(l, nullptr, 0, nullptr);')
+		call='FT_Library l; FT_Open_Face(l, nullptr, 0, nullptr);')
+	"""
+	if hasSystemFreetype and output:
+		cpppath = [x[2:] for x in shlex.split(output)]
+		#hasSystemFreetype = True
+		#conf.CheckLibWithHeader(libLinkName, ['stdio.h', 'stdlib.h'], 'c++', call='')
+
 conf.Finish()
 
 if not hasSystemFreetype and envLibrary['with_system_freetype'] == TernaryVariableYes:
@@ -52,7 +69,7 @@ parent_report['use system freetype'] = 'yes' if hasSystemFreetype else 'no'
 if hasSystemFreetype:
 	parent_targets['lib_freetype'] = {
 		'name' : 'Internal FreeType library',
-		'cpppath' : [],
+		'cpppath' : cpppath,
 		'libpath' : [],
 		'libs' : libs,
 		'runtimelibs' : [],
@@ -175,13 +192,11 @@ globFiles(envLibrary, os.path.join('patches', freetypeVersion),
 envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 
 if envLibrary['platform_webwasm']:
-	library = envLibrary.Command(targets, nodeArtifacts,
+	library = envLibrary.Command(targets, [nodeArtifacts, patches],
 		envLibrary.Action(freetypeBuildWasm, 'Build FreeType library'))
 else:
-	library = envLibrary.Command(targets, nodeArtifacts,
+	library = envLibrary.Command(targets, [nodeArtifacts, patches],
 		envLibrary.Action(freetypeBuild, 'Build FreeType library'))
-
-envLibrary.Depends(library, envLibrary['PATCHES'])
 
 if envLibrary['platform_webwasm']:
 	envLibrary.SideEffect('#notParallelCMake', library)

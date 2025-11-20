@@ -65,8 +65,11 @@ class deBaseScriptingCollider;
  * - Render Environment Map Mask: 2 (Bit 1 set)
  * - Audio: 4 (Bit 2 set)
  */
-class DE_DLL_EXPORT igdeWObject{
+class DE_DLL_EXPORT igdeWObject : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWObject> Ref;
+	
 	/** \brief Asynchronous loading finished. */
 	class DE_DLL_EXPORT cAsyncLoadFinished{
 	public:
@@ -155,12 +158,14 @@ public:
 	/** \brief Create wrapper. */
 	igdeWObject( igdeEnvironment &environment );
 	
+protected:
 	/** \brief Clean up wrapper. */
-	~igdeWObject();
+	virtual ~igdeWObject();
 	/*@}*/
 	
 	
 	
+public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Environment. */
@@ -406,6 +411,14 @@ public:
 	/** \brief Trigger listener for internal use only. */
 	inline igdeTriggerListener *GetTriggerListener() const{ return pTriggerListener; }
 	
+	/**
+	 * \brief Determine if all sub objects (direct or indirect) finished loading.
+	 * 
+	 * Required if world type sub objects are present. These report finished loading
+	 * as soon as the world has been loaded to avoid waiting. Use this function to
+	 * check if all sub objects inside this object fully finished loading.
+	 */
+	bool AllSubObjectsFinishedLoading() const;
 	
 	
 	/**

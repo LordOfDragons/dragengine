@@ -225,7 +225,7 @@ void peeWPView::SetEmitter( peeEmitter *emitter ){
 		return;
 	}
 	
-	pWPEnvObject->SetObjectWrapper( NULL );
+	pWPEnvObject->SetObject(nullptr);
 	pWPSky->SetSky( NULL );
 	pWPCamera->SetCamera( NULL );
 	
@@ -242,7 +242,7 @@ void peeWPView::SetEmitter( peeEmitter *emitter ){
 		emitter->AddReference();
 		
 		pWPSky->SetSky( emitter->GetSky() );
-		pWPEnvObject->SetObjectWrapper( emitter->GetEnvObject() );
+		pWPEnvObject->SetObject(emitter->GetEnvObject());
 		pWPCamera->SetCamera( emitter->GetCamera() );
 	}
 	
@@ -283,7 +283,7 @@ void peeWPView::UpdateSky(){
 }
 
 void peeWPView::UpdateEnvObject(){
-	pWPEnvObject->UpdateObjectWrapper();
+	pWPEnvObject->UpdateObject();
 }
 
 void peeWPView::UpdateCamera(){

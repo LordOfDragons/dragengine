@@ -102,21 +102,19 @@ if envEditor['OSWindows'] and envEditor['CROSSCOMPILE_CLANG'] and envEditor['wit
 	archive['{}/testrunner.pdb'.format(pathPdb)] = envEditor.File('testrunner.pdb')
 
 manifestUpdates = [
-	{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
-	{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-	{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+	{'action': 'filename', 'file': library[0], 'keyword': 'FILENAME'},
+	{'action': 'filesize', 'file': library[0], 'keyword': 'FILESIZE'},
+	{'action': 'filehash', 'file': library[0], 'keyword': 'SHA1SUM'},
 	{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 
 for l in reversed( parent_targets['lib_zlib']['runtimelibs']):
-	manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
+	manifestUpdates.append({'action': 'preloadLibrary', 'library': l})
 	install.append(envEditor.Install(pathModule, l))
 	archive[os.path.join(pathModule, l.name)] = l
 
 manifest = envEditor.File( 'src/module.xml' )
-updateManifest = envEditor.Command( manifest, manifest.srcnode(),
-	Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-Depends( updateManifest, library )
-Depends(updateManifest, parent_targets['lib_zlib']['runtimelibs'])
+updateManifest = envEditor.UpdateModuleManifest(manifest,
+	manifest.srcnode(), ManifestUpdates=manifestUpdates)
 
 install.append( envEditor.Install( pathModule, updateManifest ) )
 archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
@@ -133,8 +131,6 @@ srcdir = Dir( '.' ).srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC( envEditor, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
-Depends( buildClocBare, sources )
-Depends( buildClocBare, headers )
 buildCloc = envEditor.Alias( 'editor_project_cloc', buildClocBare )
 
 # add the targets to the targets list

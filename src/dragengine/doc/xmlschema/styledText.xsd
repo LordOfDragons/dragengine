@@ -216,6 +216,27 @@
 	</xs:complexType>
 	
 	
+	<xs:simpleType name='attribute_style'>
+		<xs:restriction base='xs:string'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Style to use. If not set uses page style.
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name='attribute_newPage'>
+		<xs:restriction base='xs:string'>
+			<xs:annotation>
+				<xs:documentation><![CDATA[
+					Begin new page if attribute is present (set to any value).
+				]]></xs:documentation>
+			</xs:annotation>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
 	<xs:complexType name='text' mixed='true'>
 		<xs:annotation>
 			<xs:documentation><![CDATA[
@@ -227,13 +248,8 @@
 			<xs:element name='span' type='span'/>
 		</xs:choice>
 		
-		<xs:attribute name='style' type='xs:string'>
-			<xs:annotation>
-				<xs:documentation><![CDATA[
-					Style to use. If not set uses page style.
-				]]></xs:documentation>
-			</xs:annotation>
-		</xs:attribute>
+		<xs:attribute name='style' type='attribute_style'/>
+		<xs:attribute name='newPage' type='attribute_newPage'/>
 	</xs:complexType>
 	
 	
@@ -246,13 +262,8 @@
 		
 		<xs:simpleContent>
 			<xs:extension base='xs:string'>
-				<xs:attribute name='style' type='xs:string'>
-					<xs:annotation>
-						<xs:documentation><![CDATA[
-							Style to use. If not set uses page style.
-						]]></xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
+				<xs:attribute name='style' type='attribute_style'/>
+				<xs:attribute name='newPage' type='attribute_newPage'/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
@@ -267,16 +278,22 @@
 		
 		<xs:simpleContent>
 			<xs:extension base='xs:string'>
-				<xs:attribute name='style' type='xs:string'>
-					<xs:annotation>
-						<xs:documentation><![CDATA[
-							Style to use. If not set uses page style.
-						]]></xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
+				<xs:attribute name='style' type='attribute_style'/>
+				<xs:attribute name='newPage' type='attribute_newPage'/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+	
+	
+	<xs:simpleType name='import'>
+		<xs:annotation>
+			<xs:documentation><![CDATA[
+				Import styles and nodes from another styled text definition using pelative or absolute path.
+			]]></xs:documentation>
+		</xs:annotation>
+		
+		<xs:restriction base='xs:string'/>
+	</xs:simpleType>
 	
 	
 	<xs:complexType name='styledText'>
@@ -306,6 +323,7 @@
 			<xs:element name='text' type='text'/>
 			<xs:element name='image' type='image'/>
 			<xs:element name='video' type='video'/>
+			<xs:element name='import' type='import'/>
 		</xs:choice>
 	</xs:complexType>
 	

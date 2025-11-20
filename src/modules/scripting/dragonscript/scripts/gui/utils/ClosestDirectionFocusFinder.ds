@@ -1,0 +1,276 @@
+/*
+ * MIT License
+ *
+ * Copyright (C) 2025, DragonDreams GmbH (info@dragondreams.ch)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+namespace Dragengine.Gui
+pin Dragengine.Scenery
+
+
+/**
+ * \brief Find closest widget to focus for directional navigation.
+ * \version 1.29
+ */
+class ClosestDirectionFocusFinder
+	protected var Point pDirY, pDirX
+	protected var RectArea pOriginBox
+	protected var Array pIgnoreWidgets
+	protected var RectArea pHitBox, pNearestBox
+	protected var Widget pBestHitWidget, pBestNearestWidget
+	protected var RectArea pBestHitBox, pBestNearestBox
+	protected var int pBestHitX, pHitX, pBestNearestX, pNearestX
+	
+	
+	/**
+	 * \brief Create finder for search direction.
+	 * \param direction Direction as \ref InputEventKey#arrowLeft, \ref InputEventKey#arrowRight,
+	 *                  \ref InputEventKey#arrowUp or \ref InputEventKey#arrowDown.
+	 * \param position Position of origin widget relative to origin.
+	 * \param size Size of origin widget.
+	 */
+	func new(int direction, Point position, Point size)
+		select direction
+		case InputEventKey.arrowUp:
+			pDirY = Point.new(0, -1)
+			pDirX = Point.new(1, 0)
+			
+		case InputEventKey.arrowDown:
+			pDirY = Point.new(0, 1)
+			pDirX = Point.new(1, 0)
+			
+		case InputEventKey.arrowLeft:
+			pDirY = Point.new(-1, 0)
+			pDirX = Point.new(0, 1)
+			
+		case InputEventKey.arrowRight:
+			pDirY = Point.new(1, 0)
+			pDirX = Point.new(0, 1)
+			
+		else
+			throw EInvalidParam.new("direction")
+		end
+		
+		var Point p2 = position + size
+		pOriginBox = RectArea.new(pDirX * position, pDirY * position, pDirX * p2, pDirY * p2).orientate()
+		
+		pIgnoreWidgets = Array.new()
+	end
+	
+	
+	/** \brief Add widget to ignore list. */
+	func void addIgnoreWidget(Widget widget)
+		if widget == null
+			throw ENullPointer.new("widget")
+		end
+		
+		pIgnoreWidgets.add(widget)
+	end
+	
+	/** \brief Add widget or first focusable parent if widget is not focusable. */
+	func void addIgnoreWidgetFocusable(Widget widget)
+		if widget == null
+			throw ENullPointer.new("widget")
+		end
+		
+		while widget != null and not widget.getCanFocusDirectional()
+			widget = widget.getParent()
+		end
+		
+		if widget != null
+			pIgnoreWidgets.add(widget)
+		end
+	end
+	
+	/** \brief Ignore widget is present. */
+	func bool hasIgnoreWidget(Widget widget)
+		return pIgnoreWidgets.has(widget)
+	end
+	
+	
+	/** \brief Reset finder. */
+	func void reset()
+		pBestHitWidget = null
+		pBestNearestWidget = null
+		pBestHitBox = pBestNearestBox = null
+	end
+	
+	/**
+	 * \brief Process widget.
+	 * \param widget Widget to process.
+	 * \param position Position of widget relative to origin.
+	 * \param size Size of widget.
+	 */
+	func void processWidget(Widget widget, Point position, Point size)
+		if widget == null
+			throw ENullPointer.new("widget")
+		end
+		if pIgnoreWidgets.has(widget)
+			return
+		end
+		
+		pHitBox = pNearestBox = null
+		pHitX = pNearestX = 0
+		
+		var Point p2 = position + size
+		var RectArea box = RectArea.new(pDirX * position, pDirY * position, pDirX * p2, pDirY * p2).orientate()
+		
+		if /*box.isInsideX(0)*/ box.isOverlappingX(pOriginBox)
+			pHitBox = box
+			if not box.isInsideX(0)
+				pHitX = DEMath.min(DEMath.abs(box.getX1()), DEMath.abs(box.getX2()))
+			end
+			
+		else
+			pNearestBox = box
+			pNearestX = DEMath.min(DEMath.abs(box.getX1()), DEMath.abs(box.getX2()))
+		end
+		
+		if box.getY1() > 0
+			// BaseGameApp.getApp().getConsole().addMessage("  CHECK: " + Array.newWith(widget, widget.getDesktopBoundary(), pHitBox, pHitX, pNearestBox, pNearestX, true))
+			challengeBest(widget)
+			
+		else
+			// BaseGameApp.getApp().getConsole().addMessage("  CHECK: " + Array.newWith(widget, widget.getDesktopBoundary(), pHitBox, pHitX, pNearestBox, pNearestX, false))
+		end
+	end
+	
+	
+	/** \brief Origin box. */
+	func RectArea getOriginBox()
+		return pOriginBox
+	end
+	
+	
+	/** \brief Best hit widget or null. */
+	func Widget getBestHitWidget()
+		return pBestHitWidget
+	end
+	
+	/** \brief Best hit box or null. */
+	func RectArea getBestHitBox()
+		return pBestHitBox
+	end
+	
+	/** \brief Best hit box distance along X axis in pixels. */
+	func int getBestHitX()
+		return pBestHitX
+	end
+	
+	
+	/** \brief Best nearest widget or null. */
+	func Widget getBestNearestWidget()
+		return pBestNearestWidget
+	end
+	
+	/** \brief Best nearest box. */
+	func RectArea getBestNearestBox()
+		return pBestNearestBox
+	end
+	
+	/** \brief Best nearest box distance along X axis in pixels. */
+	func int getBestNearestX()
+		return pBestNearestX
+	end
+	
+	
+	/** \brief Best widget to use. */
+	func Widget getBestWidget()
+		/*
+		BaseGameApp.getApp().getConsole().addMessage("  BEST: " + Array.newWith(\
+			pBestHitWidget, pBestHitWidget != null if pBestHitWidget.getDesktopBoundary() else null, pBestHitBox,\
+			pBestNearestWidget, pBestNearestWidget != null if pBestNearestWidget.getDesktopBoundary() else null, pBestNearestBox, pBestNearestX))
+		*/
+		
+		if pBestHitWidget != null and pBestNearestWidget != null
+			/*
+			if pBestHitBox.getY1() < pBestNearestBox.getY1() + 5
+				return pBestHitWidget
+				
+			else
+				return pBestNearestWidget
+			end
+			*/
+			return pBestHitWidget
+			
+		elif pBestHitWidget != null
+			return pBestHitWidget
+			
+		else
+			return pBestNearestWidget
+		end
+	end
+	
+	
+	/** \brief Compare processed widget against best widget and keep the winner. */
+	protected func void challengeBest(Widget widget)
+		var bool replace
+		
+		if pHitBox != null
+			if pBestHitBox == null
+				replace = true
+				
+			elif DEMath.abs(pHitBox.getY1() - pBestHitBox.getY1()) < 5
+				if pHitX < pBestHitX
+					replace = true
+				end
+				
+			else
+				if pHitBox.getY1() < pBestHitBox.getY1()
+					replace = true
+				end
+			end
+			
+			if replace
+				pBestHitWidget = widget
+				pBestHitBox = pHitBox
+				pBestHitX = pHitX
+			end
+			
+		else
+			if pBestNearestBox == null
+				replace = true
+				
+			elif DEMath.abs(pNearestBox.getY1() - pBestNearestBox.getY1()) < 5
+				if pNearestX < pBestNearestX
+					replace = true
+				end
+				
+			else
+				if pNearestBox.getY1() < pBestNearestBox.getY1()
+					replace = true
+				end
+			end
+			
+			if replace
+				pBestNearestWidget = widget
+				pBestNearestBox = pNearestBox
+				pBestNearestX = pNearestX
+			end
+		end
+		
+		/*
+		BaseGameApp.getApp().getConsole().addMessage("  CHALLENGE: " + Array.newWith(\
+			pBestHitWidget, pBestHitWidget != null if pBestHitWidget.getDesktopBoundary() else null, pBestHitBox,\
+			pBestNearestWidget, pBestNearestWidget != null if pBestNearestWidget.getDesktopBoundary() else null, pBestNearestBox, pBestNearestX))
+		*/
+	end
+end

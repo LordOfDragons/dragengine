@@ -128,7 +128,6 @@ pComponentTextures( NULL ),
 pComponentTextureCount( 0 ),
 
 pSky( NULL ),
-pEnvObject( NULL ),
 
 pEngRig( NULL ),
 pPoseChanged( true ),
@@ -256,7 +255,7 @@ pDirtyRig( true )
 		pSky->SetWorld( pEngWorld );
 		
 		// create the environment wrapper object
-		pEnvObject = new igdeWObject( *environment );
+		pEnvObject.TakeOver(new igdeWObject(*environment));
 		pEnvObject->SetWorld( pEngWorld );
 		pEnvObject->SetPosition( decDVector( 0.0, 0.0, 0.0 ) );
 		
@@ -1885,9 +1884,7 @@ void reRig::pCleanUp(){
 	if( pSky ){
 		delete pSky;
 	}
-	if( pEnvObject ){
-		delete pEnvObject;
-	}
+	pEnvObject = nullptr;
 	
 	if( pCamera ){
 		delete pCamera;

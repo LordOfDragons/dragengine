@@ -51,3 +51,6 @@ void deBaseGraphicSkyInstance::ControllerChanged( int ){
 
 void deBaseGraphicSkyInstance::LayerMaskChanged(){
 }
+
+void deBaseGraphicSkyInstance::PassthroughTransparencyChanged(){
+}

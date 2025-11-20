@@ -358,10 +358,16 @@ DBG_ENTER_PARAM3("RenderDepthPass", "%p", mask, "%d", solid, "%d", maskedOnly)
 		addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
 		
 		// components
-		addToRenderTask.SetFilterDecal( true );
-		addToRenderTask.SetDecal( false );
-		addToRenderTask.AddComponents( collideList );
-		addToRenderTask.SetFilterDecal( false );
+		addToRenderTask.SetFilterDecal(true);
+		addToRenderTask.SetDecal(false);
+		addToRenderTask.AddComponents(collideList);
+		
+		addToRenderTask.SetDecal(true);
+		addToRenderTask.AddComponents(collideList);
+		addToRenderTask.SetFilterDecal(false);
+		
+		// decals
+		addToRenderTask.AddDecals(collideList);
 		
 		// billboards
 		addToRenderTask.AddBillboards( collideList );

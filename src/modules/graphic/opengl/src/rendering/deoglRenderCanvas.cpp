@@ -647,7 +647,8 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 	
 	utf8Decoder.SetString( canvas.GetText() );
 	const int len = utf8Decoder.GetLength();
-	const float fontScale = canvas.GetTextSize() / (float)glyphs.GetLineHeight();
+	const float textSize = canvas.GetTextSize();
+	const float fontScale = textSize / (float)glyphs.GetLineHeight();
 	
 	const decTexMatrix2 &transform = context.GetTransform();
 	
@@ -655,6 +656,12 @@ void deoglRenderCanvas::DrawCanvasText( const deoglRenderCanvasContext &context,
 		const int character = utf8Decoder.DecodeNextCharacter();
 		if( character < 0 ){
 			continue; // invalid unicode character
+		}
+		
+		if(character == '\n'){
+			curx = 0.0f;
+			cury += textSize;
+			continue;
 		}
 		
 		const deoglRFontGlyphs::sGlyph &oglGlyph = glyphs.GetGlyphFor(character);

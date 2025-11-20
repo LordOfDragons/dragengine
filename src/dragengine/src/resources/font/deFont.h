@@ -251,17 +251,10 @@ public:
 	
 	
 	/** \brief Measure size of text. */
-	decPoint TextSize(const decUnicodeString &text) const;
+	decPoint TextSize(const decUnicodeString &text, const deFontSize *size = nullptr) const;
 	
 	/** \brief Measure size of text. */
-	decPoint TextSize(const char *text) const;
-	
-	
-	/** \brief Measure size of text. */
-	decPoint TextSize(const decUnicodeString &text, const deFontSize &size) const;
-	
-	/** \brief Measure size of text. */
-	decPoint TextSize(const char *text, const deFontSize &size) const;
+	decPoint TextSize(const char *text, const deFontSize *size = nullptr) const;
 	/*@}*/
 	
 	

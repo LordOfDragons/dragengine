@@ -106,9 +106,7 @@ private:
 	deoglSharedSPBElement *pSharedSPBElement;
 	deoglRenderTaskSharedInstance *pRTSInstance;
 	
-	deoglTexUnitsConfig *pTUCGeometry;
-	deoglTexUnitsConfig *pTUCShadow;
-	deoglTexUnitsConfig *pTUCEnvMap;
+	deoglTexUnitsConfig *pTUCGeometry, *pTUCDepth, *pTUCCounter, *pTUCShadow, *pTUCEnvMap;
 	
 	bool pDirtySharedSPBElement;
 	bool pDirtyTUCs;
@@ -246,6 +244,8 @@ public:
 	 */
 	void SetParentComponent( deoglRComponent *component );
 	
+	bool IsParentComponentSolid() const;
+	
 	/**
 	 * Marked for removal.
 	 * \details For use by deoglComponent only. Non-thread safe.
@@ -283,6 +283,9 @@ public:
 	 * This texture units configuration works for the shader type estComponentGeometry.
 	 */
 	inline deoglTexUnitsConfig *GetTUCGeometry() const{ return pTUCGeometry; }
+	
+	inline deoglTexUnitsConfig *GetTUCDepth() const{ return pTUCDepth; }
+	inline deoglTexUnitsConfig *GetTUCCounter() const{ return pTUCCounter; }
 	
 	/**
 	 * Texture units configuration for shadow type shaders or NULL if empty.

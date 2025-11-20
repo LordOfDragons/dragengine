@@ -34,6 +34,7 @@
 #include "../math/deClassVector.h"
 #include "../utils/deClassShapeList.h"
 #include "../physics/deClassLayerMask.h"
+#include "../world/deClassWorld.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
 
@@ -187,7 +188,16 @@ void deClassEnvMapProbe::nfSetLayerMask::RunFunction( dsRunTime *rt, dsValue *my
 	envMapProbe.SetLayerMask( ds.GetClassLayerMask()->GetLayerMask( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
+// func World getParentWorld()
+deClassEnvMapProbe::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsEmp, "getParentWorld", DSFT_FUNCTION, DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
 
+void deClassEnvMapProbe::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deEnvMapProbe &envMapProbe = *(((sEmpNatDat*)p_GetNativeData(myself))->envMapProbe);
+	const deScriptingDragonScript &ds = *((deClassEnvMapProbe*)GetOwnerClass())->GetDS();
+	ds.GetClassWorld()->PushWorld(rt, envMapProbe.GetParentWorld());
+}
 
 // public func ShapeList getShapeListInfluence()
 deClassEnvMapProbe::nfGetShapeListInfluence::nfGetShapeListInfluence( const sInitData &init ) : dsFunction( init.clsEmp,
@@ -422,6 +432,7 @@ void deClassEnvMapProbe::CreateClassMembers( dsEngine *engine ){
 	init.clsVec = pDS->GetClassVector();
 	init.clsShaList = pDS->GetClassShapeList();
 	init.clsLayerMask = pDS->GetClassLayerMask();
+	init.clsWorld = pDS->GetClassWorld();
 	
 	// add functions
 	AddFunction( new nfNew( init ) );
@@ -436,6 +447,7 @@ void deClassEnvMapProbe::CreateClassMembers( dsEngine *engine ){
 	
 	AddFunction( new nfGetLayerMask( init ) );
 	AddFunction( new nfSetLayerMask( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfGetShapeListInfluence( init ) );
 	AddFunction( new nfSetShapeListInfluence( init ) );

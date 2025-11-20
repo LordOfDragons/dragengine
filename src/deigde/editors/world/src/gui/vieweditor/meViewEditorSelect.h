@@ -33,8 +33,8 @@
 #include <dragengine/resources/canvas/deCanvasText.h>
 
 class meCLSelect;
-class meCLClosestElement;
-
+class meCLCollect;
+class deFontSize;
 
 
 /**
@@ -42,15 +42,16 @@ class meCLClosestElement;
  */
 class meViewEditorSelect : public meViewEditorNavigation{
 private:
-	meCLSelect *pCLSelect;
-	meCLClosestElement *pCLClosest;
+	meCLSelect *pCLSelect, *pCLBubbleInfo;
 	deColliderReference pColVol;
 	
 	deCanvasPaint::Ref pCanvasSelect;
 	
 	meInfoBubble::Ref pInfoBubble;
 	deCanvasText::Ref pInfoBubbleText;
+	deFontSize *pFontSize;
 	
+	decPoint pLastMousePosition;
 	
 	
 public:
@@ -60,7 +61,7 @@ public:
 	meViewEditorSelect( meView3D &view );
 	
 	/** Clean up view editor. */
-	virtual ~meViewEditorSelect();
+	~meViewEditorSelect() override;
 	/*@}*/
 	
 	
@@ -75,34 +76,40 @@ public:
 	
 	/** \name Events */
 	/*@{*/
+	/** \brief A key on the keyboard has been pressed. Return true if handled. */
+	bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control ) override;
+	
+	/** \brief A key on the keyboard has been released. Return true if handled. */
+	bool OnKeyRelease( deInputEvent::eKeyCodes key, bool shift, bool control ) override;
+	
 	/** View size changed. */
-	virtual void OnResize();
+	void OnResize() override;
 	
 	/** The left mouse button has been pressed. Return true if handled. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonPress( int x, int y, bool shift, bool control ) override;
 	
 	/** The left mouse button has been released. Return true if handled. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control ) override;
 	
 	/** The right mouse button has been pressed. Return true if handled. */
-	virtual void OnRightMouseButtonPress( int x, int y, bool shift, bool control );
+	void OnRightMouseButtonPress( int x, int y, bool shift, bool control ) override;
 	
 	/** The right mouse button has been released. Return true if handled. */
-	virtual void OnRightMouseButtonRelease( int x, int y, bool shift, bool control );
+	void OnRightMouseButtonRelease( int x, int y, bool shift, bool control ) override;
 	
 	/** The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	void OnMouseMove( int x, int y, bool shift, bool control ) override;
 	
 	/** The mouse wheel has been used. Steps contains the number of steps up (positive) or down (negative). Return true if handled. */
-	virtual void OnMouseWheel( int steps, bool shift, bool control );
+	void OnMouseWheel( int steps, bool shift, bool control ) override;
 	
 	/** The mouse left view. */
-	virtual void OnMousLeave();
+	void OnMousLeave() override;
 	/*@}*/
 	
 private:
 	void pCleanUp();
-	void pUpdateInfoBubble( int x, int y );
+	void pUpdateInfoBubble(int x, int y, bool singleElement);
 };
 
 #endif

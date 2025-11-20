@@ -573,6 +573,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		var ECBehaviorLocomotion.Instance pLocomotion
 		
 		var ConversationTagResolver pTagResolver
+		var TagResolver pCommandTagResolver
 		var CommandLineParser pCommandParser
 		var GuiTheme pSubtitleTheme
 		var String pSubtitleSelectorId
@@ -623,6 +624,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			pCommands = null
 			pBoneMappings = null
 			pTagResolver = null
+			pCommandTagResolver = null
 			
 			super.dispose()
 		end
@@ -654,6 +656,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			
 			pCommandParser = CommandLineParser.new()
 			pTagResolver = ConversationTagResolver.new()
+			pCommandTagResolver = TagResolver.new()
 			pSubtitleSelectorId = pECBehavior.getSubtitleSelectorId().getValue(stub)
 			pRegisterConversationActor = pECBehavior.getRegisterConversationActor().getValue(stub)
 			
@@ -662,6 +665,7 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 				pConversationActor = createConversationActor(id, stub)
 				initConversationActor(stub)
 				initTagResolver(stub)
+				initCommandTagResolver(stub)
 				
 				if pActorAnimated != null
 					pActorAnimated.addListener(ActorAnimatedListener.new(this))
@@ -747,6 +751,12 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		protected func void initTagResolver(StubElement stub)
 		end
 		
+		/**
+		 * \brief Initialize command tag resolver.
+		 * \version 1.29
+		 */
+		protected func void initCommandTagResolver(StubElement stub)
+		end
 		
 		
 		/** \brief Behavior. */
@@ -794,9 +804,28 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		/** \brief Set tag resolver. */
 		func void setTagResolver(ConversationTagResolver resolver)
 			if resolver == null
-				throw EInvalidParam.new()
+				throw ENullPointer.new("resolver")
 			end
 			pTagResolver = resolver
+		end
+		
+		/**
+		 * \brief Command tag resolver.
+		 * \version 1.29
+		 */
+		func TagResolver getCommandTagResolver()
+			return pCommandTagResolver
+		end
+		
+		/**
+		 * \brief Set command tag resolver.
+		 * \version 1.29
+		 */
+		func void setCommandTagResolver(TagResolver resolver)
+			if resolver == null
+				throw ENullPointer.new("resolver")
+			end
+			pCommandTagResolver = resolver
 		end
 		
 		/**
@@ -1024,9 +1053,17 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 			end) != null
 		end
 		
-		/** \brief Command send by the conversation script. */
+		/**
+		 * \brief Run command send by the conversation script.
+		 * 
+		 * \par Version 1.29
+		 * 
+		 * Added support for tag resolving command before parsing it into an array. This allows
+		 * to use dynamic command parts without needing to create special conversation commands.
+		 * The context used for resolving is this instance.
+		 */
 		func void runCommand(String command)
-			runCommand(pCommandParser.parseCommand(command))
+			runCommand(pCommandParser.parseCommand(pCommandTagResolver.resolveTags(command, this)))
 		end
 		
 		func void runCommand(Array arguments)
@@ -1045,7 +1082,8 @@ class ECBehaviorConversationActor extends DefaultECBehavior
 		
 		/** \brief Evaluate condition send by the conversation script. */
 		func bool evaluateCondition(String command)
-			return evaluateCondition(pCommandParser.parseCommand(command))
+			return evaluateCondition(pCommandParser.parseCommand(\
+				pCommandTagResolver.resolveTags(command, this)))
 		end
 		
 		func bool evaluateCondition(Array arguments)

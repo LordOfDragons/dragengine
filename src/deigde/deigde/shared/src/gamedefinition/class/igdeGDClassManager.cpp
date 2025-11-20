@@ -232,211 +232,248 @@ static bool fFindFirstComponent( const igdeGDClass &gdclass, decString &prefix, 
 }
 
 void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &classManager ){
-	const int count = classManager.GetCount();
+	decObjectOrderedSet pendingClasses(classManager.pClasses), retryClasses;
+	int i, j, k, h, inheritClassCount;
 	igdeCodecPropertyString codec;
-	igdeGDClassReference gdClass;
 	deObjectReference refCopy;
 	decString propertyValue;
-	int i, j, k, h;
+	bool detectRetry = true;
 	
-	for( i=0; i<count; i++ ){
-		const igdeGDClass &eclass = *classManager.GetAt( i );
+	while(pendingClasses.GetCount() > 0){
+		const int count = pendingClasses.GetCount();
 		
-		decPath basePath( decPath::CreatePathUnix( eclass.GetPathEClass() ) );
-		basePath.RemoveLastComponent();
-		const decString basePathStr( basePath.GetPathUnix() );
-		
-		igdeGDClass * const gdclassExisting = GetNamed( eclass.GetName() );
-		bool reused = false;
-		
-		if( gdclassExisting ){
-			gdclassExisting->SetPathEClass( eclass.GetPathEClass() );
-			gdclassExisting->SetPropertyValues( eclass.GetPropertyValues() );
+		for( i=0; i<count; i++ ){
+			igdeGDClass * const eclass = (igdeGDClass*)pendingClasses.GetAt(i);
 			
-			gdclassExisting->RemoveAllInheritClasses();
-			const int inheritClassCount = eclass.GetInheritClassCount();
-			for( j=0; j<inheritClassCount; j++ ){
-				refCopy.TakeOver( new igdeGDClassInherit( *eclass.GetInheritClassAt( j ) ) );
-				gdclassExisting->AddInheritClass( ( igdeGDClassInherit* )( deObject* )refCopy );
-			}
-			gdclassExisting->ResolveInheritClasses( *this );
+			decPath basePath( decPath::CreatePathUnix( eclass->GetPathEClass() ) );
+			basePath.RemoveLastComponent();
+			const decString basePathStr( basePath.GetPathUnix() );
 			
-			const igdeGDCCTextureList &eclassCompTextures = eclass.GetComponentTextures();
-			igdeGDCCTextureList &compTextures = gdclassExisting->GetComponentTextures();
-			const int textureCount = eclassCompTextures.GetCount();
-			for( j=0; j<textureCount; j++ ){
-				igdeGDCCTexture * const texture = eclassCompTextures.GetAt( j );
-				igdeGDCCTexture * const existingTexture = compTextures.GetNamed( texture->GetName() );
-				if( existingTexture ){
-					compTextures.Remove( existingTexture );
+			igdeGDClass * const gdclassExisting = GetNamed( eclass->GetName() );
+			igdeGDClass::Ref gdclass;
+			bool reused = false;
+			
+			if( gdclassExisting ){
+				gdclassExisting->SetPathEClass( eclass->GetPathEClass() );
+				gdclassExisting->SetPropertyValues( eclass->GetPropertyValues() );
+				
+				gdclassExisting->RemoveAllInheritClasses();
+				inheritClassCount = eclass->GetInheritClassCount();
+				for( j=0; j<inheritClassCount; j++ ){
+					refCopy.TakeOver( new igdeGDClassInherit( *eclass->GetInheritClassAt( j ) ) );
+					gdclassExisting->AddInheritClass( ( igdeGDClassInherit* )( deObject* )refCopy );
 				}
-				compTextures.Add( texture );
-			}
-			
-			gdClass = gdclassExisting;
-			reused = true;
-			
-		}else{
-			gdClass.TakeOver( new igdeGDClass( eclass ) );
-			Add( gdClass );
-			
-			gdClass->ResolveInheritClasses( *this );
-			
-			const igdeGDClass *firstInheritClass = NULL;
-			const int inheritClassCount = gdClass->GetInheritClassCount();
-			for( j=0; j<inheritClassCount; j++ ){
-				firstInheritClass = gdClass->GetInheritClassAt( j )->GetClass();
+				gdclassExisting->ResolveInheritClasses( *this );
+				
+				const igdeGDCCTextureList &eclassCompTextures = eclass->GetComponentTextures();
+				igdeGDCCTextureList &compTextures = gdclassExisting->GetComponentTextures();
+				const int textureCount = eclassCompTextures.GetCount();
+				for( j=0; j<textureCount; j++ ){
+					igdeGDCCTexture * const texture = eclassCompTextures.GetAt( j );
+					igdeGDCCTexture * const existingTexture = compTextures.GetNamed( texture->GetName() );
+					if( existingTexture ){
+						compTextures.Remove( existingTexture );
+					}
+					compTextures.Add( texture );
+				}
+				
+				gdclass = gdclassExisting;
+				reused = true;
+				
+			}else{
+				gdclass.TakeOver(new igdeGDClass(*eclass));
+				gdclass->ResolveInheritClasses(*this);
+				
+				if(detectRetry){
+					inheritClassCount = gdclass->GetInheritClassCount();
+					for(j=0; j<inheritClassCount; j++){
+						const igdeGDClassInherit &inherit = *gdclass->GetInheritClassAt(j);
+						if(inherit.GetClass()){
+							continue;
+						}
+						
+						const decString &cname = inherit.GetName();
+						for(k=0; k<count; k++){
+							if(((igdeGDClass*)pendingClasses.GetAt(k))->GetName() == cname){
+								// XML element depends on another XML element not processed yet.
+								// postpone processing until the required class is ready
+								retryClasses.Add(eclass);
+								break;
+							}
+						}
+						if(k < count){
+							break;
+						}
+					}
+					if(j < inheritClassCount){
+						continue;
+					}
+				}
+				
+				Add(gdclass);
+				
+				const igdeGDClass *firstInheritClass = NULL;
+				inheritClassCount = gdclass->GetInheritClassCount();
+				for( j=0; j<inheritClassCount; j++ ){
+					firstInheritClass = gdclass->GetInheritClassAt( j )->GetClass();
+					if( firstInheritClass ){
+						break;
+					}
+				}
+				
 				if( firstInheritClass ){
-					break;
+					gdclass->SetDescription( firstInheritClass->GetDescription() );
+					gdclass->SetHasCamera( firstInheritClass->GetHasCamera() );
+					gdclass->SetIsGhost( firstInheritClass->GetIsGhost() );
+					gdclass->SetCanInstantiate( firstInheritClass->GetCanInstantiate() );
+					gdclass->SetScaleMode( firstInheritClass->GetScaleMode() );
+					gdclass->SetCategory( firstInheritClass->GetCategory() );
 				}
 			}
 			
-			if( firstInheritClass ){
-				gdClass->SetDescription( firstInheritClass->GetDescription() );
-				gdClass->SetHasCamera( firstInheritClass->GetHasCamera() );
-				gdClass->SetIsGhost( firstInheritClass->GetIsGhost() );
-				gdClass->SetCanInstantiate( firstInheritClass->GetCanInstantiate() );
-				gdClass->SetScaleMode( firstInheritClass->GetScaleMode() );
-				gdClass->SetCategory( firstInheritClass->GetCategory() );
-			}
-		}
-		
-		// check all property values if they are a path. if so prepend the base path
-		decStringDictionary propertyValues( gdClass->GetPropertyValues() );
-		const decStringList keys( propertyValues.GetKeys() );
-		const int keyCount = keys.GetCount();
-		
-		for( j=0; j<keyCount; j++ ){
-			const decString &key = keys.GetAt( j );
-			const igdeGDProperty * const gdproperty = gdClass->GetPropertyNamed( key );
-			if( gdproperty && gdproperty->GetType() == igdeGDProperty::eptPath ){
-				const decString &value = propertyValues.GetAt( key );
-				if( ! value.IsEmpty() ){
-					propertyValues.SetAt( key, decPath::AbsolutePathUnix( value, basePathStr ).GetPathUnix() );
-				}
-			}
-		}
-		
-		// removed unknown property values but only if there are inherits
-		const int inheritClassCount = gdClass->GetInheritClassCount();
-		if(inheritClassCount > 0 ){
-			decStringList removeKeys;
+			// check all property values if they are a path. if so prepend the base path
+			decStringDictionary propertyValues( gdclass->GetPropertyValues() );
+			const decStringList keys( propertyValues.GetKeys() );
+			const int keyCount = keys.GetCount();
 			
 			for( j=0; j<keyCount; j++ ){
 				const decString &key = keys.GetAt( j );
-				if(!gdClass->HasDefaultPropertyValue(key)){
-					removeKeys.Add( key );
+				const igdeGDProperty * const gdproperty = gdclass->GetPropertyNamed( key );
+				if( gdproperty && gdproperty->GetType() == igdeGDProperty::eptPath ){
+					const decString &value = propertyValues.GetAt( key );
+					if( ! value.IsEmpty() ){
+						propertyValues.SetAt( key, decPath::AbsolutePathUnix( value, basePathStr ).GetPathUnix() );
+					}
 				}
 			}
 			
-			const int removeCount = removeKeys.GetCount();
-			for( j=0; j<removeCount; j++ ){
-				propertyValues.Remove( removeKeys.GetAt( j ) );
+			// removed unknown property values but only if there are inherits
+			inheritClassCount = gdclass->GetInheritClassCount();
+			if(inheritClassCount > 0 ){
+				decStringList removeKeys;
+				
+				for( j=0; j<keyCount; j++ ){
+					const decString &key = keys.GetAt( j );
+					if(!gdclass->HasDefaultPropertyValue(key)){
+						removeKeys.Add( key );
+					}
+				}
+				
+				const int removeCount = removeKeys.GetCount();
+				for( j=0; j<removeCount; j++ ){
+					propertyValues.Remove( removeKeys.GetAt( j ) );
+				}
+			}
+			
+			gdclass->SetPropertyValues( propertyValues );
+			
+			// now we can work with the updated property values
+			if( ! reused ){
+				for( h=0; h<inheritClassCount; h++ ){
+					const igdeGDClass * const inheritClass = gdclass->GetInheritClassAt( h )->GetClass();
+					if( ! inheritClass ){
+						continue;
+					}
+					
+					// link components
+					igdeGDCComponent *inheritClassComponent = NULL;
+					decString inheritComponentPrefix;
+					fFindFirstComponent( *inheritClass, inheritComponentPrefix, inheritClassComponent );
+					
+					const igdeGDCComponentList &components = gdclass->GetComponentList();
+					const int componentCount = components.GetCount();
+					const int copyCount = decMath::min( componentCount, inheritClassComponent ? 1 : 0 );
+					
+					for( j=0; j<copyCount; j++ ){
+						igdeGDCComponent &component = *components.GetAt( j );
+						
+						component.SetDoNotScale( inheritClassComponent->GetDoNotScale() );
+						component.SetStatic( inheritClassComponent->GetStatic() );
+						component.SetPartialHide( inheritClassComponent->GetPartialHide() );
+						component.SetAttachTarget( inheritClassComponent->GetAttachTarget() );
+						component.SetColliderResponseType( inheritClassComponent->GetColliderResponseType() );
+						component.SetPosition( inheritClassComponent->GetPosition() );
+						component.SetOrientation( inheritClassComponent->GetOrientation() );
+						component.SetBoneName( inheritClassComponent->GetBoneName() );
+						
+						for( k=0; k<=igdeGDCComponent::epMove; k++ ){
+							component.SetPropertyName( k, inheritComponentPrefix + inheritClassComponent->GetPropertyName( k ) );
+						}
+						
+						const decString &nameModel = component.GetPropertyName( igdeGDCComponent::epModel );
+						if( ! nameModel.IsEmpty() && gdclass->GetDefaultPropertyValue( nameModel, propertyValue ) ){
+							component.SetModelPath( propertyValue );
+						}
+						
+						const decString &nameSkin = component.GetPropertyName( igdeGDCComponent::epSkin );
+						if( ! nameSkin.IsEmpty() && gdclass->GetDefaultPropertyValue( nameSkin, propertyValue ) ){
+							component.SetSkinPath( propertyValue );
+						}
+						
+						const decString &nameRig = component.GetPropertyName( igdeGDCComponent::epRig );
+						if( ! nameRig.IsEmpty() && gdclass->GetDefaultPropertyValue( nameRig, propertyValue ) ){
+							component.SetRigPath( propertyValue );
+						}
+						
+						const decString &nameAnimator = component.GetPropertyName( igdeGDCComponent::epAnimator );
+						if( ! nameAnimator.IsEmpty() && gdclass->GetDefaultPropertyValue( nameAnimator, propertyValue ) ){
+							component.SetAnimatorPath( propertyValue );
+						}
+						
+						const decString &namePlaybackController = component.GetPropertyName( igdeGDCComponent::epPlaybackController );
+						if( ! namePlaybackController.IsEmpty() && gdclass->GetDefaultPropertyValue( namePlaybackController, propertyValue ) ){
+							component.SetPlaybackController( propertyValue );
+						}
+						
+						const decString &nameOccMesh = component.GetPropertyName( igdeGDCComponent::epOcclusionMesh );
+						if( ! nameOccMesh.IsEmpty() && gdclass->GetDefaultPropertyValue( nameOccMesh, propertyValue ) ){
+							component.SetOcclusionMeshPath( propertyValue );
+						}
+						
+						const decString &nameAudioModel = component.GetPropertyName( igdeGDCComponent::epAudioModel );
+						if( ! nameAudioModel.IsEmpty() && gdclass->GetDefaultPropertyValue( nameAudioModel, propertyValue ) ){
+							component.SetAudioModelPath( propertyValue );
+						}
+						
+						const decString &nameRenderEnvMap = component.GetPropertyName( igdeGDCComponent::epRenderEnvMap );
+						if( ! nameRenderEnvMap.IsEmpty() && gdclass->GetDefaultPropertyValue( nameRenderEnvMap, propertyValue ) ){
+							component.SetRenderEnvMap( propertyValue == "1" );
+						}
+						
+						const decString &nameAffectsAudio = component.GetPropertyName( igdeGDCComponent::epAffectsAudio );
+						if( ! nameAffectsAudio.IsEmpty() && gdclass->GetDefaultPropertyValue( nameAffectsAudio, propertyValue ) ){
+							component.SetAffectsAudio( propertyValue == "1" );
+						}
+						
+						const decString &nameLightShadowIgnore = component.GetPropertyName( igdeGDCComponent::epLightShadowIgnore );
+						if( ! nameLightShadowIgnore.IsEmpty() && gdclass->GetDefaultPropertyValue( nameLightShadowIgnore, propertyValue ) ){
+							component.SetLightShadowIgnore( propertyValue == "1" );
+						}
+						
+						const decString &nameAnimation = component.GetPropertyName( igdeGDCComponent::epAnimation );
+						if( ! nameAnimation.IsEmpty() && gdclass->GetDefaultPropertyValue( nameAnimation, propertyValue ) ){
+							component.SetAnimationPath( propertyValue );
+						}
+						
+						const decString &nameMove = component.GetPropertyName( igdeGDCComponent::epMove );
+						if( ! nameMove.IsEmpty() && gdclass->GetDefaultPropertyValue( nameMove, propertyValue ) ){
+							component.SetMove( propertyValue );
+						}
+					}
+				}
+			}
+			
+			// auto categorize
+			igdeGDCategory * const autoCategory = pCategories->AutoCategorize( gdclass->GetPathEClass() );
+			if( autoCategory ){
+				gdclass->SetCategory( autoCategory->GetFullPathString() );
 			}
 		}
 		
-		gdClass->SetPropertyValues( propertyValues );
-		
-		// now we can work with the updated property values
-		if( ! reused ){
-			for( h=0; h<inheritClassCount; h++ ){
-				const igdeGDClass * const inheritClass = gdClass->GetInheritClassAt( h )->GetClass();
-				if( ! inheritClass ){
-					continue;
-				}
-				
-				// link components
-				igdeGDCComponent *inheritClassComponent = NULL;
-				decString inheritComponentPrefix;
-				fFindFirstComponent( *inheritClass, inheritComponentPrefix, inheritClassComponent );
-				
-				const igdeGDCComponentList &components = gdClass->GetComponentList();
-				const int componentCount = components.GetCount();
-				const int copyCount = decMath::min( componentCount, inheritClassComponent ? 1 : 0 );
-				
-				for( j=0; j<copyCount; j++ ){
-					igdeGDCComponent &component = *components.GetAt( j );
-					
-					component.SetDoNotScale( inheritClassComponent->GetDoNotScale() );
-					component.SetStatic( inheritClassComponent->GetStatic() );
-					component.SetPartialHide( inheritClassComponent->GetPartialHide() );
-					component.SetAttachTarget( inheritClassComponent->GetAttachTarget() );
-					component.SetColliderResponseType( inheritClassComponent->GetColliderResponseType() );
-					component.SetPosition( inheritClassComponent->GetPosition() );
-					component.SetOrientation( inheritClassComponent->GetOrientation() );
-					component.SetBoneName( inheritClassComponent->GetBoneName() );
-					
-					for( k=0; k<=igdeGDCComponent::epMove; k++ ){
-						component.SetPropertyName( k, inheritComponentPrefix + inheritClassComponent->GetPropertyName( k ) );
-					}
-					
-					const decString &nameModel = component.GetPropertyName( igdeGDCComponent::epModel );
-					if( ! nameModel.IsEmpty() && gdClass->GetDefaultPropertyValue( nameModel, propertyValue ) ){
-						component.SetModelPath( propertyValue );
-					}
-					
-					const decString &nameSkin = component.GetPropertyName( igdeGDCComponent::epSkin );
-					if( ! nameSkin.IsEmpty() && gdClass->GetDefaultPropertyValue( nameSkin, propertyValue ) ){
-						component.SetSkinPath( propertyValue );
-					}
-					
-					const decString &nameRig = component.GetPropertyName( igdeGDCComponent::epRig );
-					if( ! nameRig.IsEmpty() && gdClass->GetDefaultPropertyValue( nameRig, propertyValue ) ){
-						component.SetRigPath( propertyValue );
-					}
-					
-					const decString &nameAnimator = component.GetPropertyName( igdeGDCComponent::epAnimator );
-					if( ! nameAnimator.IsEmpty() && gdClass->GetDefaultPropertyValue( nameAnimator, propertyValue ) ){
-						component.SetAnimatorPath( propertyValue );
-					}
-					
-					const decString &namePlaybackController = component.GetPropertyName( igdeGDCComponent::epPlaybackController );
-					if( ! namePlaybackController.IsEmpty() && gdClass->GetDefaultPropertyValue( namePlaybackController, propertyValue ) ){
-						component.SetPlaybackController( propertyValue );
-					}
-					
-					const decString &nameOccMesh = component.GetPropertyName( igdeGDCComponent::epOcclusionMesh );
-					if( ! nameOccMesh.IsEmpty() && gdClass->GetDefaultPropertyValue( nameOccMesh, propertyValue ) ){
-						component.SetOcclusionMeshPath( propertyValue );
-					}
-					
-					const decString &nameAudioModel = component.GetPropertyName( igdeGDCComponent::epAudioModel );
-					if( ! nameAudioModel.IsEmpty() && gdClass->GetDefaultPropertyValue( nameAudioModel, propertyValue ) ){
-						component.SetAudioModelPath( propertyValue );
-					}
-					
-					const decString &nameRenderEnvMap = component.GetPropertyName( igdeGDCComponent::epRenderEnvMap );
-					if( ! nameRenderEnvMap.IsEmpty() && gdClass->GetDefaultPropertyValue( nameRenderEnvMap, propertyValue ) ){
-						component.SetRenderEnvMap( propertyValue == "1" );
-					}
-					
-					const decString &nameAffectsAudio = component.GetPropertyName( igdeGDCComponent::epAffectsAudio );
-					if( ! nameAffectsAudio.IsEmpty() && gdClass->GetDefaultPropertyValue( nameAffectsAudio, propertyValue ) ){
-						component.SetAffectsAudio( propertyValue == "1" );
-					}
-					
-					const decString &nameLightShadowIgnore = component.GetPropertyName( igdeGDCComponent::epLightShadowIgnore );
-					if( ! nameLightShadowIgnore.IsEmpty() && gdClass->GetDefaultPropertyValue( nameLightShadowIgnore, propertyValue ) ){
-						component.SetLightShadowIgnore( propertyValue == "1" );
-					}
-					
-					const decString &nameAnimation = component.GetPropertyName( igdeGDCComponent::epAnimation );
-					if( ! nameAnimation.IsEmpty() && gdClass->GetDefaultPropertyValue( nameAnimation, propertyValue ) ){
-						component.SetAnimationPath( propertyValue );
-					}
-					
-					const decString &nameMove = component.GetPropertyName( igdeGDCComponent::epMove );
-					if( ! nameMove.IsEmpty() && gdClass->GetDefaultPropertyValue( nameMove, propertyValue ) ){
-						component.SetMove( propertyValue );
-					}
-				}
-			}
-		}
-		
-		// auto categorize
-		igdeGDCategory * const autoCategory = pCategories->AutoCategorize( gdClass->GetPathEClass() );
-		if( autoCategory ){
-			gdClass->SetCategory( autoCategory->GetFullPathString() );
-		}
+		// if the count of postponed classes does not change a reference loop cycle exists.
+		// if this is the case process the classes anyway
+		detectRetry = retryClasses.GetCount() < count;
+		pendingClasses = retryClasses;
+		retryClasses.RemoveAll();
 	}
 }

@@ -37,7 +37,7 @@ hasSystemJsonCpp = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_jsoncpp'] != TernaryVariableNo:
 	hasSystemJsonCpp = conf.CheckLibWithHeader(libLinkName,
-		['jsoncpp/json/json.h'], 'c++', 'Json::Features::all();')
+		'jsoncpp/json/json.h', 'c++', call='Json::Features::all();')
 conf.Finish()
 
 if not hasSystemJsonCpp and envLibrary['with_system_jsoncpp'] == TernaryVariableYes:

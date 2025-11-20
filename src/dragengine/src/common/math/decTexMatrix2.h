@@ -74,6 +74,12 @@ public:
 	/** \brief Create scale-translation matrix. */
 	static decTexMatrix2 CreateST( const decVector2 &scaling, const decVector2 &translation );
 	
+	/** \brief Create rotation-translation matrix. */
+	static decTexMatrix2 CreateRT(float rotation, float tu, float tv);
+	
+	/** \brief Create rotation-translation matrix. */
+	static decTexMatrix2 CreateRT(float rotation, const decVector2 &translation);
+	
 	/** \brief Create scale-rotation-translation matrix. */
 	static decTexMatrix2 CreateSRT( float su, float sv, float rotation, float tu, float tv );
 	
@@ -129,6 +135,12 @@ public:
 	
 	/** \brief Set scale-rotation-translation matrix. */
 	void SetSRT( const decVector2 &scaling, float rotation, const decVector2 &translation );
+	
+	/** \brief Set rotation-translation matrix. */
+	void SetRT(float rotation, float tu, float tv);
+	
+	/** \brief Set rotation-translation matrix. */
+	void SetRT(float rotation, const decVector2 &translation);
 	
 	/** \brief Set scale-rotation-translation matrix. */
 	void SetCenterSRT( float su, float sv, float rotation, float tu, float tv );

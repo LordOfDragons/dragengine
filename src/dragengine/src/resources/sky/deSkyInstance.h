@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<deSkyInstance> Ref;
 	
 	
-	
 private:
 	deSkyReference pSky;
 	int pOrder;
@@ -57,13 +56,12 @@ private:
 	int pControllerCount;
 	
 	decLayerMask pLayerMask;
+	float pPassthroughTransparency;
 	
 	deBaseGraphicSkyInstance *pPeerGraphic;
 	
 	deWorld *pParentWorld;
-	deSkyInstance *pLLWorldPrev;
-	deSkyInstance *pLLWorldNext;
-	
+	deSkyInstance *pLLWorldPrev, *pLLWorldNext;
 	
 	
 public:
@@ -79,9 +77,8 @@ protected:
 	 * accidently deleting a reference counted object through the object
 	 * pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~deSkyInstance();
+	~deSkyInstance() override;
 	/*@}*/
-	
 	
 	
 public:
@@ -118,33 +115,36 @@ public:
 	void NotifyControllerChangedAt( int index );
 	
 	
-	
 	/** \brief Layer mask. */
 	const decLayerMask &GetLayerMask() const{ return pLayerMask; }
 	
 	/** \brief Set layer mask. */
 	void SetLayerMask( const decLayerMask &layerMask );
-	/*@}*/
 	
+	/** \brief Passthrough transparency for background rendering. */
+	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
+	
+	/** \brief Set passthrough transparency for background rendering. */
+	void SetPassthroughTransparency(float transparency);
+	/*@}*/
 	
 	
 	/** \name System Peers */
 	/*@{*/
-	/** \brief Graphic peer or NULL if not set. */
+	/** \brief Graphic peer or nullptr if not set. */
 	inline deBaseGraphicSkyInstance *GetPeerGraphic() const{ return pPeerGraphic; }
 	
-	/** \brief Set graphic peer or NULL if not set. */
+	/** \brief Set graphic peer or nullptr if not set. */
 	void SetPeerGraphic( deBaseGraphicSkyInstance *peer );
 	/*@}*/
 	
 	
-	
 	/** \name Linked List */
 	/*@{*/
-	/** \brief Parent world or NULL. */
+	/** \brief Parent world or nullptr. */
 	inline deWorld *GetParentWorld() const{ return pParentWorld; }
 	
-	/** \brief Set parent world or NULL. */
+	/** \brief Set parent world or nullptr. */
 	void SetParentWorld( deWorld *world );
 	
 	/** \brief Previous sky in the parent world linked list. */

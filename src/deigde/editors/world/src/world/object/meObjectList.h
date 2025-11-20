@@ -35,6 +35,25 @@ class meObject;
  * @brief Object List.
  */
 class meObjectList{
+public:
+	class Comparator{
+	public:
+		Comparator() = default;
+		virtual int operator() (meObject &a, meObject &b) = 0;
+	};
+	
+	class Visitor{
+	public:
+		Visitor() = default;
+		virtual void operator() (meObject &object) = 0;
+	};
+	
+	class Evaluator{
+	public:
+		Evaluator() = default;
+		virtual bool operator() (meObject &object) = 0;
+	};
+	
 private:
 	decObjectOrderedSet pObjects;
 	
@@ -67,6 +86,26 @@ public:
 	void RemoveIfPresent( meObject *object );
 	/** Removes all objects. */
 	void RemoveAll();
+	
+	void Visit(Visitor &visitor, int from, int to = -1, int step = 1) const;
+	
+	inline void Visit(Visitor &visitor) const{ Visit(visitor, 0, pObjects.GetCount()); }
+	
+	meObject *Find(Evaluator &evaluator, int from, int to = -1, int step = 1) const;
+	
+	inline meObject *Find(Evaluator &evaluator) const{ return Find(evaluator, 0, pObjects.GetCount()); }
+	
+	meObjectList Collect(Evaluator &evaluator, int from, int to = -1, int step = 1) const;
+	
+	inline meObjectList Collect(Evaluator &evaluator) const{ return Collect(evaluator, 0, pObjects.GetCount()); }
+	
+	void RemoveIf(Evaluator &evaluator, int from, int to = -1, int step = 1);
+	
+	inline void RemoveIf(Evaluator &evaluator){ RemoveIf(evaluator, 0, pObjects.GetCount()); }
+	
+	void Sort(Comparator &comparator);
+	
+	meObjectList GetSorted(Comparator &comparator) const;
 	
 	/** Sets the list to the contain the same objects as another list. */
 	meObjectList &operator=( const meObjectList &list );

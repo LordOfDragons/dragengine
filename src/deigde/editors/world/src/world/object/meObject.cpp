@@ -172,6 +172,7 @@ texCoordTransform( componentTexture.GetTransform() ){
 ////////////////////////////
 
 meObject::meObject( igdeEnvironment *environment ) :
+pActiveAttachBehavior(-1),
 pColliderOwner( this ),
 pWOAsyncFinished( *this )
 {
@@ -191,7 +192,6 @@ pWOAsyncFinished( *this )
 	pDDSObjectShapes = nullptr;
 	pDDSCoordSysArrows = nullptr;
 	
-	pWObject = nullptr;
 	pEngComponentBroken = nullptr;
 	pColDetCollider = nullptr;
 	pCamera = nullptr;
@@ -217,7 +217,7 @@ pWOAsyncFinished( *this )
 	pAttachedTo = nullptr;
 	
 	try{
-		pWObject = new igdeWObject( *environment );
+		pWObject.TakeOver(new igdeWObject(*environment));
 		
 		// collision filter
 		decLayerMask collisionCategory;
@@ -384,6 +384,7 @@ void meObject::SetWorld( meWorld *world ){
 	UpdateTriggerTargets();
 	pCreateSnapPoints();
 	pUpdateDDSNavSpaces();
+	UpdateDDSObjectShapes();
 	OnActiveCameraChanged();
 	
 	ShowStateChanged();
@@ -508,7 +509,7 @@ void meObject::SetPosition( const decDVector &position ){
 	}
 	
 	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	
 	pPosition = position;
 	
@@ -526,7 +527,7 @@ void meObject::SetPosition( const decDVector &position ){
 	pRepositionCamera();
 	UpdateNavPathTest();
 	
-	invalidateDecals.Collect( *pWObject );
+	invalidateDecals.Collect(pWObject);
 	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
@@ -537,8 +538,8 @@ void meObject::SetSize( const decVector &size ){
 		return;
 	}
 	
-	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
-	InvalidateDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect(pWObject);
 	
 	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
 	
@@ -553,8 +554,8 @@ void meObject::SetSize( const decVector &size ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	InvalidateDecals.Collect( *pWObject );
-	InvalidateDecals.InvalidateDecals();
+	invalidateDecals.Collect(pWObject);
+	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -564,8 +565,8 @@ void meObject::SetScaling( const decVector &scaling ){
 		return;
 	}
 	
-	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
-	InvalidateDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect(pWObject);
 	
 	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
 	
@@ -581,8 +582,8 @@ void meObject::SetScaling( const decVector &scaling ){
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	InvalidateDecals.Collect( *pWObject );
-	InvalidateDecals.InvalidateDecals();
+	invalidateDecals.Collect(pWObject);
+	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -592,8 +593,8 @@ void meObject::SetSizeAndScaling( const decVector &size, const decVector &scalin
 		return;
 	}
 	
-	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
-	InvalidateDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect(pWObject);
 	
 	pSize = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( size );
 	pScaling = decVector( 1e-5f, 1e-5f, 1e-5f ).Largest( scaling );
@@ -608,8 +609,8 @@ void meObject::SetSizeAndScaling( const decVector &size, const decVector &scalin
 	pRepositionDDSNavSpaces();
 	UpdateNavPathTest();
 	
-	InvalidateDecals.Collect( *pWObject );
-	InvalidateDecals.InvalidateDecals();
+	invalidateDecals.Collect(pWObject);
+	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -621,8 +622,8 @@ void meObject::SetRotation( const decVector &rotation ){
 	
 	const decQuaternion orientation = decQuaternion::CreateFromEuler( rotation * DEG2RAD );
 	
-	meCLInvalidateDecals::Helper InvalidateDecals( pWorld );
-	InvalidateDecals.Collect( *pWObject );
+	meCLInvalidateDecals::Helper invalidateDecals( pWorld );
+	invalidateDecals.Collect(pWObject);
 	
 	pRotation = rotation;
 	
@@ -640,8 +641,8 @@ void meObject::SetRotation( const decVector &rotation ){
 	pRepositionCamera();
 	UpdateNavPathTest();
 	
-	InvalidateDecals.Collect( *pWObject );
-	InvalidateDecals.InvalidateDecals();
+	invalidateDecals.Collect(pWObject);
+	invalidateDecals.InvalidateDecals();
 	
 	pNotifyDecalsAboutChange();
 }
@@ -661,40 +662,45 @@ void meObject::SetID( const decUniqueID &id ){
 
 
 void meObject::UpdateDDSObjectShapes(){
-	const decStringList keys( pProperties.GetKeys() );
-	igdeCodecPropertyString codec;
-	
 	pDDSObjectShapes->RemoveAllShapes();
+	if(!pWorld){
+		return;
+	}
 	
+	const decStringList keys(pProperties.GetKeys());
 	const int keyCount = keys.GetCount();
+	igdeCodecPropertyString codec;
 	int i;
 	
-	for( i=0; i<keyCount; i++ ){
-		const decString &key = keys.GetAt( i );
+	for(i=0; i<keyCount; i++){
+		const decString &key = keys.GetAt(i);
+		if(!IsPropertyShapeOrShapeList(key)){
+			continue;
+		}
 		
-		if( IsPropertyShapeOrShapeList( key ) ){
-			if( ! pActive || pActiveProperty != key ){
-				decShapeList shapeList;
-				codec.DecodeShapeList( pProperties.GetAt( key ), shapeList );
-				
-				const int shapeCount = shapeList.GetCount();
-				decShape *shape = nullptr;
-				int j;
-				
-				try{
-					for( j=0; j<shapeCount; j++ ){
-						shape = shapeList.GetAt( j )->Copy();
-						pDDSObjectShapes->AddShape( shape );
-						shape = nullptr;
-					}
-					
-				}catch( const deException & ){
-					if( shape ){
-						delete shape;
-					}
-					throw;
-				}
+		if(pActive && pActiveProperty == key){
+			continue;
+		}
+		
+		decShapeList shapeList;
+		codec.DecodeShapeList(pProperties.GetAt(key), shapeList);
+		
+		const int shapeCount = shapeList.GetCount();
+		decShape *shape = nullptr;
+		int j;
+		
+		try{
+			for(j=0; j<shapeCount; j++){
+				shape = shapeList.GetAt(j)->Copy();
+				pDDSObjectShapes->AddShape(shape);
+				shape = nullptr;
 			}
+			
+		}catch(const deException &){
+			if(shape){
+				delete shape;
+			}
+			throw;
 		}
 	}
 }
@@ -892,21 +898,12 @@ void meObject::UpdateIDGroupList(){
 
 void meObject::ShowStateChanged(){
 	if( pWorld ){
+		const bool visible = pShowStateIsVisible();
+		
 		const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
 		const meWorldGuiParameters::eElementModes elementMode = guiParams.GetElementMode();
-		const bool modeObj = ( elementMode == meWorldGuiParameters::eemObject );
-		const bool modeObjShape = ( elementMode == meWorldGuiParameters::eemObjectShape );
-		const bool modeNavSpace = ( elementMode == meWorldGuiParameters::eemNavSpace );
-		
-		bool hiddenByTag = false;
-		if( pClassDef ){
-			hiddenByTag = pClassDef->GetHideTags().HasAnyOf( guiParams.GetTagsHideClass() );
-			
-			pWObject->SetPartiallyHidden( pAnyGDClassHasAnyPartialVisOf( *pClassDef, guiParams.GetTagsPartialHideClass() ) );
-			pUpdateComponent();
-		}
-		
-		const bool visible = pVisible && (pActive || pSelected) && modeObj && !hiddenByTag;
+		const bool modeObjShape = elementMode == meWorldGuiParameters::eemObjectShape;
+		const bool modeNavSpace = elementMode == meWorldGuiParameters::eemNavSpace;
 		
 		pDDSObject->SetVisible(visible);
 		pDDSLightAoE->SetVisible(false); // visible && pLight
@@ -978,9 +975,9 @@ void meObject::WOAsyncFinished(){
 	ShowStateChanged();
 	
 	if( pWorld ){
-		meCLInvalidateDecals InvalidateDecals( pWorld );
-		InvalidateDecals.Collect( *pWObject );
-		InvalidateDecals.InvalidateDecals();
+		meCLInvalidateDecals invalidateDecals(*pWorld);
+		invalidateDecals.Collect(pWObject);
+		invalidateDecals.InvalidateDecals();
 	}
 }
 
@@ -1703,39 +1700,77 @@ bool meObject::IsPropertyShapeOrShapeList( const char *property ) const{
 
 
 
+// Attach behaviors
+/////////////////////
+
+void meObject::SetAttachBehaviors(const decStringList &list){
+	pAttachBehaviors = list;
+	
+	pActiveAttachBehavior = pAttachBehaviors.GetCount() == 0 ? -1 : 0;
+	
+	if(pWorld){
+		pWorld->SetChanged(true);
+		pWorld->NotifyObjectAttachBehaviorsChanged(this);
+		pWorld->NotifyObjectActiveAttachBehaviorChanged(this);
+	}
+}
+
+void meObject::SetActiveAttachBehavior(int attachBehavior){
+	attachBehavior = decMath::clamp(attachBehavior, -1, pAttachBehaviors.GetCount() - 1);
+	
+	if(pActiveAttachBehavior == attachBehavior){
+		return;
+	}
+	
+	pActiveAttachBehavior = attachBehavior;
+	
+	if(pWorld){
+		pWorld->NotifyObjectActiveAttachBehaviorChanged(this);
+	}
+}
+
+
+
 // Decals
 ///////////
 
-meDecal *meObject::GetDecalAt( int index ) const{
-	if( index < 0 || index >= pDecalCount ) DETHROW( deeInvalidParam );
+meDecal *meObject::GetDecalAt(int index) const{
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index < pDecalCount)
 	
-	return pDecals[ index ];
+	return pDecals[index];
 }
 
-int meObject::IndexOfDecal( meDecal *decal ) const{
-	if( ! decal ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pDecalCount; i++ ){
-		if( decal == pDecals[ i ] ) return i;
+int meObject::IndexOfDecal(meDecal *decal) const{
+	if(!decal){
+		return -1;
 	}
 	
+	int i;
+	for(i=0; i<pDecalCount; i++){
+		if(decal == pDecals[i]){
+			return i;
+		}
+	}
 	return -1;
 }
 
-bool meObject::HasDecal( meDecal *decal ) const{
-	if( ! decal ) DETHROW( deeInvalidParam );
-	int i;
-	
-	for( i=0; i<pDecalCount; i++ ){
-		if( decal == pDecals[ i ] ) return true;
+bool meObject::HasDecal(meDecal *decal) const{
+	if(!decal){
+		return false;
 	}
 	
+	int i;
+	for(i=0; i<pDecalCount; i++){
+		if(decal == pDecals[i]){
+			return true;
+		}
+	}
 	return false;
 }
 
 void meObject::AddDecal( meDecal *decal ){
-	if( HasDecal( decal ) ) DETHROW( deeInvalidParam );
+	DEASSERT_FALSE(HasDecal(decal))
 	
 	if( pDecalCount == pDecalSize ){
 		int newSize = pDecalCount * 3 / 2 + 1;
@@ -1760,9 +1795,11 @@ void meObject::AddDecal( meDecal *decal ){
 }
 
 void meObject::InsertDecalAt( meDecal *decal, int index ){
-	if( HasDecal( decal ) || index < 0 || index > pDecalCount ) DETHROW( deeInvalidParam );
-	int i;
+	DEASSERT_FALSE(HasDecal(decal))
+	DEASSERT_TRUE(index >= 0)
+	DEASSERT_TRUE(index <= pDecalCount)
 	
+	int i;
 	for( i=pDecalCount-1; i>index; i-- ){
 		pDecals[ i ] = pDecals[ i - 1 ];
 	}
@@ -1779,7 +1816,7 @@ void meObject::InsertDecalAt( meDecal *decal, int index ){
 
 void meObject::RemoveDecal( meDecal *decal ){
 	int i, index = IndexOfDecal( decal );
-	if( index == -1 ) DETHROW( deeInvalidParam );
+	DEASSERT_TRUE(index != -1)
 	
 	for( i=index+1; i<pDecalCount; i++ ){
 		pDecals[ i - 1 ] = pDecals[ i ];
@@ -1877,9 +1914,7 @@ void meObject::pCleanUp(){
 	if( pEngComponentBroken ){
 		pEngComponentBroken->FreeReference();
 	}
-	if( pWObject ){
-		delete pWObject;
-	}
+	pWObject = nullptr;
 	
 	if( pCamera ){
 		delete pCamera;
@@ -2599,4 +2634,25 @@ void meObject::pUpdateIDGroupList( const igdeGDClass &gdclass, const decString &
 			pUpdateIDGroupList( *inherit.GetClass(), prefix + inherit.GetPropertyPrefix() );
 		}
 	}
+}
+
+bool meObject::pShowStateIsVisible(){
+	if(!pWorld){
+		return false;
+	}
+	
+	const meWorldGuiParameters &guiParams = pWorld->GetGuiParameters();
+	const meWorldGuiParameters::eElementModes elementMode = guiParams.GetElementMode();
+	const bool modeObj = elementMode == meWorldGuiParameters::eemObject;
+	
+	bool hiddenByTag = false;
+	if(pClassDef){
+		hiddenByTag = pClassDef->GetHideTags().HasAnyOf(guiParams.GetTagsHideClass());
+		
+		pWObject->SetPartiallyHidden(pAnyGDClassHasAnyPartialVisOf(
+			*pClassDef, guiParams.GetTagsPartialHideClass()));
+		pUpdateComponent();
+	}
+	
+	return pVisible && (pActive || pSelected) && modeObj && !hiddenByTag;
 }

@@ -22,16 +22,14 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoalATDebug.h"
 #include "deoalAudioThread.h"
 #include "deoalDebugInfo.h"
+#include "deoalATLogger.h"
 #include "../deAudioOpenAL.h"
 #include "../devmode/deoalDevMode.h"
 #include "../environment/deoalEnvironment.h"
+#include "../extensions/deoalExtensions.h"
 #include "../microphone/deoalMicrophone.h"
 #include "../microphone/deoalAMicrophone.h"
 #include "../speaker/deoalASpeaker.h"
@@ -44,6 +42,120 @@
 #include <dragengine/resources/debug/deDebugDrawerManager.h>
 #include <dragengine/resources/world/deWorld.h>
 
+
+
+// Callbacks
+//////////////
+
+void fDebugOutput(ALenum source, ALenum type, ALuint id, ALenum severity,
+ALsizei length, const ALchar *message, void *userParam) AL_API_NOEXCEPT17{
+	deoalAudioThread &audioThread = *((deoalAudioThread*)userParam);
+	if(!audioThread.HasDebug() || !audioThread.GetDebug().GetEnabled()){
+		return;
+	}
+	
+	bool stackTrace = true;
+	
+	const char *strSource;
+	switch(source){
+	case AL_DEBUG_SOURCE_API_EXT:
+		strSource = "API";
+		break;
+		
+	case AL_DEBUG_SOURCE_AUDIO_SYSTEM_EXT:
+		strSource = "Audio System";
+		break;
+		
+	case AL_DEBUG_SOURCE_THIRD_PARTY_EXT:
+		strSource = "Third Party";
+		break;
+		
+	case AL_DEBUG_SOURCE_APPLICATION_EXT:
+		strSource = "Application";
+		break;
+		
+	case AL_DEBUG_SOURCE_OTHER_EXT:
+		strSource = "Other";
+		break;
+		
+	default:
+		strSource = "Unknown";
+	}
+	
+	const char *strType;
+	switch(type){
+	case AL_DEBUG_TYPE_ERROR_EXT:
+		strType = "Error";
+		break;
+		
+	case AL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_EXT:
+		strType = "Deprecated Behavior";
+		break;
+		
+	case AL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_EXT:
+		strType = "Undefined Behavior";
+		break;
+		
+	case AL_DEBUG_TYPE_PORTABILITY_EXT:
+		strType = "Portability";
+		break;
+		
+	case AL_DEBUG_TYPE_PERFORMANCE_EXT:
+		strType = "Performance";
+		break;
+		
+	case AL_DEBUG_TYPE_MARKER_EXT:
+		strType = "Marker";
+		break;
+		
+	case AL_DEBUG_TYPE_OTHER_EXT:
+		strType = "Other";
+		break;
+		
+	default:
+		strType = "Unknown";
+	}
+	
+	switch(severity){
+	case AL_DEBUG_SEVERITY_HIGH_EXT:
+		audioThread.GetLogger().LogErrorFormat("Source(%s) Type(%s) ID(0x%x): %s",
+			strSource, strType, id, message);
+		if(stackTrace){
+			audioThread.GetLogger().LogException(deeInvalidAction(__FILE__, __LINE__));
+		}
+		break;
+		
+	case AL_DEBUG_SEVERITY_MEDIUM_EXT:
+		if(audioThread.GetConfiguration().GetDoLogWarn()){
+			audioThread.GetLogger().LogWarnFormat("Source(%s) Type(%s) ID(0x%x): %s",
+				strSource, strType, id, message);
+			if(stackTrace){
+				audioThread.GetLogger().LogException(deeInvalidAction(__FILE__, __LINE__));
+			}
+		}
+		break;
+		
+	case AL_DEBUG_SEVERITY_LOW_EXT:
+		if(audioThread.GetConfiguration().GetDoLogDebug()){
+			audioThread.GetLogger().LogInfoFormat("Source(%s) Type(%s) ID(0x%x): %s",
+				strSource, strType, id, message);
+			if(stackTrace){
+				audioThread.GetLogger().LogException(deeInvalidAction(__FILE__, __LINE__));
+			}
+		}
+		break;
+		
+	case AL_DEBUG_SEVERITY_NOTIFICATION_EXT:
+		if(audioThread.GetConfiguration().GetDoLogDebug()){
+			audioThread.GetLogger().LogInfoFormat("Source(%s) Type(%s) ID(0x%x): %s",
+				strSource, strType, id, message);
+		}
+		break;
+		
+	default:
+		break;
+	}
+}
 
 
 // Class deoalATDebug
@@ -59,10 +171,24 @@ pEnabled( false ),
 
 pLogCalcEnvProbe( false ),
 pShowSpeakerEnvInfo( false ),
-pShowSpeakerEnvInfoAt( false ){
+pShowSpeakerEnvInfoAt( false )
+{
+#ifdef WITH_DEBUG
+	if(audioThread.GetExtensions().GetHasExtension(deoalExtensions::ext_ALC_EXT_debug)){
+		palDebugMessageCallback(fDebugOutput, &audioThread);
+		alEnable(AL_DEBUG_OUTPUT_EXT);
+		
+		palDebugMessageControl(AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, AL_DONT_CARE_EXT, 0, NULL, AL_TRUE);
+		
+		audioThread.GetLogger().LogInfo("Debugging callback using ALC_EXT_debug activated");
+	}
+#endif
 }
 
 deoalATDebug::~deoalATDebug(){
+	if(palDebugMessageCallback){
+		palDebugMessageCallback(nullptr, nullptr);
+	}
 }
 
 

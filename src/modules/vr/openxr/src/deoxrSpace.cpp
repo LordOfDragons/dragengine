@@ -133,6 +133,13 @@ pSpace(XR_NULL_HANDLE)
 	}
 }
 
+deoxrSpace::deoxrSpace(deoxrSession &session, XrSpace space) :
+pSession(session),
+pSpace(space)
+{
+	DEASSERT_FALSE(space == XR_NULL_HANDLE);
+}
+
 deoxrSpace::~deoxrSpace(){
 	pCleanUp();
 }
@@ -142,7 +149,7 @@ deoxrSpace::~deoxrSpace(){
 // Management
 ///////////////
 
-void deoxrSpace::LocateSpace( const deoxrSpace &space, XrTime time,
+int deoxrSpace::LocateSpace( const deoxrSpace &space, XrTime time,
 decVector &position, decQuaternion &orientation ) const{
 	const deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
@@ -151,19 +158,24 @@ decVector &position, decQuaternion &orientation ) const{
 	location.type = XR_TYPE_SPACE_LOCATION;
 	
 	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) ) ){
-		return;
+		return 0;
 	}
 	
+	int validData = (int)eValidData::space;
 	if( ( location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT ) != 0 ){
 		position = deoxrUtils::Convert( location.pose.position );
+		validData |= (int)eValidData::position;
 	}
 	
 	if( ( location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT ) != 0 ){
 		orientation = deoxrUtils::Convert( location.pose.orientation );
+		validData |= (int)eValidData::orientation;
 	}
+	
+	return validData;
 }
 
-void deoxrSpace::LocateSpace( const deoxrSpace &space, XrTime time, decVector &position,
+int deoxrSpace::LocateSpace( const deoxrSpace &space, XrTime time, decVector &position,
 decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocity ) const{
 	const deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
@@ -178,27 +190,34 @@ decQuaternion &orientation, decVector &linearVelocity, decVector &angularVelocit
 	location.next = &velocity;
 	
 	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, space.pSpace, time, &location ) ) ){
-		return;
+		return 0;
 	}
 	
+	int validData = (int)eValidData::space;
 	if( ( location.locationFlags & XR_SPACE_LOCATION_POSITION_VALID_BIT ) != 0 ){
 		position = deoxrUtils::Convert( location.pose.position );
+		validData |= (int)eValidData::position;
 	}
 	
 	if( ( location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT ) != 0 ){
 		orientation = deoxrUtils::Convert( location.pose.orientation );
+		validData |= (int)eValidData::orientation;
 	}
 	
 	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_LINEAR_VALID_BIT ) != 0 ){
 		linearVelocity = deoxrUtils::Convert( velocity.linearVelocity );
+		validData |= (int)eValidData::linearVelocity;
 	}
 	
 	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_ANGULAR_VALID_BIT ) != 0 ){
 		angularVelocity = deoxrUtils::Convert( velocity.angularVelocity );
+		validData |= (int)eValidData::angularVelocity;
 	}
+	
+	return validData;
 }
 
-void deoxrSpace::LocateSpaceEye( XrTime time, decVector &position, decQuaternion &orientation,
+int deoxrSpace::LocateSpaceEye( XrTime time, decVector &position, decQuaternion &orientation,
 	decVector &linearVelocity, decVector &angularVelocity ) const{
 	const deoxrInstance &instance = pSession.GetSystem().GetInstance();
 	
@@ -218,9 +237,11 @@ void deoxrSpace::LocateSpaceEye( XrTime time, decVector &position, decQuaternion
 	location.next = &velocity;
 	
 	if( ! XR_SUCCEEDED( instance.xrLocateSpace( pSpace, pSession.GetSpaceLocal()->pSpace, time, &location ) ) ){
-		return;
+		return 0;
 	}
-
+	
+	int validData = (int)eValidData::space;
+	
 	// OpenXR does not specify this explicitely but from the data obtained by a VIVE
 	// HMD the coordinate system used is relative to the eye camera not the head.
 	// this thus requires a Y-rotation by 180 degrees to allow users to work with
@@ -238,25 +259,31 @@ void deoxrSpace::LocateSpaceEye( XrTime time, decVector &position, decQuaternion
 		if( location.pose.position.x == 0.0f && location.pose.position.y == 0.0f
 		&& location.pose.position.z == 0.0f && location.pose.orientation.x == 0.0f
 		&& location.pose.orientation.y == 0.0f && location.pose.orientation.z == 0.0f ){
-			return;
+			return 0;
 		}
 
 		position = deoxrUtils::Convert( location.pose.position );
+		validData |= (int)eValidData::position;
 	}
 	
 	if( ( location.locationFlags & XR_SPACE_LOCATION_ORIENTATION_VALID_BIT ) != 0 ){
 		orientation = deoxrUtils::Convert( location.pose.orientation ) * rotate;
+		validData |= (int)eValidData::orientation;
 	}
 	
 	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_LINEAR_VALID_BIT ) != 0 ){
 		linearVelocity = rotate * deoxrUtils::Convert( velocity.linearVelocity );
+		validData |= (int)eValidData::linearVelocity;
 	}
 	
 	if( ( velocity.velocityFlags & XR_SPACE_VELOCITY_ANGULAR_VALID_BIT ) != 0 ){
 		angularVelocity = deoxrUtils::Convert( velocity.angularVelocity );
 		angularVelocity.y = -angularVelocity.y;
 		angularVelocity.z = 0.0f;
+		validData |= (int)eValidData::angularVelocity;
 	}
+	
+	return validData;
 }
 
 
@@ -265,4 +292,7 @@ void deoxrSpace::LocateSpaceEye( XrTime time, decVector &position, decQuaternion
 //////////////////////
 
 void deoxrSpace::pCleanUp(){
+	if(pSpace != XR_NULL_HANDLE){
+		pSession.GetSystem().GetInstance().xrDestroySpace(pSpace);
+	}
 }

@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object pointer. */
-	inline meObject *GetObject() const{ return pObject; }
+	inline const meObject::Ref &GetObject() const{ return pObject; }
 	
 	/** \brief Position before redo action. */
 	inline const decDVector &GetOldPosition() const{ return pOldPosition; }
@@ -83,7 +83,7 @@ public:
 	inline const decVector &GetOldSize() const{ return pOldSize; }
 	
 	/** \brief Attached to before redo action. */
-	inline meObject *GetAttachedTo() const{ return pAttachedTo; }
+	inline const meObject::Ref &GetAttachedTo() const{ return pAttachedTo; }
 	
 	/** \brief Set attached to before redo action. */
 	void SetAttachedTo( meObject *object );

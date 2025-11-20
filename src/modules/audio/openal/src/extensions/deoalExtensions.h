@@ -40,9 +40,10 @@ public:
 	enum eExtensions{
 		ext_ALC_EXT_EFX,
 		ext_ALC_SOFT_HRTF,
+		ext_ALC_EXT_debug
 	};
 	
-	static const int EXT_COUNT = ext_ALC_SOFT_HRTF + 1;
+	static const int EXT_COUNT = ext_ALC_EXT_debug + 1;
 	
 	
 	
@@ -141,6 +142,8 @@ private:
 	
 	void pGetRequiredFunction( void **funcPointer, const char *funcName );
 	void pGetOptionalFunction( void **funcPointer, const char *funcName, int extensionIndex );
+	void pGetOptionalFunction(void **funcPointer, const char *funcName,
+		const char *funcName2, int extensionIndex);
 };
 
 #endif

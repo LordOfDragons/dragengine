@@ -166,6 +166,24 @@ public:
 	}
 };
 
+class cActionRandomizeYAxis : public igdeAction {
+	meWPAdd &pPanel;
+	
+public:
+	cActionRandomizeYAxis(meWPAdd &panel) : igdeAction("Randomize Y Axis", nullptr,
+		"Determines if objects are randomized around the Y axis when added."),
+		pPanel(panel){}
+	
+	virtual void OnAction() {
+		meWorld *const world = pPanel.GetWorld();
+		if(!world){
+			return;
+		}
+		world->GetGuiParameters().SetAddRandomizeYAxis(
+			!world->GetGuiParameters().GetAddRandomizeYAxis());
+	}
+};
+
 }
 
 
@@ -196,6 +214,7 @@ pWorld( NULL )
 	AddChild( content );
 	
 	// object filter
+	/*
 	helper.GroupBoxFlow( content, groupBox, "Object Filter:" );
 	
 	helper.CheckBoxOnly( groupBox, pChkFilterObjects, new cActionFilterObjects( *this ), true );
@@ -211,6 +230,12 @@ pWorld( NULL )
 	pListObjClasses->SetDefaultSorter();
 	
 	helper.CheckBoxOnly( groupBox, pChkObjInclusive, new cActionObjInclusive( *this ), true );
+	*/
+	
+	// randomize
+	helper.GroupBoxFlow(content, groupBox, "Randomize:");
+	
+	helper.CheckBoxOnly(groupBox, pChkRandomizeYAxis, new cActionRandomizeYAxis(*this), false);
 }
 
 meWPAdd::~meWPAdd(){
@@ -243,13 +268,25 @@ void meWPAdd::SetWorld( meWorld *world ){
 		world->AddReference();
 	}
 	
-	UpdateObjectFilter();
+	UpdateParameters();
 }
 
 
+void meWPAdd::UpdateParameters(){
+	if(pWorld){
+		const meWorldGuiParameters &guiparams = pWorld->GetGuiParameters();
+		pChkRandomizeYAxis->SetChecked(guiparams.GetAddRandomizeYAxis());
+		
+	}else{
+		pChkRandomizeYAxis->SetChecked(false);
+	}
+	
+	UpdateObjectFilter();
+}
 
 void meWPAdd::UpdateObjectFilter(){
-	if( ! pWorld ){
+	#if 0
+	if(!pWorld){
 		return;
 	}
 	
@@ -274,9 +311,11 @@ void meWPAdd::UpdateObjectFilter(){
 	}
 	
 	pChkObjInclusive->SetChecked( guiparams.GetAddFilterObjectInclusive() );
+	#endif
 }
 
 void meWPAdd::OnGameDefinitionChanged(){
+	#if 0
 	const decString selection( pComboObjClass->GetText() );
 	
 	pComboObjClass->RemoveAllItems();
@@ -298,4 +337,5 @@ void meWPAdd::OnGameDefinitionChanged(){
 	}
 	
 	pComboObjClass->SetText( selection );
+	#endif
 }

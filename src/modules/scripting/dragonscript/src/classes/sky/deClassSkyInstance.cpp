@@ -166,6 +166,26 @@ void deClassSkyInstance::nfSetLayerMask::RunFunction( dsRunTime *rt, dsValue *my
 	instance.SetLayerMask( ds.GetClassLayerMask()->GetLayerMask( rt->GetValue( 0 )->GetRealObject() ) );
 }
 
+// func float getPassthroughTransparency()
+deClassSkyInstance::nfGetPassthroughTransparency::nfGetPassthroughTransparency(const sInitData &init) :
+dsFunction(init.clsSkyInst, "getPassthroughTransparency", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsFloat){
+}
+void deClassSkyInstance::nfGetPassthroughTransparency::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deSkyInstance &instance = *(((sSkyInstNatDat*)p_GetNativeData(myself))->instance);
+	rt->PushFloat(instance.GetPassthroughTransparency());
+}
+
+// func void setPassthroughTransparency(float transparency)
+deClassSkyInstance::nfSetPassthroughTransparency::nfSetPassthroughTransparency(const sInitData &init) :
+dsFunction(init.clsSkyInst, "setPassthroughTransparency", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid){
+	p_AddParameter(init.clsFloat); // transparency
+}
+void deClassSkyInstance::nfSetPassthroughTransparency::RunFunction(dsRunTime *rt, dsValue *myself){
+	deSkyInstance &instance = *(((sSkyInstNatDat*)p_GetNativeData(myself))->instance);
+	instance.SetPassthroughTransparency(rt->GetValue(0)->GetFloat());
+}
 
 
 // public func int getControllerCount()
@@ -312,6 +332,8 @@ void deClassSkyInstance::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetOrder( init ) );
 	AddFunction( new nfGetLayerMask( init ) );
 	AddFunction( new nfSetLayerMask( init ) );
+	AddFunction(new nfGetPassthroughTransparency(init));
+	AddFunction(new nfSetPassthroughTransparency(init));
 	
 	AddFunction( new nfGetControllerCount( init ) );
 	AddFunction( new nfGetControllerAt( init ) );

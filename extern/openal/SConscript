@@ -38,7 +38,7 @@ hasSystemOpenAL = False
 
 conf = envLibrary.Configure()
 if envLibrary['with_system_openal'] != TernaryVariableNo:
-	hasSystemOpenAL = conf.CheckLibWithHeader(libLinkName, 'AL/al.h', 'c++', 'alEnable(0);')
+	hasSystemOpenAL = conf.CheckLibWithHeader(libLinkName, 'AL/al.h', 'c++', call='alEnable(0);')
 conf.Finish()
 
 if not hasSystemOpenAL and envLibrary['with_system_openal'] == TernaryVariableYes:
@@ -214,6 +214,11 @@ targets.extend([
 patches = [] # create with 'diff -rupN original_sources patches_sources'
 envLibrary.Append(PATCHES = [])
 
+targets.extend(envLibrary['PATCHES'])
+
+#if parent_targets['lib_sndio']['depends']:
+#	targets.extend(parent_targets['lib_sndio']['depends'])
+
 if envLibrary['OSWindows']:
 	# windows is a problem child... as always. compiling openal for this platform is
 	# not recommended and results in nothing but problems. precompiled binaries from
@@ -236,11 +241,6 @@ else:
 	globFiles(envLibrary, os.path.join('patches', oalversion), '*.patch', patches, recursive=False)
 	envLibrary.Append(PATCHES = [envLibrary.File(x) for x in sorted(patches)])
 	library = envLibrary.Command(targets, nodeArtifacts, envLibrary.Action(openalBuild, 'Build OpenAL'))
-
-#if parent_targets['lib_sndio']['depends']:
-#	envLibrary.Depends(library, parent_targets['lib_sndio']['depends'])
-
-envLibrary.Depends(library, envLibrary['PATCHES'])
 
 envLibrary.SideEffect('#notParallelCMake', library)
 

@@ -74,6 +74,14 @@ class Lumimeter
 	/** \brief Set cone exponent. */
 	public func void setConeExponent( float exponent )
 	end
+	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
 	/*@}*/
 	
 	

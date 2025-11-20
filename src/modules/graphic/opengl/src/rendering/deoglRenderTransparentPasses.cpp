@@ -572,8 +572,9 @@ DBG_ENTER_PARAM("RenderTransparentGeometryPass", "%p", mask)
 	addToRenderTask.SetSkinPipelineType( deoglSkinTexturePipelines::etGeometry );
 	addToRenderTask.SetSkinPipelineModifier( pipelineModifier );
 	
-	addToRenderTask.AddComponents( collideList );
-	addToRenderTask.AddBillboards( collideList );
+	addToRenderTask.AddComponents(collideList);
+	addToRenderTask.AddBillboards(collideList);
+	addToRenderTask.AddDecals(collideList);
 	addToRenderTask.AddPropFields( collideList, false );
 	addToRenderTask.AddPropFields( collideList, true );
 	addToRenderTask.AddPropFieldClusters( collideList, false );

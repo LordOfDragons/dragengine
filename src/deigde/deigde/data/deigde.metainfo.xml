@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>ch.dragondreams.deigde</id>
+	
+	<name>Dragengine IGDE</name>
+	<summary>Game project editor for the Drag[en]gine Game Engine.</summary>
+	
+	<metadata_license>MIT</metadata_license>
+	<project_license>MIT</project_license>
+	
+	<developer id="ch.dragondreams">
+		<name>DragonDreams GmbH</name>
+	</developer>
+	
+	<recommends>
+		<control>keyboard</control>
+		<control>pointing</control>
+	</recommends>
+	
+	<requires>
+		<display_length compare="ge">768</display_length>
+	</requires>
+	
+	<description>
+		<p>
+		Supports creating and modifying Drag[en]gine game projects.
+		</p>
+		<p>
+		Does not require compiler toolchains to be installed.
+		Using a code IDE is though recommended for syntax
+		highlighting and code completion.
+		</p>
+		<p>
+		DEIGDE creates *.delga files as game distributable
+		which can be run using the Drag[en]gine Delauncher
+		(ch.dragondreams.delauncher). For publishing on stores
+		like Steam see https://github.com/LordOfDragons/dedistribute/releases
+		for the necessairy files.
+		</p>
+		<p>
+		Recommended additional software to use with IGDE:
+		<ul>
+			<li>Blender 3D (org.blender.Blender):
+				Create 3D models</li>
+			<li>GIMP (org.gimp.GIMP),
+				Krita (org.kde.krita),
+				InkScape (org.inkscape.Inkscape):
+				Create textures, decals and images</li>
+			<li>Audacity (org.audacityteam.Audacity):
+				Create sound files</li>
+			<li>Visual Studio Code (com.visualstudio.code):
+				Edit game scripts</li>
+		</ul>
+		</p>
+	</description>
+	
+	<launchable type="desktop-id">ch.dragondreams.deigde</launchable>
+	
+	<provides>
+		<mediatype>application/dragengine-delga</mediatype>
+		<mediatype>application/dragengine-gamedefinition</mediatype>
+		<library>libdelauncher.so.1</library>
+		<library>libdragengine.so.1</library>
+		<binary>delauncher</binary>
+		<binary>delauncher-gui</binary>
+		<binary>delauncher-console</binary>
+	</provides>
+	
+	<branding>
+		<color type="primary" scheme_preference="light">#dbf3fd</color>
+		<color type="primary" scheme_preference="dark">#3a794d</color>
+	</branding>
+	
+	<content_rating type="oars-1.0" />
+	
+	<url type="bugtracker">https://github.com/LordOfDragons/dragengine/issues</url>
+	<url type="homepage">https://dragondreams.ch/index.php/dragengine</url>
+	<url type="contact">https://dragondreams.ch/index.php/about-us</url>
+	<url type="vcs-browser">https://github.com/LordOfDragons/dragengine</url>
+	
+	<screenshots>
+		<screenshot type="default">
+			<image>https://dragondreams.ch/wp-content/uploads/2025/11/screenshot_guilauncher.png</image>
+			<caption>Gui launcher window.</caption>
+		</screenshot>
+	</screenshots>
+	
+	<releases>
+		<release version="1.29" date="2025-11-09">
+			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29</url>
+			<description>
+				<p>Drag[en]gine 1.29 Release. See "details" for full release notes.</p>
+			</description>
+		</release>
+	</releases>
+	
+	<custom>
+		<value key="DragonDreams::EngineVersion">%{ENGINE_VERSION}</value>
+		<value key="DragonDreams::DistroMaintained">%{DISTRO_MAINTAINED}</value>
+		<value key="DragonDreams::DistroMaintainedUpdateUrl">%{DISTRO_MAINTAINED_UPDATE_URL}</value>
+	</custom>
+</component>

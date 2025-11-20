@@ -82,6 +82,14 @@ class NavigationSpace
 	public func void setBlockingPriority( int priority )
 	end
 	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
+	
 	
 	
 	/**

@@ -36,7 +36,6 @@ namespace Dragengine.Gui
 class MenuItemSeparator extends Widget
 	/** \brief Create separator menu item. */
 	public func new()
-		setCanFocus(false)
 		setDesignerSelector("MenuItem.Separator")
 	end
 end

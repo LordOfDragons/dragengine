@@ -705,7 +705,7 @@ void aeWPView::SetAnimator( aeAnimator *animator ){
 	}
 	
 	pWPSky->SetSky( NULL );
-	pWPEnvObject->SetObjectWrapper( NULL );
+	pWPEnvObject->SetObject(nullptr);
 	pWPCamera->SetCamera( NULL );
 	
 	if( pAnimator ){
@@ -720,7 +720,7 @@ void aeWPView::SetAnimator( aeAnimator *animator ){
 		animator->AddReference();
 		
 		pWPSky->SetSky( animator->GetSky() );
-		pWPEnvObject->SetObjectWrapper( animator->GetEnvObject() );
+		pWPEnvObject->SetObject(animator->GetEnvObject());
 		pWPCamera->SetCamera( animator->GetCamera() );
 	}
 	
@@ -799,7 +799,7 @@ void aeWPView::UpdateSky(){
 }
 
 void aeWPView::UpdateEnvObject(){
-	pWPEnvObject->UpdateObjectWrapper();
+	pWPEnvObject->UpdateObject();
 }
 
 void aeWPView::UpdateCamera(){
@@ -885,13 +885,13 @@ void aeWPView::UpdateAttachment(){
 	
 	if( attachment ){
 		pEditAttName->SetText( attachment->GetName() );
-		pWPAttachment->SetObjectWrapper( attachment->GetObjectWrapper() );
+		pWPAttachment->SetObject(attachment->GetObjectWrapper());
 		pCBAttAttachType->SetSelectionWithData( ( void* )( intptr_t )attachment->GetAttachType() );
 		pCBAttBoneName->SetText( attachment->GetBoneName() );
 		
 	}else{
 		pEditAttName->ClearText();
-		pWPAttachment->SetObjectWrapper( NULL );
+		pWPAttachment->SetObject(nullptr);
 		pCBAttAttachType->SetSelectionWithData( ( void* )( intptr_t )aeAttachment::eatNone );
 		pCBAttBoneName->ClearText();
 	}

@@ -38,6 +38,7 @@
 #include "../utils/deClassShapeList.h"
 #include "../world/deClassDynamicSkin.h"
 #include "../world/deClassSkin.h"
+#include "../world/deClassWorld.h"
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
 
@@ -178,6 +179,17 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsVoid ){
 void deClassLight::nfSetIntensity::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deLight &light = *( ( ( sLigNatDat* )p_GetNativeData( myself ) )->light );
 	light.SetIntensity( rt->GetValue( 0 )->GetFloat() );
+}
+
+// func World getParentWorld()
+deClassLight::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsLight, "getParentWorld", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
+void deClassLight::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deLight &light = *((sLigNatDat*)p_GetNativeData(myself))->light;
+	const deScriptingDragonScript &ds = ((deClassLight*)GetOwnerClass())->GetDS();
+	ds.GetClassWorld()->PushWorld(rt, light.GetParentWorld());
 }
 
 // public func float getRange()
@@ -885,6 +897,7 @@ void deClassLight::CreateClassMembers( dsEngine *engine ){
 	init.clsLightType = pClsLightType;
 	init.clsLightHintMovement = pClsLightHintMovement;
 	init.clsLightHintParameter = pClsLightHintParameter;
+	init.clsWorld = pDS.GetClassWorld();
 	
 	// functions
 	AddFunction( new nfNew( init ) );
@@ -896,6 +909,7 @@ void deClassLight::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetColor( init ) );
 	AddFunction( new nfGetIntensity( init ) );
 	AddFunction( new nfSetIntensity( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfGetRange( init ) );
 	AddFunction( new nfSetRange( init ) );

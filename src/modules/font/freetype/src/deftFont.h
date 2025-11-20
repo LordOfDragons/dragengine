@@ -48,8 +48,9 @@ private:
 	FT_Face pFace;
 	FT_StreamRec pStreamRec;
 	FT_Open_Args pOpenArgs;
-	int pMaxImageWidth, pGlyphSpacing, pLineHeightLimit;
-	int pRealFontSize, pBaseLine, pRealLineHeight;
+	int pMaxImageWidth, pGlyphSpacing, pLineHeightLimit, pHintingSafetyMargin;
+	int pRealFontSize, pBaseLine, pRealLineHeight, pComponentCount;
+	FT_Int32 pLoadFlags;
 	decPoint pBearingOffset;
 	decBoundary pBBox;
 	

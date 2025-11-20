@@ -29,10 +29,11 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
+#include <deigde/gui/wrapper/igdeWObject.h>
+
 class aeAnimator;
 
 class igdeEnvironment;
-class igdeWObject;
 
 class deEngine;
 
@@ -58,7 +59,7 @@ public:
 private:
 	aeAnimator *pAnimator;
 	
-	igdeWObject *pObjectWrapper;
+	igdeWObject::Ref pObjectWrapper;
 	
 	decString pName;
 	eAttachTypes pAttachType;
@@ -121,7 +122,7 @@ public:
 	
 	
 	/** Object wrapper. */
-	inline igdeWObject *GetObjectWrapper() const{ return pObjectWrapper; }
+	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pObjectWrapper; }
 	/*@}*/
 	
 private:

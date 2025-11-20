@@ -896,6 +896,7 @@ void deoalAudioThread::pProcessAudio(){
 	}
 	
 	pEffectSlotManager->Update( pElapsedFull );
+	pDebugInfo->StoreTimeAudioThreadPrepare();
 	
 	if( pActiveMicrophone ){
 		pActiveMicrophone->ProcessAudio();
@@ -903,7 +904,7 @@ void deoalAudioThread::pProcessAudio(){
 	}else{
 		OAL_CHECK( *this, alListenerf( AL_GAIN, 0.0f ) ); // mute listener
 	}
-	pDebugInfo->StoreTimeAudioThreadAudio();
+	pDebugInfo->StoreTimeAudioThreadProcess();
 	
 	pDelayed->ProcessFreeOperations( false );
 	pLogger->Synchronize();

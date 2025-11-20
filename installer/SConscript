@@ -106,9 +106,10 @@ elif envInstaller['OSWindows']:
 			Action(UpdateModuleManifest),
 			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
 		
-		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_engine']),
-			msixUpdated, envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
-		envInstaller.Depends(msix, copied)
+		msix = envInstaller.Command(
+			'{}.msix'.format(envInstaller['installer_name_engine']),
+			[msixUpdated, copied],
+			envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
 		installers.append(msix)
 		
 	if envInstaller['installer_name_igde']:
@@ -125,9 +126,10 @@ elif envInstaller['OSWindows']:
 			Action(UpdateModuleManifest),
 			ManifestUpdates=[{'action': 'text', 'value': versionMsix, 'keyword': '%VERSION%'}] )
 		
-		msix = envInstaller.Command('{}.msix'.format(envInstaller['installer_name_igde']),
-			msixUpdated, envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
-		envInstaller.Depends(msix, copied)
+		msix = envInstaller.Command(
+			'{}.msix'.format(envInstaller['installer_name_igde']),
+			[msixUpdated, copied],
+			envInstaller.Action(msixBuild, 'Build MSIX $TARGET'))
 		installers.append(msix)
 
 envInstaller.Alias('installer', installers)

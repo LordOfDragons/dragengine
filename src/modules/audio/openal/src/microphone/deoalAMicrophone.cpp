@@ -32,6 +32,7 @@
 #include "../audiothread/deoalAudioThread.h"
 #include "../audiothread/deoalATDebug.h"
 #include "../audiothread/deoalATLogger.h"
+#include "../audiothread/deoalDebugInfo.h"
 #include "../effect/deoalSharedEffectSlotManager.h"
 #include "../environment/deoalEnvProbe.h"
 #include "../environment/deoalEnvProbeList.h"
@@ -147,29 +148,32 @@ void deoalAMicrophone::SetEnableAuralization( bool enable ){
 
 
 
-void deoalAMicrophone::SetActive( bool active ){
+void deoalAMicrophone::SetActive(bool active){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( active == pActive ){
+	if(active == pActive){
 		return;
 	}
 	
-	if( pActive ){
-		pEnableAttachedSpeakers( false );
-		pActiveSpeakers.EnableAll( false );
+	if(pActive){
+		pEnableAttachedSpeakers(false);
+		pActiveSpeakers.EnableAll(false);
 		pActiveSpeakers.RemoveAll();
 		
-		if( pParentWorld ){
-			pParentWorld->SetAllSpeakersEnabled( false );
+		if(pParentWorld){
+			pParentWorld->SetAllSpeakersEnabled(false);
 		}
 	}
 	
 	pActive = active;
 	
-	if( active && pParentWorld ){
-		pDirtyGeometry = true;
+	if(active){
 		pDirtyGain = true;
-		pEnableAttachedSpeakers( true );
+		pEnableAttachedSpeakers(true);
+		
+		if(pParentWorld){
+			pDirtyGeometry = true;
+		}
 	}
 }
 
@@ -186,28 +190,28 @@ deoalASpeaker *deoalAMicrophone::GetSpeakerAt( int index ) const{
 void deoalAMicrophone::AddSpeaker( deoalASpeaker *speaker ){
 	// WARNING Called during synchronization time from main thread.
 	
-	pInvalidateSpeakers.RemoveIfPresent( speaker );
-	pSpeakers.Add( speaker );
+	pInvalidateSpeakers.RemoveIfPresent(speaker);
+	pSpeakers.Add(speaker);
 	
-	speaker->SetPositionless( true );
-	speaker->SetEnabled( pActive );
+	speaker->SetPositionless(true);
+	speaker->SetEnabled(pActive);
+	speaker->SetParentMicrophone(this);
 }
 
 void deoalAMicrophone::RemoveSpeaker( deoalASpeaker *speaker ){
 	// WARNING Called during synchronization time from main thread.
 	
-	const int index = pSpeakers.IndexOf( speaker );
-	if( index == -1 ){
-		DETHROW( deeInvalidParam );
+	const int index = pSpeakers.IndexOf(speaker);
+	DEASSERT_TRUE(index != -1)
+	
+	speaker->SetEnabled(false);
+	speaker->SetParentMicrophone(nullptr);
+	
+	if(pAudioThread.GetActiveMicrophone() == this){
+		InvalidateSpeaker(speaker);
 	}
 	
-	speaker->SetEnabled( false );
-	
-	if( pAudioThread.GetActiveMicrophone() == this ){
-		InvalidateSpeaker( speaker );
-	}
-	
-	pSpeakers.RemoveFrom( index );
+	pSpeakers.RemoveFrom(index);
 }
 
 void deoalAMicrophone::RemoveAllSpeakers(){
@@ -217,11 +221,12 @@ void deoalAMicrophone::RemoveAllSpeakers(){
 	const int count = pSpeakers.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		deoalASpeaker * const speaker = ( deoalASpeaker* )pSpeakers.GetAt( i );
-		speaker->SetEnabled( false );
-		if( isActive ){
-			InvalidateSpeaker( speaker );
+	for(i=0; i<count; i++){
+		deoalASpeaker * const speaker = (deoalASpeaker*)pSpeakers.GetAt(i);
+		speaker->SetEnabled(false);
+		speaker->SetParentMicrophone(nullptr);
+		if(isActive){
+			InvalidateSpeaker(speaker);
 		}
 	}
 	
@@ -273,37 +278,40 @@ void deoalAMicrophone::FindActiveSpeakers(){
 
 
 
-void deoalAMicrophone::SetParentWorld( deoalAWorld *world ){
+void deoalAMicrophone::SetParentWorld(deoalAWorld *world){
 	// WARNING Called during synchronization time from main thread.
 	
-	if( world == pParentWorld ){
+	if(world == pParentWorld){
 		return;
 	}
 	
 	// if the microphone is the active one disable all speakers. otherwise they
 	// will continue to play although they are in a different world
-	if( pActive ){
-		pEnableAttachedSpeakers( false );
-		pActiveSpeakers.EnableAll( false );
+	if(pActive){
+		// pEnableAttachedSpeakers(false); // these can still play it outside a world
+		pActiveSpeakers.EnableAll(false);
 	}
 	
 	pActiveSpeakers.RemoveAll();
 	
-	if( pEnvProbeList ){
+	if(pEnvProbeList){
 		delete pEnvProbeList;
-		pEnvProbeList = NULL;
+		pEnvProbeList = nullptr;
 	}
 	
-	if( pOctreeNode ){
-		pOctreeNode->RemoveMicrophone( this );
+	if(pOctreeNode){
+		pOctreeNode->RemoveMicrophone(this);
 	}
 	
 	pParentWorld = world;
 	
-	if( pActive && world ){
+	if(pActive){
 		// if the microphone is the active one enable all active speakers if added to a new world
-		pEnableAttachedSpeakers( true );
-		pActiveSpeakers.EnableAll( true );
+		// pEnableAttachedSpeakers(true); // not disabled above so do not enable here
+		
+		if(world){
+			pActiveSpeakers.EnableAll(true);
+		}
 	}
 }
 
@@ -394,35 +402,35 @@ deoalEnvProbe *deoalAMicrophone::GetEnvProbe(){
 
 
 void deoalAMicrophone::ProcessAudio(){
-	if( ! pActive ){
+	if(!pActive){
 		return;
 	}
 	
 	// update openal resources
-	if( pDirtyGeometry ){
+	if(pDirtyGeometry){
 		pDirtyGeometry = false;
 		
-		OAL_CHECK( pAudioThread, alListener3f( AL_POSITION,
-			( float )pPosition.x, ( float )pPosition.y, ( float )-pPosition.z ) );
+		OAL_CHECK(pAudioThread, alListener3f(AL_POSITION,
+			(float)pPosition.x, (float)pPosition.y, (float)-pPosition.z));
 		
-		const decMatrix matrix = decMatrix::CreateFromQuaternion( pOrientation );
-		const decVector up = matrix.TransformUp();
-		const decVector view = matrix.TransformView();
-		const ALfloat parameters[] = { view.x, view.y, -view.z, up.x, up.y, -up.z };
+		const decMatrix matrix(decMatrix::CreateFromQuaternion(pOrientation));
+		const decVector up(matrix.TransformUp());
+		const decVector view(matrix.TransformView());
+		const ALfloat parameters[] = {view.x, view.y, -view.z, up.x, up.y, -up.z};
 		
-		OAL_CHECK( pAudioThread, alListenerfv( AL_ORIENTATION, &parameters[ 0 ] ) );
+		OAL_CHECK(pAudioThread, alListenerfv(AL_ORIENTATION, &parameters[0]));
 		
-		OAL_CHECK( pAudioThread, alListener3f( AL_VELOCITY, pVelocity.x, pVelocity.y, -pVelocity.z ) );
+		OAL_CHECK(pAudioThread, alListener3f(AL_VELOCITY, pVelocity.x, pVelocity.y, -pVelocity.z));
 	}
 	
-	if( pDirtyGain ){
+	if(pDirtyGain){
 		pDirtyGain = false;
 		
-		OAL_CHECK( pAudioThread, alListenerf( AL_GAIN, pMuted ? 0.0f : pVolume ) );
+		OAL_CHECK(pAudioThread, alListenerf(AL_GAIN, pMuted ? 0.0f : pVolume));
 	}
 	
 	// prepare environment probe list
-	if( pEnvProbeList ){
+	if(pEnvProbeList){
 		pEnvProbeList->PrepareProcessAudio();
 	}
 	
@@ -434,19 +442,23 @@ void deoalAMicrophone::ProcessAudio(){
 		( ( deoalASpeaker* )pInvalidateSpeakers.GetAt( i ) )->PrepareProcessAudio();
 	}
 	pInvalidateSpeakers.RemoveAll();
+	pAudioThread.GetDebugInfo().StoreTimeAudioThreadSpeakersUpdate();
 	
 	// process speakers stored in the world and this microphone
 	if( pParentWorld ){
 		pParentWorld->PrepareProcessAudio();
 	}
+	pAudioThread.GetDebugInfo().StoreTimeAudioThreadWorldProcess();
 	
 	count = pSpeakers.GetCount();
 	for( i=0; i<count; i++ ){
 		( ( deoalASpeaker* )pSpeakers.GetAt( i ) )->PrepareProcessAudio();
 	}
+	pAudioThread.GetDebugInfo().StoreTimeAudioThreadSpeakersProcess();
 	
 	// process effects
 	pProcessEffects();
+	pAudioThread.GetDebugInfo().StoreTimeAudioThreadEffectsProcess();
 }
 
 void deoalAMicrophone::ProcessAudioFast(){
@@ -625,6 +637,8 @@ void deoalAMicrophone::SetLLWorldNext( deoalAMicrophone *microphone ){
 //////////////////////
 
 void deoalAMicrophone::pCleanUp(){
+	RemoveAllSpeakers();
+	
 	pParentWorld = NULL;
 	pEnvProbe = NULL;
 	if( pEnvProbeList ){

@@ -72,22 +72,35 @@ public:
 	/** \name Events */
 	/*@{*/
 	/** \brief A key on the keyboard has been pressed. Return true if handled. */
-	virtual bool OnKeyPress( deInputEvent::eKeyCodes key, bool shift, bool control );
+	bool OnKeyPress(deInputEvent::eKeyCodes key, bool shift, bool control) override;
 	
 	/** \brief The left mouse button has been pressed. Return true if handled. */
-	virtual void OnLeftMouseButtonPress( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonPress(int x, int y, bool shift, bool control) override;
 	
 	/** \brief The left mouse button has been released. Return true if handled. */
-	virtual void OnLeftMouseButtonRelease( int x, int y, bool shift, bool control );
+	void OnLeftMouseButtonRelease(int x, int y, bool shift, bool control) override;
 	
 	/** \brief The mouse has been moved. Return true if handled. */
-	virtual void OnMouseMove( int x, int y, bool shift, bool control );
+	void OnMouseMove(int x, int y, bool shift, bool control) override;
 	/*@}*/
 	
 	
 	
 private:
+	struct sCastIntoWorldParams{
+		decDMatrix originalMatrix;
+		decDVector position; //!< out
+		decVector rotation; //!< out
+		decDVector rayDirection;
+		decDVector rayPosition;
+		bool shift = false;
+		bool control = false;
+		bool useSnapPoint = false;
+	};
+	
 	void pUpdateUndo( bool shift, bool control );
+	void pCreateClosestElementVisitor();
+	void pCastIntoWorld(sCastIntoWorldParams &params);
 };
 
 #endif

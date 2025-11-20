@@ -402,6 +402,166 @@ void decPointerList::GetSliced( decPointerList &list, int from, int to, int step
 
 
 
+void decPointerList::Visit(decPointerVisitor &visitor, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pPointerCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pPointerCount)
+	
+	if(to < 0){
+		to = pPointerCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	
+	int i;
+	if(step > 0){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
+			visitor(pPointers[i]);
+		}
+		
+	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
+		for(i=from; i>=to; i+=step){
+			visitor(pPointers[i]);
+		}
+	}
+}
+
+bool decPointerList::Find(decPointerEvaluator &evaluator, void *&found,
+int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pPointerCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pPointerCount)
+	
+	if(to < 0){
+		to = pPointerCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	
+	int i;
+	if(step > 0){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
+			if(evaluator(pPointers[i])){
+				found = pPointers[i];
+				return true;
+			}
+		}
+		
+	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pPointers[i])){
+				found = pPointers[i];
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+decPointerList decPointerList::Collect(decPointerEvaluator &evaluator, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pPointerCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pPointerCount)
+	
+	if(to < 0){
+		to = pPointerCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	
+	decPointerList collected;
+	int i;
+	if(step > 0){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
+			if(evaluator(pPointers[i])){
+				collected.Add(pPointers[i]);
+			}
+		}
+		
+	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pPointers[i])){
+				collected.Add(pPointers[i]);
+			}
+		}
+	}
+	return collected;
+}
+
+void decPointerList::RemoveIf(decPointerEvaluator &evaluator, int from, int to, int step){
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pPointerCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pPointerCount)
+	
+	if(to < 0){
+		to = pPointerCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	
+	int i;
+	if(step > 0){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
+			if(evaluator(pPointers[i])){
+				RemoveFrom(i);
+				i--;
+				to--;
+			}
+		}
+		
+	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pPointers[i])){
+				RemoveFrom(i);
+				i++;
+				to++;
+			}
+		}
+	}
+}
+
+void decPointerList::Sort(decPointerComparator &comparator){
+	if(pPointerCount > 1){
+		pSort(comparator, 0, pPointerCount - 1);
+	}
+}
+
+decPointerList decPointerList::GetSorted(decPointerComparator &comparator) const{
+	decPointerList copy(*this);
+	copy.Sort(comparator);
+	return copy;
+}
+
+
+
 // Operators
 //////////////
 
@@ -472,4 +632,40 @@ decPointerList &decPointerList::operator+=( const decPointerList &list ){
 	}
 	
 	return *this;
+}
+
+
+
+// Private Functions
+//////////////////////
+
+void decPointerList::pSort(decPointerComparator &comparator, int left, int right){
+	void * const pivot = pPointers[left];
+	const int r_hold = right;
+	const int l_hold = left;
+	
+	while(left < right){
+		while(left < right && comparator(pPointers[right], pivot) >= 0){
+			right--;
+		}
+		if(left != right){
+			pPointers[left] = pPointers[right];
+			left++;
+		}
+		while(left < right && comparator(pPointers[left], pivot) <= 0){
+			left++;
+		}
+		if(left != right){
+			pPointers[right] = pPointers[left];
+			right--;
+		}
+	}
+	
+	pPointers[left] = pivot;
+	if(l_hold < left){
+		pSort(comparator, l_hold, left - 1);
+	}
+	if(r_hold > left){
+		pSort(comparator, left + 1, r_hold);
+	}
 }

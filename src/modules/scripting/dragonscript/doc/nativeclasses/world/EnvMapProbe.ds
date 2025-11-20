@@ -105,5 +105,13 @@ class EnvMapProbe
 	/** \brief  Set influence priority. */
 	public func void setInfluencePriority( int priority )
 	end
+	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
 	/*@}*/
 end

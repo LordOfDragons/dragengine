@@ -182,8 +182,8 @@ class GamepadController extends FrameUpdateListener
 	var bool pDirtyDevices
 	var int pButtonPressCount
 	var Vector2 pMouseMoveAccum
-	var float pMouseMovementAcceleration
-	var bool pAutoAddVirtualKeyboard, pAutoAddVirtualKeyboardDone
+	var float pMouseMovementAcceleration, pRepeatFocusElapsed, pRepeatFocusInterval
+	var bool pAutoAddVirtualKeyboard, pAutoAddVirtualKeyboardDone, pFocusDirectionActive
 	
 	
 	
@@ -335,6 +335,7 @@ class GamepadController extends FrameUpdateListener
 	func void clear()
 		pButtonPressCount = 0
 		pMouseMoveAccum = Vector2.new()
+		pFocusDirectionActive = false
 		
 		pAxisStates.forEach(block AxisState each
 			each.clear()
@@ -368,7 +369,6 @@ class GamepadController extends FrameUpdateListener
 	
 	
 	
-	/** \brief Frame update. */
 	func void frameUpdate(float elapsed)
 		if not pEnabled
 			return
@@ -405,25 +405,49 @@ class GamepadController extends FrameUpdateListener
 	
 	/** \brief Send event mouse button press if enabled. */
 	func void sendMouseButtonPress()
-		if pEnabled and InputSystem.getCaptureInputDevices()
-			pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMousePressed,\
-				InputEventMouseButton.left, InputEventModifier.none, -1))
+		if not pEnabled
+			return
 		end
+		
+		pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMousePressed,\
+			InputEventMouseButton.left, InputEventModifier.none, -1))
 	end
 	
 	/** \brief Send event mouse button release if enabled. */
 	func void sendMouseButtonRelease()
-		if pEnabled and InputSystem.getCaptureInputDevices()
-			pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMouseReleased, \
-				InputEventMouseButton.left, InputEventModifier.none, -1))
+		if not pEnabled
+			return
 		end
+		
+		pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMouseReleased, \
+			InputEventMouseButton.left, InputEventModifier.none, -1))
 	end
 	
 	/** \brief Send event mouse moved if enabled. */
 	func void sendMouseMoved(Point distance)
-		if pEnabled and InputSystem.getCaptureInputDevices() and not distance.isZero()
-			pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMouseMoved, 0, 0, distance, -1))
+		if not pEnabled or distance.isZero()
+			return
 		end
+		
+		if not InputSystem.getCaptureInputDevices()
+			distance = pWidget.getLocalMouseLocation() + distance
+		end
+		
+		pWidget.processEvent(MouseEvent.new(pWidget, MouseEvent.idMouseMoved, 0, 0, distance, -1))
+	end
+	
+	/**
+	 * \brief Call \ref Widget#focusDirectional() on widget if enabled.
+	 * \version 1.29
+	 * \param direction Direction as \ref InputEventKey#arrowLeft, \ref InputEventKey#arrowRight,
+	 *                  \ref InputEventKey#arrowUp or \ref InputEventKey#arrowDown.
+	 */
+	func void focusDirectional(int direction)
+		if not pEnabled
+			return
+		end
+		
+		pWidget.focusDirectional(direction)
 	end
 	
 	
@@ -481,9 +505,48 @@ class GamepadController extends FrameUpdateListener
 		end
 	end
 	
-	/** \brief Generate focus events. */
+	/** \brief Process focus. */
 	protected func void processFocus(float elapsed)
-		// TODO
+		var Vector2 direction = combinedFocus()
+		
+		if direction.getLength() > 0.5
+			var int key = focusAngleToInputKey(DEMath.atan2(-direction.getX(), -direction.getY()))
+			if pFocusDirectionActive
+				pRepeatFocusElapsed += elapsed
+				if pRepeatFocusElapsed >= pRepeatFocusInterval
+					pRepeatFocusElapsed = 0
+					pRepeatFocusInterval = 0.05
+					
+					focusDirectional(key)
+				end
+				return
+			end
+			
+			pFocusDirectionActive = true
+			pRepeatFocusElapsed = 0
+			pRepeatFocusInterval = 0.5
+			
+			focusDirectional(key)
+			
+		else
+			pFocusDirectionActive = false
+		end
+	end
+	
+	/** \brief Input key arrow constant matching direction angle. */
+	protected func int focusAngleToInputKey(float angle)
+		if angle >= -45 and angle < 45
+			return InputEventKey.arrowUp
+			
+		elif angle >= 45 and angle < 135
+			return InputEventKey.arrowLeft
+			
+		elif angle >= -135 and angle < -45
+			return InputEventKey.arrowRight
+			
+		else
+			return InputEventKey.arrowDown
+		end
 	end
 	
 	/**

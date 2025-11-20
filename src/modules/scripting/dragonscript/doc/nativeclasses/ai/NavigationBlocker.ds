@@ -85,6 +85,14 @@ class NavigationBlocker
 	public func void setEnabled( bool enabled )
 	end
 	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
+	
 	
 	
 	/** \brief Shape list. */

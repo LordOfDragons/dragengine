@@ -391,6 +391,9 @@ void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameD
 		/* backwards compatibility */ || tagName == "canInstanciate" ){
 			gdClass->SetCanInstantiate( GetCDataBool( *tag ) );
 			
+		}else if(tagName == "attachableBehavior"){
+			gdClass->SetIsAttachableBehavior(GetCDataBool(*tag));
+			
 		}else if( tagName == "replaceSubObjects" ){
 			const decStringList keys( decString( GetCDataString( *tag ) ).Split( ',' ) );
 			int j, filter = igdeGDClass::FilterSubObjectsAll;

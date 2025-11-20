@@ -33,7 +33,9 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/resources/rig/deRigReference.h>
+
 #include <deigde/editableentity/igdeEditableEntity.h>
+#include <deigde/gui/wrapper/igdeWObject.h>
 
 // predefinitions
 class igdeEnvironment;
@@ -50,7 +52,6 @@ class aeWindowMain;
 
 class igdeGameDefinition;
 class igdeWSky;
-class igdeWObject;
 class igdeWCoordSysArrows;
 
 class deEngine;
@@ -104,7 +105,7 @@ private:
 	deWorld *pEngWorld;
 	
 	igdeWSky *pSky;
-	igdeWObject *pEnvObject;
+	igdeWObject::Ref pEnvObject;
 	
 	deLight *pEngLight;
 	deComponent *pEngComponent;
@@ -231,7 +232,7 @@ public:
 	/** Retrieves the sky wrapper. */
 	inline igdeWSky *GetSky() const{ return pSky; }
 	/** Retrieves the environment wrapper object. */
-	inline igdeWObject *GetEnvObject() const{ return pEnvObject; }
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the locomotion. */
 	inline aeAnimatorLocomotion &GetLocomotion() const{ return *pLocomotion; }

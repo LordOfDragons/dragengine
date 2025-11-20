@@ -22,13 +22,11 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Utils
 
 pin Dragengine.Gui
 pin Dragengine.Preloading
 pin Dragengine.Scenery
-
 
 
 /**
@@ -37,76 +35,81 @@ pin Dragengine.Scenery
  * \see TextureReplacement
  */
 class TextureReplacementList
-	/** \brief Texture replacements. */
-	private var Array pTextures
-	
+	var Array pTextures
 	
 	
 	/** \brief Create texture replacement list. */
-	public func new()
-		this.pTextures = Array.new()
+	func new()
+		pTextures = Array.new()
 	end
 	
 	/** \brief Create copy of texture replacement list. */
-	public func new( TextureReplacementList copy )
-		this.pTextures = copy.pTextures.map( block TextureReplacement each
-			return TextureReplacement.new( each )
-		end )
+	func new(TextureReplacementList copy)
+		pTextures = copy.pTextures.map(block TextureReplacement each
+			return TextureReplacement.new(each)
+		end)
 	end
 	
 	/** \brief Create texture replacement list from stub. */
-	public func new( StubElement stub ) this()
-		this.addFromStub( stub )
+	func new(StubElement stub) this()
+		addFromStub(stub)
 	end
-	
 	
 	
 	/** \brief Number of texture replacements. */
-	public func int getCount()
-		return this.pTextures.getCount()
+	func int getCount()
+		return pTextures.getCount()
 	end
 	
 	/** \brief Texture replacement by index. */
-	public func TextureReplacement getAt( int index )
-		return this.pTextures.getAt( index ) cast TextureReplacement
+	func TextureReplacement getAt(int index)
+		return pTextures.getAt(index) cast TextureReplacement
 	end
 	
 	/** \brief Texture replacement by name or \em null if not found. */
-	public func TextureReplacement getNamed( String name )
-		return this.pTextures.find( block TextureReplacement each
-			return each.getName().equals( name )
-		end ) cast TextureReplacement
+	func TextureReplacement getNamed(String name)
+		return pTextures.find(block TextureReplacement each
+			return each.getName().equals(name)
+		end) cast TextureReplacement
+	end
+	
+	/**
+	 * \brief Texture replacement is present.
+	 * \version 1.29
+	 */
+	func bool has(TextureReplacement texture)
+		return pTextures.has(texture)
 	end
 	
 	/** \brief Named texture replacement is present. */
-	public func bool hasNamed( String name )
-		return this.pTextures.find( block TextureReplacement each
-			return each.getName().equals( name )
-		end ) != null
+	func bool hasNamed(String name)
+		return pTextures.find(block TextureReplacement each
+			return each.getName().equals(name)
+		end) != null
 	end
 	
 	/** \brief Add texture replacement. */
-	public func void add( TextureReplacement texture )
-		if texture == null or this.hasNamed( texture.getName() )
+	func void add(TextureReplacement texture)
+		if texture == null or hasNamed(texture.getName())
 			throw EInvalidParam.new()
 		end
 		
-		this.pTextures.add( texture )
+		pTextures.add(texture)
 	end
 	
 	/** \brief Remove texture replacement. */
-	public func void remove( TextureReplacement texture )
-		this.pTextures.remove( texture )
+	func void remove(TextureReplacement texture)
+		pTextures.remove(texture)
 	end
 	
 	/** \brief Remove all texture replacements. */
-	public func void removeAll()
-		this.pTextures.removeAll()
+	func void removeAll()
+		pTextures.removeAll()
 	end
 	
 	/** \brief Visit texture replacements using a block. */
-	public func void forEach( Block aBlock )
-		this.pTextures.forEach( aBlock )
+	func void forEach(Block aBlock)
+		pTextures.forEach(aBlock)
 	end
 	
 	/**
@@ -115,23 +118,23 @@ class TextureReplacementList
 	 * Works like Array.inject(). Block receives as first argument Object injected value
 	 * and as second argument TextureReplacement texture replacement.
 	 */
-	public func Object inject( Object injectValue, Block aBlock )
-		return this.pTextures.inject( injectValue, aBlock )
+	func Object inject(Object injectValue, Block aBlock)
+		return pTextures.inject(injectValue, aBlock)
 	end
 	
 	
 	
 	/** \brief Add texture replacements from stub. */
-	public func void addFromStub( StubElement stub )
-		stub.forEachTexture( block StubElementTexture each
-			this.add( TextureReplacement.new( each ) )
-		end )
+	func void addFromStub(StubElement stub)
+		stub.forEachTexture(block StubElementTexture each
+			add(TextureReplacement.new(each))
+		end)
 	end
 	
 	/** \brief Apply all texture replacements to component if possible. */
-	public func void applyToComponent( Component component )
-		this.pTextures.forEach( block TextureReplacement each
-			each.applyToComponent( component )
-		end )
+	func void applyToComponent(Component component)
+		pTextures.forEach(block TextureReplacement each
+			each.applyToComponent(component)
+		end)
 	end
 end

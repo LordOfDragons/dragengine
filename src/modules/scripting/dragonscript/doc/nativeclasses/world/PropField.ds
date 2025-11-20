@@ -37,6 +37,14 @@ class PropField
 	/** \brief Set listener or \em null if not set. */
 	public func void setListener( PropFieldListener listener )
 	end
+	
+	/**
+	 * \brief Parent world or \em null if not added to a world.
+	 * \version 1.29
+	 */
+	func World getParentWorld()
+		return null
+	end
 	/*@}*/
 	
 	

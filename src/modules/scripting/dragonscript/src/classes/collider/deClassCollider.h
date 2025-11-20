@@ -173,6 +173,7 @@ private:
 		dsClass *clsCCT;
 		
 		dsClass *clsCollisionResponse;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -210,6 +211,7 @@ private:
 	DEF_NATFUNC( nfSetResponseType );
 	DEF_NATFUNC( nfGetUseLocalGravity );
 	DEF_NATFUNC( nfSetUseLocalGravity );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfGetOwner );
 	DEF_NATFUNC( nfSetOwner );

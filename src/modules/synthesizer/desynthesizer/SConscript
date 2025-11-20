@@ -51,7 +51,6 @@ if internalModule:
 	envModule.Append(CPPFLAGS = ['-DMODULE_VERSION=\\"{}\\"'.format(versionString)])
 	
 	objects = [envModule.SharedObject(s) for s in sources]
-	envModule.Depends(objects, parent_targets['dragengine']['headers'])
 	
 	library = envModule.StaticLibrary(target='synthdesynthesizer', source=objects, LIBS=libs)
 	targetBuild = parent_env.Alias('synth_desynthesizer_build', library)
@@ -77,22 +76,19 @@ else:
 		archive['{}/synthdesynthesizer.pdb'.format(pathPdb)] = envModule.File('synthdesynthesizer.pdb')
 	
 	manifestUpdates = [
-		{ 'action': 'filename', 'name': library[ 0 ].name, 'keyword': 'FILENAME' },
-		{ 'action': 'filesize', 'path': library[ 0 ].abspath, 'keyword': 'FILESIZE' },
-		{ 'action': 'filehash', 'path': library[ 0 ].abspath, 'keyword': 'SHA1SUM' },
+		{'action': 'filename', 'file': library[0], 'keyword': 'FILENAME'},
+		{'action': 'filesize', 'file': library[0], 'keyword': 'FILESIZE'},
+		{'action': 'filehash', 'file': library[0], 'keyword': 'SHA1SUM'},
 		{'action': 'text', 'value': versionString, 'keyword': 'VERSION'}]
 	
 	for l in reversed(parent_targets['lib_soundtouch']['runtimelibs']):
-		manifestUpdates.append({'action': 'preloadLibrary', 'path': l.name})
+		manifestUpdates.append({'action': 'preloadLibrary', 'library': l})
 		install.append(envModule.Install(pathModule, l))
 		archive[os.path.join(pathModule, l.name)] = l
 	
 	manifest = envModule.File( 'src/module.xml' )
-	updateManifest = envModule.Command( manifest, manifest.srcnode(),
-		Action( UpdateModuleManifest ), ManifestUpdates=manifestUpdates )
-	Depends(updateManifest, library)
-	Depends(updateManifest, 'SConscript')
-	Depends(updateManifest, parent_targets['lib_libpng']['runtimelibs'])
+	updateManifest = envModule.UpdateModuleManifest(manifest,
+		manifest.srcnode(), ManifestUpdates=manifestUpdates)
 	
 	install.append( envModule.Install( pathModule, updateManifest ) )
 	archive[ os.path.join( pathModule, 'module.xml' ) ] = updateManifest[ 0 ]
@@ -104,8 +100,6 @@ srcdir = Dir( '.' ).srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC( envModule, [ '{}/src'.format( srcdir ) ], '{}/clocreport.csv'.format( srcdir ), [ 'doc' ] )
-Depends( buildClocBare, sources )
-Depends( buildClocBare, headers )
 buildCloc = envModule.Alias( 'synth_desynthesizer_cloc', buildClocBare )
 
 # add the targets to the targets list

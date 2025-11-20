@@ -224,6 +224,15 @@
 			<description>Name of trigger to pulse if hot-spot is left (stop hovering).</description>
 			<type>triggerTarget</type>
 		</property>
+		<property name='centerPosition'>
+			<description>Center position used to place mouse location for directional navigation.</description>
+			<type>vector</type>
+			<default>0 0 0</default>
+		</property>
+		<property name='centerPositionBone'>
+			<description>Bone to use for center position used to place mouse location for directional navigation.</description>
+			<type>string</type>
+		</property>
 		<category>Dragengine/InteractiveMainMenu</category>
 	</class>
 	<class name='IMMBehaviorColliderInteract'>

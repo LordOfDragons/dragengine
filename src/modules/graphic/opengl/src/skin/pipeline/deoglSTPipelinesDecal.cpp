@@ -77,25 +77,38 @@ void deoglSTPipelinesDecal::pPreparePipelines( const ChannelInfo &cinfo, deoglBa
 }
 
 void deoglSTPipelinesDecal::pPipelineConfigGeometry( deoglPipelineConfiguration &config ){
-	deoglSkinTexturePipelines::pPipelineConfigGeometry( config );
+	deoglSkinTexturePipelines::pPipelineConfigGeometry(config);
 	
 	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
-	const deoglConfiguration &modconfig = pTexture.GetRenderThread().GetConfiguration();
-	
-	config.EnableDepthTest( choices.GetDepthCompareFuncRegular() );
-	
-	if( choices.GetUseInverseDepth() ){
-		config.EnablePolygonOffset( -modconfig.GetDecalOffsetScale(), -modconfig.GetDecalOffsetBias() );
-		
-	}else{
-		config.EnablePolygonOffset( modconfig.GetDecalOffsetScale(), modconfig.GetDecalOffsetBias() );
-	}
-	
+	config.EnableDepthTest(choices.GetDepthCompareFuncRegular());
+	pSetDepthOffset(config);
 	config.EnableBlendBlend();
+}
+
+void deoglSTPipelinesDecal::pPipelineConfigDepth(deoglPipelineConfiguration &config){
+	deoglSkinTexturePipelines::pPipelineConfigDepth(config);
+	pSetDepthOffset(config);
+}
+
+void deoglSTPipelinesDecal::pPipelineConfigCounter(deoglPipelineConfiguration &config){
+	deoglSkinTexturePipelines::pPipelineConfigCounter(config);
+	pSetDepthOffset(config);
 }
 
 void deoglSTPipelinesDecal::pSetTexturesGeometry( deoglSkinShaderConfig &config, const ChannelInfo &cinfo ){
 	deoglSkinTexturePipelines::pSetTexturesGeometry( config, cinfo );
 	
 	config.SetTextureRenderColor( false );
+}
+
+void deoglSTPipelinesDecal::pSetDepthOffset(deoglPipelineConfiguration &config){
+	const deoglRTChoices &choices = pTexture.GetRenderThread().GetChoices();
+	const deoglConfiguration &modconfig = pTexture.GetRenderThread().GetConfiguration();
+	
+	if(choices.GetUseInverseDepth()){
+		config.EnablePolygonOffset(-modconfig.GetDecalOffsetScale(), -modconfig.GetDecalOffsetBias());
+		
+	}else{
+		config.EnablePolygonOffset(modconfig.GetDecalOffsetScale(), modconfig.GetDecalOffsetBias());
+	}
 }

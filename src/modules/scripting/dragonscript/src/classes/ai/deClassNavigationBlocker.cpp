@@ -31,6 +31,7 @@
 #include "../math/deClassDVector.h"
 #include "../math/deClassQuaternion.h"
 #include "../utils/deClassShapeList.h"
+#include "../world/deClassWorld.h"
 #include "../../deScriptingDragonScript.h"
 #include "../../deClassPathes.h"
 
@@ -239,7 +240,17 @@ void deClassNavigationBlocker::nfSetEnabled::RunFunction( dsRunTime *rt, dsValue
 	blocker.SetEnabled( rt->GetValue( 0 )->GetBool() );
 }
 
+// func World getParentWorld()
+deClassNavigationBlocker::nfGetParentWorld::nfGetParentWorld(const sInitData &init) :
+dsFunction(init.clsNavBlocker, "getParentWorld", DSFT_FUNCTION,
+DSTM_PUBLIC | DSTM_NATIVE, init.clsWorld){
+}
 
+void deClassNavigationBlocker::nfGetParentWorld::RunFunction(dsRunTime *rt, dsValue *myself){
+	const deNavigationBlocker &blocker = *((const sNavBlockerNatDat *)p_GetNativeData(myself))->blocker;
+	const deScriptingDragonScript &ds = *((deClassNavigationBlocker*)GetOwnerClass())->GetDS();
+	ds.GetClassWorld()->PushWorld(rt, blocker.GetParentWorld());
+}
 
 // public func ShapeList getShapeList()
 deClassNavigationBlocker::nfGetShapeList::nfGetShapeList( const sInitData &init ) : dsFunction( init.clsNavBlocker,
@@ -342,6 +353,7 @@ void deClassNavigationBlocker::CreateClassMembers( dsEngine *engine ){
 	init.clsQuat = pDS->GetClassQuaternion();
 	init.clsShaList = pDS->GetClassShapeList();
 	init.clsNavigationSpaceType = pClsNavigationSpaceType;
+	init.clsWorld = pDS->GetClassWorld();
 	
 	AddFunction( new nfNew( init ) );
 	AddFunction( new nfDestructor( init ) );
@@ -358,6 +370,7 @@ void deClassNavigationBlocker::CreateClassMembers( dsEngine *engine ){
 	AddFunction( new nfSetBlockingPriority( init ) );
 	AddFunction( new nfGetEnabled( init ) );
 	AddFunction( new nfSetEnabled( init ) );
+	AddFunction(new nfGetParentWorld(init));
 	
 	AddFunction( new nfGetShapeList( init ) );
 	AddFunction( new nfSetShapeList( init ) );

@@ -43,8 +43,8 @@ nodeArtifacts = envLibrary.DownloadArtifactHelper(
 hasSystemVorbis = False
 conf = envLibrary.Configure()
 if envLibrary[ 'with_system_libtheora' ] != TernaryVariableNo:
-	hasSystemVorbis = conf.CheckLibWithHeader( libLinkName,
-		'theora/codec.h', 'c++', 'th_version_number();' )
+	hasSystemVorbis = conf.CheckLibWithHeader(libLinkName,
+		'theora/codec.h', 'c++', call='th_version_number();')
 conf.Finish()
 
 if not hasSystemVorbis and envLibrary[ 'with_system_libtheora' ] == TernaryVariableYes:
@@ -134,13 +134,10 @@ targets.append( 'include/theora/theoradec.h' )
 targets.append( 'include/theora/theoraenc.h' )
 targets.append( 'include/theora/theora.h' )
 targets.append( 'include/theora/codec.h' )
-library = envLibrary.Command( targets, nodeArtifacts, envLibrary.Action(libtheoraBuild, 'Build libtheora' ) )
-
-if gnuConfigUpdate:
-	envLibrary.Depends(library, gnuConfigUpdate)
-
-if parent_targets[ 'lib_libvorbis' ][ 'depends' ]:
-	envLibrary.Depends( library, parent_targets[ 'lib_libvorbis' ][ 'depends' ] )
+library = envLibrary.Command(targets,
+	[nodeArtifacts, gnuConfigUpdate or [],
+		parent_targets['lib_libvorbis']['depends']],
+	envLibrary.Action(libtheoraBuild, 'Build libtheora' ) )
 
 #envLibrary.SideEffect('#notParallelCMake', library)
 

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>ch.dragondreams.delauncher</id>
+	
+	<name>Dragengine Launcher</name>
+	<summary>Run DELGA files</summary>
+	
+	<metadata_license>MIT</metadata_license>
+	<project_license>MIT</project_license>
+	
+	<developer id="ch.dragondreams">
+		<name>DragonDreams GmbH</name>
+	</developer>
+	
+	<recommends>
+		<control>keyboard</control>
+		<control>pointing</control>
+	</recommends>
+	
+	<requires>
+		<display_length compare="ge">768</display_length>
+	</requires>
+	
+	<description>
+		<p>
+		Supports running games and applications based on the
+		Drag[en]gine Game Engine distributed as DELGA files.
+		</p>
+		<p>
+		DELGA files can be run directly by clicking them.
+		</p>
+		<p>
+		Launcher can be used to create and modify game
+		profiles for example to fine tune performance.
+		In general creating profiles is not required.
+		</p>
+	</description>
+	
+	<launchable type="desktop-id">ch.dragondreams.delauncher.desktop</launchable>
+	
+	<provides>
+		<mediatype>application/dragengine-delga</mediatype>
+		<mediatype>application/dragengine-gamedefinition</mediatype>
+		<library>libdelauncher.so.1</library>
+		<library>libdragengine.so.1</library>
+		<binary>delauncher</binary>
+		<binary>delauncher-gui</binary>
+		<binary>delauncher-console</binary>
+	</provides>
+	
+	<branding>
+		<color type="primary" scheme_preference="light">#dbf3fd</color>
+		<color type="primary" scheme_preference="dark">#3a794d</color>
+	</branding>
+	
+	<content_rating type="oars-1.0" />
+	
+	<url type="bugtracker">https://github.com/LordOfDragons/dragengine/issues</url>
+	<url type="homepage">https://dragondreams.ch/index.php/dragengine</url>
+	<url type="contact">https://dragondreams.ch/index.php/about-us</url>
+	<url type="vcs-browser">https://github.com/LordOfDragons/dragengine</url>
+	
+	<screenshots>
+		<screenshot type="default">
+			<image>https://dragondreams.ch/wp-content/uploads/2025/11/deigde1.png</image>
+			<caption>IGDE World Editor.</caption>
+		</screenshot>
+		<screenshot>
+			<image>https://dragondreams.ch/wp-content/uploads/2025/11/deigde2.png</image>
+			<caption>IGDE Animator Editor.</caption>
+		</screenshot>
+		<screenshot>
+			<image>https://dragondreams.ch/wp-content/uploads/2025/11/deigde3.png</image>
+			<caption>IGDE Skin Editor.</caption>
+		</screenshot>
+	</screenshots>
+	
+	<releases>
+		<release version="1.29" date="2025-11-09">
+			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29</url>
+			<description>
+				<p>Drag[en]gine 1.29 Release. See "details" for full release notes.</p>
+			</description>
+		</release>
+	</releases>
+</component>

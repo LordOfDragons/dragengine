@@ -58,7 +58,6 @@
 
 aeAttachment::aeAttachment( igdeEnvironment *environment, const char *name ) :
 pAnimator( NULL ),
-pObjectWrapper( NULL ),
 pName( name ),
 pAttachType( eatNone )
 {
@@ -66,7 +65,7 @@ pAttachType( eatNone )
 		decLayerMask layerMask;
 		layerMask.SetBit( aeAnimator::eclElements );
 		
-		pObjectWrapper = new igdeWObject( *environment );
+		pObjectWrapper.TakeOver(new igdeWObject(*environment));
 		pObjectWrapper->SetVisible( true );
 		pObjectWrapper->SetDynamicCollider( false );
 		pObjectWrapper->SetCollisionFilter( decCollisionFilter( layerMask ) );
@@ -210,8 +209,5 @@ void aeAttachment::DetachCollider(){
 
 void aeAttachment::pCleanUp(){
 	SetAnimator( NULL );
-	
-	if( pObjectWrapper ){
-		delete pObjectWrapper;
-	}
+	pObjectWrapper = nullptr;
 }

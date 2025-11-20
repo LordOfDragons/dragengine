@@ -254,6 +254,7 @@ public:
 	
 	/** Debug. */
 	inline deoalATDebug &GetDebug() const{ return *pDebug; }
+	inline bool HasDebug() const{ return pDebug != nullptr; }
 	
 	/** Delayed. */
 	inline deoalATDelayed &GetDelayed() const{ return *pDelayed; }

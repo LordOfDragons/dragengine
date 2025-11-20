@@ -49,6 +49,9 @@ void meWorldNotifier::SkyChanged( meWorld* ){
 void meWorldNotifier::BgObjectChanged( meWorld* ){
 }
 
+void meWorldNotifier::LimitBoxChanged(meWorld*){
+}
+
 void meWorldNotifier::ModeChanged( meWorld* ){
 }
 
@@ -255,6 +258,12 @@ void meWorldNotifier::ObjectActivePropertyChanged( meWorld*, meObject* ){
 }
 
 void meWorldNotifier::ObjectAdded( meWorld*, meObject* ){
+}
+
+void meWorldNotifier::ObjectAttachBehaviorsChanged(meWorld*, meObject*){
+}
+
+void meWorldNotifier::ObjectActiveAttachBehaviorChanged(meWorld*, meObject*){
 }
 
 void meWorldNotifier::ObjectRemoved( meWorld*, meObject* ){

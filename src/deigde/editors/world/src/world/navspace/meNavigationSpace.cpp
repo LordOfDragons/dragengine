@@ -100,7 +100,6 @@ pColliderOwner( this )
 	pEngCollider = NULL;
 	pEngColComponent = NULL;
 	pEngRig = NULL;
-	pObjectPlaceholder = NULL;
 	
 	pSelected = false;
 	pActive = false;
@@ -139,7 +138,7 @@ pColliderOwner( this )
 		pUpdateDDSColors();
 		pUpdateShapes();
 		
-		pObjectPlaceholder = new igdeWObject( *environment );
+		pObjectPlaceholder.TakeOver(new igdeWObject(*environment));
 		
 	}catch( const deException & ){
 		pCleanUp();
@@ -526,9 +525,7 @@ void meNavigationSpace::ShowStateChanged(){
 void meNavigationSpace::pCleanUp(){
 	SetWorld( NULL );
 	
-	if( pObjectPlaceholder ){
-		delete pObjectPlaceholder;
-	}
+	pObjectPlaceholder = nullptr;
 	
 	if( pEngNavSpace ){
 		pEngNavSpace->FreeReference();

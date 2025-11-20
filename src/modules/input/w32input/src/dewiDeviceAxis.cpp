@@ -66,6 +66,10 @@ pWinRTReadingIndexAxis( -1 ),
 pWinRTInverseAxis( false ),
 pWinRTReadingIndexSwitch( -1 ),
 pWinRTReadingDirectionSwitch( 0 ),
+pWinRTReadingButtonPositive(-1),
+pWinRTReadingButtonNegative(-1),
+pWinRTButtonPositivePressed(false),
+pWinRTButtonNegativePressed(false),
 pIsBatteryLevel( false ){
 }
 
@@ -198,6 +202,14 @@ void dewiDeviceAxis::SetWinRTReadingDirectionSwitch( int direction ){
 	pWinRTReadingDirectionSwitch = direction;
 }
 
+void dewiDeviceAxis::SetWinRTReadingButtonPositive(int index){
+	pWinRTReadingButtonPositive = index;
+}
+
+void dewiDeviceAxis::SetWinRTReadingButtonNegative(int index){
+	pWinRTReadingButtonNegative = index;
+}
+
 void dewiDeviceAxis::SetIsBatteryLevel( bool isBatteryLevel ){
 	pIsBatteryLevel = isBatteryLevel;
 }
@@ -267,10 +279,11 @@ void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
 
 		reading = ( int )decMath::linearStep( realReading, 0.0, 1.0, ( double )pMinimum, ( double )pMaximum );
 
-	}else if( pWinRTReadingIndexSwitch != -1 ){
-		switch( pWinRTReadingDirectionSwitch ){
+	}
+	else if (pWinRTReadingIndexSwitch != -1) {
+		switch (pWinRTReadingDirectionSwitch) {
 		case 0:
-			switch( device.GetReadingSwitch( pWinRTReadingIndexSwitch ) ){
+			switch (device.GetReadingSwitch(pWinRTReadingIndexSwitch)) {
 			case wrgi::GameControllerSwitchPosition::Right:
 			case wrgi::GameControllerSwitchPosition::UpRight:
 			case wrgi::GameControllerSwitchPosition::DownRight:
@@ -284,12 +297,12 @@ void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
 				break;
 
 			default:
-				reading = ( pMinimum + pMaximum ) / 2;
+				reading = (pMinimum + pMaximum) / 2;
 			}
 			break;
 
 		case 1:
-			switch( device.GetReadingSwitch( pWinRTReadingIndexSwitch ) ){
+			switch (device.GetReadingSwitch(pWinRTReadingIndexSwitch)) {
 			case wrgi::GameControllerSwitchPosition::Up:
 			case wrgi::GameControllerSwitchPosition::UpRight:
 			case wrgi::GameControllerSwitchPosition::UpLeft:
@@ -303,12 +316,12 @@ void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
 				break;
 
 			default:
-				reading = ( pMinimum + pMaximum ) / 2;
+				reading = (pMinimum + pMaximum) / 2;
 			}
 			break;
 
 		case -1:
-			switch( device.GetReadingSwitch( pWinRTReadingIndexSwitch ) ){
+			switch (device.GetReadingSwitch(pWinRTReadingIndexSwitch)) {
 			case wrgi::GameControllerSwitchPosition::Up:
 			case wrgi::GameControllerSwitchPosition::UpRight:
 			case wrgi::GameControllerSwitchPosition::UpLeft:
@@ -322,12 +335,33 @@ void dewiDeviceAxis::WinRTReading( dewiDeviceWinRTController &device ){
 				break;
 
 			default:
-				reading = ( pMinimum + pMaximum ) / 2;
+				reading = (pMinimum + pMaximum) / 2;
 			}
 			break;
 
 		default:
-			reading = ( pMinimum + pMaximum ) / 2;
+			reading = (pMinimum + pMaximum) / 2;
+		}
+
+	}else if(pWinRTReadingButtonPositive != -1 || pWinRTReadingButtonNegative != -1){
+		if(pWinRTReadingButtonPositive != -1){
+			pWinRTButtonPositivePressed = device.GetReadingButton(pWinRTReadingButtonPositive);
+		}
+		if(pWinRTReadingButtonNegative != -1){
+			pWinRTButtonNegativePressed = device.GetReadingButton(pWinRTReadingButtonNegative);
+		}
+
+		if(pWinRTButtonPositivePressed && pWinRTButtonNegativePressed){
+			reading = (pMinimum + pMaximum) / 2;
+
+		}else if(pWinRTButtonPositivePressed){
+			reading = pMaximum;
+
+		}else if(pWinRTButtonNegativePressed){
+			reading = pMinimum;
+
+		}else{
+			reading = (pMinimum + pMaximum) / 2;
 		}
 
 	}else if(pIsBatteryLevel){

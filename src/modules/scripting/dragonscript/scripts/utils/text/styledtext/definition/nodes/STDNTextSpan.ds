@@ -28,7 +28,6 @@ pin Dragengine.Gui
 pin Dragengine.Scenery
 
 
-
 /**
  * \brief Span of text in a text node which can have an individual style.
  * 
@@ -36,10 +35,8 @@ pin Dragengine.Scenery
  * be specified which is place to the left of the text.
  */
 class STDNTextSpan
-	var String pText
-	var String pStyle
+	var String pText, pStyle
 	var Image pImage
-	
 	
 	
 	/** \brief Create styled text definition text node span. */
@@ -77,7 +74,6 @@ class STDNTextSpan
 		pStyle = span.pStyle
 		pImage = span.pImage
 	end
-	
 	
 	
 	/** \brief Text. */

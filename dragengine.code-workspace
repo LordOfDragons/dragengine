@@ -217,12 +217,36 @@
 			"path": "src/deigde/editors/gameDefinition"
 		},
 		{
+			"name": "Editor: Language Pack",
+			"path": "src/deigde/editors/langpack"
+		},
+		{
+			"name": "Editor: Particle Emitter",
+			"path": "src/deigde/editors/particleEmitter"
+		},
+		{
 			"name": "Editor: Project",
 			"path": "src/deigde/editors/project"
 		},
 		{
+			"name": "Editor: Rig",
+			"path": "src/deigde/editors/rigeditor"
+		},
+		{
 			"name": "Editor: Skin",
 			"path": "src/deigde/editors/skin"
+		},
+		{
+			"name": "Editor: Sky",
+			"path": "src/deigde/editors/sky"
+		},
+		{
+			"name": "Editor: Speech Animation",
+			"path": "src/deigde/editors/speechAnimation"
+		},
+		{
+			"name": "Editor: Synthesizer",
+			"path": "src/deigde/editors/synthesizer"
 		},
 		{
 			"name": "Editor: World",
@@ -255,6 +279,9 @@
 		{
 			"name": "ghdocs",
 			"path": "ghdocs"
+		},
+		{
+			"path": "installer"
 		}
 	],
 	"settings": {

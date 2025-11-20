@@ -38,6 +38,9 @@
  */
 class DE_DLL_EXPORT igdeButton : public igdeWidget, igdeActionListener{
 public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeButton> Ref;
+	
 	/** \brief Button style. */
 	enum eButtonStyle{
 		/** \brief Normal button. */
@@ -48,7 +51,6 @@ public:
 	};
 	
 	
-	
 private:
 	eButtonStyle pStyle;
 	decString pText;
@@ -57,7 +59,6 @@ private:
 	bool pEnabled;
 	bool pDefault;
 	igdeActionReference pAction;
-	
 	
 	
 public:
@@ -75,7 +76,6 @@ public:
 	igdeButton( igdeEnvironment &environment, igdeAction *action, eButtonStyle style = ebsNormal );
 	
 	
-	
 protected:
 	/**
 	 * \brief Clean up widget.
@@ -83,9 +83,8 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeButton();
+	~igdeButton() override;
 	/*@}*/
-	
 	
 	
 public:
@@ -137,7 +136,6 @@ public:
 	void Focus();
 	
 	
-	
 	/**
 	 * \brief Run button action.
 	 * 
@@ -147,12 +145,11 @@ public:
 	virtual void OnAction();
 	
 	/** \brief Action parameters changed. */
-	virtual void OnParameterChanged( igdeAction *action );
+	void OnParameterChanged( igdeAction *action ) override;
 	
 	/** \brief Action has been destroyed. */
-	virtual void OnDestroyed( igdeAction *action );
+	void OnDestroyed( igdeAction *action ) override;
 	/*@}*/
-	
 	
 	
 	/**
@@ -164,14 +161,13 @@ public:
 	 * \brief Create native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void CreateNativeWidget();
+	void CreateNativeWidget() override;
 	
 	/**
 	 * \brief Destroy native widget.
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
-	virtual void DestroyNativeWidget();
-	
+	void DestroyNativeWidget() override;
 	
 	
 protected:

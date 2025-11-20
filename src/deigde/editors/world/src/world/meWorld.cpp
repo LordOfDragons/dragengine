@@ -61,9 +61,7 @@
 #include <dragengine/resources/collider/deColliderManager.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
 #include <dragengine/resources/collider/deColliderComponent.h>
-#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/debug/deDebugDrawerManager.h>
-#include <dragengine/resources/debug/deDebugDrawerShape.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/navigation/space/deNavigationSpaceCorner.h>
@@ -98,7 +96,6 @@
 meWorld::meWorld( meWindowMain &windowMain, igdeEnvironment *environment ) :
 igdeEditableEntity( environment ),
 pWindowMain( windowMain ),
-pBgObject( nullptr ),
 pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 {
 	deEngine * const engine = GetEngine();
@@ -164,7 +161,7 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		pSky->SetWorld( pDEWorld );
 		
 		// background object
-		pBgObject = new igdeWObject( *environment );
+		pBgObject.TakeOver(new igdeWObject(*environment));
 		pBgObject->SetWorld( pDEWorld );
 		
 		// create weather
@@ -203,6 +200,15 @@ pNextObjectID( 1 ) // 0 is reserved for invalid or undefined IDs
 		
 		pMusic.TakeOver( new meMusic( *this ) );
 		
+		// debug drawer
+		pDDLimitBox.TakeOver(engine->GetDebugDrawerManager()->CreateDebugDrawer());
+		pDDLimitBox->SetVisible(false);
+		pDEWorld->AddDebugDrawer(pDDLimitBox);
+		
+		pDDSLimitBox.SetParentDebugDrawer(pDDLimitBox);
+		pDDSLimitBox.SetEdgeColor(decColor(0.75f, 0.0f, 0.75f, 0.8f));
+		pDDSLimitBox.SetFillColor(decColor(0.5f, 0.0f, 0.5f, 0.1f));
+		
 		// make sure all is set properly
 		SetChanged( false );
 		pDepChanged = false;
@@ -221,6 +227,37 @@ meWorld::~meWorld(){
 
 // Management
 ///////////////
+
+void meWorld::SetLimitBoxMinExtend(const decVector &minExtend){
+	if(minExtend.IsEqualTo(pLimitBoxMinExtend)){
+		return;
+	}
+	
+	pLimitBoxMinExtend = minExtend;
+	pUpdateDDLimitBox();
+	NotifyLimitBoxChanged();
+}
+
+void meWorld::SetLimitBoxMaxExtend(const decVector &maxExtend){
+	if(maxExtend.IsEqualTo(pLimitBoxMaxExtend)){
+		return;
+	}
+	
+	pLimitBoxMaxExtend = maxExtend;
+	pUpdateDDLimitBox();
+	NotifyLimitBoxChanged();
+}
+
+void meWorld::SetLimitBoxExtends(const decVector &minExtend, const decVector &maxExtend){
+	if(minExtend.IsEqualTo(pLimitBoxMinExtend) && maxExtend.IsEqualTo(pLimitBoxMaxExtend)){
+		return;
+	}
+	
+	pLimitBoxMinExtend = minExtend;
+	pLimitBoxMaxExtend = maxExtend;
+	pUpdateDDLimitBox();
+	NotifyLimitBoxChanged();
+}
 
 void meWorld::SetNextObjectID( const decUniqueID& id ){
 	if( id == pNextObjectID ){
@@ -406,6 +443,9 @@ void meWorld::ClearScalingOfNonScaledElements(){
 ////////////
 
 void meWorld::AddObject( meObject *object ){
+	DEASSERT_NOTNULL(object)
+	DEASSERT_FALSE(pObjects.Has(object))
+	
 	pObjects.Add( object );
 	object->SetWorld( this );
 	
@@ -415,9 +455,8 @@ void meWorld::AddObject( meObject *object ){
 }
 
 void meWorld::RemoveObject( meObject *object ){
-	if( ! pObjects.Has( object ) ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(object)
+	DEASSERT_TRUE(pObjects.Has(object))
 	
 	pObjectIDMap.Remove( object->GetID().ToHexString() );
 	
@@ -483,15 +522,17 @@ meObject *meWorld::GetObjectWithID( const char *hexID ) const{
 ///////////
 
 void meWorld::AddDecal( meDecal *decal ){
+	DEASSERT_NOTNULL(decal)
+	DEASSERT_FALSE(pDecals.Has(decal))
+	
 	pDecals.Add( decal );
 	decal->SetWorld( this );
 	SetChanged( true );
 }
 
 void meWorld::RemoveDecal( meDecal *decal ){
-	if( ! pDecals.Has( decal ) ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(decal)
+	DEASSERT_TRUE(pDecals.Has(decal))
 	
 	decal->SetWorld( NULL );
 	pDecals.Remove( decal );
@@ -519,15 +560,22 @@ void meWorld::RemoveAllDecals(){
 // Navigation Spaces
 //////////////////////
 
-void meWorld::AddNavSpace( meNavigationSpace *navspace ){
-	pNavSpaces.Add( navspace );
-	navspace->SetWorld( this );
-	SetChanged( true );
+void meWorld::AddNavSpace(meNavigationSpace *navspace){
+	DEASSERT_NOTNULL(navspace)
+	DEASSERT_FALSE(pNavSpaces.Has(navspace))
+	
+	pNavSpaces.Add(navspace);
+	navspace->SetWorld(this);
+	SetChanged(true);
 }
 
-void meWorld::RemoveNavSpace( meNavigationSpace *navspace ){
-	pNavSpaces.Remove( navspace );
-	SetChanged( true );
+void meWorld::RemoveNavSpace(meNavigationSpace *navspace){
+	DEASSERT_NOTNULL(navspace)
+	DEASSERT_TRUE(pNavSpaces.Has(navspace))
+	
+	navspace->SetWorld(nullptr);
+	pNavSpaces.Remove(navspace);
+	SetChanged(true);
 }
 
 void meWorld::RemoveAllNavSpaces(){
@@ -911,7 +959,7 @@ void meWorld::NotifySkyChanged(){
 		pNotifiers[ n ]->SkyChanged( this );
 	}
 	
-	SetChanged( true ); // this is correct. sky information is saved as world-editor specific data
+	SetChanged(true); // sky information is saved as world-editor specific data
 }
 
 void meWorld::NotifyBgObjectChanged(){
@@ -921,7 +969,16 @@ void meWorld::NotifyBgObjectChanged(){
 		pNotifiers[ i ]->BgObjectChanged( this );
 	}
 	
-	// SetChanged( true ); // not required until we save this
+	SetChanged(true); // bg object is saved as world-editor specific data
+}
+
+void meWorld::NotifyLimitBoxChanged(){
+	int i;
+	for(i=0; i<pNotifierCount; i++){
+		pNotifiers[i]->LimitBoxChanged(this);
+	}
+	
+	SetChanged(true); // limit box is saved as world-editor specific data
 }
 
 void meWorld::NotifyModeChanged(){
@@ -1413,6 +1470,24 @@ void meWorld::NotifyObjectActivePropertyChanged( meObject *object ){
 	}
 }
 
+void meWorld::NotifyObjectAttachBehaviorsChanged(meObject *object){
+	DEASSERT_NOTNULL(object)
+	
+	int i;
+	for(i=0; i<pNotifierCount; i++){
+		pNotifiers[i]->ObjectAttachBehaviorsChanged(this, object);
+	}
+}
+
+void meWorld::NotifyObjectActiveAttachBehaviorChanged(meObject *object){
+	DEASSERT_NOTNULL(object)
+	
+	int i;
+	for(i=0; i<pNotifierCount; i++){
+		pNotifiers[i]->ObjectActiveAttachBehaviorChanged(this, object);
+	}
+}
+
 void meWorld::NotifyObjectAdded( meObject *object ){
 	if( ! object ) DETHROW( deeInvalidParam );
 	int n;
@@ -1747,9 +1822,7 @@ void meWorld::pCleanUp(){
 		pEngColCollider->FreeReference();
 	}
 	
-	if( pBgObject ){
-		delete pBgObject;
-	}
+	pBgObject = nullptr;
 	if( pSky ){
 		delete pSky;
 	}
@@ -1803,5 +1876,19 @@ void meWorld::pShowStateChanged(){
 	const int objectShapeCount = pObjectShapes.GetCount();
 	for( i=0; i<objectShapeCount; i++ ){
 		pObjectShapes.GetAt( i )->ShowStateChanged();
+	}
+}
+
+void meWorld::pUpdateDDLimitBox(){
+	pDDSLimitBox.RemoveAllShapes();
+	
+	if(!(pLimitBoxMaxExtend - pLimitBoxMinExtend).IsZero()){
+		pDDSLimitBox.AddBoxShape(
+			decVector(0.001f, 0.001f, 0.001f).Largest(pLimitBoxMaxExtend - pLimitBoxMinExtend) * 0.5f,
+			(pLimitBoxMaxExtend + pLimitBoxMinExtend) * 0.5f, decQuaternion());
+		pDDLimitBox->SetVisible(true);
+		
+	}else{
+		pDDLimitBox->SetVisible(false);
 	}
 }

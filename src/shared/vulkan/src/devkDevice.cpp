@@ -223,7 +223,7 @@ void devkDevice::pCreateDevice(){
 	// find requested queue families
 	const float defaultQueuePriority = 0.0f;
 	
-	uint32_t queueFamilyCount;
+	uint32_t queueFamilyCount = 0;
 	pInstance.vkGetPhysicalDeviceQueueFamilyProperties(pPhysicalDevice, &queueFamilyCount, VK_NULL_HANDLE);
 	
 	VkQueueFamilyProperties *queueFamilyProperties = nullptr;
@@ -234,7 +234,7 @@ void devkDevice::pCreateDevice(){
 	queueFamilyProperties = new VkQueueFamilyProperties[ queueFamilyCount ];
 	memset(queueFamilyProperties, 0, sizeof(VkQueueFamilyProperties) * queueFamilyCount);
 	
-	uint32_t writtenQueueFamilyCount = 0;
+	uint32_t writtenQueueFamilyCount = queueFamilyCount;
 	pInstance.vkGetPhysicalDeviceQueueFamilyProperties(pPhysicalDevice, &writtenQueueFamilyCount, queueFamilyProperties);
 	DEASSERT_TRUE(writtenQueueFamilyCount <= queueFamilyCount)
 	int i;

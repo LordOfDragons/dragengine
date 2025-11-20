@@ -94,45 +94,45 @@ float uchimura(float x) {
 }
 
 void main( void ){
-	ivec3 tc = ivec3( gl_FragCoord.xy, vLayer );
+	ivec3 tc = ivec3(gl_FragCoord.xy, vLayer);
 	
-	vec3 params = texelFetch( texToneMapParams, tcParams, 0 ).rgb; // r=avgLum, g=scaleLum, b=lwhite, a=n/a
-	vec4 color = texelFetch( texColor, tc, 0 );
+	vec3 params = texelFetch(texToneMapParams, tcParams, 0).rgb; // r=avgLum, g=scaleLum, b=lwhite, a=n/a
+	vec4 color = texelFetch(texColor, tc, 0);
 	
-// 	color.rgb = sanitizeLight( color.rgb ); // final safe guard
+// 	color.rgb = sanitizeLight(color.rgb); // final safe guard
 	
-	vec2 tcBloom = min( vTexCoord * pTCBloomTransform.xy + pTCBloomTransform.zw, pTCBloomClamp );
+	vec2 tcBloom = min(vTexCoord * pTCBloomTransform.xy + pTCBloomTransform.zw, pTCBloomClamp);
 	
 	// classic reinhard
-//	float luminance = dot( color, lumiFactors ) * pToneMapBloomBlend;
-//	luminance = luminance / ( 1.0 + luminance );
+//	float luminance = dot(color, lumiFactors) * pToneMapBloomBlend;
+//	luminance = luminance / (1.0 + luminance);
 	
 	// enhanced reinhard
-// 	color.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0.0 ).rgb * vec3( pToneMapBloomBlend );
+// 	color.rgb += textureLod(texBloom, vec3(tcBloom, vLayer), 0.0).rgb * vec3(pToneMapBloomBlend);
 // 	
-// 	float luminance = dot( color.rgb, lumiFactors );
+// 	float luminance = dot(color.rgb, lumiFactors);
 // 	float adjLum = luminance * params.g;
-// 	float finalLum = adjLum * ( 1.0 + adjLum * params.b ) / ( 1.0 + adjLum );
-// 	outColor = vec4( color.rgb * vec3( finalLum / ( luminance + epsilon ) ), color.a );
+// 	float finalLum = adjLum * (1.0 + adjLum * params.b) / (1.0 + adjLum);
+// 	outColor = vec4(color.rgb * vec3(finalLum / (luminance + epsilon)), color.a);
 	
 	// uchimura, applied per channel
-	color *= params.g;
+	color.rgb *= params.g;
 	
 	outColor.a = color.a;
 	
 	if(WithToneMapCurve){
-		outColor.r = texture( texToneMapCurve, vec2( color.r, 0 ) ).r;
-		outColor.g = texture( texToneMapCurve, vec2( color.g, 0 ) ).r;
-		outColor.b = texture( texToneMapCurve, vec2( color.b, 0 ) ).r;
+		outColor.r = texture(texToneMapCurve, vec2(color.r, 0.0)).r;
+		outColor.g = texture(texToneMapCurve, vec2(color.g, 0.0)).r;
+		outColor.b = texture(texToneMapCurve, vec2(color.b, 0.0)).r;
 		
 	}else{
-		outColor.r = uchimura( color.r );
-		outColor.g = uchimura( color.g );
-		outColor.b = uchimura( color.b );
+		outColor.r = uchimura(color.r);
+		outColor.g = uchimura(color.g);
+		outColor.b = uchimura(color.b);
 	}
 	
 	// bloom
-	outColor.rgb += textureLod( texBloom, vec3( tcBloom, vLayer ), 0.0 ).rgb * vec3( pToneMapBloomBlend );
+	outColor.rgb += textureLod(texBloom, vec3(tcBloom, vLayer), 0.0).rgb * vec3(pToneMapBloomBlend);
 	
 	// NOTE nice comparison of curves: https://www.shadertoy.com/view/WdjSW3
 	//      the uchimura curve is the only one which has a linear left side. all others try

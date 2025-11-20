@@ -27,13 +27,14 @@
 
 #include "category/gdeCategoryList.h"
 #include "objectClass/gdeObjectClassList.h"
+#include "objectClass/world/gdeOCWorld.h"
 #include "particleemitter/gdeParticleEmitterList.h"
 #include "property/gdePropertyList.h"
 #include "skin/gdeSkinList.h"
 #include "sky/gdeSkyList.h"
 
+#include <deigde/gui/wrapper/igdeWObject.h>
 #include <deigde/editableentity/igdeEditableEntity.h>
-#include "objectClass/world/gdeOCWorld.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectSet.h>
@@ -60,7 +61,6 @@ class gdeOCWorld;
 class gdeSkyController;
 
 class igdeWSky;
-class igdeWObject;
 class igdeCamera;
 
 class deWorld;
@@ -145,7 +145,7 @@ private:
 	deWorld *pWorld;
 	
 	igdeWSky *pSky;
-	igdeWObject *pEnvObject;
+	igdeWObject::Ref pEnvObject;
 	
 	igdeCamera *pCamera;
 	float pViewRatio;
@@ -248,7 +248,7 @@ public:
 	inline igdeWSky *GetSky() const{ return pSky; }
 	
 	/** Environment wrapper object. */
-	inline igdeWObject *GetEnvObject() const{ return pEnvObject; }
+	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Is project game definition. */
 	inline bool GetIsProjectGameDef() const{ return pIsProjectGameDef; }

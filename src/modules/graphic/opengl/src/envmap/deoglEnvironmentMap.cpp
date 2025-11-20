@@ -544,14 +544,8 @@ void deoglEnvironmentMap::Update( deoglRenderPlan &parentPlan ){
 		pEnvMapDiffuse->DestroyTexture();
 		pEnvMapNormal->DestroyTexture();
 		pEnvMapEmissive->DestroyTexture();
-		// TODO we need now a layer mask to select what sky instances are rendered into the
-		//      the env map. the default here chooses all but if somebody uses layer masking
-		//      this is potentially wrong.
-		//      
-		//      find a solution for this
-		//      
 		
-		pRenderThread.GetRenderers().GetSky().RenderSkyIntoEnvMap( *pWorld, decLayerMask(), *this );
+		pRenderThread.GetRenderers().GetSky().RenderSkyIntoEnvMap( *pWorld, pLayerMask, *this );
 		
 		// copy to equi-rect if required
 		if( pRenderThread.GetRenderers().GetReflection().GetUseEquiEnvMap() ){

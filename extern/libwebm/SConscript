@@ -10,7 +10,7 @@ Import('parent_env parent_targets parent_report')
 envLibrary = parent_env.Clone()
 
 # parameters
-libraryVersion = '1.0.0.31'
+libraryVersion = '1.0.0.32'
 
 srcdir = 'libwebm-libwebm-{}'.format(libraryVersion)
 
@@ -29,7 +29,7 @@ hasSystemWebm = False
 conf = envLibrary.Configure()
 if envLibrary['with_system_libwebm'] != TernaryVariableNo:
 	hasSystemWebm = conf.CheckLibWithHeader(libLinkName,
-		'webm/webm_parser.h', 'c++', 'webm::WebmParser p();')
+		'webm/webm_parser.h', 'c++', call='webm::WebmParser p();')
 conf.Finish()
 
 if not hasSystemWebm and envLibrary['with_system_libwebm'] == TernaryVariableYes:
@@ -57,6 +57,8 @@ def libwebmBuild(target, source, env):
 	
 	script = createScriptHeader(env)
 	script.append('cd "{}" || exit 1'.format(buildDir.Dir(srcdir).abspath))
+	
+	script.append('export CMAKE_POLICY_VERSION_MINIMUM=3.5\n')
 	
 	for p in env['PATCHES']:
 		script.append('patch -p1 <{} || exit 1'.format(p.srcnode().abspath))

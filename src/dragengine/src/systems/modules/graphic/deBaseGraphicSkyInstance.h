@@ -57,6 +57,9 @@ public:
 	
 	/** \brief Layer mask changed. */
 	virtual void LayerMaskChanged();
+	
+	/** \brief Passthrough transparency changed. */
+	virtual void PassthroughTransparencyChanged();
 	/*@}*/
 };
 

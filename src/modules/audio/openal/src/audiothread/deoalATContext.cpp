@@ -104,8 +104,8 @@ void deoalATContext::CreateContext(){
 	}
 	
 	if( extensions.GetHasHRTF() ){
-		attributes[ index++ ] = ALC_HRTF;
-		attributes[ index++ ] = ALC_DONT_CARE;
+		attributes[ index++ ] = ALC_HRTF_SOFT;
+		attributes[ index++ ] = ALC_DONT_CARE_SOFT;
 			// let driver choose when to use HRTF. we can force it with ALC_TRUE but then
 			// it is possible the user is using a surround system where HRTF is not good.
 			// we check later on though if HRTF is currently in use.

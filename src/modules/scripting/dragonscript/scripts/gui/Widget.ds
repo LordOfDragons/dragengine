@@ -81,13 +81,8 @@ class Widget
 	
 	var Container pParent
 	var Border pBorder
-	var Point pPosition
-	var Point pSize
-	var Point pMinSize
-	var bool pVisible
-	var bool pEnabled
-	var bool pHasFocus
-	var bool pCanFocus
+	var Point pPosition, pSize, pMinSize
+	var bool pVisible, pEnabled, pHasFocus, pCanFocus, pCanFocusDirectional
 	var Color pTextColor
 	var float pTransparency
 	var Font pFont
@@ -95,13 +90,8 @@ class Widget
 	
 	var TexMatrix2 pTransformation
 	
-	var Array pKeyListeners
-	var Array pMouseListeners
-	var Array pDragListeners
-	var Array pFocusListeners
-	var Array pWidgetListeners
-	var Array pStateChangeListeners
-	var Array pGamepadListeners
+	var Array pKeyListeners, pMouseListeners, pDragListeners, pFocusListeners, pWidgetListeners,\
+		pStateChangeListeners, pGamepadListeners
 	
 	var MousePointerFactory pMousePointer
 	
@@ -111,9 +101,7 @@ class Widget
 	var RepeatKeyEventTimer pRepeatEventTimer
 	var FrameUpdater pFrameUpdater
 	
-	var CanvasView pCanvasWidget
-	var CanvasView pCanvasBackground
-	var CanvasView pCanvasContent
+	var CanvasView pCanvasWidget, pCanvasBackground, pCanvasContent
 	var CanvasCreator pBackgroundCanvasCreator
 	
 	var WidgetDesigner pDesigner
@@ -122,13 +110,8 @@ class Widget
 	
 	var BorderSize pPadding
 	
-	var bool pProtectBackgroundCanvasCreator
-	var bool pProtectBorder
-	var bool pProtectPadding
-	var bool pProtectFont
-	var bool pProtectTextColor
-	var bool pProtectMinimumSize
-	var bool pProtectMousePointer
+	var bool pProtectBackgroundCanvasCreator, pProtectBorder, pProtectPadding, pProtectFont,\
+		pProtectTextColor, pProtectMinimumSize, pProtectMousePointer
 	
 	var Object pToolTip
 	
@@ -136,8 +119,7 @@ class Widget
 	
 	var TranslationManager pTranslationManager
 	
-	var bool pBlockLayoutParent
-	var bool pHasBlockedLayoutParent
+	var bool pBlockLayoutParent, pHasBlockedLayoutParent
 	
 	
 	
@@ -163,23 +145,12 @@ class Widget
 		pPosition = position
 		pSize = Point.new().largest(size)
 		
-		pVisible = true
-		pEnabled = true
-		pHasFocus = false
-		pCanFocus = false
+		pVisible = pEnabled = true
 		pTitle = ""
 		
-		pTransparency = 1.0
+		pTransparency = 1
 		pIsDesignerSet = false
 		pPadding = BorderSize.new()
-		
-		pProtectBackgroundCanvasCreator = false
-		pProtectBorder = false
-		pProtectPadding = false
-		pProtectFont = false
-		pProtectTextColor = false
-		pProtectMinimumSize = false
-		pProtectMousePointer = false
 		
 		pKeyListeners = Array.new()
 		pMouseListeners = Array.new()
@@ -511,12 +482,12 @@ class Widget
 		setSize(Point.new(pSize.getX(), height))
 	end
 	
-	/** \brief Rectangulare boundary of the widget. */
+	/** \brief Rectangular boundary of the widget. */
 	func RectArea getBoundary()
 		return RectArea.new(pPosition, pSize)
 	end
 	
-	/** \brief Rectangulare boundary of the widget including border. */
+	/** \brief Rectangular boundary of the widget including border. */
 	func RectArea getBoundaryWithBorder()
 		if pBorder == null
 			return getBoundary()
@@ -526,7 +497,92 @@ class Widget
 		return RectArea.new(pPosition - Point.new(size.getLeft(), size.getTop()), pSize + size.getSize())
 	end
 	
+	/**
+	 * \brief Rectangular boundary of widget relative to parent.
+	 * \version 1.29
+	 */
+	func RectArea getRelativeBoundary(Container parent)
+		return RectArea.new(getRelativePosition(parent), pSize)
+	end
 	
+	/**
+	 * \brief Rectangular boundary of widget including border relative to parent.
+	 */
+	func RectArea getRelativeBoundaryWithBorder(Container parent)
+		if pBorder == null
+			return getRelativeBoundary(parent)
+		end
+		
+		var BorderSize size = pBorder.getBorderSize()
+		return RectArea.new(getRelativePosition(parent)\
+			- Point.new(size.getLeft(), size.getTop()), pSize + size.getSize())
+	end
+	
+	/**
+	 * \brief Rectangular boundary of widget relative to desktop.
+	 * \version 1.29
+	 */
+	func RectArea getDesktopBoundary()
+		return RectArea.new(getDesktopPosition(), pSize)
+	end
+	
+	/**
+	 * \brief Rectangular boundary of widget including border relative to parent.
+	 */
+	func RectArea getDesktopBoundaryWithBorder()
+		if pBorder == null
+			return getDesktopBoundary()
+		end
+		
+		var BorderSize size = pBorder.getBorderSize()
+		return RectArea.new(getDesktopPosition()\
+			- Point.new(size.getLeft(), size.getTop()), pSize + size.getSize())
+	end
+	
+	/**
+	 * \brief Visible widget boundary relative to parent coordinate system.
+	 * \version 1.29
+	 */
+	func RectArea getVisibleRelativeBoundary(Container parent)
+		var RectArea boundary = getRelativeBoundary(parent)
+		if pParent != null and pParent != parent
+			boundary = pParent.getVisibleRelativeBoundary(parent).intersect(boundary)
+		end
+		return boundary
+	end
+	
+	/**
+	 * \brief Visible widget boundary in desktop coordinates.
+	 * \version 1.29
+	 * 
+	 * Clips \ref #getBoundary() to the visible area of all parent containers.
+	 */
+	func RectArea getVisibleDesktopBoundary()
+		var RectArea boundary = getDesktopBoundary()
+		if pParent != null
+			boundary = pParent.getVisibleDesktopBoundary().intersect(boundary)
+		end
+		return boundary
+	end
+	
+	/**
+	 * \brief Ensure widget is fully visible on desktop if possible.
+	 * \version 1.29
+	 */
+	func void ensureVisible()
+		ensureVisible(getBoundary())
+	end
+	
+	/**
+	 * \brief Ensure boundary is visible on desktop if possible.
+	 * \version 1.29
+	 */
+	func void ensureVisible(RectArea boundary)
+		var Container parent = getParent()
+		if parent != null
+			parent.ensureVisible(boundary.move(getPosition()))
+		end
+	end
 	
 	/** Retrieve the minimal size of widget. */
 	func Point getMinimumSize()
@@ -1215,6 +1271,21 @@ class Widget
 		onSetFont()
 	end
 	
+	/**
+	 * \brief Widget can get focus using directional navigation.
+	 * \version 1.29
+	 */
+	func bool getCanFocusDirectional()
+		return pCanFocusDirectional
+	end
+	
+	/**
+	 * \brief Set if widget can get focus using directional navigation.
+	 * \version 1.29
+	 */
+	func void setCanFocusDirectional(bool canFocus)
+		pCanFocusDirectional = canFocus
+	end
 	
 	
 	/**
@@ -1285,13 +1356,8 @@ class Widget
 	 * Asks parent for hover widget otherwise returns null.
 	 */
 	func Widget getHoverWidget()
-		if pParent != null
-			return pParent.getHoverWidget()
-		end
-		return null
+		return pParent != null if pParent.getHoverWidget() else null
 	end
-	
-	
 	
 	/**
 	 * \brief Mouse is hovering over this widget.
@@ -2013,10 +2079,7 @@ class Widget
 	
 	/** \brief Widget at coordinates or \em null if not found. */
 	func Widget getWidgetAt(Point position)
-		if isPointInside(position)
-			return this
-		end
-		return null
+		return isPointInside(position) if this else null
 	end
 	
 	
@@ -2044,30 +2107,19 @@ class Widget
 	
 	/** Find first widget that can grab the focus or null if none exists. */
 	func Widget findFocusableWidget()
-		if pEnabled and pVisible and pCanFocus
-			return this
-		end
-		
-		return null
+		return pEnabled and pVisible and pCanFocus if this else null
 	end
 	
 	/** Find last widget that can grab the focus or null if none exists. */
 	func Widget findLastFocusableWidget()
-		if pEnabled and pVisible and pCanFocus
-			return this
-		end
-		
-		return null
+		return pEnabled and pVisible and pCanFocus if this else null
 	end
 	
 	/**
 	 * \brief Find next widget in the focus cycle that can grab the focus.
 	 */
 	func Widget nextFocusWidget()
-		if pParent == null
-			return null
-		end
-		return pParent.nextFocusWidgetAfter(this)
+		return pParent != null if pParent.nextFocusWidgetAfter(this) else null
 	end
 	
 	/**
@@ -2081,35 +2133,177 @@ class Widget
 	end
 	
 	/**
+	 * \brief Find closest focus widget for directional navigation.
+	 * \version 1.29
+	 * \param finder Finder to add candidate widgets.
+	 * \param origin Origin in widget coordinates.
+	 */
+	func void collectClosestFocusWidget(ClosestDirectionFocusFinder finder, Point origin)
+		if pEnabled and pVisible and pCanFocusDirectional
+			finder.processWidget(this, -origin, pSize)
+		end
+	end
+	
+	/**
+	 * \brief Focus widget in direction that can grab the focus.
+	 * \version 1.29
+	 * \param direction Direction as \ref InputEventKey#arrowLeft, \ref InputEventKey#arrowRight,
+	 *                  \ref InputEventKey#arrowUp or \ref InputEventKey#arrowDown.
+	 */
+	func void focusDirectional(int direction)
+		var Window window = getWindow()
+		/*
+		if window != null
+			window.focusDirectionalInside(direction)
+		end
+		*/
+		
+		var Container parent = pParent
+		if parent == null
+			return
+		end
+		
+		var Point origin = pPosition + pSize / 2
+		var Widget widget
+		
+		var ClosestDirectionFocusFinder finder = ClosestDirectionFocusFinder.new(direction, -pSize / 2, pSize)
+		finder.addIgnoreWidget(this)
+		
+		// BaseGameApp.getApp().getConsole().addMessage("BEGIN WIDGET: " + Array.newWith(this, getDesktopBoundary(), origin, direction))
+		while parent != null
+			// BaseGameApp.getApp().getConsole().addMessage("  LOOP: " + Array.newWith(parent, parent.getDesktopBoundary()))
+			finder.reset()
+			parent.collectClosestFocusWidget(finder, origin)
+			
+			widget = finder.getBestWidget()
+			if widget != null
+				// BaseGameApp.getApp().getConsole().addMessage("    ACCEPT: " + Array.newWith(widget, widget.getDesktopBoundary()))
+				widget.grabFocus()
+				widget.ensureVisible()
+				widget.desktopWarpMouseFocusHere()
+				return
+			end
+			
+			if parent == window
+				return
+			end
+			
+			origin = origin + parent.getPosition()
+			finder.addIgnoreWidget(parent)
+			parent = parent.getParent()
+		end
+	end
+	
+	/**
+	 * \brief Focus mouse location in widget coordinates.
+	 * \version 1.29
+	 * 
+	 * Used for directional focus change.
+	 */
+	func Point getFocusMouseLocation()
+		return Point.new(DEMath.max(pSize.getX() - 5, 0), DEMath.max(pSize.getY() - 5, 0))
+	end
+	
+	/**
+	 * \brief Warp mouse to focus location on desktop focus widget.
+	 * \version 1.29
+	 * 
+	 * Does nothing if desktop is not present.
+	 */
+	func void desktopWarpMouseFocusLocation()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.warpMouseFocusLocation()
+		end
+	end
+	
+	/**
+	 * \brief Warp mouse to focus location on this widget.
+	 * \version 1.29
+	 * 
+	 * Does nothing if desktop is not present.
+	 */
+	func void desktopWarpMouseFocusHere()
+		var Desktop desktop = getDesktop()
+		if desktop != null
+			desktop.warpMouseFocusLocation(this)
+		end
+	end
+	
+	/**
 	 * Determines if a widget can grab the full focus. Full focus means that all
 	 * parents above the widget are visible and enabled
 	 */
 	func bool canGrabFullFocus()
-		if pEnabled and pVisible and pCanFocus and pParent != null
-			return pParent.allowsChildGrabFocus()
-		end
-		return false
+		return pEnabled and pVisible and pCanFocus and pParent != null\
+			if pParent.allowsChildGrabFocus() else false
 	end
 	
 	/** Captures the mouse if not already captured by another widget. */
 	func void captureMouse()
-		if pParent == null
-			return
+		if pParent != null
+			pParent.requestCaptureMouse(this)
 		end
-		
-		pParent.requestCaptureMouse(this)
 	end
 	
 	/** Release mouse capture. */
 	func void releaseMouse()
-		if pParent == null
-			return
+		if pParent != null
+			pParent.requestReleaseMouse(this)
 		end
-		
-		pParent.requestReleaseMouse(this)
 	end
 	
+	/**
+	 * \brief Widget having captured the mouse.
+	 * \version 1.29
+	 */
+	func Widget getMouseCaptureWidget()
+		return pParent != null if pParent.getMouseCaptureWidget() else null
+	end
 	
+	/**
+	 * \brief Widget is capturing mouse.
+	 * \version 1.29
+	 */
+	func bool isCapturingMouse()
+		return getMouseCaptureWidget() == this
+	end
+	
+	/**
+	 * \brief Captures directional navigation if not already captured by another widget.
+	 * \version 1.29
+	 */
+	func void captureDirectional()
+		if pParent != null
+			pParent.requestCaptureDirectional(this)
+		end
+	end
+
+	/**
+	 * \brief Release directional navigation capture.
+	 * \version 1.29
+	 */
+	func void releaseDirectional()
+		if pParent != null
+			pParent.requestReleaseDirectional(this)
+		end
+	end
+
+	/**
+	 * \brief Widget having captured directional navigation.
+	 * \version 1.29
+	 */
+	func Widget getDirectionalCaptureWidget()
+		return pParent != null if pParent.getDirectionalCaptureWidget() else null
+	end
+
+	/**
+	 * \brief Widget is capturing directional navigation.
+	 * \version 1.29
+	 */
+	func bool isCapturingDirectional()
+		return getDirectionalCaptureWidget() == this
+	end
 	
 	/**
 	 * Retrieves the window or null if this widget is not part of a
@@ -2138,17 +2332,49 @@ class Widget
 	
 	
 	/**
-	 * Process an event. This allows the widget to be used as the root
-	 * widget in a game. Using this function you can implement your own
-	 * desktop management routines or use no windows at all. An event
-	 * is send to the root widget using this function. No other widget
-	 * has to get an event sent through this function. Use the sendEvent
-	 * function to further dispatch events through all widgets.<br>
-	 * The default implementation is to send the event to yourself.
-	 * Overwrite this behaviour to implement Desktop Widgets.
+	 * \brief Process an event.
+	 * 
+	 * This allows the widget to be used as the root widget in a game. Using this function
+	 * you can implement your own desktop management routines or use no windows at all.
+	 * An event is send to the root widget using this function. No other widget has to get
+	 * an event sent through this function. Use the sendEvent function to further dispatch
+	 * events through all widgets.
+	 * 
+	 * The default implementation is to send the event to yourself. Overwrite this behaviour
+	 * to implement Desktop Widgets.
 	 */
 	func void processEvent(Event event)
 		sendEvent(event)
+	end
+	
+	/**
+	 * \brief Simulate keyboard press event.
+	 * \version 1.29
+	 * \param keyCode Key code of the key to simulate. Use \ref InputEventKey constant.
+	 */
+	func void simulateKeyPress(int keyCode, int keyChar)
+		sendEvent(KeyEvent.new(this, KeyEvent.idKeyPressed,\
+			keyCode, InputEventModifier.none, keyChar, -1, -1))
+	end
+	
+	/**
+	 * \brief Simulate keyboard release event.
+	 * \version 1.29
+	 * \param keyCode Key code of the key to simulate. Use \ref InputEventKey constant.
+	 */
+	func void simulateKeyRelease(int keyCode, int keyChar)
+		sendEvent(KeyEvent.new(this, KeyEvent.idKeyReleased,\
+			keyCode, InputEventModifier.none, keyChar, -1, -1))
+	end
+	
+	/**
+	 * \brief Simulate keyboard press and release event.
+	 * \version 1.29
+	 * \param keyCode Key code of the key to simulate. Use \ref InputEventKey constant.
+	 */
+	func void simulateKeyPressRelease(int keyCode, int keyChar)
+		simulateKeyPress(keyCode, keyChar)
+		simulateKeyRelease(keyCode, keyChar)
 	end
 	
 	
@@ -2372,12 +2598,16 @@ class Widget
 	 */
 	func void popupVirtualKeyboard()
 		var Desktop desktop = getDesktop()
-		if desktop != null
-			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
-			if vk != null and vk.getInputWidget() != this
-				vk.popup(this)
-			end
+		if desktop == null
+			return
 		end
+		
+		var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
+		if vk == null or vk.getInputWidget() == this
+			return
+		end
+		
+		vk.popup(this)
 	end
 	
 	/**
@@ -2388,14 +2618,28 @@ class Widget
 	 */
 	func void popdownVirtualKeyboard()
 		var Desktop desktop = getDesktop()
-		if desktop != null
-			var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
-			if vk != null and vk.getInputWidget() == this
-				vk.popdown()
-			end
+		if desktop == null
+			return
 		end
+		
+		var WindowVirtualKeyboard vk = desktop.getWindowVirtualKeyboard()
+		if vk == null or vk.getInputWidget() != this
+			return
+		end
+		
+		vk.popdown()
 	end
 	
+	/**
+	 * \brief Popdown virtual keyboard if Desktop has one assigned and direction focus widget.
+	 * \version 1.29
+	 * 
+	 * Does nothing if the virtual keyboard is shown and not assigned to this widget.
+	 */
+	func void popdownVirtualKeyboardDirectional()
+		popdownVirtualKeyboard()
+		desktopWarpMouseFocusHere()
+	end
 	
 	
 	/**

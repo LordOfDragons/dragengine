@@ -70,6 +70,7 @@ private:
 		dsClass *clsNavSpace, *clsVoid, *clsBool, *clsInt, *clsFlt, *clsStr, *clsObj;
 		dsClass *clsDVec, *clsVec, *clsQuat, *clsShaList;
 		dsClass *clsNavigationSpaceType;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -91,6 +92,7 @@ private:
 	DEF_NATFUNC( nfSetType );
 	DEF_NATFUNC( nfGetBlockingPriority );
 	DEF_NATFUNC( nfSetBlockingPriority );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfGetVertexCount );
 	DEF_NATFUNC( nfSetVertexCount );

@@ -2,6 +2,9 @@ import os
 import re
 import shutil
 import datetime
+import hashlib
+import zipfile
+import fnmatch
 from github import Github
 from github.GitRelease import GitRelease
 
@@ -152,6 +155,72 @@ class XmlSchemaBuilder:
                 f.write("- version: '{}'\n".format(each.version))
 
 
+class IdeScriptsBuilder:
+    """Build IDE Scripts."""
+
+    def __init__(self: 'IdeScriptsBuilder',
+                 path_src: str,
+                 path_artifact: str,
+                 path_datafile: str) -> None:
+        self.path_src = path_src
+        self.path_artifact = path_artifact
+        self.path_datafile = path_datafile
+        self.filetitle_artifact = "dragonscript-scripts"
+
+    def build(self: 'IdeScriptsBuilder', version: str, is_latest: bool) -> None:
+        self._copy_scripts(version)
+        if is_latest:
+            self._copy_scripts('latest')
+
+    def _copy_scripts(self: 'IdeScriptsBuilder', version: str) -> None:
+        dest: str = os.path.join(self.path_artifact,
+            '{}-{}.zip'.format(self.filetitle_artifact, version))
+        if os.path.exists(dest):
+            os.unlink(dest)
+
+        if not os.path.exists(self.path_artifact):
+            os.makedirs(self.path_artifact)
+
+        if os.path.exists(self.path_src):
+            with zipfile.ZipFile(dest, 'w',
+                                 compression=zipfile.ZIP_DEFLATED,
+                                 compresslevel=9) as z:
+                def process(rootDir, targetDir):
+                    for root, _, files in os.walk(rootDir):
+                        for name in files:
+                            if fnmatch.fnmatch(name, '*.ds'):
+                                path = os.path.join(root, name)
+                                arcname = os.path.join(targetDir, os.path.relpath(path, rootDir))
+                                z.write(path, arcname=arcname)
+                process(os.path.join(self.path_src, 'doc', 'nativeclasses'), 'native')
+                process(os.path.join(self.path_src, 'scripts'), 'scripts')
+
+    def write_data_file(self: 'IdeScriptsBuilder', versions: list[Release]) -> None:
+        directory = os.path.dirname(self.path_datafile)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        with open(self.path_datafile, 'w') as f:
+            for each in versions:
+                title = '{}-{}.zip'.format(self.filetitle_artifact, each.version)
+                dest: str = os.path.join(self.path_artifact, title)
+                try:
+                    size: int = os.stat(dest).st_size
+
+                    hash = hashlib.sha256()
+                    with open(dest, 'rb') as f2:
+                        while True:
+                            data = f2.read(65536)
+                            if not data:
+                                break
+                            hash.update(data)
+                    hash = hash.hexdigest()
+
+                    f.write("{} {} {} {}\n".format(each.version, size, hash, title))
+                except FileNotFoundError:
+                    pass
+
+
 def find_repo_releases(repo_name: str) -> list[Release]:
     """Find all released of repository.
 
@@ -189,7 +258,7 @@ def build_dragengine(releases: list[Release]) -> None:
     pathDataDir = os.path.join(curdir, "_data", "apidoc")
     pathBaseSrc = os.path.join(curdir, "_repository", "dragengine", "src")
 
-    builders: list[DocAppBuilder|XmlSchemaBuilder] = []
+    builders: list[DocAppBuilder | XmlSchemaBuilder | IdeScriptsBuilder] = []
 
     builders.append(DocAppBuilder(
         path_base=os.path.join(pathBaseSrc, "dragengine"),
@@ -223,6 +292,12 @@ def build_dragengine(releases: list[Release]) -> None:
         path_artifact=os.path.join(curdir, "artifacts", "xmlschema", "dragengine"),
         path_datafile=os.path.join(curdir, "_data", "xmlschema", "xmlschema.yml"))
     builders.append(builderXmlSchema)
+
+    builderIdeScripts = IdeScriptsBuilder(
+        path_src=os.path.join(pathBaseSrc, "modules", "scripting", "dragonscript"),
+        path_artifact=os.path.join(curdir, "artifacts", "idescripts", "dragonscript"),
+        path_datafile=os.path.join(curdir, "artifacts", "idescripts", "dragonscript", "list"))
+    builders.append(builderIdeScripts)
 
     for each in builders:
         shutil.rmtree(each.path_artifact, True)

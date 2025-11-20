@@ -52,7 +52,6 @@ class meWorld;
 class igdeEnvironment;
 class igdeWCoordSysArrows;
 class igdeWDebugDrawerShape;
-class igdeWObject;
 class igdeGameDefinition;
 
 class deCollider;
@@ -109,7 +108,7 @@ private:
 	igdeWDebugDrawerShapeList pDDSListNavSpaces;
 	igdeWCoordSysArrows *pDDSCoordSysArrows;
 	
-	igdeWObject *pWObject;
+	igdeWObject::Ref pWObject;
 	decObjectList pWOTextures;
 	deComponent *pEngComponentBroken;
 	deColliderVolume *pColDetCollider;
@@ -143,7 +142,9 @@ private:
 	decVector pSize;
 	decVector pScaling;
 	decStringDictionary pProperties;
+	decStringList pAttachBehaviors;
 	decString pActiveProperty;
+	int pActiveAttachBehavior;
 	decUniqueID pID;
 	bool pSelected;
 	bool pActive;
@@ -170,7 +171,7 @@ public:
 	/** \brief Retrieves the environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the object wrapper. */
-	inline igdeWObject *GetObjectWrapper() const{ return pWObject; }
+	inline const igdeWObject::Ref &GetObjectWrapper() const{ return pWObject; }
 	/** \brief Retrieves the collision detection collider. */
 	inline deColliderVolume *GetColDetCollider() const{ return pColDetCollider; }
 	
@@ -449,6 +450,23 @@ public:
 	bool IsPropertyShapeOrShapeList( const char *property ) const;
 	/*@}*/
 	
+	
+	
+	/** \name Attach behaviors */
+	/*@{*/
+	/** \brief Attach behaviors. */
+	inline const decStringList &GetAttachBehaviors() const{ return pAttachBehaviors; }
+	
+	/** \brief Set attach behaviors. */
+	void SetAttachBehaviors(const decStringList &list);
+	
+	/** \brief Active attach behavior. */
+	inline int GetActiveAttachBehavior() const{ return pActiveAttachBehavior; }
+	
+	/** \brief Set active attach behavior. */
+	void SetActiveAttachBehavior(int attachBehavior);
+	/*@}*/
+	
 private:
 	void pCleanUp();
 	//void pUpdateClassDef();
@@ -483,6 +501,7 @@ private:
 	bool pAnyGDClassHasAnyPartialVisOf( const igdeGDClass &gdclass, const igdeTagManager &tags ) const;
 	
 	void pUpdateIDGroupList( const igdeGDClass &gdclass, const decString &prefix );
+	bool pShowStateIsVisible();
 };
 
 #endif

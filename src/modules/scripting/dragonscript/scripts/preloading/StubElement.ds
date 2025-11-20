@@ -42,17 +42,15 @@ pin Dragengine.Utils
 class StubElement extends StubWithProperties
 	var ElementClass pClass
 	var DVector pPosition
-	var Vector pRotation
-	var Vector pScaling
+	var Vector pRotation, pScaling
 	var Array pTextures
-	var UniqueID pID
-	var UniqueID pAttachTo
+	var UniqueID pID, pAttachTo
 	var PreloadCounter pCounter
 	var Connection pConnection
 	var NetworkState pNetworkState
 	var bool pEnableNetworking
 	var DMatrix pMatrix
-	
+	var Array pAddAttachableBehaviors
 	
 	
 	/** \brief Create element stub. */
@@ -72,6 +70,7 @@ class StubElement extends StubWithProperties
 		pTextures = Array.new()
 		pID = id
 		pEnableNetworking = false
+		pAddAttachableBehaviors = Array.new()
 	end
 	
 	/** \brief Create element stub. */
@@ -91,6 +90,7 @@ class StubElement extends StubWithProperties
 		pID = stub.pID
 		pAttachTo = stub.pAttachTo
 		pEnableNetworking = stub.pEnableNetworking
+		pAddAttachableBehaviors = Array.new(stub.pAddAttachableBehaviors)
 	end
 	
 	
@@ -275,6 +275,43 @@ class StubElement extends StubWithProperties
 	end
 	
 	
+	/**
+	 * \brief Add attachable behavior.
+	 * \version 1.29
+	 */
+	func void addAttachableBehavior(String factoryId)
+		if factoryId == null
+			throw ENullPointer.new()
+		end
+		pAddAttachableBehaviors.add(factoryId)
+	end
+	
+	/**
+	 * \brief Remove attachable behavior.
+	 * \version 1.29
+	 */
+	func void removeAttachableBehavior(String factoryId)
+		pAddAttachableBehaviors.remove(factoryId)
+	end
+	
+	/**
+	 * \brief Remove all attachable behaviors.
+	 * \version 1.29
+	 */
+	func void removeAllAttachableBehaviors()
+		pAddAttachableBehaviors.removeAll()
+	end
+	
+	/**
+	 * \brief Visit attachable behaviors using block.
+	 * \version 1.29
+	 * 
+	 * Block has signature (\ref String) or (\ref int, \ref String).
+	 */
+	func void forEachAttachableBehavior(Block ablock)
+		pAddAttachableBehaviors.forEach(ablock)
+	end
+	
 	
 	/** \brief Preload resources. */
 	func void preloadResources()
@@ -342,29 +379,15 @@ class StubElement extends StubWithProperties
 		
 		select reader.readByte() // version
 		case 0
-			var UniqueID id = UniqueID.readFromFile(reader)
-			var StubElement stub
-			if eclass != null
-				stub = StubElement.new(elementClassList.getNamed(classname), id)
-				
-			else
-				stub = StubElementClassNotFound.new(classname, id)
-			end
+			return readFromFileV0(reader, elementClassList, eclass, classname)
 			
-			stub.pPosition = DVector.readFromFile(reader)
-			stub.pRotation = Vector.readFromFile(reader)
-			stub.pScaling = Vector.readFromFile(reader)
+		case 1
+			var StubElement stub = readFromFileV0(reader, elementClassList, eclass, classname)
 			
-			stub.readPropertiesFromFile(reader)
-			
-			var int textureCount = reader.readUShort()
+			var int count = reader.readUShort()
 			var int i
-			for i = 0 to textureCount
-				stub.pTextures.add(StubElementTexture.readFromFile(reader))
-			end
-			
-			if reader.readByte() == 1
-				stub.pAttachTo = UniqueID.readFromFile(reader)
+			for i = 0 to count
+				stub.pAddAttachableBehaviors.add(reader.readString8())
 			end
 			
 			return stub
@@ -374,11 +397,41 @@ class StubElement extends StubWithProperties
 		end
 	end
 	
+	private static func StubElement readFromFileV0(FileReader reader, ElementClassList elementClassList,\
+	ElementClass eclass, String classname)
+		var UniqueID id = UniqueID.readFromFile(reader)
+		var StubElement stub
+		if eclass != null
+			stub = StubElement.new(eclass, id)
+			
+		else
+			stub = StubElementClassNotFound.new(classname, id)
+		end
+		
+		stub.pPosition = DVector.readFromFile(reader)
+		stub.pRotation = Vector.readFromFile(reader)
+		stub.pScaling = Vector.readFromFile(reader)
+		
+		stub.readPropertiesFromFile(reader)
+		
+		var int textureCount = reader.readUShort()
+		var int i
+		for i = 0 to textureCount
+			stub.pTextures.add(StubElementTexture.readFromFile(reader))
+		end
+		
+		if reader.readByte() == 1
+			stub.pAttachTo = UniqueID.readFromFile(reader)
+		end
+		
+		return stub
+	end
+	
 	/** \brief Write stub to file. */
 	func void writeToFile(FileWriter writer)
 		writer.writeString8(pClass.getClassname())
 		
-		writer.writeByte(0) // version
+		writer.writeByte(1)
 		
 		pID.writeToFile(writer)
 		pPosition.writeToFile(writer)
@@ -399,5 +452,10 @@ class StubElement extends StubWithProperties
 		else
 			writer.writeByte(0)
 		end
+		
+		writer.writeUShort(pAddAttachableBehaviors.getCount())
+		pAddAttachableBehaviors.forEach(block String each
+			writer.writeString8(each)
+		end)
 	end
 end

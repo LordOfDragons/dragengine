@@ -135,7 +135,6 @@ pWindowMain( windowMain )
 	pDDSBoneSize = 1.0f;
 	
 	pSky = NULL;
-	pEnvObject = NULL;
 	
 	pNotifiers = NULL;
 	pNotifierCount = 0;
@@ -160,7 +159,7 @@ pWindowMain( windowMain )
 		pSky->SetWorld( pEngWorld );
 		
 		// create the environment wrapper object
-		pEnvObject = new igdeWObject( windowMain.GetEnvironment() );
+		pEnvObject.TakeOver(new igdeWObject(windowMain.GetEnvironment()));
 		pEnvObject->SetWorld( pEngWorld );
 		pEnvObject->SetPosition( decDVector( 0.0, 0.0, 0.0 ) );
 		
@@ -1365,9 +1364,7 @@ void aeAnimator::pCleanUp(){
 		delete [] pNotifiers;
 	}
 	
-	if( pEnvObject ){
-		delete pEnvObject;
-	}
+	pEnvObject = nullptr;
 	if( pSky ){
 		delete pSky;
 	}

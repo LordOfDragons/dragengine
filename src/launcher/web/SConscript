@@ -74,8 +74,6 @@ srcdir = Dir('.').srcnode().abspath
 
 # cloc
 buildClocBare = BuildCLOC(envLauncher, ['{}/src'.format(srcdir)], '{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(buildClocBare, sources)
-Depends(buildClocBare, headers)
 buildCloc = envLauncher.Alias('launcher_web_cloc', buildClocBare)
 
 # add the targets to the targets list

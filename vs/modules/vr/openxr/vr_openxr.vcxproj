@@ -112,6 +112,7 @@
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSamsungOdysseyController.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSimpleController.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPValveIndexController.h" />
+    <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMndxDevSpace.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\deVROpenXR.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\graphicapi\deoxrGraphicApiOpenGL.h" />
     <ClInclude Include="..\..\..\..\src\modules\vr\openxr\src\loader\deoxrApiLayer.h" />
@@ -175,6 +176,7 @@
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSamsungOdysseyController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPSimpleController.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPValveIndexController.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\device\profile\deoxrDPMndxDevSpace.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\deVROpenXR.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\graphicapi\deoxrGraphicApiOpenGL.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\vr\openxr\src\loader\deoxrApiLayer.cpp" />

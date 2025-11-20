@@ -101,6 +101,7 @@ private:
 		dsClass *clsLightType;
 		dsClass *clsLightHintMovement;
 		dsClass *clsLightHintParameter;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -127,6 +128,7 @@ private:
 	DEF_NATFUNC( nfSetShape );
 	DEF_NATFUNC( nfGetLayerMask );
 	DEF_NATFUNC( nfSetLayerMask );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfGetPosition );
 	DEF_NATFUNC( nfSetPosition );

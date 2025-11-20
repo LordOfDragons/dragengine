@@ -22,7 +22,6 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Scenery
 
 pin Dragengine.Gui
@@ -40,19 +39,19 @@ pin Dragengine.Scenery
  * This behavior can be present only once in a GameWorld.
  */
 class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
-	private var LayerMask pLayerMask
-	private var Array pSpeakers
-	
+	var LayerMask pLayerMask
+	var Array pSpeakers
 	
 	
 	/** \brief Create element. */
-	public func new(GameWorld gameWorld) super(gameWorld)
+	func new(GameWorld gameWorld) super(gameWorld)
 		pLayerMask = LayerMask.newWith(BaseGameApp.WorldLayerBit.audio)
 		pSpeakers = Array.new()
+		setRequiresThink(true)
 	end
 	
 	/** \brief Dispose of behavior. */
-	public func void dispose()
+	func void dispose()
 		if pSpeakers != null
 			pSpeakers.removeAll()
 		end
@@ -61,14 +60,13 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	end
 	
 	
-	
 	/** \brief Layer mask to use for one shot speaker. */
-	public func LayerMask getLayerMask()
+	func LayerMask getLayerMask()
 		return pLayerMask
 	end
 	
 	/** \brief Set layer mask to use for one shot speaker. */
-	public func void setLayerMask(LayerMask layerMask)
+	func void setLayerMask(LayerMask layerMask)
 		if layerMask == null
 			throw ENullPointer.new("layerMask")
 		end
@@ -77,14 +75,13 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	end
 	
 	
-	
 	/** \brief Count of speakers. */
-	public func int getSpeakerCount()
+	func int getSpeakerCount()
 		return pSpeakers.getCount()
 	end
 	
 	/** \brief Speaker at index. */
-	public func Speaker getSpeakerAt(int index)
+	func Speaker getSpeakerAt(int index)
 		return pSpeakers.getAt(index) cast Speaker
 	end
 	
@@ -93,7 +90,7 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	 * 
 	 * Plays a short sound once and will be deleted once finished playing.
 	 */
-	public func void addSpeaker(Speaker speaker)
+	func void addSpeaker(Speaker speaker)
 		speaker.setLooping(false) // just in case somebody forgot it
 		speaker.play()
 		
@@ -103,13 +100,12 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	end
 	
 	
-	
 	/**
 	 * \brief Play sound once.
 	 * 
 	 * Create speaker with sound and parameters playing it once. Does nothing if sound is null.
 	 */
-	public func void playSoundOnce(Sound sound, Element element, float volume, float range)
+	func void playSoundOnce(Sound sound, Element element, float volume, float range)
 		playSoundOnce(sound, element.getPosition(), element.getOrientation(), volume, range)
 	end
 	
@@ -118,7 +114,7 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	 * 
 	 * Create speaker with sound and parameters playing it once. Does nothing if sound is null.
 	 */
-	public func void playSoundOnce(Sound sound, DVector position, float volume, float range)
+	func void playSoundOnce(Sound sound, DVector position, float volume, float range)
 		playSoundOnce(sound, position, Quaternion.new(), volume, range)
 	end
 	
@@ -127,7 +123,7 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	 * 
 	 * Create speaker with sound and parameters playing it once. Does nothing if sound is null.
 	 */
-	public func void playSoundOnce(Sound sound, DVector position, Quaternion orientation, \
+	func void playSoundOnce(Sound sound, DVector position, Quaternion orientation, \
 	float volume, float range)
 		if sound == null
 			return
@@ -154,7 +150,7 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	 * Create speaker with synthesizer instance and parameters playing it once.
 	 * Does nothing if synthesizer is null.
 	 */
-	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, Element element, \
+	func void playSynthesizerOnce(SynthesizerInstance synthesizer, Element element, \
 	float volume, float range)
 		playSynthesizerOnce(synthesizer, element.getPosition(), \
 			element.getOrientation(), volume, range)
@@ -166,7 +162,7 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	 * Create speaker with synthesizer instance and parameters playing it once.
 	 * Does nothing if synthesizer is null.
 	 */
-	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
+	func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
 	float volume, float range)
 		playSynthesizerOnce(synthesizer, position, Quaternion.new(), volume, range)
 	end
@@ -177,7 +173,7 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	 * Create speaker with synthesizer instance and parameters playing it once.
 	 * Does nothing if synthesizer is null.
 	 */
-	public func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
+	func void playSynthesizerOnce(SynthesizerInstance synthesizer, DVector position, \
 	Quaternion orientation, float volume, float range)
 		if synthesizer == null
 			return
@@ -200,9 +196,8 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	end
 	
 	
-	
 	/** \brief Remove one shot speakers that finished playing. */
-	public func void removeFinishedSpeakers()
+	func void removeFinishedSpeakers()
 		pSpeakers.removeIf(block Speaker each
 			if each.getStopped()
 				getGameWorld().getWorld().removeSpeaker(each)
@@ -215,7 +210,7 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	end
 	
 	/** \brief Stop and remove all one shot speakers. */
-	public func void removeAllSpeakers()
+	func void removeAllSpeakers()
 		pSpeakers.forEach(block Speaker each
 			each.stop()
 			getGameWorld().getWorld().removeSpeaker(each)
@@ -224,16 +219,9 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	end
 	
 	
-	
-	/**
-	 * \brief Post thinking after physics processing is finished.
-	 * 
-	 * Post think is called first on all elements then on all behaviors.
-	 */
-	public func void postThink(float elapsed)
+	func void postThink(float elapsed)
 		removeFinishedSpeakers()
 	end
-	
 	
 	
 	/**
@@ -241,7 +229,7 @@ class GWBehaviorOneShotSpeaker extends DefaultGWBehavior
 	 * 
 	 * Use this method to check if GameWorld contains behavior of type GWBehaviorOneShotSpeaker.
 	 */
-	static public func GWBehaviorOneShotSpeaker getBehaviorIn(GameWorld gameWorld)
+	static func GWBehaviorOneShotSpeaker getBehaviorIn(GameWorld gameWorld)
 		return gameWorld.findBehavior(block GWBehaviorOneShotSpeaker each
 			return true
 		end) cast GWBehaviorOneShotSpeaker

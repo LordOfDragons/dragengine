@@ -45,7 +45,7 @@ conf = envDragengine.Configure()
 if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	hasDL = False
 	if envDragengine['with_dl'] != TernaryVariableNo:
-		hasDL = conf.CheckLibWithHeader('dl', 'dlfcn.h', 'c++', 'dlerror();')
+		hasDL = conf.CheckLibWithHeader('dl', 'dlfcn.h', 'c++', call='dlerror();')
 		if hasDL:
 			envDragengine.Append(CXXFLAGS = '-DHAS_LIB_DL')
 			if envDragengine['platform_android'] == 'no':
@@ -60,19 +60,19 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 		envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
 		hasPThreads = True # special implementation bundled in OS. no library include
 	elif envDragengine['with_pthread'] != TernaryVariableNo:
-		hasPThreads = conf.CheckLibWithHeader('pthread', 'pthread.h', 'c++', 'pthread_exit(NULL);')
+		hasPThreads = conf.CheckLibWithHeader('pthread', 'pthread.h', 'c++', call='pthread_exit(NULL);')
 		if hasPThreads:
 			envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
 			libs.append('pthread')
 			binlibs.append('pthread')
 		else:
-			hasPThreads = conf.CheckLibWithHeader('pthreads', 'pthread.h', 'c++', 'pthread_exit(NULL);')
+			hasPThreads = conf.CheckLibWithHeader('pthreads', 'pthread.h', 'c++', call='pthread_exit(NULL);')
 			if hasPThreads:
 				envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
 				libs.append('pthreads')
 				binlibs.append('pthreads')
 			else:
-				hasPThreads = conf.CheckLibWithHeader('root', 'pthread.h', 'c++', 'pthread_exit(NULL);')
+				hasPThreads = conf.CheckLibWithHeader('root', 'pthread.h', 'c++', call='pthread_exit(NULL);')
 				if hasPThreads:
 					envDragengine.Append(CXXFLAGS = '-DHAS_LIB_PTHREAD')
 					# no lib append since root is already included
@@ -82,13 +82,13 @@ if envDragengine['OSPosix'] or envDragengine['OSMacOS']:
 	
 	hasX11 = False
 	if envDragengine['with_x'] != TernaryVariableNo:
-		hasX11 = conf.CheckLibWithHeader('X11', 'X11/Xlib.h', 'c++', 'XOpenDisplay(NULL);')
+		hasX11 = conf.CheckLibWithHeader('X11', 'X11/Xlib.h', 'c++', call='XOpenDisplay(NULL);')
 		if hasX11:
 			envDragengine.Append(CXXFLAGS = '-DHAS_LIB_X11')
 			libs.append('X11')
 			binlibs.append('X11')
 			
-			if conf.CheckLibWithHeader('Xrandr', 'X11/extensions/Xrandr.h', 'c++', 'XRRQueryVersion(NULL,NULL,NULL);'):
+			if conf.CheckLibWithHeader('Xrandr', 'X11/extensions/Xrandr.h', 'c++', call='XRRQueryVersion(NULL,NULL,NULL);'):
 				envDragengine.Append(CXXFLAGS = '-DHAS_LIB_XRANDR')
 				libs.append('Xrandr')
 				binlibs.append('Xrandr')
@@ -167,6 +167,9 @@ envDragengine.Append(CXXFLAGS = [
 	cmdlineDefinePath(envDragengine, 'DE_CONFIG_PATH', pathConfig),
 	cmdlineDefinePath(envDragengine, 'DE_SHARE_PATH', pathShare),
 	cmdlineDefinePath(envDragengine, 'DE_CACHE_PATH', pathCache)])
+
+if not envDragengine['with_engine_module_checks']:
+	envDragengine.Append(CXXFLAGS = ['-DNO_ENGINE_MODULE_CHECKS'])
 
 if envDragengine['OSWindows']:
 	pathEngineBase = envDragengine.subst(envDragengine['path_de'])
@@ -252,8 +255,6 @@ if envDragengine['with_static_internalmodules']:
 	targetCreateInternalModules = envDragengine.Command(
 		'deModuleSystem_generated.cpp', targetConfig, envDragengine.Action(
 			createInternalModulesBuild, 'Generate Internal Modules Source'))
-	
-	envDragengine.Depends('src/systems/deModuleSystem.cpp', targetCreateInternalModules)
 
 objects = [envDragengine.SharedObject(s) for s in sources]
 
@@ -270,8 +271,6 @@ envDragengine.Append(LIBPATH = parent_targets['lib_zlib']['libpath'])
 if envDragengine['OSPosix']:
 	envDragengine.Replace(SHLIBVERSION = libVersionString)
 
-envDragengine.Depends(sources, targetConfig)
-
 
 if buildStatic:
 	library = envDragengine.StaticLibrary(target='dragengine', source=objects, LIBS=libs)
@@ -280,13 +279,12 @@ else:
 
 targetBuild = envDragengine.Alias('dragengine_build', library)
 
-copyHeaders = []
 refDir = envDragengine.Dir('src').srcnode()
+copyHeaders = []
 for h in headers:
 	copyHeaders.append(envDragengine.Command(
 		os.path.join('include', 'dragengine', refDir.rel_path(h)),
 		h, Copy('$TARGET', '$SOURCE')))
-envDragengine.Depends(library, copyHeaders)
 
 installHeaders = [envDragengine.InstallAs(os.path.join(pathInclude, refDir.rel_path(h)), h) for h in headers]
 installDevelop = installHeaders[:]
@@ -328,22 +326,21 @@ if envDragengine['OSPosix'] and not envDragengine['OSBeOS'] and envDragengine['p
 	
 	for s in ['128', '64', '32']:
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'mimetypes', 'dragengine-delga.png')
+			'{}x{}'.format(s, s), 'mimetypes', 'ch.dragondreams.delauncher-delga.png')
 		source = 'data/mime-dragengine-delga{}.png'.format(s)
 		installRuntime.append(envDragengine.InstallAs(target, source))
 		archiveEngine[target] = envDragengine.File(source).srcnode()
 		
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'mimetypes', 'dragengine-game.png')
+			'{}x{}'.format(s, s), 'mimetypes', 'ch.dragondreams.delauncher-game.png')
 		source = 'data/mime-dragengine-game{}.png'.format(s)
 		installRuntime.append(envDragengine.InstallAs(target, source))
 		archiveEngine[target] = envDragengine.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'mime', 'packages', 'dragengine-dragengine.xml')
+	target = os.path.join(pathDataDir, 'mime', 'packages', 'ch.dragondreams.delauncher-mime.xml')
 	source = 'data/mimetypes.xml'
 	installRuntime.append(envDragengine.InstallAs(target, source))
 	archiveEngine[target] = envDragengine.File(source).srcnode()
-
 
 targetInstallDevelop = envDragengine.Alias('dragengine_develop', installDevelop)
 targetInstallRuntime = envDragengine.Alias('dragengine_runtime', installRuntime)
@@ -353,9 +350,12 @@ targetInstall = envDragengine.Alias('dragengine', [targetInstallRuntime, targetI
 srcdir = Dir('src').srcnode().abspath
 
 # doxygen
-doxyfile = envDragengine.Command(envDragengine.File('Doxyfile').srcnode(), 'Doxyfile.in',
-	Action(UpdateModuleManifest),
-	ManifestUpdates=[{'action': 'text', 'value': versionString, 'keyword': '%VERSION%'}] )
+doxyfile = envDragengine.UpdateModuleManifest(
+	envDragengine.File('Doxyfile').srcnode(), 'Doxyfile.in',
+	ManifestUpdates=[{
+		'action': 'text',
+		'value': versionString,
+		'keyword': '%VERSION%'}])
 
 targetDoxygen = envDragengine.Alias('dragengine_doc', envDragengine.Command(
 	'doc/html/index.html', doxyfile, 'cd {} && doxygen ../Doxyfile'.format(srcdir)))
@@ -363,8 +363,6 @@ targetDoxygen = envDragengine.Alias('dragengine_doc', envDragengine.Command(
 
 # cloc
 targetClocBare = BuildCLOC(envDragengine, [srcdir], '{}/clocreport.csv'.format(srcdir), ['doc'])
-Depends(targetClocBare, sources)
-Depends(targetClocBare, headers)
 targetCloc = envDragengine.Alias('dragengine_cloc', targetClocBare)
 
 # add the targets to the targets list
@@ -387,10 +385,10 @@ parent_targets['dragengine'] = {
 	'binlibs': binlibs,
 	'libs': linklibs,
 	'build': targetBuild,
+	'depends': copyHeaders,
 	'install': targetInstall,
 	'install-runtime': targetInstallRuntime,
 	'install-engine-runtime': targetInstallRuntime,
-	'headers': copyHeaders,
 	'library': library,
 	'archive-engine': archiveEngine,
 	'archive-engine-develop': archiveDevelop,

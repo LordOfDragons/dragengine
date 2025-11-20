@@ -102,7 +102,7 @@ private:
 	DEF_NATFUNC( nfSetLayerMask );
 	DEF_NATFUNC( nfGetSpeakerGain );
 	DEF_NATFUNC( nfSetSpeakerGain);
-	DEF_NATFUNC( nfGetParentWorld );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfGetEnableAuralization );
 	DEF_NATFUNC( nfSetEnableAuralization );

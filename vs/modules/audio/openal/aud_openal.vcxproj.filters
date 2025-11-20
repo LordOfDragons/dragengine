@@ -217,6 +217,9 @@
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPMaxEnvSlots.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPLogLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -676,6 +679,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPMaxEnvSlots.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\parameters\deoalPLogLevel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\audio\openal\src\skin\deoalASkin.h">

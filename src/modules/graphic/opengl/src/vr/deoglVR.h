@@ -52,13 +52,10 @@ private:
 	
 	deoglRCamera &pCamera;
 	
-	deoglVREye pLeftEye;
-	deoglVREye pRightEye;
+	deoglVREye pLeftEye, pRightEye;
 	
-	float pFovX;
-	float pFovY;
-	float pCameraFov;
-	float pCameraFovRatio;
+	float pFovX, pFovY, pCameraFov, pCameraFovRatio, pPassthroughTransparency;
+	bool pPassthroughEnabled;
 	
 	eState pState;
 	
@@ -114,6 +111,11 @@ public:
 	/** Camera field of view ratio. */
 	inline float GetCameraFovRatio() const{ return pCameraFovRatio; }
 	
+	/** Passthrough transparency. */
+	inline float GetPassthroughTransparency() const{ return pPassthroughTransparency; }
+	
+	/** Passthrough enabled. */
+	inline bool GetPassthroughEnabled() const{ return pPassthroughEnabled; }
 	
 	
 	/** Update target frame rate. */

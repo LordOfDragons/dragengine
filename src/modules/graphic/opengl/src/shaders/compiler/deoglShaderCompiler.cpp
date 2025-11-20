@@ -465,7 +465,9 @@ void deoglShaderCompiler::pCompileShaderUnit(deoglShaderProgramUnit &unit){
 	const deMutexGuard guard(pMutexCompile);
 	const deoglShaderUnitSourceCode * const sources = unit.GetSources();
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
+	#ifdef WITH_DEBUG
 	deoglRTLogger &logger = renderThread.GetLogger();
+	#endif
 	
 	#ifdef PRINT_COMPILING
 	{
@@ -552,7 +554,9 @@ void deoglShaderCompiler::pFinishCompileShaderUnit(deoglShaderProgramUnit &unit)
 void deoglShaderCompiler::pCompileShader(deoglShaderProgram &program){
 	const deMutexGuard guard(pMutexCompile);
 	deoglRenderThread &renderThread = pLanguage.GetRenderThread();
+	#ifdef WITH_DEBUG
 	deoglRTLogger &logger = renderThread.GetLogger();
+	#endif
 	
 	deoglShaderProgramUnit * const units[6] = {
 		program.GetUnitCompute(),

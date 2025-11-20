@@ -1977,7 +1977,7 @@ void ceWPView::SetConversation( ceConversation *conversation ){
 		return;
 	}
 	
-	pWPEnvObject->SetObjectWrapper( NULL );
+	pWPEnvObject->SetObject(nullptr);
 	pWPSky->SetSky( NULL );
 	pWPCamera->SetCamera( NULL );
 	pWPCameraFree->SetCamera( NULL );
@@ -1995,7 +1995,7 @@ void ceWPView::SetConversation( ceConversation *conversation ){
 		conversation->AddReference();
 		
 		pWPSky->SetSky( conversation->GetSky() );
-		pWPEnvObject->SetObjectWrapper( conversation->GetEnvObject() );
+		pWPEnvObject->SetObject(conversation->GetEnvObject());
 		pWPCamera->SetCamera( conversation->GetCamera() );
 		pWPCameraFree->SetCamera( conversation->GetCameraFree() );
 		pWPPlaybackTriggerTable->SetTriggerTargetList( &conversation->GetPlayback()->GetTriggerTable() );
@@ -2024,7 +2024,7 @@ void ceWPView::UpdateSky(){
 }
 
 void ceWPView::UpdateEnvObject(){
-	pWPEnvObject->UpdateObjectWrapper();
+	pWPEnvObject->UpdateObject();
 }
 
 void ceWPView::UpdateCamera(){

@@ -130,12 +130,11 @@ class TextArea extends TextWidget implements RangeModelListener
 		pRowCount = 5
 		
 		setCanFocus(true)
+		setCanFocusDirectional(true)
 		pVertRangeModel = DefaultRangeModel.new(0, 0, 1, 0, 1)
 		pVertRangeModel.addListener(this)
 		
 		setDesignerSelector("TextArea")
-		setCanFocus(true)
-		setActionOnEnter(false)
 		setAddTabToText(true)
 		
 		updateCanvasText()
@@ -449,7 +448,6 @@ class TextArea extends TextWidget implements RangeModelListener
 	public func void onFocusReceived(FocusEvent event)
 		super.onFocusReceived(event)
 		updateCanvasText()
-		popupVirtualKeyboard()
 	end
 	
 	/** \brief Widget lost focus. */
@@ -738,6 +736,62 @@ class TextArea extends TextWidget implements RangeModelListener
 	
 	
 	
+	func void focusDirectional(int direction)
+		select direction
+		case InputEventKey.arrowDown
+			if not pCursorPos.isAtEnd()
+				simulateKeyPressRelease(InputEventKey.arrowDown, 0)
+				desktopWarpMouseFocusHere()
+				return
+			end
+			
+		case InputEventKey.arrowRight
+			if not pCursorPos.isAtEnd()
+				simulateKeyPressRelease(InputEventKey.arrowRight, 0)
+				desktopWarpMouseFocusHere()
+				return
+			end
+			
+		case InputEventKey.arrowLeft
+			if not pCursorPos.isAtStart()
+				simulateKeyPressRelease(InputEventKey.arrowLeft, 0)
+				desktopWarpMouseFocusHere()
+				return
+			end
+			
+		case InputEventKey.arrowUp
+			if not pCursorPos.isAtStart()
+				simulateKeyPressRelease(InputEventKey.arrowUp, 0)
+				desktopWarpMouseFocusHere()
+				return
+			end
+		end
+		
+		if not isCapturingMouse()
+			super.focusDirectional(direction)
+		end
+	end
+	
+	func Point getFocusMouseLocation()
+		var Font font = getFont()
+		if font == null
+			return super.getFocusMouseLocation()
+		end
+		
+		var int width = getWidth() - 1 - getPadding().getWidth()
+		var int height = getHeight() - 1 - getPadding().getHeight()
+		var int charHeight = font.getSize()
+		var int scrollOffsetY = pVertRangeModel.getValue() * charHeight
+		var Point position = getCaret()
+		
+		var int x = getPadding().getLeft() + position.getX() + 1
+		var int y = getPadding().getTop() - scrollOffsetY + position.getY() + charHeight * 2 / 3
+		
+		return Point.new(DEMath.clamp(x, 0, width - 1), DEMath.clamp(y, 0, height - 1))
+	end
+	
+	
+	
 	/** Notification that a mouse button has been pressed. */
 	public func void onButtonPress(MouseEvent event)
 		super.onButtonPress(event)
@@ -746,7 +800,6 @@ class TextArea extends TextWidget implements RangeModelListener
 		case InputEventMouseButton.left
 			setCursorPositionNear(event.getPosition())
 			pOldCursorPos = UTF8Navigator.new(pCursorPos)
-			popupVirtualKeyboard()
 			captureMouse()
 			
 		case InputEventMouseButton.right
@@ -766,6 +819,7 @@ class TextArea extends TextWidget implements RangeModelListener
 				pOldCursorPos = null
 				releaseMouse()
 			end
+			popupVirtualKeyboard()
 		end
 	end
 	
@@ -798,6 +852,14 @@ class TextArea extends TextWidget implements RangeModelListener
 			pRefXPosDirty = true
 			updateCanvasText()
 		end
+	end
+	
+	func void onGamepadButtonPressed(GamepadEvent event)
+		if event.getCode() == 1
+			popdownVirtualKeyboardDirectional()
+		end
+		
+		super.onGamepadButtonPressed(event)
 	end
 	
 	

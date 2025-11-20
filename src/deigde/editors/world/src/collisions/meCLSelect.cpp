@@ -177,7 +177,7 @@ void meCLSelect::Prepare(){
 	pHitList.RemoveAllEntries();
 }
 
-void meCLSelect::RunAction(){
+void meCLSelect::RunAction(int selectIndex){
 	const int entryCount = pHitList.GetEntryCount();
 	meObjectShapeList rselListObjectShapes;
 	meObjectList rselListObjects;
@@ -191,7 +191,7 @@ void meCLSelect::RunAction(){
 		pHitList.SortByDistance();
 	}
 	
-	for( i=0; i<entryCount; i++ ){
+	for(i=selectIndex; i<entryCount; i++){
 		const meCLHitListEntry &entry = *pHitList.GetEntryAt( i );
 		meObject * const object = entry.GetObject();
 		meObjectShape * const objectShape = entry.GetObjectShape();
@@ -209,21 +209,23 @@ void meCLSelect::RunAction(){
 					selection.Add( object );
 				}
 				
-			}else if( pSingleSelect ){
-				selection.Reset();
-				selection.Add( object );
-				selection.SetActive( object );
-				
 			}else{
-				if( object->GetSelected() ){
-					if( selection.GetActive() == object ){
-						selection.ActivateNext();
-					}
-					selection.Remove( object );
-					
-				}else{
+				if( pSingleSelect ){
+					selection.Reset();
 					selection.Add( object );
 					selection.SetActive( object );
+					
+				}else{
+					if( object->GetSelected() ){
+						if( selection.GetActive() == object ){
+							selection.ActivateNext();
+						}
+						selection.Remove( object );
+						
+					}else{
+						selection.Add( object );
+						selection.SetActive( object );
+					}
 				}
 			}
 			
@@ -242,21 +244,23 @@ void meCLSelect::RunAction(){
 					selection.Add( objectShape );
 				}
 				
-			}else if( pSingleSelect ){
-				selection.Reset();
-				selection.Add( objectShape );
-				selection.SetActive( objectShape );
-				
 			}else{
-				if( objectShape->GetSelected() ){
-					if( selection.GetActive() == objectShape ){
-						selection.ActivateNext();
-					}
-					selection.Remove( objectShape );
-					
-				}else{
+				if( pSingleSelect ){
+					selection.Reset();
 					selection.Add( objectShape );
 					selection.SetActive( objectShape );
+					
+				}else{
+					if( objectShape->GetSelected() ){
+						if( selection.GetActive() == objectShape ){
+							selection.ActivateNext();
+						}
+						selection.Remove( objectShape );
+						
+					}else{
+						selection.Add( objectShape );
+						selection.SetActive( objectShape );
+					}
 				}
 			}
 			
@@ -407,8 +411,6 @@ void meCLSelect::RunAction(){
 //////////////////
 
 void meCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
-	meCLHitListEntry *entry = NULL;
-	
 	if( info->IsCollider() ){
 		const meColliderOwner * const colliderOwner = meColliderOwner::GetColliderOwner(
 			*pWorld.GetEnvironment(), info->GetCollider() );
@@ -421,80 +423,40 @@ void meCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				return;
 			}
 			
-			try{
-				entry = new meCLHitListEntry;
-				entry->SetObject( colliderOwner->GetObject() );
-				entry->SetDistance( info->GetDistance() );
-				
-				pHitList.AddEntry( entry );
-				entry = NULL;
-				
-			}catch( const deException & ){
-				if( entry ){
-					delete entry;
-				}
-				throw;
-			}
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			entry->SetObject(colliderOwner->GetObject());
+			entry->SetDistance(info->GetDistance());
+			pHitList.AddEntry(entry);
 			
 		}else if( colliderOwner->GetDecal() ){
 			if( ! pCanHitDecals ){
 				return;
 			}
 			
-			try{
-				entry = new meCLHitListEntry;
-				entry->SetDecal( colliderOwner->GetDecal() );
-				entry->SetDistance( info->GetDistance() );
-				
-				pHitList.AddEntry( entry );
-				entry = NULL;
-				
-			}catch( const deException & ){
-				if( entry ){
-					delete entry;
-				}
-				throw;
-			}
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			entry->SetDecal(colliderOwner->GetDecal());
+			entry->SetDistance(info->GetDistance());
+			pHitList.AddEntry(entry);
 			
 		}else if( colliderOwner->GetNavigationSpace() ){
 			if( ! pCanHitNavSpaces ){
 				return;
 			}
 			
-			try{
-				entry = new meCLHitListEntry;
-				entry->SetNavigationSpace( colliderOwner->GetNavigationSpace() );
-				entry->SetDistance( info->GetDistance() );
-				
-				pHitList.AddEntry( entry );
-				entry = NULL;
-				
-			}catch( const deException & ){
-				if( entry ){
-					delete entry;
-				}
-				throw;
-			}
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			entry->SetNavigationSpace(colliderOwner->GetNavigationSpace());
+			entry->SetDistance(info->GetDistance());
+			pHitList.AddEntry(entry);
 			
 		}else if( colliderOwner->GetShape() ){
 			if( ! pCanHitObjectShapes ){
 				return;
 			}
 			
-			try{
-				entry = new meCLHitListEntry;
-				entry->SetObjectShape( colliderOwner->GetShape() );
-				entry->SetDistance( info->GetDistance() );
-				
-				pHitList.AddEntry( entry );
-				entry = NULL;
-				
-			}catch( const deException & ){
-				if( entry ){
-					delete entry;
-				}
-				throw;
-			}
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			entry->SetObjectShape(colliderOwner->GetShape());
+			entry->SetDistance(info->GetDistance());
+			pHitList.AddEntry(entry);
 		}
 		
 	}else if( info->IsHTSector() ){
@@ -512,18 +474,10 @@ void meCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				const decVector2 coordinates( sector->GetGridPointAt( hitPoint ) );
 				const decPoint closest( decPoint( coordinates + decVector2( 0.5f, 0.5f ) ).Clamped( decPoint(), comax ) );
 				
-				try{
-					entry = new meCLHitListEntry;
-					entry->SetHTNavSpacePoint( resolution * closest.y + closest.x );
-					entry->SetDistance( info->GetDistance() );
-					pHitList.AddEntry( entry );
-					
-				}catch( const deException & ){
-					if( entry ){
-						delete entry;
-					}
-					throw;
-				}
+				const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+				entry->SetHTNavSpacePoint(resolution * closest.y + closest.x);
+				entry->SetDistance(info->GetDistance());
+				pHitList.AddEntry(entry);
 			}
 			
 			return;

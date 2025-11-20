@@ -36,6 +36,10 @@
  */
 class DE_DLL_EXPORT igdeMenuSeparator : public igdeWidget{
 public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeMenuSeparator> Ref;
+	
+	
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create menu entry. */

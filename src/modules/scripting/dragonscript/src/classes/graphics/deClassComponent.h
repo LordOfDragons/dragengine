@@ -96,6 +96,7 @@ private:
 		dsClass *clsLayerMask;
 		dsClass *clsBlock;
 		dsClass *clsComponentHintMovement;
+		dsClass *clsWorld;
 	};
 #define DEF_NATFUNC(name) \
 	class name : public dsFunction{ \
@@ -115,6 +116,7 @@ private:
 	DEF_NATFUNC( nfGetScaling );
 	DEF_NATFUNC( nfGetMatrix );
 	DEF_NATFUNC( nfGetInverseMatrix );
+	DEF_NATFUNC(nfGetParentWorld);
 	
 	DEF_NATFUNC( nfGetBoneCount );
 	DEF_NATFUNC( nfIndexOfBoneNamed );

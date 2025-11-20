@@ -366,7 +366,7 @@ void deoglRenderPlanTasks::CleanUp(){
 void deoglRenderPlanTasks::pBuildCRTSolidDepth( deoglComputeRenderTask &renderTask,
 const deoglRenderPlanMasked *mask, bool xray ){
 	const deoglWorldCompute &worldCompute = pPlan.GetWorld()->GetCompute();
-	const deoglComputeRenderTask::cGuard guard( renderTask, worldCompute, 2 );
+	const deoglComputeRenderTask::cGuard guard(renderTask, worldCompute, 2);
 	
 	renderTask.Clear();
 	
@@ -420,6 +420,20 @@ const deoglRenderPlanMasked *mask, bool xray ){
 	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptOutline );
 	
 	renderTask.EndPass( worldCompute );
+	
+	
+	// pass 3: model decals depth, decals depth but only if parent is fully solid
+	/*
+	renderTask.SetOutline(false);
+	renderTask.SetDecal(true);
+	renderTask.SetFilterSolid(false);
+	
+	renderTask.SetSkinPipelineLists(0);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptComponent);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptDecal);
+	
+	renderTask.EndPass(worldCompute);
+	*/
 }
 
 void deoglRenderPlanTasks::pBuildCRTSolidGeometry( deoglComputeRenderTask &renderTask,
@@ -482,14 +496,14 @@ const deoglRenderPlanMasked*, bool xray ){
 	renderTask.EndPass( worldCompute );
 	
 	
-	// pass 4: model decals, decals
-	renderTask.SetOutline( false );
-	renderTask.SetDecal( true );
-	renderTask.SetFilterSolid( false );
+	// pass 4: model decals, decals but only if not on potentially non-solid geometry
+	renderTask.SetOutline(false);
+	renderTask.SetDecal(true);
+	// renderTask.SetFilterSolid(false);
 	
-	renderTask.SetSkinPipelineLists( 0 );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptComponent );
-	renderTask.EnableSkinPipelineList( deoglSkinTexturePipelinesList::eptDecal );
+	renderTask.SetSkinPipelineLists(0);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptComponent);
+	renderTask.EnableSkinPipelineList(deoglSkinTexturePipelinesList::eptDecal);
 	
-	renderTask.EndPass( worldCompute );
+	renderTask.EndPass(worldCompute);
 }

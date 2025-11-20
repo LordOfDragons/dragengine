@@ -32,6 +32,7 @@
 #include "../../world/meWorldGuiParameters.h"
 #include "../../world/object/meObject.h"
 #include "../../world/terrain/meTerrainGroup.h"
+#include "../../undosys/properties/view/meUViewSetLimitBoxExtends.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
@@ -39,7 +40,6 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeContainerReference.h>
@@ -47,17 +47,22 @@
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeWidgetReference.h>
 #include <deigde/gui/composed/igdeToggleTags.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/properties/igdeWPSky.h>
 #include <deigde/gui/properties/igdeWPCamera.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPTriggerTable.h>
+#include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -90,9 +95,9 @@ protected:
 	meWPView &pPanel;
 	
 public:
-	cBaseAction( meWPView &panel, const char *text, const char *description ) :
-	igdeAction( text, description ),
-	pPanel( panel ){ }
+	cBaseAction(meWPView &panel, const char *text, igdeIcon *icon, const char *description) :
+	igdeAction(text, icon, description),
+	pPanel(panel){}
 	
 	virtual void OnAction(){
 		meWorld * const world = pPanel.GetWorld();
@@ -124,7 +129,8 @@ public:
 
 class cActionMoveSnap : public cBaseAction{
 public:
-	cActionMoveSnap( meWPView &panel ) : cBaseAction( panel, "Snap Move", "Snap moving distance" ){ }
+	cActionMoveSnap( meWPView &panel ) :
+	cBaseAction(panel, "Snap Move", nullptr, "Snap moving distance" ){ }
 	
 	virtual void OnAction( meWorld &world ){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -149,7 +155,8 @@ public:
 
 class cActionRotateSnap : public cBaseAction{
 public:
-	cActionRotateSnap( meWPView &panel ) : cBaseAction( panel, "Snap Rotate", "Snap rotation angle" ){ }
+	cActionRotateSnap( meWPView &panel ) :
+	cBaseAction(panel, "Snap Rotate", nullptr, "Snap rotation angle"){}
 	
 	virtual void OnAction( meWorld &world ){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -174,7 +181,8 @@ public:
 
 class cActionScaleSnap : public cBaseAction{
 public:
-	cActionScaleSnap( meWPView &panel ) : cBaseAction( panel, "Snap Scale", "Snap scaling factor" ){ }
+	cActionScaleSnap( meWPView &panel ) :
+	cBaseAction(panel, "Snap Scale", nullptr, "Snap scaling factor"){ }
 	
 	virtual void OnAction( meWorld &world ){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -211,6 +219,45 @@ public:
 	}
 };
 
+class cActionSetSensitivity : public cBaseAction{
+	float pSensitivity;
+	
+public:
+	cActionSetSensitivity(meWPView &panel, float sensitivity, const char *text) :
+	cBaseAction(panel, text, nullptr, "Set sensitivity"), pSensitivity(sensitivity){}
+	
+	void OnAction(meWorld &world) override{
+		meConfiguration &conf = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
+		if(fabsf(pSensitivity - conf.GetSensitivity()) < FLOAT_SAFE_EPSILON){
+			return;
+		}
+		conf.SetSensitivity(pSensitivity);
+		world.NotifyEditingChanged();
+	}
+};
+
+class cActionMenuSensitivity : public igdeActionContextMenu{
+	meWPView &pPanel;
+	
+public:
+	cActionMenuSensitivity(meWPView &panel) : igdeActionContextMenu("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Sensitivity menu"),
+	pPanel(panel){}
+	
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
+		meWorld * const world = pPanel.GetWorld();
+		if(!world){
+			return;
+		}
+		
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 1.0f, "Set to 1")));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 0.1f, "Set to 0.1")));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 0.01f, "Set to 0.01")));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 10.0f, "Set to 10")));
+	}
+};
+
 class cTextRectSelDist : public cBaseTextFieldListener{
 public:
 	cTextRectSelDist( meWPView &panel ) : cBaseTextFieldListener( panel ){ }
@@ -237,8 +284,8 @@ public:
 
 class cActionAutoUpdate : public cBaseAction{
 public:
-	cActionAutoUpdate( meWPView &panel ) : cBaseAction( panel,
-		"Enable Auto Updating", "Automatically update the screen" ){ }
+	cActionAutoUpdate( meWPView &panel ) :
+	cBaseAction(panel, "Enable Auto Updating", nullptr, "Automatically update the screen"){ }
 	
 	virtual void OnAction( meWorld &world ){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -253,7 +300,8 @@ class cActionClassHideTags : public cBaseAction {
 	
 public:
 	cActionClassHideTags( meWPView &panel, igdeToggleTagsReference &toggleTags ) :
-	cBaseAction( panel, "", "Hide classes matching one or more tags" ), pToggleTags( toggleTags ){}
+	cBaseAction(panel, "", nullptr, "Hide classes matching one or more tags" ),
+	pToggleTags( toggleTags ){}
 	
 	virtual void OnAction( meWorld &world ){
 		world.GetGuiParameters().GetTagsHideClass() = pToggleTags->GetEnabledTags();
@@ -266,7 +314,7 @@ class cActionClassPartialHideTags : public cBaseAction {
 	
 public:
 	cActionClassPartialHideTags( meWPView &panel, igdeToggleTagsReference &toggleTags ) :
-	cBaseAction( panel, "", "Partially hide classes matching one or more tags" ),
+	cBaseAction(panel, "", nullptr, "Partially hide classes matching one or more tags"),
 	pToggleTags( toggleTags ){}
 	
 	virtual void OnAction( meWorld &world ){
@@ -278,8 +326,8 @@ public:
 
 class cActionCameraFreeRoaming : public cBaseAction{
 public:
-	cActionCameraFreeRoaming( meWPView &panel ) : cBaseAction( panel,
-		"Free Roaming", "Select free roaming camera" ){ }
+	cActionCameraFreeRoaming( meWPView &panel ) :
+	cBaseAction(panel, "Free Roaming", nullptr, "Select free roaming camera"){}
 	
 	virtual void OnAction( meWorld &world ){
 		world.SetActiveCamera( world.GetFreeRoamingCamera() );
@@ -288,8 +336,8 @@ public:
 
 class cActionCameraPlayer : public cBaseAction{
 public:
-	cActionCameraPlayer( meWPView &panel ) : cBaseAction( panel,
-		"Player", "Select player camera" ){ }
+	cActionCameraPlayer( meWPView &panel ) :
+	cBaseAction(panel, "Player", nullptr, "Select player camera"){ }
 	
 	virtual void OnAction( meWorld &world ){
 		world.SetActiveCamera( world.GetPlayerCamera() );
@@ -298,8 +346,8 @@ public:
 
 class cActionCameraObject : public cBaseAction{
 public:
-	cActionCameraObject( meWPView &panel ) : cBaseAction( panel,
-		"Object", "Select object camera" ){ }
+	cActionCameraObject( meWPView &panel ) :
+	cBaseAction(panel, "Object", nullptr, "Select object camera"){}
 	
 	virtual void OnAction( meWorld &world ){
 		meCamera * const camera = pPanel.GetSelectedCameraObject();
@@ -334,8 +382,9 @@ public:
 
 class cActionEnableAuralization : public cBaseAction{
 public:
-	cActionEnableAuralization( meWPView &panel ) : cBaseAction( panel,
-		"Enable Auralization", "Enable auralization if supported by audio module" ){ }
+	cActionEnableAuralization( meWPView &panel ) :
+	cBaseAction(panel, "Enable Auralization", nullptr,
+		"Enable auralization if supported by audio module"){ }
 	
 	virtual void OnAction( meWorld &world ){
 		meConfiguration &configuration = pPanel.GetWindowProperties().GetWindowMain().GetConfiguration();
@@ -347,7 +396,7 @@ public:
 
 class cActionSkyChanged : public cBaseAction{
 public:
-	cActionSkyChanged( meWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	cActionSkyChanged( meWPView &panel ) : cBaseAction(panel, "", nullptr, ""){ }
 	
 	virtual void OnAction( meWorld &world ){
 		world.NotifySkyChanged();
@@ -356,16 +405,111 @@ public:
 
 class cEditBgObject : public cBaseAction{
 public:
-	cEditBgObject( meWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	cEditBgObject( meWPView &panel ) : cBaseAction(panel, "", nullptr, ""){ }
 	
 	virtual void OnAction( meWorld &world ){
 		world.NotifyBgObjectChanged();
 	}
 };
 
+class cEditLimitBoxMinExtend : public igdeEditVectorListener{
+	meWPView &pPanel;
+public:
+	cEditLimitBoxMinExtend(meWPView &panel) : pPanel(panel){}
+	
+	void OnVectorChanged(igdeEditVector *editVector) override{
+		meWorld * const world = pPanel.GetWorld();
+		const decVector &vector = editVector->GetVector();
+		if(world && !world->GetLimitBoxMinExtend().IsEqualTo(vector)){
+			world->GetUndoSystem()->Add(igdeUndo::Ref::New(
+				new meUViewSetLimitBoxExtends(world, vector, world->GetLimitBoxMaxExtend())));
+		}
+	}
+};
+
+class cEditLimitBoxMaxExtend : public igdeEditVectorListener{
+	meWPView &pPanel;
+public:
+	cEditLimitBoxMaxExtend(meWPView &panel) : pPanel(panel){}
+	
+	void OnVectorChanged(igdeEditVector *editVector) override{
+		meWorld * const world = pPanel.GetWorld();
+		const decVector &vector = editVector->GetVector();
+		if(world && !world->GetLimitBoxMaxExtend().IsEqualTo(vector)){
+			world->GetUndoSystem()->Add(igdeUndo::Ref::New(
+				new meUViewSetLimitBoxExtends(world, world->GetLimitBoxMinExtend(), vector)));
+		}
+	}
+};
+
+class cActionLimitBoxClear : public cBaseAction{
+public:
+	cActionLimitBoxClear(meWPView &panel) :
+	cBaseAction(panel, "Clear", nullptr, "Clear limit box"){}
+	
+	void OnAction(meWorld &world) override{
+		if(!world.GetLimitBoxMinExtend().IsZero() || !world.GetLimitBoxMaxExtend().IsZero()){
+			world.GetUndoSystem()->Add(igdeUndo::Ref::New(
+				new meUViewSetLimitBoxExtends(&world, decVector(), decVector())));
+		}
+	}
+};
+
+class cActionLimitBoxDefault : public cBaseAction{
+public:
+	cActionLimitBoxDefault(meWPView &panel) :
+	cBaseAction(panel, "Default", nullptr, "Set limit box to 1m cube"){}
+	
+	void OnAction(meWorld &world) override{
+		const decVector minExtend(-0.5f, -0.5f, -0.5f), maxExtend(0.5f, 0.5f, 0.5f);
+		if(!world.GetLimitBoxMinExtend().IsEqualTo(minExtend)
+		|| !world.GetLimitBoxMaxExtend().IsEqualTo(maxExtend)){
+			world.GetUndoSystem()->Add(igdeUndo::Ref::New(
+				new meUViewSetLimitBoxExtends(&world, minExtend, maxExtend)));
+		}
+	}
+};
+
+class cActionLimitBoxDefaultGround : public cBaseAction{
+public:
+	cActionLimitBoxDefaultGround(meWPView &panel) :
+	cBaseAction(panel, "Default Ground", nullptr, "Set limit box to 1m cube sitting on ground"){}
+	
+	void OnAction(meWorld &world) override{
+		const decVector minExtend(-0.5f, 0.0f, -0.5f), maxExtend(0.5f, 1.0f, 0.5f);
+		if(!world.GetLimitBoxMinExtend().IsEqualTo(minExtend)
+		|| !world.GetLimitBoxMaxExtend().IsEqualTo(maxExtend)){
+			world.GetUndoSystem()->Add(igdeUndo::Ref::New(
+				new meUViewSetLimitBoxExtends(&world, minExtend, maxExtend)));
+		}
+	}
+};
+
+class cActionMenuLimitBox : public igdeActionContextMenu{
+	meWPView &pPanel;
+	
+public:
+	cActionMenuLimitBox(meWPView &panel) : igdeActionContextMenu("",
+		panel.GetEnvironment().GetStockIcon(igdeEnvironment::esiSmallDown), "Limit box menu"),
+	pPanel(panel){}
+	
+	void AddContextMenuEntries(igdeMenuCascade &contextMenu) override{
+		meWorld * const world = pPanel.GetWorld();
+		if(!world){
+			return;
+		}
+		
+		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
+		helper.MenuCommand(contextMenu, new cActionLimitBoxClear(pPanel), true);
+		helper.Separator(contextMenu);
+		helper.MenuCommand(contextMenu, new cActionLimitBoxDefault(pPanel), true);
+		helper.MenuCommand(contextMenu, new cActionLimitBoxDefaultGround(pPanel), true);
+	}
+};
+
 class cActionCameraChanged : public cBaseAction{
 public:
-	cActionCameraChanged( meWPView &panel ) : cBaseAction( panel, "", "" ){ }
+	cActionCameraChanged( meWPView &panel ) : cBaseAction(panel, "", nullptr, ""){}
 	
 	virtual void OnAction( meWorld &world ){
 		meCamera * const camera = world.GetActiveCamera();
@@ -378,7 +522,7 @@ public:
 
 class cActionTriggerTable : public cBaseAction{
 public:
-	cActionTriggerTable( meWPView &panel ) : cBaseAction( panel, "", "Trigger table" ){ }
+	cActionTriggerTable( meWPView &panel ) : cBaseAction(panel, "", nullptr, "Trigger table"){}
 	
 	virtual void OnAction( meWorld &world ){
 		world.NotifyTriggerTableChanged();
@@ -405,6 +549,7 @@ pPreventUpdateCamera(false)
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainerReference content, groupBox, form, formLine;
+	igdeActionContextMenu::Ref actionMenu;
 	
 	pListener = new meWPViewListener( *this );
 	
@@ -424,8 +569,11 @@ pPreventUpdateCamera(false)
 	helper.CheckBoxOnly( groupBox, pChkScaleSnap, new cActionScaleSnap( *this ) );
 	helper.EditFloat( groupBox, "Snap scaling factor", pEditScaleStep, new cTextScaleStep( *this ) );
 	
-	helper.EditFloat( groupBox, "Sensitivity:", "Sensitivity of mouse input",
-		pEditSensitivity, new cTextSensitivity( *this ) );
+	helper.FormLineStretchFirst(groupBox, "Sensitivity:", "Sensitivity of mouse input", formLine);
+	helper.EditFloat(formLine, "Sensitivity of mouse input", pEditSensitivity, new cTextSensitivity(*this));
+	actionMenu.TakeOver(new cActionMenuSensitivity(*this));
+	helper.Button(formLine, pBtnSensitivity, actionMenu.Pointer());
+	actionMenu->SetWidget(pBtnSensitivity);
 	
 	
 	// selection
@@ -484,9 +632,22 @@ pPreventUpdateCamera(false)
 	
 	// property panels
 	helper.WPSky( content, pWPSky, new cActionSkyChanged( *this ), "Sky:", false, false, true );
-	helper.WPWObject( content, pWPBgObject, new cEditBgObject( *this ), "Background Object:", false, true, true );
+	helper.WPWObject(content, pWPBgObject, new cEditBgObject(*this), "Background Object:", false, true, true);
 	helper.WPTriggerTable( content, pWPTriggerTable, new cActionTriggerTable( *this ),
 		"Trigger Table:", false, true, true );
+	
+	// limit box
+	helper.GroupBox(content, groupBox, "Limit Box:");
+	
+	helper.FormLineStretchFirst(groupBox, "Minimum Extend:", "Minimum extend of limit box", formLine);
+	helper.EditVector(formLine, "Minimum extend of limit box", pEditLimitBoxMinExtend,
+		new cEditLimitBoxMinExtend(*this));
+	actionMenu.TakeOver(new cActionMenuLimitBox(*this));
+	helper.Button(formLine, pBtnLimitBoxMenu, actionMenu.Pointer());
+	actionMenu->SetWidget(pBtnLimitBoxMenu);
+	
+	helper.EditVector(groupBox, "Maximum Extend:", "Maximum extend of limit box",
+		pEditLimitBoxMaxExtend, new cEditLimitBoxMaxExtend(*this));
 }
 
 meWPView::~meWPView(){
@@ -507,7 +668,8 @@ void meWPView::SetWorld( meWorld *world ){
 	}
 	
 	pWPSky->SetSky( nullptr );
-	pWPBgObject->SetObjectWrapper( nullptr );
+	pWPBgObject->SetObject(nullptr);
+	pWPBgObject->SetUndoSystem(nullptr);
 	pWPCamera->SetCamera( nullptr );
 	pWPTriggerTable->SetTriggerTargetList( nullptr );
 	pEditClassHideTags->SetTags( decStringSet() );
@@ -525,7 +687,8 @@ void meWPView::SetWorld( meWorld *world ){
 		world->AddReference();
 		
 		pWPSky->SetSky( world->GetSky() );
-		pWPBgObject->SetObjectWrapper( world->GetBgObject() );
+		pWPBgObject->SetObject(world->GetBgObject());
+		pWPBgObject->SetUndoSystem(world->GetUndoSystem());
 		pWPTriggerTable->SetTriggerTargetList( &world->GetTriggerTable() );
 		
 		if( world->GetGameDefinition() ){
@@ -540,6 +703,7 @@ void meWPView::SetWorld( meWorld *world ){
 	UpdateCamera();
 	UpdateSky();
 	UpdateBgObject();
+	UpdateLimitBox();
 	UpdateClassHideTagLists();
 	UpdateTriggerTable();
 }
@@ -639,7 +803,18 @@ void meWPView::UpdateSky(){
 }
 
 void meWPView::UpdateBgObject(){
-	pWPBgObject->UpdateObjectWrapper();
+	pWPBgObject->UpdateObject();
+}
+
+void meWPView::UpdateLimitBox(){
+	if(pWorld){
+		pEditLimitBoxMinExtend->SetVector(pWorld->GetLimitBoxMinExtend());
+		pEditLimitBoxMaxExtend->SetVector(pWorld->GetLimitBoxMaxExtend());
+		
+	}else{
+		pEditLimitBoxMinExtend->SetVector(decVector());
+		pEditLimitBoxMaxExtend->SetVector(decVector());
+	}
 }
 
 void meWPView::UpdateClassHideTagLists(){

@@ -196,6 +196,161 @@ bool decPointerSet::Equals( const decPointerSet &set ) const{
 
 
 
+void decPointerSet::Visit(decPointerVisitor &visitor, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pPointerCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pPointerCount)
+	
+	if(to < 0){
+		to = pPointerCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	
+	int i;
+	if(step > 0){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
+			visitor(pPointers[i]);
+		}
+		
+	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
+		for(i=from; i>=to; i+=step){
+			visitor(pPointers[i]);
+		}
+	}
+}
+
+bool decPointerSet::Find(decPointerEvaluator &evaluator, void *&found, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pPointerCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pPointerCount)
+	
+	if(to < 0){
+		to = pPointerCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	
+	int i;
+	if(step > 0){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
+			if(evaluator(pPointers[i])){
+				found = pPointers[i];
+				return true;
+			}
+		}
+		
+	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pPointers[i])){
+				found = pPointers[i];
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+decPointerSet decPointerSet::Collect(decPointerEvaluator &evaluator, int from, int to, int step) const{
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pPointerCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pPointerCount)
+	
+	if(to < 0){
+		to = pPointerCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	
+	decPointerSet collected;
+	int i;
+	if(step > 0){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
+			if(evaluator(pPointers[i])){
+				collected.Add(pPointers[i]);
+			}
+		}
+		
+	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pPointers[i])){
+				collected.Add(pPointers[i]);
+			}
+		}
+	}
+	return collected;
+}
+
+void decPointerSet::RemoveIf(decPointerEvaluator &evaluator, int from, int to, int step){
+	DEASSERT_TRUE(step != 0)
+	
+	if(from < 0){
+		from = pPointerCount - from;
+	}
+	DEASSERT_TRUE(from >= 0)
+	DEASSERT_TRUE(from < pPointerCount)
+	
+	if(to < 0){
+		to = pPointerCount - to;
+	}
+	DEASSERT_TRUE(to >= 0)
+	
+	int i;
+	if(step > 0){
+		DEASSERT_TRUE(to <= pPointerCount)
+		
+		for(i=from; i<to; i+=step){
+			if(evaluator(pPointers[i])){
+				pPointerCount--;
+				if(i < pPointerCount){
+					pPointers[i] = pPointers[pPointerCount];
+				}
+				
+				i--;
+				to--;
+			}
+		}
+		
+	}else{
+		DEASSERT_TRUE(to < pPointerCount)
+		
+		for(i=from; i>=to; i+=step){
+			if(evaluator(pPointers[i])){
+				pPointerCount--;
+				if(i < pPointerCount){
+					pPointers[i] = pPointers[pPointerCount];
+				}
+				
+				i++;
+				to++;
+			}
+		}
+	}
+}
+
+
+
 // Operators
 //////////////
 
