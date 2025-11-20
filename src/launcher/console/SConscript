@@ -113,7 +113,6 @@ parent_targets['launcher_console'] = {
 	'name' : 'Drag[en]gine Console Launcher',
 	'build' : targetBuild,
 	'install' : targetInstall,
-	'install-engine-runtime' : targetInstall,
 	'archive-launcher' : archive,
 	'cloc' : buildCloc,
 	'clocReport' : '{}/clocreport.csv'.format(srcdir)}

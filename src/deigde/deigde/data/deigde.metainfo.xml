@@ -39,22 +39,23 @@
 		</p>
 		<p>
 		Recommended additional software to use with IGDE:
-		<ul>
-			<li>Blender 3D (org.blender.Blender):
-				Create 3D models</li>
-			<li>GIMP (org.gimp.GIMP),
-				Krita (org.kde.krita),
-				InkScape (org.inkscape.Inkscape):
-				Create textures, decals and images</li>
-			<li>Audacity (org.audacityteam.Audacity):
-				Create sound files</li>
-			<li>Visual Studio Code (com.visualstudio.code):
-				Edit game scripts</li>
-		</ul>
+		- Blender 3D (org.blender.Blender):
+		  Create 3D models
+		- GIMP (org.gimp.GIMP):
+		- Krita (org.kde.krita):
+		- InkScape (org.inkscape.Inkscape):
+		  Create textures, decals and images
+		- Audacity (org.audacityteam.Audacity):
+		  Create sound files
+		- Visual Studio Code (com.visualstudio.code):
+		  Edit game scripts
+		</p>
+		<p>
+		More information on the Wiki: https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde
 		</p>
 	</description>
 	
-	<launchable type="desktop-id">ch.dragondreams.deigde</launchable>
+	<launchable type="desktop-id">ch.dragondreams.deigde.desktop</launchable>
 	
 	<provides>
 		<mediatype>application/dragengine-delga</mediatype>

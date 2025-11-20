@@ -327,23 +327,23 @@ void igdeConfiguration::LocatePath(){
 	pathHome.SetFromNative( deOSWindows::ParseNativePath( "@RoamingAppData" ) );
 	
 #else
-	value = getenv( "HOME" );
-	if( value ){
-		pathHome.SetFromNative( value );
+	value = getenv("HOME");
+	if(value){
+		pathHome.SetFromNative(value);
 		
 	}else{
-		value = getenv( "USER" );
+		value = getenv("USER");
 		
-		if( value ){
-			pathHome.SetFromNative( "/home" );
-			pathHome.AddComponent( value );
+		if(value){
+			pathHome.SetFromNative("/home");
+			pathHome.AddComponent(value);
 			
 		}else{
-			value = getenv( "LOGUSER" );
+			value = getenv("LOGUSER");
 			
-			if( value ){
-				pathHome.SetFromNative( "/home" );
-				pathHome.AddComponent( value );
+			if(value){
+				pathHome.SetFromNative("/home");
+				pathHome.AddComponent(value);
 			}
 		}
 	}
