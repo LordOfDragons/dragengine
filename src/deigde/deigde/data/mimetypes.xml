@@ -2,12 +2,12 @@
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
 	<mime-type type='application/deigde-gameproject'>
 		<comment>Drag[en]gine Game Project</comment>
-		<icon name='dragengine-deigde'/>
+		<icon name='ch.dragondreams.deigde'/>
 		<glob pattern='*.degp'/>
 	</mime-type>
 	<mime-type type='application/deigde-gamedefinition'>
 		<comment>Drag[en]gine Game Definition</comment>
-		<icon name='dragengine-deigde'/>
+		<icon name='ch.dragondreams.deigde'/>
 		<glob pattern='*.degd'/>
 	</mime-type>
 </mime-info>
