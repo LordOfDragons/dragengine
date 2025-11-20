@@ -50,6 +50,9 @@ while len(libVersionString.split('.')) < 3:
 envIGDELib.Append(CXXFLAGS = ['-I{}'.format(envIGDELib.Dir('shared/src').srcnode().abspath)])
 envIGDELib.Replace(WINDOWS_INSERT_DEF = 1) # generated .def file if dll is build
 
+if not envIGDELib['with_engine_module_checks']:
+	envIGDELib.Append(CXXFLAGS = ['-DNO_ENGINE_MODULE_CHECKS'])
+
 # create environment for the progam
 envIGDEApp = envIGDELib.Clone()
 
