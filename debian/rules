@@ -85,6 +85,15 @@ override_dh_auto_install:
 	# temporary fix until FOX toolkit can be used from package
 	mv "$(DESTDIR_LAUNCH_GUI)"/usr/lib/libDEFOX-1.7.so "$(DESTDIR_LIBDE)"/usr/lib/libDEFOX-1.7.so
 	
+	# for some strange reason the debian builder copies launcher artifacts
+	# into the game engine package (debian build only problem)
+	rm -rf "$(DESTDIR_LIBDE)"/usr/bin
+	rm -rf "$(DESTDIR_LIBDE)"/usr/share/man
+	rm -rf "$(DESTDIR_LIBDE)"/usr/share/applications
+	rm -rf "$(DESTDIR_LIBDE)"/usr/share/icons/hicolor/*/apps
+	rm -rf "$(DESTDIR_LIBDE)"/usr/share/metainfo
+	rm -rf "$(DESTDIR_LIBDE)"/usr/share/pixmaps
+	
 	# ubuntu seems to dislike it if build files are still around after this point in time
 	scons $(SCONS_OPTIONS) --config=cache build -c
 
