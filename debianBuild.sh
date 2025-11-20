@@ -78,6 +78,15 @@ rm -rf /sources/deigde*.deb
 rm -rf /sources/delauncher*.deb
 rm -rf /sources/dragengine*.deb
 
+rm -rf /sources/debian/libdragengine*
+rm -rf /sources/debian/libdelauncher*
+rm -rf /sources/debian/libdeigdeshared*
+rm -rf /sources/debian/delauncher-*
+rm -rf /sources/debian/deigde*
+rm -rf /sources/debian/dragengine
+rm -rf /sources/debian/*.log
+rm -rf /sources/debian/*.substvars
+
 if [ $buildPackage = true ]; then
   gbp buildpackage --git-debian-branch=debian --git-upstream-tree=debian --git-ignore-new --git-force-create || exit 1
   ./debian/rules override_dh_auto_build || exit 1
