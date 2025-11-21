@@ -6,6 +6,7 @@ with_debug = 'no'
 with_debug_symbols = 'yes'
 with_verbose = 'no'
 distro_maintained_info_url = 'https://dragondreams.ch/index.php/dragengine-distro-maintained-update-info#ubuntu'
+with_engine_module_checks = 'no'
 
 # external library configuration
 ##################################
@@ -68,7 +69,7 @@ build_guilauncher = 'yes'
 build_plugin_npapi = 'no'
 build_launcher_android = 'no'
 build_archive_delga = 'yes'
-build_vr_openvr = 'yes'
+build_vr_openvr = 'no'
 build_vr_openxr = 'yes'
 
 build_igde = 'yes'
