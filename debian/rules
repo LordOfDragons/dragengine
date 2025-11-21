@@ -24,7 +24,7 @@ SANDBOX_IGDE_DATA := --install-sandbox="$(DESTDIR_IGDE_DATA)"
 SANDBOX_LIBLAUNCH := --install-sandbox="$(DESTDIR_LIBLAUNCH)"
 SANDBOX_LIBLAUNCH_DEV := --install-sandbox="$(DESTDIR_LIBLAUNCH_DEV)"
 
-SCONS_OPTIONS := --logstdout=off version="$(DEB_VERSION) -j 4"
+SCONS_OPTIONS := --logstdout=off -j 4 version="$(DEB_VERSION)"
 
 %:
 	dh $@
