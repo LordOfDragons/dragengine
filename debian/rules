@@ -94,6 +94,10 @@ override_dh_auto_install:
 	rm -rf "$(DESTDIR_LIBDE)"/usr/share/metainfo
 	rm -rf "$(DESTDIR_LIBDE)"/usr/share/pixmaps
 	
+	# similar problem with deigde and deigdeshared
+	rm -rf "$(SANDBOX_IGDE)"/usr/lib/libdeigdeshared.so*
+	rm -rf "$(SANDBOX_IGDE)"/dragengine-import-export
+	
 	# ubuntu seems to dislike it if build files are still around after this point in time
 	scons $(SCONS_OPTIONS) --config=cache build -c
 
