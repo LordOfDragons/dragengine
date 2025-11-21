@@ -24,7 +24,7 @@ SANDBOX_IGDE_DATA := --install-sandbox="$(DESTDIR_IGDE_DATA)"
 SANDBOX_LIBLAUNCH := --install-sandbox="$(DESTDIR_LIBLAUNCH)"
 SANDBOX_LIBLAUNCH_DEV := --install-sandbox="$(DESTDIR_LIBLAUNCH_DEV)"
 
-SCONS_OPTIONS := --logstdout=off version="$(DEB_VERSION)"
+SCONS_OPTIONS := --logstdout=off version="$(DEB_VERSION) -j 4"
 
 %:
 	dh $@
@@ -98,32 +98,17 @@ override_dh_auto_install:
 	scons $(SCONS_OPTIONS) --config=cache build -c
 
 override_dh_shlibdeps:
+	dh_shlibdeps
+	
 	# debian seems to modify *.so files after being installed override_dh_auto_install.
 	# this is very bad since during building and installing module file manifests are
 	# updated with modification detection values. due to the modifications of debian
 	# the game engine rejects all modules as non-genuine. to solve this we have to
 	# fix all module manifests. since it is unknown what step causes these problems
 	# the fix is placed here until better knowing
-	for f in `find "$(DESTDIR_LIBDE)"/usr/lib/games/dragengine/modules -type f -name "module.xml"`; do \
+	for f in `find "$(DESTDIR_LIBDE)"/usr/lib/dragengine/modules -type f -name "module.xml"`; do \
 		/usr/bin/python3 debianFixManifests.py "$$f"; \
 	done
-	for f in `find "$(DESTDIR_IGDE)"/usr/lib/games/deigde/modules -type f -name "module.xml"`; do \
+	for f in `find "$(DESTDIR_IGDE)"/usr/lib/deigde/modules -type f -name "module.xml"`; do \
 		/usr/bin/python3 debianFixManifests.py "$$f"; \
 	done
-	
-	dh_shlibdeps
-	# -XlibDEFOX
-	#dh_shlibdeps -Xlibscrdscript -Xdsinstall \
-	#  -l`find debian/dragengine/usr/lib/dragengine/modules -name "*.so" -printf "%h:"`\
-	#    `find debian/deigde/usr/lib/deigde/modules -name "*.so" -printf "%h:"`
-
-#override_dh_fixperms:
-#	# avoid fix perms messing with our special permissions
-#	dh_fixperms --exclude "$(DESTDIR_LIBDE)"/usr/share/games/delauncher*
-#	
-#	# fix permissions from above
-#	chgrp games "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
-#	chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher
-#	
-#	chgrp games "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games
-#	chmod 2775 "$(DESTDIR_LIBDE)"/usr/share/games/delauncher/games

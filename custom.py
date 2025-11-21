@@ -5,8 +5,9 @@ with_warnerrors = 'no'
 with_debug = 'no'
 with_debug_symbols = 'yes'
 with_verbose = 'no'
+with_threads = '4'
 distro_maintained_info_url = 'https://dragondreams.ch/index.php/dragengine-distro-maintained-update-info#ubuntu'
-with_engine_module_checks = 'no'
+#with_engine_module_checks = 'no'
 
 # external library configuration
 ##################################
