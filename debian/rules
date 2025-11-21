@@ -53,7 +53,7 @@ override_dh_auto_install:
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LAUNCH_GUI) launcher_gui
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE) deigde_shared_runtime
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBIGDE_DEV) deigde_shared_develop
-	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE) install_deigde_runtime
+	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE) install_igde_runtime
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_IGDE_DATA) deigde_data
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBLAUNCH) delauncher_runtime
 	scons $(SCONS_OPTIONS) --config=cache $(SANDBOX_LIBLAUNCH_DEV) delauncher_develop
