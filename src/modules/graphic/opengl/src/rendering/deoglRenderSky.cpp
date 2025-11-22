@@ -791,7 +791,7 @@ void deoglRenderSky::RenderEmptySkyIntoEnvMap( deoglRWorld&, deoglEnvironmentMap
 }
 
 decColor deoglRenderSky::LinearBgColor( const deoglRSkyInstance &instance, bool first ) const{
-	if(!first || instance.GetRSky()){
+	if(!first || !instance.GetRSky()){
 		return decColor(0.0f, 0.0f, 0.0f, 0.0f);
 	}
 	
