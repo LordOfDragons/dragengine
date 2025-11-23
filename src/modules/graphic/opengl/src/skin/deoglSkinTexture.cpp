@@ -1093,10 +1093,12 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 			const int maxMipMapLevel = decMath::max(pixBufCount - 1, 0);
 			
 			int expectedMaxMipMaxLevel = maxMipMapLevel;
+			/*
 			if(i == deoglSkinChannel::ectSolidity){
 				expectedMaxMipMaxLevel = decMath::clamp(
 					(int)(floorf(log2f((float)((height > width) ? height : width)))) - 3, 0, 100 );
 			}
+			*/
 			
 			if(maxMipMapLevel < expectedMaxMipMaxLevel){
 				reader = nullptr;
