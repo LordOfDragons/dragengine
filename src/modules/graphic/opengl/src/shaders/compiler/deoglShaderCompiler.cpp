@@ -1042,7 +1042,7 @@ static const struct sSpecialization{
 	{121, SpecDataType::Bool, "DynamicColorSolidityMultiplier", "DYNAMIC_COLOR_SOLIDITY_MULTIPLIER", "false"},
 	{122, SpecDataType::Bool, "DynamicAOSolidityMultiplier", "DYNAMIC_AO_SOLIDITY_MULTIPLIER", "false"},
 	{123, SpecDataType::Bool, "DynamicTransparencyMultiplier", "DYNAMIC_TRANSPARENCY_MULTIPLIER", "false"},
-	{124, SpecDataType::Bool, "DynamicSolidityMultiplier", "DYNAMIC_SOLIDITY_MULTIPLIER", "false"},
+	{124, SpecDataType::Bool, "DynamicSolidityRemap", "DYNAMIC_SOLIDITY_REMAP", "false"},
 	{125, SpecDataType::Bool, "DynamicHeightRemap", "DYNAMIC_HEIGHT_REMAP", "false"},
 	{126, SpecDataType::Bool, "DynamicNormalStrength", "DYNAMIC_NORMAL_STRENGTH", "false"},
 	{127, SpecDataType::Bool, "DynamicNormalStrengthMultiplier", "DYNAMIC_NORMAL_SOLIDITY_MULTIPLIER", "false"},

@@ -67,6 +67,7 @@ namespace deoglSkinPropertyMap{
 		eptSolidityMasked,
 		eptSolidityMultiplier,
 		eptSolidityFilterPriority,
+		eptSolidityInvert,
 		
 		eptRefractionDistort,
 		eptRefractionDistortStrength,

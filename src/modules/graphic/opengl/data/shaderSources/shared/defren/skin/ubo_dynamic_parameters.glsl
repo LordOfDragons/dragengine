@@ -29,7 +29,7 @@
 	<define>DYNAMIC_ROUGHNESS_SOLIDITY_MULTIPLIER</define>
 	<define>DYNAMIC_SKIN_CLIP_PLANE_BORDER</define>
 	<define>DYNAMIC_SKIN_CLIP_PLANE</define>
-	<define>DYNAMIC_SOLIDITY_MULTIPLIER</define>
+	<define>DYNAMIC_SOLIDITY_REMAP</define>
 	<define>DYNAMIC_TRANSPARENCY_MULTIPLIER</define>
 	<define>DYNAMIC_VARIATION</define>
 */
@@ -54,8 +54,13 @@ float getTransparencyMultiplier(int spbIndex){
 	return DynamicTransparencyMultiplier ? pInstTransparencyMultiplier : pTexTransparencyMultiplier;
 }
 
-float getSolidityMultiplier(int spbIndex){
-	return DynamicSolidityMultiplier ? pInstSolidityMultiplier : pTexSolidityMultiplier;
+vec2 getSolidityRemap(int spbIndex){
+	return DynamicSolidityRemap ? pInstSolidityRemap : pTexSolidityRemap;
+}
+
+float remapSolidity(int spbIndex, float solidity){
+	vec2 remap = getSolidityRemap(spbIndex);
+	return mix(remap.x, remap.y, solidity);
 }
 
 vec2 getHeightRemap(int spbIndex){

@@ -25,10 +25,9 @@ struct sTextureParameters{
 	vec3 texColorTint; // color.tint
 	float texColorGamma; // color.gamma
 	
+	vec2 texSolidityRemap; // (remap.lower, remap.upper): combined solidity.multiplier, solidity.invert
 	float texColorSolidityMultiplier; // color.solidity.multiplier
 	float texAOSolidityMultiplier; // ambient.occlusion.solidity.multiplier
-	float texSolidityMultiplier; // solidity.multiplier
-	float texAbsorptionRange; // absorption.range
 	
 	vec2 texHeightRemap; // height.scale, height.offset
 	float texNormalStrength; // normal.strength
@@ -46,6 +45,7 @@ struct sTextureParameters{
 	float texTransparencyMultiplier; // transparency.multiplier
 	
 	vec3 texEnvRoomTint; // environmentroom.tint
+	float texAbsorptionRange; // absorption.range
 	
 	vec3 texEnvRoomEmissivityIntensity; // environmentroom.emissivity.intensity
 	float texThickness; // thickness

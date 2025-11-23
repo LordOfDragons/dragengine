@@ -184,7 +184,7 @@ layout(constant_id=120) const bool DynamicColorGamma = false;
 layout(constant_id=121) const bool DynamicColorSolidityMultiplier = false;
 layout(constant_id=122) const bool DynamicAOSolidityMultiplier = false;
 layout(constant_id=123) const bool DynamicTransparencyMultiplier = false;
-layout(constant_id=124) const bool DynamicSolidityMultiplier = false;
+layout(constant_id=124) const bool DynamicSolidityRemap = false;
 layout(constant_id=125) const bool DynamicHeightRemap = false;
 layout(constant_id=126) const bool DynamicNormalStrength = false;
 layout(constant_id=127) const bool DynamicNormalStrengthMultiplier = false;

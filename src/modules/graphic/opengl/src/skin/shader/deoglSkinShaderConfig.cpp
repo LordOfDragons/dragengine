@@ -93,7 +93,7 @@ void deoglSkinShaderConfig::Reset(){
 	pDynamicColorSolidityMultiplier = false;
 	pDynamicAmbientOcclusionSolidityMultiplier = false;
 	pDynamicTransparencyMultiplier = false;
-	pDynamicSolidityMultiplier = false;
+	pDynamicSolidityRemap = false;
 	pDynamicHeightRemap = false;
 	pDynamicNormalStrength = false;
 	pDynamicNormalSolidityMultiplier = false;
@@ -297,8 +297,8 @@ void deoglSkinShaderConfig::SetDynamicTransparencyMultiplier( bool dynamic ){
 	pDynamicTransparencyMultiplier = dynamic;
 }
 
-void deoglSkinShaderConfig::SetDynamicSolidityMultiplier( bool dynamic ){
-	pDynamicSolidityMultiplier = dynamic;
+void deoglSkinShaderConfig::SetDynamicSolidityRemap( bool dynamic ){
+	pDynamicSolidityRemap = dynamic;
 }
 
 void deoglSkinShaderConfig::SetDynamicHeightRemap( bool dynamic ){
@@ -554,7 +554,7 @@ void deoglSkinShaderConfig::UpdateKey(){
 	if( pDynamicColorSolidityMultiplier ) pKey3 |= ( uint64_t )1 << 2;
 	if( pDynamicAmbientOcclusionSolidityMultiplier ) pKey3 |= ( uint64_t )1 << 3;
 	if( pDynamicTransparencyMultiplier ) pKey3 |= ( uint64_t )1 << 4;
-	if( pDynamicSolidityMultiplier ) pKey3 |= ( uint64_t )1 << 5;
+	if( pDynamicSolidityRemap ) pKey3 |= ( uint64_t )1 << 5;
 	if( pDynamicHeightRemap ) pKey3 |= ( uint64_t )1 << 6;
 	if( pDynamicNormalStrength ) pKey3 |= ( uint64_t )1 << 7;
 	if( pDynamicNormalSolidityMultiplier ) pKey3 |= ( uint64_t )1 << 8;
@@ -760,8 +760,8 @@ void deoglSkinShaderConfig::DebugGetConfigString( decString &string ) const{
 	if( pDynamicTransparencyMultiplier ){
 		string.Append( " dynTraMul" );
 	}
-	if( pDynamicSolidityMultiplier ){
-		string.Append( " dynSolMul" );
+	if( pDynamicSolidityRemap ){
+		string.Append( " dynSolRemap" );
 	}
 	if( pDynamicHeightRemap ){
 		string.Append( " dynHeiRemap" );
@@ -968,7 +968,7 @@ deoglSkinShaderConfig &deoglSkinShaderConfig::operator=( const deoglSkinShaderCo
 	pDynamicColorSolidityMultiplier = config.pDynamicColorSolidityMultiplier;
 	pDynamicAmbientOcclusionSolidityMultiplier = config.pDynamicAmbientOcclusionSolidityMultiplier;
 	pDynamicTransparencyMultiplier = config.pDynamicTransparencyMultiplier;
-	pDynamicSolidityMultiplier = config.pDynamicSolidityMultiplier;
+	pDynamicSolidityRemap = config.pDynamicSolidityRemap;
 	pDynamicHeightRemap = config.pDynamicHeightRemap;
 	pDynamicNormalStrength = config.pDynamicNormalStrength;
 	pDynamicNormalSolidityMultiplier = config.pDynamicNormalSolidityMultiplier;

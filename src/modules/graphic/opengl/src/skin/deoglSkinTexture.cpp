@@ -187,6 +187,7 @@ pSharedSPBElement( nullptr )
 	pSolidityMultiplier = 1.0f;
 	pSolidityMasked = false;
 	pSolidityFilterPriority = 0.5f;
+	pSolidityInvert = false;
 	
 	pReflected = true;
 	pShadeless = false;
@@ -426,6 +427,10 @@ void deoglSkinTexture::SetHasEmissivity( bool hasEmissivity ){
 
 void deoglSkinTexture::SetSolidityMasked( bool solidityMasked ){
 	pSolidityMasked = solidityMasked;
+}
+
+void deoglSkinTexture::SetSolidityInvert(bool solidityInvert){
+	pSolidityInvert = solidityInvert;
 }
 
 void deoglSkinTexture::SetSolidityFilterPriority( float solidityFilterPriority ){
@@ -1599,6 +1604,10 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			pSolidityMasked = value > 0.5f;
 			break;
 			
+		case deoglSkinPropertyMap::eptSolidityInvert:
+			pSolidityInvert = value > 0.5f;
+			break;
+			
 		case deoglSkinPropertyMap::eptSolidityFilterPriority:
 			pSolidityFilterPriority = decMath::clamp( value, 0.0f, 1.0f );
 			break;
@@ -2544,8 +2553,15 @@ void deoglSkinTexture::pUpdateParamBlock( deoglShaderParameterBlock &spb, int el
 	spb.SetParameterDataFloat( deoglSkinShader::etutTexTransparencyMultiplier, element,
 		pTransparencyMultiplier );
 	
-	spb.SetParameterDataFloat( deoglSkinShader::etutTexSolidityMultiplier, element,
-		pSolidityMultiplier );
+	{
+	float lower = 0.0f, upper = pSolidityMultiplier;
+	if(pSolidityInvert){
+		lower = 1.0f - lower;
+		upper = 1.0f - upper;
+	}
+	spb.SetParameterDataVec2(deoglSkinShader::etutTexSolidityRemap, element,
+		decMath::clamp(lower, 0.0f, 1.0f), decMath::clamp(upper, 0.0f, 1.0f));
+	}
 	
 	// (texHeight - 0.5 + offset) * scale = texHeight*scale + (offset-0.5)*scale
 	spb.SetParameterDataVec2( deoglSkinShader::etutTexHeightRemap, element,

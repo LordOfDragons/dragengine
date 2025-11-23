@@ -179,14 +179,13 @@ void main(void){
 	float solidity;
 	if(WithSolidity){
 		if(TextureSolidity){
-			solidity = TEXTURE(texSolidity, texSolidityArray, tcColor).r
-				* getSolidityMultiplier(vSPBIndex);
+			solidity = remapSolidity(vSPBIndex, TEXTURE(texSolidity, texSolidityArray, tcColor).r);
 			
 		}else if(WithOutline){
 			solidity = getOutlineSolidity(vSPBIndex);
 			
 		}else{
-			solidity = getSolidityMultiplier(vSPBIndex);
+			solidity = getSolidityRemap(vSPBIndex).y;
 		}
 		
 		if(SkinClipPlane){
