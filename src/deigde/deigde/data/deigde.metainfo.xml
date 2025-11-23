@@ -3,7 +3,7 @@
 	<id>ch.dragondreams.deigde</id>
 	
 	<name>Dragengine IGDE</name>
-	<summary>Game project editor for the Drag[en]gine Game Engine.</summary>
+	<summary>Edit Drag[en]gine game projects.</summary>
 	
 	<metadata_license>MIT</metadata_license>
 	<project_license>MIT</project_license>
@@ -39,17 +39,15 @@
 		</p>
 		<p>
 		Recommended additional software to use with IGDE:
-		- Blender 3D (org.blender.Blender):
-		  Create 3D models
-		- GIMP (org.gimp.GIMP):
-		- Krita (org.kde.krita):
-		- InkScape (org.inkscape.Inkscape):
-		  Create textures, decals and images
-		- Audacity (org.audacityteam.Audacity):
-		  Create sound files
-		- Visual Studio Code (com.visualstudio.code):
-		  Edit game scripts
 		</p>
+		<ul>
+		<li>Blender 3D (org.blender.Blender): Create 3D models.</li>
+		<li>GIMP (org.gimp.GIMP), Krita (org.kde.krita),
+			InkScape (org.inkscape.Inkscape):
+			Create textures, decals and images.</li>
+		<li>Audacity (org.audacityteam.Audacity): Create sound files.</li>
+		<li>Visual Studio Code (com.visualstudio.code): Edit game scripts</li>
+		</ul>
 		<p>
 		More information on the Wiki: https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde
 		</p>
