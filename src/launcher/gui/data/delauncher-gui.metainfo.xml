@@ -12,6 +12,11 @@
 		<name>DragonDreams GmbH</name>
 	</developer>
 	
+	<categories>
+		<category>Game</category>
+		<category>LauncherStore</category>
+	</categories>
+	
 	<recommends>
 		<control>keyboard</control>
 		<control>pointing</control>
