@@ -16,7 +16,7 @@ internalModule = envModule['build_comb_fbx_internal']
 parent_report['build FBX modules'] = 'yes (internal)' if internalModule else 'yes'
 
 # fetch values in expanded form for later use
-versionString = '1.20'
+versionString = '1.29'
 if envModule['force_version']:
 	versionString = envModule['force_version']
 
