@@ -1,0 +1,37 @@
+name: Pre-Release Checks
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        required: false
+        type: string
+        default: master
+      version:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch'
+        required: true
+        type: string
+        default: 'master'
+      version:
+        description: 'Version'
+        required: true
+        type: string
+        default: 'X.Y{.Z}'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          ref: ${{ inputs.branch }}
+      
+      - name: Verify Metainfo
+        run: python3 .github/workflows/prerelease_checks.py "${{ inputs.version }}"

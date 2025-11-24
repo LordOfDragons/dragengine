@@ -20,7 +20,14 @@ on:
         default: 'X-Y{-Z}'
 
 jobs:
+  prerelease_checks:
+    uses: ./.github/workflows/prerelease_checks.yml
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      version: ${{ github.event.inputs.version }}
+  
   generate_buildnumbers:
+    needs: [prerelease_checks]
     runs-on: ubuntu-latest
     outputs:
       build_number: ${{ steps.buildnumber.outputs.build_number }}
