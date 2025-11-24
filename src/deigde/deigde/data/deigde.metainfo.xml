@@ -109,4 +109,9 @@
 			</description>
 		</release>
 	</releases>
+	<keywords>
+		<keyword>delga file runner</keyword>
+		<keyword>game launcher</keyword>
+		<keyword>dragengine game engine</keyword>
+	</keywords>
 </component>
