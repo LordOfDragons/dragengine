@@ -92,4 +92,11 @@
 		<value key="DragonDreams::DistroMaintained">%{DISTRO_MAINTAINED}</value>
 		<value key="DragonDreams::DistroMaintainedUpdateUrl">%{DISTRO_MAINTAINED_UPDATE_URL}</value>
 	</custom>
+	<keywords>
+		<keyword>game editor</keyword>
+		<keyword>delga file creator</keyword>
+		<keyword>drag engine</keyword>
+		<keyword>game development software</keyword>
+		<keyword>indie game creation tool</keyword>
+	</keywords>
 </component>
