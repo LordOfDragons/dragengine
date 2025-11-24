@@ -34,4 +34,4 @@ jobs:
           ref: ${{ inputs.branch }}
       
       - name: Verify Metainfo
-        run: python3 .github/workflows/prerelease_checks.py "${{ inputs.version }}"
+        run: python3 .github/workflows/prerelease_checks.py verify_metainfo_versions "${{ inputs.version }}"
