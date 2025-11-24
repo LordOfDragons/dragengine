@@ -111,6 +111,7 @@ void dedsVRPlaceholder::SetEnabled(bool enabled){
 		return;
 	}
 	
+	pDS.LogInfoFormat("VR Placeholder: %s", enabled ? "Enabled" : "Disabled");
 	pDS.GetGameEngine()->GetVRSystem()->SetCamera(enabled ? pCamera : pGameCamera);
 }
 
@@ -184,7 +185,7 @@ void dedsVRPlaceholder::pCreateWorld(){
 }
 
 void dedsVRPlaceholder::pCleanUp(){
-	pDS.LogInfo("Clean up VR Placeholder" );
+	pDS.LogInfo("Clean up VR Placeholder");
 	
 	deVRSystem &vrsys = *pDS.GetGameEngine()->GetVRSystem();
 	try{

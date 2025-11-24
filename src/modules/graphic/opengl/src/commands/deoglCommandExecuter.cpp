@@ -167,7 +167,7 @@ void deoglCommandExecuter::pFBOInfos( const decUnicodeArgumentList &command, dec
 		}
 		
 		for( f=0; f<count; f++ ){
-			const deoglFramebuffer &fbo = *fboMgr.GetFBOAt( f );
+			const deoglFramebuffer &fbo = fboMgr.GetFBOAt(f);
 			
 			answer.AppendFromUTF8( "- " );
 			answer.AppendValue( fbo.GetUsageWidth() );

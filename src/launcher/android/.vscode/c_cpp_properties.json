@@ -11,7 +11,7 @@
                 "OS_POSIX=1",
                 "OS_ANDROID=1"
             ],
-            "compilerPath": "/usr/lib/llvm/18/bin/clang",
+            "compilerPath": "/usr/lib/llvm/20/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "linux-clang-x64"

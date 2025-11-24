@@ -54,13 +54,9 @@ pRenderThread( renderThread){
 		DETHROW( deeInvalidParam );
 	}
 	
-	pTexture = NULL;
-	pFBOs = NULL;
-	
-	pTextureMin = NULL;
-	pFBOMin = NULL;
-	pTextureMax = NULL;
-	pFBOMax = NULL;
+	pTexture = nullptr;
+	pTextureMin = nullptr;
+	pTextureMax = nullptr;
 	
 	pWidth = width;
 	pHeight = height;
@@ -88,27 +84,15 @@ deoglDRDepthMinMax::~deoglDRDepthMinMax(){
 ///////////////
 
 deoglFramebuffer *deoglDRDepthMinMax::GetFBOAt( int level ){
-	if( level < 0 || level >= pLevelCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pFBOs[ level ];
+	return (deoglFramebuffer*)pFBOs[level];
 }
 
 deoglFramebuffer *deoglDRDepthMinMax::GetFBOMinAt( int level ){
-	if( level < 0 || level >= pLevelCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pFBOMin[ level ];
+	return (deoglFramebuffer*)pFBOMin[level];
 }
 
 deoglFramebuffer *deoglDRDepthMinMax::GetFBOMaxAt( int level ){
-	if( level < 0 || level >= pLevelCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pFBOMax[ level ];
+	return (deoglFramebuffer*)pFBOMax[level];
 }
 
 
@@ -117,42 +101,17 @@ deoglFramebuffer *deoglDRDepthMinMax::GetFBOMaxAt( int level ){
 //////////////////////
 
 void deoglDRDepthMinMax::pCleanUp(){
-	int i;
-	
-	if( pFBOMax ){
-		for( i=0; i<pLevelCount; i++ ){
-			if( pFBOMax[ i ] ){
-				delete pFBOMax[ i ];
-			}
-		}
-		delete [] pFBOMax;
-	}
+	pFBOMax.RemoveAll();
 	if( pTextureMax ){
 		delete pTextureMax;
 	}
 	
-	if( pFBOMin ){
-		for( i=0; i<pLevelCount; i++ ){
-			if( pFBOMin[ i ] ){
-				delete pFBOMin[ i ];
-			}
-		}
-		delete [] pFBOMin;
-	}
+	pFBOMin.RemoveAll();
 	if( pTextureMin ){
 		delete pTextureMin;
 	}
 	
-	
-	
-	if( pFBOs ){
-		for( i=0; i<pLevelCount; i++ ){
-			if( pFBOs[ i ] ){
-				delete pFBOs[ i ];
-			}
-		}
-		delete [] pFBOs;
-	}
+	pFBOs.RemoveAll();
 	if( pTexture ){
 		delete pTexture;
 	}
@@ -207,93 +166,71 @@ void deoglDRDepthMinMax::pCreateTextures(){
 }
 
 void deoglDRDepthMinMax::pCreateFBOs(){
-	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
+	const deoglRestoreFramebuffer restoreFbo(pRenderThread);
 	int i;
 	
-	if( pLevelCount > 0 ){
-		if( USAGE_VERSION == 0 ){
-			pFBOs = new deoglFramebuffer*[ pLevelCount ];
+	if(pLevelCount > 0){
+		if(USAGE_VERSION == 0){
+			const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
 			
-			for( i=0; i<pLevelCount; i++ ){
-				pFBOs[ i ] = NULL;
+			for(i=0; i<pLevelCount; i++){
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				pRenderThread.GetFramebuffer().Activate(fbo);
+				
+				fbo->AttachColorArrayTextureLevel(0, pTexture, i);
+				
+				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+				OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
+				
+				fbo->Verify();
+				pFBOs.Add(fbo);
 			}
 			
-			for( i=0; i<pLevelCount; i++ ){
-				pFBOs[ i ] = new deoglFramebuffer( pRenderThread, false );
-				
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ i ] );
-				
-				pFBOs[ i ]->AttachColorArrayTextureLevel( 0, pTexture, i );
-				
-				const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-				
-				pFBOs[ i ]->Verify();
-			}
+		}else if(USAGE_VERSION == 1){
+			const GLenum buffers[1] = {GL_NONE};
 			
-		}else if( USAGE_VERSION == 1 ){
 			// min
-			pFBOMin = new deoglFramebuffer*[ pLevelCount ];
-			
-			for( i=0; i<pLevelCount; i++ ){
-				pFBOMin[ i ] = NULL;
-			}
-			
-			for( i=0; i<pLevelCount; i++ ){
-				pFBOMin[ i ] = new deoglFramebuffer( pRenderThread, false );
+			for(i=0; i<pLevelCount; i++){
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				pRenderThread.GetFramebuffer().Activate(fbo);
 				
-				pRenderThread.GetFramebuffer().Activate( pFBOMin[ i ] );
+				fbo->AttachDepthArrayTextureLevel(pTextureMin, i);
 				
-				pFBOMin[ i ]->AttachDepthArrayTextureLevel( pTextureMin, i );
+				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+				OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 				
-				const GLenum buffers[ 1 ] = { GL_NONE };
-				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
-				
-				pFBOMin[ i ]->Verify();
+				fbo->Verify();
+				pFBOMin.Add(fbo);
 			}
 			
 			// max
-			pFBOMax = new deoglFramebuffer*[ pLevelCount ];
-			
-			for( i=0; i<pLevelCount; i++ ){
-				pFBOMax[ i ] = NULL;
+			for(i=0; i<pLevelCount; i++){
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				pRenderThread.GetFramebuffer().Activate(fbo);
+				
+				fbo->AttachDepthArrayTextureLevel(pTextureMax, i);
+				
+				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+				OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
+				
+				fbo->Verify();
+				pFBOMax.Add(fbo);
 			}
 			
-			for( i=0; i<pLevelCount; i++ ){
-				pFBOMax[ i ] = new deoglFramebuffer( pRenderThread, false );
-				
-				pRenderThread.GetFramebuffer().Activate( pFBOMax[ i ] );
-				
-				pFBOMax[ i ]->AttachDepthArrayTextureLevel( pTextureMax, i );
-				
-				const GLenum buffers[ 1 ] = { GL_NONE };
-				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
-				
-				pFBOMax[ i ]->Verify();
-			}
+		}else if(USAGE_VERSION == 2){
+			const GLenum buffers[1] = {GL_NONE};
 			
-		}else if( USAGE_VERSION == 2 ){
-			pFBOs = new deoglFramebuffer*[ pLevelCount ];
-			
-			for( i=0; i<pLevelCount; i++ ){
-				pFBOs[ i ] = NULL;
-			}
-			
-			for( i=0; i<pLevelCount; i++ ){
-				pFBOs[ i ] = new deoglFramebuffer( pRenderThread, false );
+			for(i=0; i<pLevelCount; i++){
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				pRenderThread.GetFramebuffer().Activate(fbo);
 				
-				pRenderThread.GetFramebuffer().Activate( pFBOs[ i ] );
+				fbo->AttachDepthArrayTextureLevel(pTexture, i);
 				
-				pFBOs[ i ]->AttachDepthArrayTextureLevel( pTexture, i );
+				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+				OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 				
-				const GLenum buffers[ 1 ] = { GL_NONE };
-				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
-				
-				pFBOs[ i ]->Verify();
+				fbo->Verify();
+				pFBOs.Add(fbo);
 			}
 			
 		}else{

@@ -53,7 +53,7 @@ pTexNormal( renderThread ),
 pTexDiffuse( renderThread ),
 pTexReflectivity( renderThread ),
 pTexLight( renderThread ),
-pFBOLight( renderThread, false )
+pFBOLight(deoglFramebuffer::Ref::NewWith(renderThread, false))
 {
 	try{
 		pCreateFBORay();
@@ -177,10 +177,10 @@ void deoglGITraceRays::pCreateFBORay(){
 	pTexLight.SetSize( width, height );
 	pTexLight.CreateTexture();
 	
-	pRenderThread.GetFramebuffer().Activate( &pFBOLight );
-	pFBOLight.DetachAllImages();
-	pFBOLight.AttachColorTexture( 0, &pTexLight );
-	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-	OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-	pFBOLight.Verify();
+	pRenderThread.GetFramebuffer().Activate(pFBOLight);
+	pFBOLight->DetachAllImages();
+	pFBOLight->AttachColorTexture(0, &pTexLight);
+	OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+	OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
+	pFBOLight->Verify();
 }

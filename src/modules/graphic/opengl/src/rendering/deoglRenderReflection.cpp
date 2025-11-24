@@ -534,7 +534,6 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deogl
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const int height = equimap->GetHeight();
 	const int width = equimap->GetWidth();
-	deoglFramebuffer *fbo = NULL;
 	deoglShaderCompiled *shader;
 	
 	pPipelineCubeMap2EquiMap->Activate();
@@ -544,11 +543,12 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deogl
 	tsmgr.EnableCubeMap( 0, cubemap, GetSamplerClampNearest() ); // GetSamplerClampLinear()
 	
 	try{
-		fbo = renderThread.GetFramebuffer().GetManager().GetFBOWithResolution( width, height );
-		renderThread.GetFramebuffer().Activate( fbo );
+		const deoglFramebufferManager::Usage fbo(
+			renderThread.GetFramebuffer().GetManager().GetFBOWithResolution(width, height));
+		renderThread.GetFramebuffer().Activate(fbo);
 		
 		fbo->DetachAllImages();
-		fbo->AttachColorTexture( 0, equimap );
+		fbo->AttachColorTexture(0, equimap);
 		fbo->Verify();
 		
 		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
@@ -559,16 +559,10 @@ void deoglRenderReflection::ConvertCubeMap2EquiMap( deoglCubeMap &cubemap, deogl
 		
 		RenderFullScreenQuadVAO();
 		
-		renderThread.GetFramebuffer().Activate( oldfbo );
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
+		renderThread.GetFramebuffer().Activate(oldfbo);
 		
 	}catch( const deException & ){
-		renderThread.GetFramebuffer().Activate( oldfbo );
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
+		renderThread.GetFramebuffer().Activate(oldfbo);
 		throw;
 	}
 	
@@ -917,7 +911,6 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 	if( shader ){
 		deoglFramebuffer * const oldfbo = renderThread.GetFramebuffer().GetActive();
 		deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
-		deoglFramebuffer *fbo = NULL;
 		int height, width;
 		
 		if( pEnvMapEqui ){
@@ -930,7 +923,8 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 		}
 		
 		try{
-			fbo = renderThread.GetFramebuffer().GetManager().GetFBOWithResolution( width, height );
+			const deoglFramebufferManager::Usage fbo(
+				renderThread.GetFramebuffer().GetManager().GetFBOWithResolution(width, height));
 			renderThread.GetFramebuffer().Activate( fbo );
 			
 			fbo->DetachAllImages();
@@ -994,9 +988,6 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 			DEBUG_PRINT_TIMER( "Reflection: Update Env Map: Render" );
 			
 			renderThread.GetFramebuffer().Activate( oldfbo );
-			if( fbo ){
-				fbo->DecreaseUsageCount();
-			}
 			
 			if( pEnvMapEqui ){
 				pEnvMapEqui->CreateMipMaps();
@@ -1007,9 +998,6 @@ void deoglRenderReflection::UpdateEnvMap( deoglRenderPlan &plan ){
 			
 		}catch( const deException & ){
 			renderThread.GetFramebuffer().Activate( oldfbo );
-			if( fbo ){
-				fbo->DecreaseUsageCount();
-			}
 			throw;
 		}
 		DEBUG_PRINT_TIMER( "Reflection: Update Env Map: Build EnvMap" );
@@ -1469,13 +1457,13 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 	deoglRenderGI &renderGI = renderThread.GetRenderers().GetLight().GetRenderGI();
 	const deoglRestoreFramebuffer restoreFbo( renderThread );
 	
-	deoglFramebuffer &fbo = renderThread.GetFramebuffer().GetEnvMap();
+	const deoglFramebuffer::Ref &fbo = renderThread.GetFramebuffer().GetEnvMap();
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	
 	pPipelineEnvMapLightGI->Activate();
 	
-	renderThread.GetFramebuffer().Activate( &fbo );
-	fbo.DetachAllImages();
+	renderThread.GetFramebuffer().Activate(fbo);
+	fbo->DetachAllImages();
 	OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
 	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
 	
@@ -1503,9 +1491,9 @@ void deoglRenderReflection::RenderGIEnvMaps( deoglRenderPlan &plan ){
 // 		renderThread.GetLogger().LogInfoFormat( "- LightEnvMap: %p (%g,%g,%g)", envmap,
 // 			envmap->GetPosition().x, envmap->GetPosition().y, envmap->GetPosition().z );
 		
-		fbo.DetachAllImages();
-		fbo.AttachColorCubeMap( 0, envmap->GetEnvironmentMap() );
-		fbo.Verify();
+		fbo->DetachAllImages();
+		fbo->AttachColorCubeMap( 0, envmap->GetEnvironmentMap() );
+		fbo->Verify();
 		
 		OGL_CHECK( renderThread, glViewport( 0, 0, envmap->GetSize(), envmap->GetSize() ) );
 		
@@ -1540,19 +1528,19 @@ void deoglRenderReflection::CopyEnvMap( deoglArrayTexture &source, deoglCubeMap 
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	const deoglRestoreFramebuffer restoreFbo( renderThread );
 	
-	deoglFramebuffer &fbo = renderThread.GetFramebuffer().GetEnvMap();
+	const deoglFramebuffer::Ref &fbo = renderThread.GetFramebuffer().GetEnvMap();
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	
 	pPipelineEnvMapCopy->Activate();
 	
 	OGL_CHECK( renderThread, pglBindVertexArray( defren.GetVAOFullScreenQuad()->GetVAO() ) );
 	
-	renderThread.GetFramebuffer().Activate( &fbo );
-	fbo.DetachAllImages();
-	fbo.AttachColorCubeMap( 0, &target );
+	renderThread.GetFramebuffer().Activate(fbo);
+	fbo->DetachAllImages();
+	fbo->AttachColorCubeMap( 0, &target );
 	OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
 	OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-	fbo.Verify();
+	fbo->Verify();
 	
 	SetViewport( target.GetSize(), target.GetSize() );
 	

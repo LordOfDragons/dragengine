@@ -80,8 +80,6 @@
 deoglShadowMapper::deoglShadowMapper( deoglRenderThread &renderThread ) :
 pRenderThread( renderThread ),
 
-pFBOTextureSolid( NULL ),
-pFBOTextureTransp( NULL ),
 pTextureDepthSolid( NULL ),
 pTextureDepthTransp( NULL ),
 pTextureColorTransp( NULL ),
@@ -92,7 +90,6 @@ pUseTexDepthSolid( NULL ),
 pUseTexDepthTransp( NULL ),
 pUseTexColorTransp( NULL ),
 
-pFBOCube( NULL ),
 pCubeMapDepthSolid( NULL ),
 pCubeMapDepthTransp( NULL ),
 pCubeMapColorTransp( NULL ),
@@ -103,7 +100,6 @@ pUseCubeMapDepthSolid( NULL ),
 pUseCubeMapDepthTransp( NULL ),
 pUseCubeMapColorTransp( NULL ),
 
-pFBOArrTex( NULL ),
 pArrTexSolidDepth( NULL ),
 pArrTexTranspDepth( NULL ),
 pArrTexTranspColor( NULL ),
@@ -114,15 +110,12 @@ pUseArrTexSolidDepth( NULL ),
 pUseArrTexTranspDepth( NULL ),
 pUseArrTexTranspColor( NULL ),
 
-pFBOOcclusion( NULL ),
 pTextureOcclusion( NULL ),
 
-pFBOAmbient( NULL ),
 pTextureAmbient( NULL ),
 pForeignTexAmbient( NULL ),
 pUseTexAmbient( NULL ),
 
-pFBOCubeAmbient( NULL ),
 pCubeMapAmbient( NULL ),
 pForeignCubeMapAmbient( NULL ),
 pUseCubeMapAmbient( NULL ){
@@ -197,10 +190,7 @@ void deoglShadowMapper::DropTextures(){
 }
 
 void deoglShadowMapper::DropTexturesSolid(){
-	if( pFBOTextureSolid ){
-		pFBOTextureSolid->DecreaseUsageCount();
-		pFBOTextureSolid = NULL;
-	}
+	pFBOTextureSolid.Clear();
 	
 	pUseTexDepthSolid = NULL;
 	pForeignTexDepthSolid = NULL;
@@ -211,10 +201,7 @@ void deoglShadowMapper::DropTexturesSolid(){
 }
 
 void deoglShadowMapper::DropTexturesTransparent(){
-	if( pFBOTextureTransp ){
-		pFBOTextureTransp->DecreaseUsageCount();
-		pFBOTextureTransp = NULL;
-	}
+	pFBOTextureTransp.Clear();
 	
 	pUseTexDepthTransp = NULL;
 	pForeignTexDepthTransp = NULL;
@@ -264,8 +251,8 @@ void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth, bool
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOTextureSolid ){
-		pFBOTextureSolid = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOTextureSolid){
+		pFBOTextureSolid = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain solid depth texture if not existing already
@@ -276,7 +263,7 @@ void deoglShadowMapper::ActivateSolidTexture( int size, bool useFloatDepth, bool
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOTextureSolid );
+	pRenderThread.GetFramebuffer().Activate(pFBOTextureSolid);
 	
 	pFBOTextureSolid->DetachAllImages();
 	pFBOTextureSolid->AttachDepthTexture( pUseTexDepthSolid );
@@ -309,8 +296,8 @@ void deoglShadowMapper::ActivateTransparentTexture( int size, bool useFloatDepth
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOTextureTransp ){
-		pFBOTextureTransp = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOTextureTransp){
+		pFBOTextureTransp = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain transparent depth texture if not existing already
@@ -328,7 +315,7 @@ void deoglShadowMapper::ActivateTransparentTexture( int size, bool useFloatDepth
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOTextureTransp );
+	pRenderThread.GetFramebuffer().Activate(pFBOTextureTransp);
 	
 	pFBOTextureTransp->DetachAllImages();
 	pFBOTextureTransp->AttachDepthTexture( pUseTexDepthTransp );
@@ -408,10 +395,7 @@ void deoglShadowMapper::DropCubeMaps(){
 }
 
 void deoglShadowMapper::DropCubeMapsSolid(){
-	if( pFBOCube ){
-		pFBOCube->DecreaseUsageCount();
-		pFBOCube = NULL;
-	}
+	pFBOCube.Clear();
 	
 	pUseCubeMapDepthSolid = NULL;
 	pForeignCubeMapDepthSolid = NULL;
@@ -423,10 +407,7 @@ void deoglShadowMapper::DropCubeMapsSolid(){
 }
 
 void deoglShadowMapper::DropCubeMapsTransparent(){
-	if( pFBOCube ){
-		pFBOCube->DecreaseUsageCount();
-		pFBOCube = NULL;
-	}
+	pFBOCube.Clear();
 	
 	pUseCubeMapDepthTransp = NULL;
 	pForeignCubeMapDepthTransp = NULL;
@@ -482,8 +463,8 @@ void deoglShadowMapper::ActivateSolidCubeMap( int size, bool useFloatDepth ){
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOCube ){
-		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOCube){
+		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain solid depth cubemap if not existing already
@@ -494,7 +475,7 @@ void deoglShadowMapper::ActivateSolidCubeMap( int size, bool useFloatDepth ){
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOCube );
+	pRenderThread.GetFramebuffer().Activate(pFBOCube);
 	
 	pFBOCube->DetachAllImages();
 	pFBOCube->AttachDepthCubeMap( pUseCubeMapDepthSolid );
@@ -525,8 +506,8 @@ void deoglShadowMapper::ActivateSolidCubeMapFace( int size, bool useFloatDepth, 
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOCube ){
-		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOCube){
+		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain solid depth cubemap if not existing already
@@ -537,7 +518,7 @@ void deoglShadowMapper::ActivateSolidCubeMapFace( int size, bool useFloatDepth, 
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOCube );
+	pRenderThread.GetFramebuffer().Activate(pFBOCube);
 	
 	pFBOCube->DetachAllImages();
 	pFBOCube->AttachDepthCubeMapFace( pUseCubeMapDepthSolid, face );
@@ -581,12 +562,12 @@ void deoglShadowMapper::ActivateTransparentCubeMap( int size, bool useFloatDepth
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOCube ){
-		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOCube){
+		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOCube );
+	pRenderThread.GetFramebuffer().Activate(pFBOCube);
 	
 	pFBOCube->DetachAllImages();
 	pFBOCube->AttachDepthCubeMap( pUseCubeMapDepthTransp );
@@ -631,12 +612,12 @@ void deoglShadowMapper::ActivateTransparentCubeMapFace( int size, bool useFloatD
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOCube ){
-		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOCube){
+		pFBOCube = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOCube );
+	pRenderThread.GetFramebuffer().Activate(pFBOCube);
 	
 	pFBOCube->DetachAllImages();
 	pFBOCube->AttachDepthCubeMapFace( pUseCubeMapDepthTransp, face );
@@ -708,10 +689,7 @@ void deoglShadowMapper::SetForeignTransparentColorArrayTexture( deoglArrayTextur
 }
 
 void deoglShadowMapper::DropArrayTextures(){
-	if( pFBOArrTex ){
-		pFBOArrTex->DecreaseUsageCount();
-		pFBOArrTex = NULL;
-	}
+	pFBOArrTex.Clear();
 	
 	pUseArrTexSolidDepth = NULL;
 	pForeignArrTexSolidDepth = NULL;
@@ -764,8 +742,8 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount, boo
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOArrTex ){
-		pFBOArrTex = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOArrTex){
+		pFBOArrTex = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain solid depth texture if not existing already
@@ -776,7 +754,7 @@ void deoglShadowMapper::ActivateSolidArrayTexture( int size, int layerCount, boo
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOArrTex );
+	pRenderThread.GetFramebuffer().Activate(pFBOArrTex);
 	
 	pFBOArrTex->DetachAllImages();
 	pFBOArrTex->AttachDepthArrayTexture( pUseArrTexSolidDepth );
@@ -805,8 +783,8 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOArrTex ){
-		pFBOArrTex = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOArrTex){
+		pFBOArrTex = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain solid depth texture if not existing already
@@ -817,7 +795,7 @@ void deoglShadowMapper::ActivateSolidArrayTextureLayer( int size, int layerCount
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOArrTex );
+	pRenderThread.GetFramebuffer().Activate(pFBOArrTex);
 	
 	pFBOArrTex->DetachAllImages();
 	pFBOArrTex->AttachDepthArrayTextureLayer( pUseArrTexSolidDepth, layer );
@@ -844,8 +822,8 @@ void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCoun
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOArrTex ){
-		pFBOArrTex = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOArrTex){
+		pFBOArrTex = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain transparent depth texture if not existing already
@@ -863,7 +841,7 @@ void deoglShadowMapper::ActivateTransparentArrayTexture( int size, int layerCoun
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOArrTex );
+	pRenderThread.GetFramebuffer().Activate(pFBOArrTex);
 	
 	pFBOArrTex->DetachAllImages();
 	pFBOArrTex->AttachDepthArrayTexture( pUseArrTexTranspDepth );
@@ -889,10 +867,7 @@ deoglTexture *deoglShadowMapper::GetOcclusionTexture() const{
 }
 
 void deoglShadowMapper::DropOcclusionTextures(){
-	if( pFBOOcclusion ){
-		pFBOOcclusion->DecreaseUsageCount();
-		pFBOOcclusion = NULL;
-	}
+	pFBOOcclusion.Clear();
 	
 	if( pTextureOcclusion ){
 		pTextureOcclusion->SetInUse( false );
@@ -907,8 +882,8 @@ void deoglShadowMapper::ActivateOcclusionTexture( int width, int height ){
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOOcclusion ){
-		pFBOOcclusion = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( width, height );
+	if(!pFBOOcclusion){
+		pFBOOcclusion = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(width, height);
 	}
 	
 	// obtain occlusion texture if not existing already
@@ -917,7 +892,7 @@ void deoglShadowMapper::ActivateOcclusionTexture( int width, int height ){
 	}
 	
 	// switch to the framebuffer required by this occlusion map
-	pRenderThread.GetFramebuffer().Activate( pFBOOcclusion );
+	pRenderThread.GetFramebuffer().Activate(pFBOOcclusion);
 	
 	pFBOOcclusion->DetachAllImages();
 	pFBOOcclusion->AttachColorTexture( 0, pTextureOcclusion->GetTexture() );
@@ -952,10 +927,7 @@ void deoglShadowMapper::SetForeignAmbientTexture( deoglTexture *texture ){
 }
 
 void deoglShadowMapper::DropAmbientTextures(){
-	if( pFBOAmbient ){
-		pFBOAmbient->DecreaseUsageCount();
-		pFBOAmbient = NULL;
-	}
+	pFBOAmbient.Clear();
 	
 	pUseTexAmbient = NULL;
 	pForeignTexAmbient = NULL;
@@ -987,8 +959,8 @@ void deoglShadowMapper::ActivateAmbientTexture( int size, bool useFloatDepth ){
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOAmbient ){
-		pFBOAmbient = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOAmbient){
+		pFBOAmbient = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain ambient texture if not existing already
@@ -999,7 +971,7 @@ void deoglShadowMapper::ActivateAmbientTexture( int size, bool useFloatDepth ){
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOAmbient );
+	pRenderThread.GetFramebuffer().Activate(pFBOAmbient);
 	
 	pFBOAmbient->DetachAllImages();
 	pFBOAmbient->AttachDepthTexture( pUseTexAmbient );
@@ -1034,10 +1006,7 @@ void deoglShadowMapper::SetForeignAmbientCubeMap( deoglCubeMap *cubemap ){
 }
 
 void deoglShadowMapper::DropAmbientCubeMaps(){
-	if( pFBOCubeAmbient ){
-		pFBOCubeAmbient->DecreaseUsageCount();
-		pFBOCubeAmbient = NULL;
-	}
+	pFBOCubeAmbient.Clear();
 	
 	pUseCubeMapAmbient = NULL;
 	pForeignCubeMapAmbient = NULL;
@@ -1072,8 +1041,8 @@ void deoglShadowMapper::ActivateAmbientCubeMap( int size, bool useFloatDepth ){
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOCubeAmbient ){
-		pFBOCubeAmbient = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOCubeAmbient){
+		pFBOCubeAmbient = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain solid depth cubemap if not existing already
@@ -1083,10 +1052,10 @@ void deoglShadowMapper::ActivateAmbientCubeMap( int size, bool useFloatDepth ){
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOCubeAmbient );
+	pRenderThread.GetFramebuffer().Activate(pFBOCubeAmbient);
 	
 	pFBOCubeAmbient->DetachAllImages();
-	pFBOCubeAmbient->AttachDepthCubeMap( pUseCubeMapAmbient );
+	pFBOCubeAmbient->AttachDepthCubeMap(pUseCubeMapAmbient);
 	
 	const GLenum buffers[ 1 ] = { GL_NONE };
 	OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
@@ -1113,8 +1082,8 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, bool useFloatDepth
 	}
 	
 	// obtain a framebuffer for this size if not existing already
-	if( ! pFBOCubeAmbient ){
-		pFBOCubeAmbient = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size, size );
+	if(!pFBOCubeAmbient){
+		pFBOCubeAmbient = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size, size);
 	}
 	
 	// obtain depth cubemap if not existing already
@@ -1124,7 +1093,7 @@ void deoglShadowMapper::ActivateAmbientCubeMapFace( int size, bool useFloatDepth
 	}
 	
 	// switch to the framebuffer required by this shadow map
-	pRenderThread.GetFramebuffer().Activate( pFBOCubeAmbient );
+	pRenderThread.GetFramebuffer().Activate(pFBOCubeAmbient);
 	
 	pFBOCubeAmbient->DetachAllImages();
 	pFBOCubeAmbient->AttachDepthCubeMapFace( pUseCubeMapAmbient, face );

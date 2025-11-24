@@ -1,7 +1,7 @@
 #include "shared/preamble.glsl"
 
 // layout specifications
-#if LAYERED_RENDERING_STEREO
+#ifdef LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout(points, invocations=2) in;
 		layout(triangle_strip, max_vertices=4) out;
@@ -75,7 +75,7 @@ void main(void){
 	
 	// emit particles
 	int layer;
-	#if LAYERED_RENDERING_STEREO
+	#ifdef LAYERED_RENDERING_STEREO
 		#ifdef GS_INSTANCING
 			layer = gl_InvocationID;
 		#else

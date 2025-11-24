@@ -176,7 +176,7 @@ void deoglRenderLightBase::RestoreFBOGITraceRays( deoglGIState &giState ){
 	deoglTextureStageManager &tsmgr = renderThread.GetTexture().GetStages();
 	
 	deoglGITraceRays &giTraceRays = renderThread.GetGI().GetTraceRays();
-	renderThread.GetFramebuffer().Activate( &giTraceRays.GetFBOLight() );
+	renderThread.GetFramebuffer().Activate(giTraceRays.GetFBOLight());
 	
 	SetViewport( giState.GetSampleImageSize() );
 	

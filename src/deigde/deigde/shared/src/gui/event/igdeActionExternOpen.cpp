@@ -37,11 +37,11 @@
 #include "../../undo/igdeUndoSystem.h"
 
 #include <dragengine/common/exceptions.h>
+#include <dragengine/filesystem/deVFSDiskDirectory.h>
 
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>
 #endif
-
 
 
 // Class igdeActionExternOpen
@@ -50,11 +50,12 @@
 // Constructor, destructor
 ////////////////////////////
 
-igdeActionExternOpen::igdeActionExternOpen( igdeEnvironment &environment,
-	const char *text, igdeIcon *icon, const char *description, const char *path ) :
-igdeAction( text, icon, description ),
-pEnvironment( environment ),
-pPath( path )
+igdeActionExternOpen::igdeActionExternOpen(igdeEnvironment &environment,
+	const char *text, igdeIcon *icon, const char *description, const char *path) :
+igdeAction(text, icon, description),
+pEnvironment(environment),
+pPath(path),
+pEnsureExists(false)
 {
 	Update();
 }
@@ -63,12 +64,11 @@ igdeActionExternOpen::~igdeActionExternOpen(){
 }
 
 
-
 // Management
 ///////////////
 
-void igdeActionExternOpen::SetPath( const char *path ){
-	if( pPath == path ){
+void igdeActionExternOpen::SetPath(const char *path){
+	if(pPath == path){
 		return;
 	}
 	
@@ -76,30 +76,38 @@ void igdeActionExternOpen::SetPath( const char *path ){
 	Update();
 }
 
+void igdeActionExternOpen::SetEnsureExists(bool ensureExists){
+	pEnsureExists = ensureExists;
+}
 
 
 void igdeActionExternOpen::OnAction(){
-	if( pPath.IsEmpty() ){
+	if(pPath.IsEmpty()){
 		return;
 	}
 	
+	if(pEnsureExists){
+		deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/"),
+			decPath::CreatePathNative(pPath))->EnsureDiskDirectoryExists();
+	}
+	
 	#ifdef OS_W32
-	wchar_t widePath[ MAX_PATH ];
-	deOSWindows::Utf8ToWide( pPath, widePath, MAX_PATH );
-	ShellExecute( NULL, L"open", widePath, NULL, NULL, SW_SHOWDEFAULT );
+	wchar_t widePath[MAX_PATH];
+	deOSWindows::Utf8ToWide(pPath, widePath, MAX_PATH);
+	ShellExecute(NULL, L"open", widePath, NULL, NULL, SW_SHOWDEFAULT);
 		
 	#else
 	const char * const appname = "xdg-open";
 	
-	if( fork() == 0 ){
+	if(fork() == 0){
 		// GetString() is required otherwise execlp fails to run correctly
-		execlp( appname, appname, pPath.GetString(), NULL );
-		printf( "Failed running '%s' (error %d)\n", appname, errno );
-		exit( 0 );
+		execlp(appname, appname, pPath.GetString(), nullptr);
+		printf("Failed running '%s' (error %d)\n", appname, errno);
+		exit(0);
 	}
 	#endif
 }
 
 void igdeActionExternOpen::Update(){
-	SetEnabled( ! pPath.IsEmpty() );
+	SetEnabled(!pPath.IsEmpty());
 }

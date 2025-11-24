@@ -29,7 +29,7 @@ void main( void ){
 	
 	if(VSRenderLayer){
 		vLayer = inLayer;
-		#ifdef SUPPORTS_VSLAYER
+		#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 		gl_Layer = vLayer;
 		#endif
 	}

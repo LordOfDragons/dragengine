@@ -22,12 +22,10 @@
  * SOFTWARE.
  */
 
-
 namespace Dragengine.Utils
 
 pin Dragengine.Scenery
 pin Dragengine.Gui
-
 
 
 /**
@@ -40,148 +38,142 @@ pin Dragengine.Gui
 class WeightedRandomList
 	/** \brief Entry. */
 	protected class Entry
-		private var Object pObject
-		private var float pWeight
-		private var float pThreshold
-		
+		var Object pObject
+		var float pWeight, pThreshold
 		
 		
 		/** \brief Create entry. */
-		public func new( Object object, float weight )
-			this.pObject = object
-			this.pWeight = weight
-			this.pThreshold = 0.0
+		func new(Object object, float weight)
+			pObject = object
+			pWeight = weight
+			pThreshold = 0
 		end
 		
 		/** \brief Create copy of entry. */
-		public func new( Entry entry )
-			this.pObject = entry.pObject
-			this.pWeight = entry.pWeight
-			this.pThreshold = entry.pThreshold
+		func new(Entry entry)
+			pObject = entry.pObject
+			pWeight = entry.pWeight
+			pThreshold = entry.pThreshold
 		end
-		
 		
 		
 		/** \brief Object. */
-		public func Object getObject()
-			return this.pObject
+		func Object getObject()
+			return pObject
 		end
 		
 		/** \brief Set object. */
-		public func void setObject( Object object )
-			this.pObject = object
+		func void setObject(Object object)
+			pObject = object
 		end
 		
 		/** \brief Weight. */
-		public func float getWeight()
-			return this.pWeight
+		func float getWeight()
+			return pWeight
 		end
 		
 		/** \brief Set weight. */
-		public func void setWeight( float weight )
-			this.pWeight = weight
+		func void setWeight(float weight)
+			pWeight = weight
 		end
 		
 		/** \brief Threshold value. */
-		public func float getThreshold()
-			return this.pThreshold
+		func float getThreshold()
+			return pThreshold
 		end
 		
 		/** \brief Threshold value. */
-		public func void setThreshold( float threshold )
-			this.pThreshold = threshold
+		func void setThreshold(float threshold)
+			pThreshold = threshold
 		end
 	end
 	
 	
-	
-	private var Array pEntries
-	private var float pMaxThreshold
-	private var bool pDirtyThresholds
-	
+	var Array pEntries
+	var float pMaxThreshold
+	var bool pDirtyThresholds
 	
 	
 	/** \brief Create list. */
-	public func new()
-		this.pEntries = Array.new()
-		this.pMaxThreshold = 0.0
-		this.pDirtyThresholds = false
+	func new()
+		pEntries = Array.new()
+		pMaxThreshold = 0
+		pDirtyThresholds = false
 	end
 	
 	/** \brief Create copy of list. */
-	public func new( WeightedRandomList list )
-		this.pEntries = list.pEntries.map( block Entry each
-			return Entry.new( each )
-		end )
-		this.pMaxThreshold = list.pMaxThreshold
-		this.pDirtyThresholds = list.pDirtyThresholds
+	func new(WeightedRandomList list)
+		pEntries = list.pEntries.map(block Entry each
+			return Entry.new(each)
+		end)
+		pMaxThreshold = list.pMaxThreshold
+		pDirtyThresholds = list.pDirtyThresholds
 	end
-	
 	
 	
 	/** \brief Number of entries. */
-	public func int getCount()
-		return this.pEntries.getCount()
+	func int getCount()
+		return pEntries.getCount()
 	end
 	
 	/** \brief Object at index. */
-	public func Object getObjectAt( int index )
-		return ( this.pEntries.getAt( index ) cast Entry ).getObject()
+	func Object getObjectAt(int index)
+		return (pEntries.getAt(index) cast Entry).getObject()
 	end
 	
 	/** \brief Weight at index. */
-	public func float getWeightAt( int index )
-		return ( this.pEntries.getAt( index ) cast Entry ).getWeight()
+	func float getWeightAt(int index)
+		return (pEntries.getAt(index) cast Entry).getWeight()
 	end
 	
 	/** \brief Index of first object or -1 if absent. */
-	public func int indexOfObject( Object object )
-		var Object entry = this.pEntries.find( block Entry each
+	func int indexOfObject(Object object)
+		var Object entry = pEntries.find(block Entry each
 			return each.getObject() == object
-		end )
+		end)
 		
 		if entry == null
 			return -1
 			
 		else
-			return this.pEntries.indexOf( entry )
+			return pEntries.indexOf(entry)
 		end
 	end
 	
 	/** \brief Set object at index. */
-	public func void setObjectAt( int index, Object object )
-		( this.pEntries.getAt( index ) cast Entry ).setObject( object )
+	func void setObjectAt(int index, Object object)
+		(pEntries.getAt(index) cast Entry).setObject(object)
 	end
 	
 	/** \brief Set weight at index. */
-	public func void setWeightAt( int index, float weight )
-		( this.pEntries.getAt( index ) cast Entry ).setWeight( weight )
-		this.pDirtyThresholds = true
+	func void setWeightAt(int index, float weight)
+		(pEntries.getAt(index) cast Entry).setWeight(weight)
+		pDirtyThresholds = true
 	end
 	
 	/** \brief Add object. */
-	public func void add( Object object, float weight )
-		this.pEntries.add( Entry.new( object, weight ) )
-		this.pDirtyThresholds = true
+	func void add(Object object, float weight)
+		pEntries.add(Entry.new(object, weight))
+		pDirtyThresholds = true
 	end
 	
 	/** \brief Remove first occurance of object. */
-	public func void removeObject( Object object )
-		this.pEntries.removeFrom( this.indexOfObject( object ) )
-		this.pDirtyThresholds = true
+	func void removeObject(Object object)
+		pEntries.removeFrom(indexOfObject(object))
+		pDirtyThresholds = true
 	end
 	
 	/** \brief Remove object from index. */
-	public func void removeFrom( int index )
-		this.pEntries.removeFrom( index )
-		this.pDirtyThresholds = true
+	func void removeFrom(int index)
+		pEntries.removeFrom(index)
+		pDirtyThresholds = true
 	end
 	
 	/** \brief Remove all objects. */
-	public func void removeAll()
-		this.pEntries.removeAll()
-		this.pMaxThreshold = 0.0
-		this.pDirtyThresholds = false
+	func void removeAll()
+		pEntries.removeAll()
+		pMaxThreshold = 0.0
+		pDirtyThresholds = false
 	end
 	
 	/**
@@ -189,10 +181,10 @@ class WeightedRandomList
 	 * 
 	 * Black is called with arguments (Object object, float weight).
 	 */
-	public func void forEach( Block ablock )
-		this.pEntries.forEach( block Entry each
-			ablock.run( each.getObject(), each.getWeight() )
-		end )
+	func void forEach(Block ablock)
+		pEntries.forEach(block Entry each
+			ablock.run(each.getObject(), each.getWeight())
+		end)
 	end
 	
 	/**
@@ -201,10 +193,10 @@ class WeightedRandomList
 	 * Black is called with arguments (Object object, float weight) and has to return
 	 * \em true to select the object or \em false to continue searching.
 	 */
-	public func Object find( Block ablock )
-		var Entry entry = this.pEntries.find( block Entry each
-			return ablock.run( each.getObject(), each.getWeight() )
-		end ) cast Entry
+	func Object find(Block ablock)
+		var Entry entry = pEntries.find(block Entry each
+			return ablock.run(each.getObject(), each.getWeight())
+		end) cast Entry
 		
 		if entry != null
 			return entry.getObject()
@@ -218,24 +210,35 @@ class WeightedRandomList
 	 * \brief Random object.
 	 * \throws EInvalidParam List is empty.
 	 */
-	public func Object random()
-		var int upper = this.pEntries.getCount() - 1
+	func Object random()
+		return random(DEMath.random())
+	end
+	
+	/**
+	 * \brief Random object using random value in the range from 0 to 1.
+	 * \throws EInvalidParam List is empty.
+	 * \version 1.30
+	 * 
+	 * This function is useful to create reproducible results for example game saves.
+	 */
+	func Object random(float randomValue)
+		var int upper = pEntries.getCount() - 1
 		if upper == -1
-			throw EInvalidParam.new()
+			throw EInvalidParam.new("empty list")
 		end
 		
-		if this.pDirtyThresholds
-			this.updateThresholds()
+		if pDirtyThresholds
+			updateThresholds()
 		end
 		
-		var float randomValue = DEMath.random( 0.0, this.pMaxThreshold )
-		var int lower = 0
+		randomValue = DEMath.clamp(randomValue, 0.0, 1.0) * pMaxThreshold
+		
+		var int lower, middle
 		var Entry entry
-		var int middle
 		
 		while lower != upper
-			middle = ( lower + upper ) / 2
-			entry = this.pEntries.getAt( middle ) cast Entry
+			middle = (lower + upper) / 2
+			entry = pEntries.getAt(middle) cast Entry
 			
 			if randomValue > entry.getThreshold()
 				lower = middle + 1
@@ -245,7 +248,7 @@ class WeightedRandomList
 			end
 		end
 		
-		return ( this.pEntries.getAt( lower ) cast Entry ).getObject()
+		return (pEntries.getAt(lower) cast Entry).getObject()
 	end
 	
 	/**
@@ -254,39 +257,39 @@ class WeightedRandomList
 	 * Block is called with arguments (Object object, float Weight) and has to return
 	 * \em true to include the object or \em false to exclude the object.
 	 */
-	public func WeightedRandomList collect( Block ablock )
+	func WeightedRandomList collect(Block ablock)
 		var WeightedRandomList list = WeightedRandomList.new()
-		this.pEntries.forEach( block Entry each
-			if ablock.run( each.getObject(), each.getWeight() ) cast bool
-				list.pEntries.add( Entry.new( each ) )
+		pEntries.forEach(block Entry each
+			if ablock.run(each.getObject(), each.getWeight()) cast bool
+				list.pEntries.add(Entry.new(each))
 			end
-		end )
+		end)
 		return list
 	end
 	
 	
 	
 	/** \brief Entry at index. */
-	protected func Entry getEntryAt( int index )
-		return this.pEntries.getAt( index ) cast Entry
+	protected func Entry getEntryAt(int index)
+		return pEntries.getAt(index) cast Entry
 	end
 	
 	/** \brief Maximum threshold. */
 	protected func float getMaxThreshold()
-		return this.pMaxThreshold
+		return pMaxThreshold
 	end
 	
 	/** \brief Threshold are dirty. */
 	protected func bool getDirtyThresholds()
-		return this.pDirtyThresholds
+		return pDirtyThresholds
 	end
 	
 	/** \brief Update thresholds. */
 	protected func void updateThresholds()
-		this.pMaxThreshold = this.pEntries.inject( 0.0, block float result, Entry each
-			each.setThreshold( result + each.getWeight() )
+		pMaxThreshold = pEntries.inject(0.0, block float result, Entry each
+			each.setThreshold(result + each.getWeight())
 			return each.getThreshold()
-		end ) cast float
-		this.pDirtyThresholds = false
+		end) cast float
+		pDirtyThresholds = false
 	end
 end

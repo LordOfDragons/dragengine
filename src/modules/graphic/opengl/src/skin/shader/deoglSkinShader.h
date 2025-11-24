@@ -161,10 +161,9 @@ public:
 		etutTexColorTint,
 		etutTexColorGamma,
 		
+		etutTexSolidityRemap,
 		etutTexColorSolidMultiplier,
 		etutTexAOSolidityMultiplier,
-		etutTexSolidityMultiplier,
-		etutTexAbsorptionRange,
 		
 		etutTexHeightRemap,
 		etutTexNormalStrength,
@@ -182,6 +181,7 @@ public:
 		etutTexTransparencyMultiplier,
 		
 		etutTexEnvRoomTint,
+		etutTexAbsorptionRange,
 		
 		etutTexEnvRoomEmissivityIntensity,
 		etutTexThickness,
@@ -241,9 +241,9 @@ public:
 		
 		eiutInstColorTint,
 		eiutInstColorGamma,
+		eiutInstSolidityRemap,
 		eiutInstColorSolidityMultiplier,
 		eiutInstTransparencyMultiplier,
-		eiutInstSolidityMultiplier,
 		eiutInstAOSolidityMultiplier,
 		eiutInstHeightRemap,
 		eiutInstNormalStrength,

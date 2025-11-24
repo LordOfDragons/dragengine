@@ -230,6 +230,7 @@ params.Add(TernaryVariable('build_cr_basic', 'Build Basic Crash-Recovery Module'
 params.Add(TernaryVariable('build_graphics_opengl', 'Build OpenGL Graphics Module'))
 params.Add(TernaryVariable('build_graphics_vulkan', 'Build Vulkan Graphics Module', False))
 params.Add(TernaryVariable('build_guilauncher', 'Build GUI Launcher'))
+params.Add(TernaryVariable('build_consolelauncher', 'Build Console Launcher'))
 params.Add(TernaryVariable('build_font_freetype', 'Build FreeType Font Module'))
 params.Add(TernaryVariable('build_image_jpeg', 'Build JPEG Image Module'))
 params.Add(TernaryVariable('build_image_png', 'Build PNG Image Module'))
@@ -768,6 +769,7 @@ if parent_env['with_warnerrors']:
 if parent_env['platform_android'] != 'no':
 	parent_env.Append(CPPFLAGS = ['-Wno-unused-private-field'])
 	parent_env.Append(CPPFLAGS = ['-Wno-tautological-constant-compare'])
+	parent_env.Append(CPPFLAGS = ['-Wno-nontrivial-memcall'])
 
 # clang uses some warnings we do not care about right now
 if parent_env['CROSSCOMPILE_CLANG']:

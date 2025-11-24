@@ -177,6 +177,12 @@ public:
 	 * If the file does not exist an exception is thrown.
 	 */
 	virtual TIME_SYSTEM GetFileModificationTime( const decPath &path );
+	
+	/**
+	 * \brief Ensure disk directory exists.
+	 * \version 1.30
+	 */
+	void EnsureDiskDirectoryExists();
 	/*@}*/
 	
 private:

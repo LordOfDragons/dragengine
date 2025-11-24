@@ -26,12 +26,13 @@
 #define _DEOGLDEFERREDRENDERING_H_
 
 #include "../../deoglBasics.h"
+#include "../../framebuffer/deoglFramebuffer.h"
 #include "../../memory/consumption/deoglMemoryConsumptionDeferredRenderingUse.h"
 
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
-class deoglFramebuffer;
 class deoglDRDepthMinMax;
 class deoglShaderCompiled;
 class deoglSPBlockUBO;
@@ -82,25 +83,24 @@ private:
 	deoglArrayTexture *pTextureTemporary2;
 	deoglArrayTexture *pTextureTemporary3;
 	
-	deoglFramebuffer *pFBOs[ 38 ];
-	deoglFramebuffer **pFBOMipMapDepth1;
-	deoglFramebuffer **pFBOMipMapDepth2;
-	deoglFramebuffer **pFBOMipMapTemporary1;
-	deoglFramebuffer **pFBOMipMapTemporary2;
-	int pFBOMipMapDepthCount;
+	deoglFramebuffer::Ref pFBOs[ 38 ];
+	decObjectList pFBOMipMapDepth1;
+	decObjectList pFBOMipMapDepth2;
+	decObjectList pFBOMipMapTemporary1;
+	decObjectList pFBOMipMapTemporary2;
 	int pFBOMipMapCount;
 	bool pModeDepth;
 	bool pModePostProcess;
 	
-	deoglFramebuffer *pFBOCopyDepth[ 8 ];
+	deoglFramebuffer::Ref pFBOCopyDepth[ 8 ];
 	
 	deoglDRDepthMinMax *pDepthMinMax;
 	
 // 	deoglArrayTexture *pTextureLuminance;
 // 	deoglArrayTexture *pTextureLuminanceNormal;
 // 	deoglArrayTexture *pTextureLuminanceDepth;
-// 	deoglFramebuffer *pFBOLuminance;
-// 	deoglFramebuffer *pFBOLuminanceNormal;
+// 	deoglFramebuffer::Ref pFBOLuminance;
+// 	deoglFramebuffer::Ref pFBOLuminanceNormal;
 	
 	deoglMemoryConsumptionDeferredRenderingUse pMemUse;
 	

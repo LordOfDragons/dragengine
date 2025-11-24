@@ -34,7 +34,7 @@
 #include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeActionUndoReference.h>
 #include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/event/igdeActionExternOpenReference.h>
+#include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIconReference.h>
 
@@ -72,12 +72,12 @@ private:
 	igdeActionReference pActionProfileDistribute;
 	igdeActionReference pActionProfileTestRun;
 	
-	igdeActionExternOpenReference pActionShowDelga;
-	igdeActionExternOpenReference pActionShowContent;
-	igdeActionExternOpenReference pActionShowConfig;
-	igdeActionExternOpenReference pActionShowOverlay;
-	igdeActionExternOpenReference pActionShowCapture;
-	igdeActionExternOpenReference pActionShowLogs;
+	igdeActionExternOpen::Ref pActionShowDelga;
+	igdeActionExternOpen::Ref pActionShowContent;
+	igdeActionExternOpen::Ref pActionShowConfig;
+	igdeActionExternOpen::Ref pActionShowOverlay;
+	igdeActionExternOpen::Ref pActionShowCapture;
+	igdeActionExternOpen::Ref pActionShowLogs;
 	
 	igdeIconReference pIconStart;
 	igdeIconReference pIconStop;
@@ -130,12 +130,12 @@ public:
 	inline igdeAction *GetActionProfileDistribute() const{ return pActionProfileDistribute; }
 	inline igdeAction *GetActionProfileTestRun() const{ return pActionProfileTestRun; }
 	
-	inline igdeActionExternOpen *GetActionShowDistribute() const{ return pActionShowDelga; }
-	inline igdeActionExternOpen *GetActionShowContent() const{ return pActionShowContent; }
-	inline igdeActionExternOpen *GetActionShowConfig() const{ return pActionShowConfig; }
-	inline igdeActionExternOpen *GetActionShowOverlay() const{ return pActionShowOverlay; }
-	inline igdeActionExternOpen *GetActionShowCapture() const{ return pActionShowCapture; }
-	inline igdeActionExternOpen *GetActionShowLogs() const{ return pActionShowLogs; }
+	inline const igdeActionExternOpen::Ref &GetActionShowDistribute() const{ return pActionShowDelga; }
+	inline const igdeActionExternOpen::Ref &GetActionShowContent() const{ return pActionShowContent; }
+	inline const igdeActionExternOpen::Ref &GetActionShowConfig() const{ return pActionShowConfig; }
+	inline const igdeActionExternOpen::Ref &GetActionShowOverlay() const{ return pActionShowOverlay; }
+	inline const igdeActionExternOpen::Ref &GetActionShowCapture() const{ return pActionShowCapture; }
+	inline const igdeActionExternOpen::Ref &GetActionShowLogs() const{ return pActionShowLogs; }
 	
 	inline igdeIcon *GetIconStart() const{ return pIconStart; }
 	inline igdeIcon *GetIconStop() const{ return pIconStop; }

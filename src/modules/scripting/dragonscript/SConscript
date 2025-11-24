@@ -56,7 +56,6 @@ globFiles(envModule, 'igde/gamedefs', '*.degd', igdeGameDefs)
 
 igdeTemplates = []
 globFiles(envModule, 'igde/templates', '*', igdeTemplates)
-igdeTemplates = [x for x in igdeTemplates if 'project.code-workspace' not in x]
 
 install = []
 installIgde = []

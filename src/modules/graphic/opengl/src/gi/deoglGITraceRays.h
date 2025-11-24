@@ -53,7 +53,7 @@ private:
 	deoglTexture pTexDiffuse;
 	deoglTexture pTexReflectivity;
 	deoglTexture pTexLight;
-	deoglFramebuffer pFBOLight;
+	const deoglFramebuffer::Ref pFBOLight;
 	
 	
 	
@@ -115,7 +115,7 @@ public:
 	inline const deoglTexture &GetTextureLight() const{ return pTexLight; }
 	
 	/** Light FBO. */
-	inline deoglFramebuffer &GetFBOLight(){ return pFBOLight; }
+	inline const deoglFramebuffer::Ref &GetFBOLight(){ return pFBOLight; }
 	/*@}*/
 	
 	

@@ -26,6 +26,7 @@
 #define _DEOGLFRAMEBUFFER_H_
 
 #include "../deoglBasics.h"
+#include <dragengine/deObject.h>
 
 class deoglArrayTexture;
 class deoglCubeMap;
@@ -41,7 +42,11 @@ class deErrorTracePoint;
 /**
  * Framebuffer Object.
  */
-class deoglFramebuffer{
+class deoglFramebuffer : public deObject{
+public:
+	typedef deTObjectReference<deoglFramebuffer> Ref;
+	
+	
 private:
 	enum eAttachementTypes{
 		eatNone,
@@ -106,7 +111,6 @@ private:
 		}
 	};
 	
-private:
 	deoglRenderThread &pRenderThread;
 	GLuint pFBO;
 	bool pPrimary;
@@ -117,15 +121,20 @@ private:
 	int pUsageHeight;
 	int pUsageCount;
 	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new framebuffer object either as primary or offscreen. */
-	deoglFramebuffer( deoglRenderThread &renderThread, bool primary );
+	deoglFramebuffer(deoglRenderThread &renderThread, bool primary);
+	
+protected:
 	/** Cleans up the framebuffer object. */
-	~deoglFramebuffer();
+	~deoglFramebuffer() override;
 	/*@}*/
 	
+	
+public:
 	/** \name Management */
 	/*@{*/
 	/** Determines if the framebuffer is a primary framebuffer. */

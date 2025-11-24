@@ -25,13 +25,13 @@
 #ifndef _DEOGLRRENDERTARGET_H_
 #define _DEOGLRRENDERTARGET_H_
 
+#include "../framebuffer/deoglFramebuffer.h"
+
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderThread;
-class deoglFramebuffer;
 class deoglTexture;
-
 
 
 /**
@@ -39,25 +39,21 @@ class deoglTexture;
  */
 class deoglRenderTarget : public deObject{
 public:
-	/** Type holding strong reference. */
 	typedef deTObjectReference<deoglRenderTarget> Ref;
-	
 	
 	
 private:
 	deoglRenderThread &pRenderThread;
 	
-	decPoint pSize;
-	decPoint pTextureSize;
+	decPoint pSize, pTextureSize;
 	float pAspectRatio;
-	int pBitCount;
-	int pComponentCount;
+	int pBitCount, pComponentCount;
 	float pFloatTexture;
 	
 	bool pDirtyTexture;
 	
 	deoglTexture *pTexture;
-	deoglFramebuffer *pFBO;
+	deoglFramebuffer::Ref pFBO;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -91,7 +87,7 @@ public:
 	
 	
 	/** Framebuffer or \em NULL if not existing. */
-	inline deoglFramebuffer *GetFBO() const{ return pFBO; }
+	inline const deoglFramebuffer::Ref &GetFBO() const{ return pFBO; }
 	
 	/** Prepare texture. */
 	void PrepareTexture();

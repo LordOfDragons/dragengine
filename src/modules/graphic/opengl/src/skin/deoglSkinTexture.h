@@ -131,6 +131,7 @@ private:
 	
 	bool pSolidityMasked;
 	float pSolidityFilterPriority;
+	bool pSolidityInvert;
 	bool pSolid;
 	bool pHasHoles;
 	bool pReflects;
@@ -312,6 +313,12 @@ public:
 	inline bool GetSolidityMasked() const{ return pSolidityMasked; }
 	/** Sets if the texture uses full alpha. */
 	void SetSolidityMasked( bool solidityMasked );
+	
+	/** Invert solidity. */
+	inline bool GetSolidityInvert() const{ return pSolidityInvert; }
+	
+	/** Set invert solidity. */
+	void SetSolidityInvert(bool solidityInvert);
 	
 	/** Solidity filter priority. */
 	inline bool GetSolidityFilterPriority() const{ return pSolidityFilterPriority; }

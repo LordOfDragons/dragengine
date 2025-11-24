@@ -11,25 +11,25 @@
 // texture coordinates (location 0)
 // used by:
 // - LayeredRendering != LayeredRenderingNone
-VARYING_BIND(0) in vec2 vGSTexCoord[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(0) in mediump vec2 vGSTexCoord[GEOMETRY_SHADER_INPUT_SIZE];
 
-VARYING_BIND(0) out vec2 vTexCoord;
+VARYING_BIND(0) out mediump vec2 vTexCoord;
 
 
 // screen coordinates (location 1)
 // used by:
 // - FullScreenQuad
-VARYING_BIND(1) in vec2 vGSScreenCoord[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(1) in mediump vec2 vGSScreenCoord[GEOMETRY_SHADER_INPUT_SIZE];
 
-VARYING_BIND(1) out vec2 vScreenCoord;
+VARYING_BIND(1) out mediump vec2 vScreenCoord;
 
 
 // layer (location 2)
 // used by:
 // - LayeredRendering != LayeredRenderingNone
-VARYING_BIND(2) flat in int vGSLayer[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(2) flat in lowp int vGSLayer[GEOMETRY_SHADER_INPUT_SIZE];
 
-VARYING_BIND(2) flat out int vLayer;
+VARYING_BIND(2) flat out lowp int vLayer;
 
 
 // default outputs

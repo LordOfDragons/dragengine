@@ -8,20 +8,20 @@
 // light volume position (location 3)
 // used by:
 // - LayeredRendering != LayeredRenderingNone
-VARYING_BIND(3) in vec3 vLightVolumePos;
+VARYING_BIND(3) in mediump vec3 vLightVolumePos;
 
 
 // particle light color (location 4)
 // used by:
 // - LightMode == LightModeParticle
-VARYING_BIND(4) in vec3 vParticleLightColor;
+VARYING_BIND(4) in mediump vec3 vParticleLightColor;
 
 
 // particle light range (location 5)
 // used by:
 // - LightMode == LightModeParticle
-VARYING_BIND(5) in float vParticleLightRange;
+VARYING_BIND(5) in mediump float vParticleLightRange;
 
 
 // particle light position (location 6)
-VARYING_BIND(6) in vec3 vParticleLightPosition;
+VARYING_BIND(6) in mediump vec3 vParticleLightPosition;

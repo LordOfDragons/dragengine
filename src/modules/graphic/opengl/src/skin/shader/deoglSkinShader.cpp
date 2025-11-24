@@ -81,10 +81,9 @@ static const sSPBParameterDefinition vTextureSPBParamDefs[ deoglSkinShader::ETUT
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexColorTint ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexColorGamma ( float )
 	
+	{ deoglSPBParameter::evtFloat, 2, 1, 1 }, // etutTexSolidityRemap (vec2)
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexColorSolidityMultiplier ( float )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexAOSolidityMultiplier ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexSolidityMultiplier ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexAbsorptionRange ( float )
 	
 	{ deoglSPBParameter::evtFloat, 2, 1, 1 }, // etutTexHeightRemap ( vec2 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexNormalStrength ( float )
@@ -102,6 +101,7 @@ static const sSPBParameterDefinition vTextureSPBParamDefs[ deoglSkinShader::ETUT
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexTransparencyMultiplier ( float )
 	
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexEnvRoomTint (vec3)
+	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexAbsorptionRange ( float )
 	
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // etutTexEnvRoomEmissivityIntensity ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // etutTexThickness ( float )
@@ -159,9 +159,9 @@ static const sSPBParameterDefinition vInstanceSPBParamDefs[ deoglSkinShader::EIU
 	
 	{ deoglSPBParameter::evtFloat, 3, 1, 1 }, // eiutInstColorTint ( vec3 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstColorGamma ( float )
+	{ deoglSPBParameter::evtFloat, 2, 1, 1 }, // eiutInstSolidityRemap (vec2)
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstColorSolidityMultiplier ( float )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstTransparencyMultiplier ( float )
-	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstSolidityMultiplier ( float )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstAOSolidityMultiplier ( float )
 	{ deoglSPBParameter::evtFloat, 2, 1, 1 }, // eiutInstHeightRemap ( vec2 )
 	{ deoglSPBParameter::evtFloat, 1, 1, 1 }, // eiutInstNormalStrength ( float )
@@ -226,9 +226,9 @@ static const deoglSkinShader::eInstanceUniformTargets vUBOInstParamMap[ vUBOInst
 	deoglSkinShader::eiutInstColorTint, // eiutInstColorTint ( vec3 )
 	deoglSkinShader::eiutInstColorGamma, // eiutInstColorGamma ( float )
 	
+	deoglSkinShader::eiutInstSolidityRemap, // eiutInstSolidityRemap (vec2)
 	deoglSkinShader::eiutInstColorSolidityMultiplier, // eiutInstColorSolidityMultiplier ( float )
 	deoglSkinShader::eiutInstTransparencyMultiplier, // eiutInstTransparencyMultiplier ( float )
-	deoglSkinShader::eiutInstSolidityMultiplier, // eiutInstSolidityMultiplier ( float )
 	deoglSkinShader::eiutInstAOSolidityMultiplier, // eiutInstAOSolidityMultiplier ( float )
 	
 	deoglSkinShader::eiutInstHeightRemap, // eiutInstHeightRemap ( vec2 )
@@ -708,14 +708,19 @@ deoglRDynamicSkin *dynamicSkin ) const{
 			element, decMath::clamp( weight, 0.0f, 1.0f ) );
 	}
 	
-	if( pInstanceUniformTargets[ eiutInstSolidityMultiplier ] != -1 ){
+	if(pInstanceUniformTargets[eiutInstSolidityRemap] != -1){
 		const deoglSkinTextureProperty &property = skinTexture
-			.GetMaterialPropertyAt( deoglSkinTexture::empSolidityMultiplier );
-		const float weight = property.ResolveAsFloat( skinState, dynamicSkin,
-			skinTexture.GetSolidityMultiplier() );
+			.GetMaterialPropertyAt(deoglSkinTexture::empSolidityMultiplier);
 		
-		paramBlock.SetParameterDataFloat( pInstanceUniformTargets[ eiutInstSolidityMultiplier ],
-			element, decMath::clamp( weight, 0.0f, 1.0f ) );
+		float lower = 0.0f, upper = property.ResolveAsFloat(
+			skinState, dynamicSkin, skinTexture.GetSolidityMultiplier());
+		if(skinTexture.GetSolidityInvert()){
+			lower = 1.0f - lower;
+			upper = 1.0f - upper;
+		}
+		
+		paramBlock.SetParameterDataVec2(pInstanceUniformTargets[eiutInstSolidityRemap], element,
+			decMath::clamp(lower, 0.0f, 1.0f), decMath::clamp(upper, 0.0f, 1.0f));
 	}
 	
 	if( pInstanceUniformTargets[ eiutInstHeightRemap ] != -1 ){
@@ -1781,8 +1786,8 @@ void deoglSkinShader::GenerateDefines( deoglShaderDefines &defines ){
 	if( pConfig.GetDynamicTransparencyMultiplier() ){
 		defines.SetDefines( "DYNAMIC_TRANSPARENCY_MULTIPLIER" );
 	}
-	if( pConfig.GetDynamicSolidityMultiplier() ){
-		defines.SetDefines( "DYNAMIC_SOLIDITY_MULTIPLIER" );
+	if(pConfig.GetDynamicSolidityRemap()){
+		defines.SetDefines("DYNAMIC_SOLIDITY_REMAP");
 	}
 	if( pConfig.GetDynamicHeightRemap() ){
 		defines.SetDefines( "DYNAMIC_HEIGHT_REMAP" );
@@ -2191,7 +2196,7 @@ void deoglSkinShader::UpdateUniformTargets(){
 		pInstanceUniformTargets[ eiutInstColorSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstAOSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstTransparencyMultiplier ] = pUsedInstanceUniformTargetCount++;
-		pInstanceUniformTargets[ eiutInstSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;
+		pInstanceUniformTargets[eiutInstSolidityRemap] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstHeightRemap ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstNormalStrength ] = pUsedInstanceUniformTargetCount++;
 		pInstanceUniformTargets[ eiutInstNormalSolidityMultiplier ] = pUsedInstanceUniformTargetCount++;

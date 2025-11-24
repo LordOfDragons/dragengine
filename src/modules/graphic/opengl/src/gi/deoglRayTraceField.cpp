@@ -58,8 +58,7 @@ pSpacing( 1.0f, 1.0f, 1.0f ),
 pInverseSpacing( 1.0f, 1.0f, 1.0f ),
 pProbeSize( 8 ), // equals 64 rays
 pProbesPerLine( 128 ), // equals image width of 1024
-pTexRays( renderThread ),
-pFBORays( NULL )
+pTexRays( renderThread )
 {
 	try{
 		pUBO.TakeOver( new deoglSPBlockUBO( renderThread ) );
@@ -171,10 +170,7 @@ void deoglRayTraceField::RenderField( deoglROcclusionMesh &occlusionMesh ){
 }
 
 void deoglRayTraceField::DropFBO(){
-	if( pFBORays ){
-		delete pFBORays;
-		pFBORays = NULL;
-	}
+	pFBORays = nullptr;
 }
 
 
@@ -183,9 +179,6 @@ void deoglRayTraceField::DropFBO(){
 //////////////////////
 
 void deoglRayTraceField::pCleanUp(){
-	if( pFBORays ){
-		delete pFBORays;
-	}
 }
 
 void deoglRayTraceField::pPrepareUBOState(){
@@ -208,8 +201,8 @@ void deoglRayTraceField::pPrepareRayTexFBO(){
 	const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
 	bool setupFbo = false;
 	
-	if( ! pFBORays ){
-		pFBORays = new deoglFramebuffer( pRenderThread, false );
+	if(!pFBORays){
+		pFBORays.TakeOverWith(pRenderThread, false);
 		setupFbo = true;
 	}
 	

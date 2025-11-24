@@ -23,7 +23,7 @@
  */
 
 #ifndef _REUSETSHAPECYLINDERHALHEIGHT_H_
-#define _REUSETSHAPECYLINDERHALFHEIGHT_H_
+#define _REUSETSHAPECYLINDERHALHEIGHT_H_
 
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"

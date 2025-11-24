@@ -250,7 +250,6 @@ pGIShowCascade( 0 ),
 pGIShowProbeRays( false ),
 
 pTextureDebugImage( NULL ),
-pFBODebugImage( NULL ),
 pDebugImageUsed( false )
 {
 	#ifdef OS_ANDROID
@@ -271,9 +270,7 @@ pDebugImageUsed( false )
 }
 
 deoglDeveloperMode::~deoglDeveloperMode(){
-	if( pFBODebugImage ){
-		delete pFBODebugImage;
-	}
+	pFBODebugImage = nullptr;
 	if( pTextureDebugImage ){
 		delete pTextureDebugImage;
 	}
@@ -284,13 +281,10 @@ deoglDeveloperMode::~deoglDeveloperMode(){
 // Management
 ///////////////
 
-deoglFramebuffer *deoglDeveloperMode::GetFBODebugImageWith( int width, int height ){
+const deoglFramebuffer::Ref &deoglDeveloperMode::GetFBODebugImageWith( int width, int height ){
 	if( pTextureDebugImage ){
 		if( pTextureDebugImage->GetWidth() != width || pTextureDebugImage->GetHeight() != height ){
-			if( pFBODebugImage ){
-				delete pFBODebugImage;
-				pFBODebugImage = NULL;
-			}
+			pFBODebugImage = nullptr;
 			
 			delete pTextureDebugImage;
 			pTextureDebugImage = NULL;
@@ -305,10 +299,10 @@ deoglFramebuffer *deoglDeveloperMode::GetFBODebugImageWith( int width, int heigh
 		
 		pTextureDebugImage->CreateTexture();
 		
-		if( ! pFBODebugImage ){
-			pFBODebugImage = new deoglFramebuffer( pRenderThread, false );
+		if(!pFBODebugImage){
+			pFBODebugImage.TakeOverWith(pRenderThread, false);
 			
-			pRenderThread.GetFramebuffer().Activate( pFBODebugImage );
+			pRenderThread.GetFramebuffer().Activate(pFBODebugImage);
 			
 			pFBODebugImage->AttachColorTexture( 0, pTextureDebugImage );
 			const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
@@ -325,10 +319,7 @@ deoglFramebuffer *deoglDeveloperMode::GetFBODebugImageWith( int width, int heigh
 
 void deoglDeveloperMode::CheckDebugImageUse(){
 	if( ! pDebugImageUsed ){
-		if( pFBODebugImage ){
-			delete pFBODebugImage;
-			pFBODebugImage = NULL;
-		}
+		pFBODebugImage = nullptr;
 		
 		if( pTextureDebugImage ){
 			delete pTextureDebugImage;

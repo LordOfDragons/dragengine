@@ -10,12 +10,12 @@
 // - LayeredRendering != LayeredRenderingNone
 #ifdef WITH_GEOMETRY_SHADER
 	// opengl
-	VARYING_BIND(3) out vec3 vGSLightVolumePos;
+	VARYING_BIND(3) out mediump vec3 vGSLightVolumePos;
 	#define vLightVolumePos vGSLightVolumePos
 	
 #else
 	// spir-v
-	VARYING_BIND(3) out vec3 vLightVolumePos;
+	VARYING_BIND(3) out mediump vec3 vLightVolumePos;
 #endif
 
 
@@ -24,11 +24,11 @@
 // - LightMode == LightModeParticle
 #ifdef WITH_SPIRV_OPENGL
 	// spir-v
-	VARYING_BIND(4) out vec3 vParticleLightColor;
+	VARYING_BIND(4) out mediump vec3 vParticleLightColor;
 	
 #else
 	// opengl
-	VARYING_BIND(4) out vec3 vGSParticleLightColor;
+	VARYING_BIND(4) out mediump vec3 vGSParticleLightColor;
 	#define vParticleLightColor vGSParticleLightColor
 #endif
 
@@ -38,11 +38,11 @@
 // - LightMode == LightModeParticle
 #ifdef WITH_SPIRV_OPENGL
 	// spir-v
-	VARYING_BIND(5) out float vParticleLightRange;
+	VARYING_BIND(5) out mediump float vParticleLightRange;
 	
 #else
 	// opengl
-	VARYING_BIND(5) out float vGSParticleLightRange;
+	VARYING_BIND(5) out mediump float vGSParticleLightRange;
 	#define vParticleLightRange vGSParticleLightRange
 #endif
 
@@ -52,11 +52,11 @@
 // - LightMode == LightModeParticle
 #ifdef WITH_SPIRV_OPENGL
 	// spir-v
-	VARYING_BIND(6) out vec3 vParticleLightPosition;
+	VARYING_BIND(6) out mediump vec3 vParticleLightPosition;
 	
 #else
 	// opengl
-	VARYING_BIND(6) out vec3 vGSParticleLightPosition;
+	VARYING_BIND(6) out mediump vec3 vGSParticleLightPosition;
 	#define vParticleLightPosition vGSParticleLightPosition
 #endif
 

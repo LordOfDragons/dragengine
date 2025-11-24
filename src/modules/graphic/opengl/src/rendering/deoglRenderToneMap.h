@@ -26,11 +26,11 @@
 #define _DEOGLRENDERTONEMAP_H_
 
 #include "deoglRenderBase.h"
+#include "../framebuffer/deoglFramebuffer.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglRenderPlan;
-class deoglFramebuffer;
 class deoglTexture;
 
 
@@ -41,7 +41,7 @@ class deoglTexture;
  */
 class deoglRenderToneMap : public deoglRenderBase{
 private:
-	deoglFramebuffer *pFBOToneMapParams;
+	deoglFramebuffer::Ref pFBOToneMapParams;
 	deoglTexture *pTextureToneMapParams;
 	
 	const deoglPipeline *pPipelineColor2LogLum;

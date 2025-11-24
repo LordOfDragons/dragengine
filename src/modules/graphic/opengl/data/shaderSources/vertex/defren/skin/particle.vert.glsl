@@ -99,7 +99,7 @@ void main(void){
 	vLayer = 0;
 	if(VSRenderLayer){
 		vLayer = getInLayer();
-		#ifdef SUPPORTS_VSLAYER
+		#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 		gl_Layer = vLayer;
 		#endif
 	}

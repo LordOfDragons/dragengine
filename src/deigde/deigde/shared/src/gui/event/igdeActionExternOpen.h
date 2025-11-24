@@ -29,7 +29,6 @@
 
 #include "igdeAction.h"
 
-
 class igdeEnvironment;
 
 
@@ -41,19 +40,23 @@ class igdeEnvironment;
  * and URL are openned with their preferred application.
  */
 class DE_DLL_EXPORT igdeActionExternOpen : public igdeAction{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeActionExternOpen> Ref;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	decString pPath;
-	
+	bool pEnsureExists;
 	
 	
 public:
 	/** \text Constructors and Destructors */
 	/*@{*/
 	/** \brief Create action. */
-	igdeActionExternOpen( igdeEnvironment &environment, const char *text,
-		igdeIcon *icon, const char *description, const char *path = "" );
-	
+	igdeActionExternOpen(igdeEnvironment &environment, const char *text,
+		igdeIcon *icon, const char *description, const char *path = "");
 	
 	
 protected:
@@ -63,9 +66,8 @@ protected:
 	 *       accidently deleting a reference counted object through the object
 	 *       pointer. Only FreeReference() is allowed to delete the object.
 	 */
-	virtual ~igdeActionExternOpen();
+	~igdeActionExternOpen() override;
 	/*@}*/
-	
 	
 	
 public:
@@ -78,8 +80,13 @@ public:
 	inline const decString &GetPath() const{ return pPath; }
 	
 	/** \brief Set path to open or empty string if not set. */
-	void SetPath( const char *path );
+	void SetPath(const char *path);
 	
+	/** \brief Ensure path exists before opening it. */
+	inline bool GetEnsureExists() const{ return pEnsureExists; }
+	
+	/** \brief Set to ensure path exists before opening it. */
+	void SetEnsureExists(bool ensureExists);
 	
 	
 	/**
@@ -87,7 +94,7 @@ public:
 	 * 
 	 * Called if user interacts with a UI element triggering actions.
 	 */
-	virtual void OnAction();
+	void OnAction() override;
 	
 	/**
 	 * \brief Request update of action parameters if required.
@@ -95,7 +102,7 @@ public:
 	 * Called for example by UI elements to update action parameters.
 	 * Default implementation does nothing.
 	 */
-	virtual void Update();
+	void Update() override;
 	/*@}*/
 };
 

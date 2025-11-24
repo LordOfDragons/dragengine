@@ -23,7 +23,7 @@
  */
 
 #ifndef _DEEOSRESOURCEURL_H_
-#define _deEosRESOURCEURL_H_
+#define _DEEOSRESOURCEURL_H_
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>

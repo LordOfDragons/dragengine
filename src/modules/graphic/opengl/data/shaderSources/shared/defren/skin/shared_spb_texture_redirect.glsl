@@ -12,7 +12,7 @@
 
 #define pTexColorSolidityMultiplier pSharedSPBTexture[ pIndexSPBTexParams ].texColorSolidityMultiplier
 #define pTexAOSolidityMultiplier pSharedSPBTexture[ pIndexSPBTexParams ].texAOSolidityMultiplier
-#define pTexSolidityMultiplier pSharedSPBTexture[ pIndexSPBTexParams ].texSolidityMultiplier
+#define pTexSolidityRemap pSharedSPBTexture[ pIndexSPBTexParams ].texSolidityRemap
 #define pTexAbsorptionRange pSharedSPBTexture[ pIndexSPBTexParams ].texAbsorptionRange
 
 #define pTexHeightRemap pSharedSPBTexture[ pIndexSPBTexParams ].texHeightRemap

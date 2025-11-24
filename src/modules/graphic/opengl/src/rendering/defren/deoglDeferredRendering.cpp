@@ -284,8 +284,6 @@ pTextureLuminance( NULL ),
 pMemUse( renderThread.GetMemoryManager().GetConsumption().deferredRendering ),
 // pTextureLuminanceNormal( NULL ),
 // pTextureLuminanceDepth( NULL ),
-// pFBOLuminance( NULL ),
-// pFBOLuminanceNormal( NULL )
 pTexRenderDocDebug(nullptr)
 {
 	const bool useInverseDepth = renderThread.GetChoices().GetUseInverseDepth();
@@ -356,21 +354,9 @@ pTexRenderDocDebug(nullptr)
 	pTextureTemporary3 = NULL;
 	pTextureColor = NULL;
 	
-	for( i=0; i<EFBOMD_COUNT; i++ ){
-		pFBOs[ i ] = NULL;
-	}
-	pFBOMipMapDepth1 = NULL;
-	pFBOMipMapDepth2 = NULL;
-	pFBOMipMapTemporary1 = NULL;
-	pFBOMipMapTemporary2 = NULL;
-	pFBOMipMapDepthCount = 0;
 	pFBOMipMapCount = 0;
 	pModeDepth = true;
 	pModePostProcess = true;
-	
-	for( i=0; i<8; i++ ){
-		pFBOCopyDepth[ i ] = nullptr;
-	}
 	
 	pDepthMinMax = NULL;
 	
@@ -594,13 +580,12 @@ void deoglDeferredRendering::CopyFirstDepthToSecond( bool copyDepth, bool copySt
 	}
 	
 	for( i=0; i<pLayerCount; i++ ){
-		deoglFramebuffer &fbo = *pFBOCopyDepth[ copyTo + i ];
-		
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, fbo.GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER,
-			pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth, pHeight,
-			0, 0, pWidth, pHeight, mask, GL_NEAREST ) );
+		OGL_CHECK(pRenderThread, pglBindFramebuffer(GL_DRAW_FRAMEBUFFER,
+			pFBOCopyDepth[copyTo + i]->GetFBO()));
+		OGL_CHECK(pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER,
+			pFBOCopyDepth[copyFrom + i]->GetFBO()));
+		OGL_CHECK(pRenderThread, pglBlitFramebuffer(0, 0, pWidth, pHeight,
+			0, 0, pWidth, pHeight, mask, GL_NEAREST));
 		/*
 		if( copyDepth ){
 			if( copyStencil ){
@@ -636,13 +621,12 @@ void deoglDeferredRendering::CopyFirstDepthToThirdDepth( bool copyDepth, bool co
 	}
 	
 	for( i=0; i<pLayerCount; i++ ){
-		deoglFramebuffer &fbo = *pFBOCopyDepth[ efbocdDepth3Layer0 + i ];
-		
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, fbo.GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER,
-			pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth, pHeight,
-			0, 0, pWidth, pHeight, mask, GL_NEAREST ) );
+		OGL_CHECK(pRenderThread, pglBindFramebuffer(GL_DRAW_FRAMEBUFFER,
+			pFBOCopyDepth[efbocdDepth3Layer0 + i]->GetFBO()));
+		OGL_CHECK(pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER,
+			pFBOCopyDepth[copyFrom + i]->GetFBO()));
+		OGL_CHECK(pRenderThread, pglBlitFramebuffer(0, 0, pWidth, pHeight,
+			0, 0, pWidth, pHeight, mask, GL_NEAREST));
 		/*
 		if( copyDepth ){
 			if( copyStencil ){
@@ -684,8 +668,10 @@ void deoglDeferredRendering::CopyFirstDepthToXRayDepth( bool copyDepth, bool cop
 	OGL_CHECK( pRenderThread, glDisable( GL_SCISSOR_TEST ) );
 	
 	for( i=0; i<pLayerCount; i++ ){
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_DRAW_FRAMEBUFFER, pFBOCopyDepth[ efbocdDepthXRayLayer0 + i ]->GetFBO() ) );
-		OGL_CHECK( pRenderThread, pglBindFramebuffer( GL_READ_FRAMEBUFFER, pFBOCopyDepth[ copyFrom + i ]->GetFBO() ) );
+		OGL_CHECK(pRenderThread, pglBindFramebuffer(GL_DRAW_FRAMEBUFFER,
+			pFBOCopyDepth[efbocdDepthXRayLayer0 + i]->GetFBO()));
+		OGL_CHECK( pRenderThread, pglBindFramebuffer(GL_READ_FRAMEBUFFER,
+			pFBOCopyDepth[copyFrom + i]->GetFBO()));
 		
 		OGL_CHECK( pRenderThread, pglBlitFramebuffer( 0, 0, pWidth - 1, pHeight - 1,
 			0, 0, pWidth - 1, pHeight - 1, mask, GL_NEAREST ) );
@@ -822,15 +808,12 @@ void deoglDeferredRendering::ActivateFBODepth(){
 }
 
 void deoglDeferredRendering::ActivateFBODepthLevel( int level ){
-	if( level < 0 || level > pFBOMipMapDepthCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	if( level == 0 ){
 		ActivateFBODepth();
 		
 	}else{
-		pRenderThread.GetFramebuffer().Activate( ( pModeDepth ? pFBOMipMapDepth1 : pFBOMipMapDepth2 )[ level - 1 ] );
+		pRenderThread.GetFramebuffer().Activate((deoglFramebuffer*)(
+			pModeDepth ? pFBOMipMapDepth1 : pFBOMipMapDepth2)[level - 1]);
 	}
 }
 
@@ -897,15 +880,11 @@ void deoglDeferredRendering::ActivateFBOTemporary1( bool withDepth ){
 }
 
 void deoglDeferredRendering::ActivateFBOTemporary1Level( int level ){
-	if( level < 0 || level > pFBOMipMapCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	if( level == 0 ){
 		ActivateFBOTemporary1( false );
 		
 	}else{
-		pRenderThread.GetFramebuffer().Activate( pFBOMipMapTemporary1[ level - 1 ] );
+		pRenderThread.GetFramebuffer().Activate((deoglFramebuffer*)pFBOMipMapTemporary1[level - 1]);
 	}
 }
 
@@ -919,15 +898,11 @@ void deoglDeferredRendering::ActivateFBOTemporary2( bool withDepth ){
 }
 
 void deoglDeferredRendering::ActivateFBOTemporary2Level( int level ){
-	if( level < 0 || level > pFBOMipMapCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
 	if( level == 0 ){
 		ActivateFBOTemporary2( false );
 		
 	}else{
-		pRenderThread.GetFramebuffer().Activate( pFBOMipMapTemporary2[ level - 1 ] );
+		pRenderThread.GetFramebuffer().Activate((deoglFramebuffer*)pFBOMipMapTemporary2[level - 1]);
 	}
 }
 
@@ -1414,27 +1389,20 @@ void deoglDeferredRendering::pCreateFBOs(){
 	int fboMipMapCount = pTextureDepth1->GetRealMipMapLevelCount();
 	
 	if( fboMipMapCount > 0 ){
+		const GLenum buffers[1] = {GL_NONE};
 		int i;
-		
-		pFBOMipMapDepth1 = new deoglFramebuffer*[ fboMipMapCount ];
-		pFBOMipMapDepth2 = new deoglFramebuffer*[ fboMipMapCount ];
-		
-		for( pFBOMipMapDepthCount=0; pFBOMipMapDepthCount<fboMipMapCount; pFBOMipMapDepthCount++ ){
-			pFBOMipMapDepth1[ pFBOMipMapDepthCount ] = NULL;
-			pFBOMipMapDepth2[ pFBOMipMapDepthCount ] = NULL;
-		}
 		
 		for( i=0; i<fboMipMapCount; i++ ){
 			try{
-				pFBOMipMapDepth1[ i ] = new deoglFramebuffer( pRenderThread, false );
-				pRenderThread.GetFramebuffer().Activate( pFBOMipMapDepth1[ i ] );
-				pFBOMipMapDepth1[ i ]->AttachDepthArrayTextureLevel( pTextureDepth1, i + 1 );
-				const GLenum buffers[ 1 ] = { GL_NONE };
-				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
-				pFBOMipMapDepth1[ i ]->Verify();
-				debugName.Format( "DefRen.Depth1.MipMap%d", i + 1 );
-				pFBOMipMapDepth1[ i ]->SetDebugObjectLabel( debugName );
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				pRenderThread.GetFramebuffer().Activate(fbo);
+				fbo->AttachDepthArrayTextureLevel(pTextureDepth1, i + 1);
+				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+				OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
+				fbo->Verify();
+				debugName.Format("DefRen.Depth1.MipMap%d", i + 1);
+				fbo->SetDebugObjectLabel(debugName);
+				pFBOMipMapDepth1.Add(fbo);
 				
 			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
@@ -1444,15 +1412,15 @@ void deoglDeferredRendering::pCreateFBOs(){
 			}
 			
 			try{
-				pFBOMipMapDepth2[ i ] = new deoglFramebuffer( pRenderThread, false );
-				pRenderThread.GetFramebuffer().Activate( pFBOMipMapDepth2[ i ] );
-				pFBOMipMapDepth2[ i ]->AttachDepthArrayTextureLevel( pTextureDepth2, i + 1 );
-				const GLenum buffers[ 1 ] = { GL_NONE };
-				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-				OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
-				pFBOMipMapDepth2[ i ]->Verify();
-				debugName.Format( "DefRen.Depth2.MipMap%d", i + 1 );
-				pFBOMipMapDepth2[ i ]->SetDebugObjectLabel( debugName );
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				pRenderThread.GetFramebuffer().Activate(fbo);
+				fbo->AttachDepthArrayTextureLevel(pTextureDepth2, i + 1);
+				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+				OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
+				fbo->Verify();
+				debugName.Format("DefRen.Depth2.MipMap%d", i + 1);
+				fbo->SetDebugObjectLabel(debugName);
+				pFBOMipMapDepth2.Add(fbo);
 				
 			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
@@ -1467,27 +1435,20 @@ void deoglDeferredRendering::pCreateFBOs(){
 	fboMipMapCount = pTextureTemporary1->GetRealMipMapLevelCount();
 	
 	if( fboMipMapCount > 0 ){
+		const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
 		int i;
-		
-		pFBOMipMapTemporary1 = new deoglFramebuffer*[ fboMipMapCount ];
-		pFBOMipMapTemporary2 = new deoglFramebuffer*[ fboMipMapCount ];
-		
-		for( pFBOMipMapCount=0; pFBOMipMapCount<fboMipMapCount; pFBOMipMapCount++ ){
-			pFBOMipMapTemporary1[ pFBOMipMapCount ] = NULL;
-			pFBOMipMapTemporary2[ pFBOMipMapCount ] = NULL;
-		}
 		
 		for( i=0; i<fboMipMapCount; i++ ){
 			try{
-				pFBOMipMapTemporary1[ i ] = new deoglFramebuffer( pRenderThread, false );
-				pRenderThread.GetFramebuffer().Activate( pFBOMipMapTemporary1[ i ] );
-				pFBOMipMapTemporary1[ i ]->AttachColorArrayTextureLevel( 0, pTextureTemporary1, i + 1 );
-				const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-				pFBOMipMapTemporary1[ i ]->Verify();
-				debugName.Format( "DefRen.Temporary1.MipMap%d", i + 1 );
-				pFBOMipMapTemporary1[ i ]->SetDebugObjectLabel( debugName );
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				pRenderThread.GetFramebuffer().Activate(fbo);
+				fbo->AttachColorArrayTextureLevel(0, pTextureTemporary1, i + 1);
+				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+				OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
+				fbo->Verify();
+				debugName.Format("DefRen.Temporary1.MipMap%d", i + 1);
+				fbo->SetDebugObjectLabel(debugName);
+				pFBOMipMapTemporary1.Add(fbo);
 				
 			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
@@ -1497,15 +1458,15 @@ void deoglDeferredRendering::pCreateFBOs(){
 			}
 			
 			try{
-				pFBOMipMapTemporary2[ i ] = new deoglFramebuffer( pRenderThread, false );
-				pRenderThread.GetFramebuffer().Activate( pFBOMipMapTemporary2[ i ] );
-				pFBOMipMapTemporary2[ i ]->AttachColorArrayTextureLevel( 0, pTextureTemporary2, i + 1 );
-				const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-				OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-				OGL_CHECK( pRenderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
-				pFBOMipMapTemporary2[ i ]->Verify();
-				debugName.Format( "DefRen.Temporary2.MipMap%d", i + 1 );
-				pFBOMipMapTemporary2[ i ]->SetDebugObjectLabel( debugName );
+				const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+				pRenderThread.GetFramebuffer().Activate(fbo);
+				fbo->AttachColorArrayTextureLevel(0, pTextureTemporary2, i + 1);
+				OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+				OGL_CHECK(pRenderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
+				fbo->Verify();
+				debugName.Format("DefRen.Temporary2.MipMap%d", i + 1);
+				fbo->SetDebugObjectLabel(debugName);
+				pFBOMipMapTemporary2.Add(fbo);
 				
 			}catch( const deException & ){
 // 				deErrorTracePoint &tracePoint = *pOgl->AddErrorTracePoint( "deoglDeferredRendering::pCreateFBOs", __LINE__ );
@@ -1521,7 +1482,7 @@ void deoglDeferredRendering::pCreateFBOs(){
 	int i;
 	
 	for( i=0; i<8; i++ ){
-		pFBOCopyDepth[ i ] = new deoglFramebuffer( pRenderThread, false );
+		pFBOCopyDepth[i].TakeOverWith(pRenderThread, false);
 		pRenderThread.GetFramebuffer().Activate( pFBOCopyDepth[ i ] );
 		pFBOCopyDepth[ i ]->AttachDepthArrayTextureLayer( copyDepthTex[ i / 2 ], decMath::min( i % 2, pLayerCount - 1 ) );
 		const GLenum buffersNone[ 1 ] = { GL_NONE };
@@ -1560,7 +1521,7 @@ deoglArrayTexture *texture1, deoglArrayTexture *texture2, deoglArrayTexture *tex
 deoglArrayTexture *texture4, deoglArrayTexture *texture5, deoglArrayTexture *texture6,
 deoglArrayTexture *texture7, deoglArrayTexture *depth ){
 	try{
-		pFBOs[ index ] = new deoglFramebuffer( pRenderThread, false );
+		pFBOs[index].TakeOverWith(pRenderThread, false);
 		
 		pRenderThread.GetFramebuffer().Activate( pFBOs[ index ] );
 		
@@ -1646,53 +1607,18 @@ deoglArrayTexture *texture7 ){
 void deoglDeferredRendering::pDestroyFBOs(){
 	int i;
 	
-	for( i=0; i<8; i++ ){
-		if( pFBOCopyDepth[ i ] ){
-			delete pFBOCopyDepth[ i ];
-			pFBOCopyDepth[ i ] = nullptr;
-		}
+	for(i=0; i<8; i++){
+		pFBOCopyDepth[i] = nullptr;
 	}
 	
-	for( i=0; i<pFBOMipMapDepthCount; i++ ){
-		if( pFBOMipMapDepth1[ i ] ){
-			delete pFBOMipMapDepth1[ i ];
-			pFBOMipMapDepth1[ i ] = NULL;
-		}
-		if( pFBOMipMapDepth2[ i ] ){
-			delete pFBOMipMapDepth2[ i ];
-			pFBOMipMapDepth2[ i ] = NULL;
-		}
-	}
-	pFBOMipMapDepthCount = 0;
-	if( pFBOMipMapDepth1 ){
-		delete [] pFBOMipMapDepth1;
-	}
-	if( pFBOMipMapDepth2 ){
-		delete [] pFBOMipMapDepth2;
-	}
+	pFBOMipMapDepth1.RemoveAll();
+	pFBOMipMapDepth2.RemoveAll();
 	
-	for( i=0; i<pFBOMipMapCount; i++ ){
-		if( pFBOMipMapTemporary1[ i ] ){
-			delete pFBOMipMapTemporary1[ i ];
-			pFBOMipMapTemporary1[ i ] = NULL;
-		}
-		if( pFBOMipMapTemporary2[ i ] ){
-			delete pFBOMipMapTemporary2[ i ];
-			pFBOMipMapTemporary2[ i ] = NULL;
-		}
-	}
 	pFBOMipMapCount = 0;
-	if( pFBOMipMapTemporary1 ){
-		delete [] pFBOMipMapTemporary1;
-	}
-	if( pFBOMipMapTemporary2 ){
-		delete [] pFBOMipMapTemporary2;
-	}
+	pFBOMipMapTemporary1.RemoveAll();
+	pFBOMipMapTemporary2.RemoveAll();
 	
-	for( i=0; i<EFBOMD_COUNT; i++ ){
-		if( pFBOs[ i ] ){
-			delete pFBOs[ i ];
-			pFBOs[ i ] = NULL;
-		}
+	for(i=0; i<EFBOMD_COUNT; i++){
+		pFBOs[i] = nullptr;
 	}
 }

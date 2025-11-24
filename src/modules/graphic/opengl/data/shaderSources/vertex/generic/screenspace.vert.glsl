@@ -45,7 +45,7 @@ void main( void ){
 			}
 			
 			if(TexCoordFlipY){
-				texCoord.y = 1 - texCoord.y;
+				texCoord.y = 1.0 - texCoord.y;
 			}
 			
 			vec2 screenCoord = inPosition;
@@ -65,7 +65,7 @@ void main( void ){
 	
 	if(VSRenderLayer){
 		vLayer = inLayer;
-		#ifdef SUPPORTS_VSLAYER
+		#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 		gl_Layer = vLayer;
 		#endif
 	}

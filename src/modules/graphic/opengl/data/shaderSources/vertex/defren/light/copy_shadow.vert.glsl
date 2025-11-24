@@ -29,7 +29,7 @@ void main( void ){
 		
 	#else
 		vTexCoord = inTexCoord;
-		#ifdef SUPPORTS_VSLAYER
+		#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 		if(VSRenderLayer){
 			gl_Layer = inLayer;
 		}

@@ -30,7 +30,7 @@ void main(){
 	tessLinearTri(gl_Position, gl_in[0].gl_Position, gl_in[1].gl_Position, gl_in[2].gl_Position);
 	
 	if(TextureHeight){
-		gl_Position.xyz += normalize(vNormal) * vec3(TEXTURE(texHeight, vTCColor).r
+		gl_Position.xyz += normalize(vNormal) * vec3(TEXTURE(texHeight, texHeightArray, vTCColor).r
 			* getHeightRemap(VAR_SPB_INDEX).x + getHeightRemap(VAR_SPB_INDEX).y);
 	}
 	

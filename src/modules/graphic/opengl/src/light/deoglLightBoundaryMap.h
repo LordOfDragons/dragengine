@@ -27,6 +27,7 @@
 
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
+#include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglFramebuffer;
@@ -45,12 +46,10 @@ class deoglLightBoundaryMap{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglTexture *pTextureMin;
-	deoglTexture *pTextureMax;
-	deoglFramebuffer **pFBOs;
+	deoglTexture *pTextureMin, *pTextureMax;
+	decObjectList pFBOs;
 	
-	const deoglPixelBuffer::Ref pPixBufBoundaryMin;
-	const deoglPixelBuffer::Ref pPixBufBoundaryMax;
+	const deoglPixelBuffer::Ref pPixBufBoundaryMin, pPixBufBoundaryMax;
 	
 	int pSize;
 	int pLevelCount;
@@ -78,7 +77,7 @@ public:
 	/** Retrieves the maximum texture. */
 	inline deoglTexture *GetTextureMax() const{ return pTextureMax; }
 	/** Retrieves the fbo for a level. */
-	deoglFramebuffer *GetFBOAt( int level );
+	deoglFramebuffer *GetFBOAt(int level);
 	
 	/** Retrieve the result. */
 	void GetResult( decVector &boundaryMin, decVector &boundaryMax );

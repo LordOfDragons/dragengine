@@ -37,7 +37,7 @@
 #define pInstColorGamma pSharedSPB[VAR_SPB_INDEX].instColorGamma
 #define pInstColorSolidityMultiplier pSharedSPB[VAR_SPB_INDEX].instColorSolidityMultiplier
 #define pInstTransparencyMultiplier pSharedSPB[VAR_SPB_INDEX].instTransparencyMultiplier
-#define pInstSolidityMultiplier pSharedSPB[VAR_SPB_INDEX].instSolidityMultiplier
+#define pInstSolidityRemap pSharedSPB[VAR_SPB_INDEX].instSolidityRemap
 #define pInstAOSolidityMultiplier pSharedSPB[VAR_SPB_INDEX].instAOSolidityMultiplier
 #define pInstHeightRemap pSharedSPB[VAR_SPB_INDEX].instHeightRemap
 #define pInstNormalStrength pSharedSPB[VAR_SPB_INDEX].instNormalStrength

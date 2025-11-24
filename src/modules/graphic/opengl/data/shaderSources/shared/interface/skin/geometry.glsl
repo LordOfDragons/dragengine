@@ -8,22 +8,22 @@
 #endif
 
 
-VARYING_BIND(0) in vec4 vGSTexCoords1[GEOMETRY_SHADER_INPUT_SIZE]; // color, colorTintMask
-VARYING_BIND(1) in vec4 vGSTexCoords2[GEOMETRY_SHADER_INPUT_SIZE]; // normal, reflectivity
-VARYING_BIND(2) in vec4 vGSTexCoords3[GEOMETRY_SHADER_INPUT_SIZE]; // emissivity, refractionDistort
-VARYING_BIND(3) in vec2 vGSTexCoords4[GEOMETRY_SHADER_INPUT_SIZE]; // ao
-VARYING_BIND(4) in vec4 vGSNormalHTMask[GEOMETRY_SHADER_INPUT_SIZE]; // normal, HTMask
-VARYING_BIND(5) in vec4 vGSTangentFadeZ[GEOMETRY_SHADER_INPUT_SIZE]; // tangent, fadeZ
-VARYING_BIND(6) in vec3 vGSBitangent[GEOMETRY_SHADER_INPUT_SIZE];
-VARYING_BIND(7) in vec3 vGSReflectDir[GEOMETRY_SHADER_INPUT_SIZE];
-VARYING_BIND(8) in vec3 vGSClipCoord[GEOMETRY_SHADER_INPUT_SIZE];
-VARYING_BIND(9) in vec3 vGSSkinClipCoord[GEOMETRY_SHADER_INPUT_SIZE];
-VARYING_BIND(10) in vec3 vGSPosition[GEOMETRY_SHADER_INPUT_SIZE];
-VARYING_BIND(11) flat in ivec4 vGSIndicesFlags[GEOMETRY_SHADER_INPUT_SIZE]; // doubleSided, SPBIndex, SPBFlags, layer
+VARYING_BIND(0) in mediump vec4 vGSTexCoords1[GEOMETRY_SHADER_INPUT_SIZE]; // color, colorTintMask
+VARYING_BIND(1) in mediump vec4 vGSTexCoords2[GEOMETRY_SHADER_INPUT_SIZE]; // normal, reflectivity
+VARYING_BIND(2) in mediump vec4 vGSTexCoords3[GEOMETRY_SHADER_INPUT_SIZE]; // emissivity, refractionDistort
+VARYING_BIND(3) in lowp vec2 vGSTexCoords4[GEOMETRY_SHADER_INPUT_SIZE]; // ao
+VARYING_BIND(4) in mediump vec4 vGSNormalHTMask[GEOMETRY_SHADER_INPUT_SIZE]; // normal, HTMask
+VARYING_BIND(5) in mediump vec4 vGSTangentFadeZ[GEOMETRY_SHADER_INPUT_SIZE]; // tangent, fadeZ
+VARYING_BIND(6) in mediump vec3 vGSBitangent[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(7) in mediump vec3 vGSReflectDir[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(8) in mediump vec3 vGSClipCoord[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(9) in mediump vec3 vGSSkinClipCoord[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(10) in mediump vec3 vGSPosition[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(11) flat in mediump ivec4 vGSIndicesFlags[GEOMETRY_SHADER_INPUT_SIZE]; // doubleSided, SPBIndex, SPBFlags, layer
 
-VARYING_BIND(12) in vec3 vGSParticle0[GEOMETRY_SHADER_INPUT_SIZE]; // size, emissivity, rotation
-VARYING_BIND(13) in vec4 vGSParticle1[GEOMETRY_SHADER_INPUT_SIZE]; // red, green, blue, transparency
-VARYING_BIND(14) flat in int vGSParticleSheetCount[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(12) in mediump vec3 vGSParticle0[GEOMETRY_SHADER_INPUT_SIZE]; // size, emissivity, rotation
+VARYING_BIND(13) in lowp vec4 vGSParticle1[GEOMETRY_SHADER_INPUT_SIZE]; // red, green, blue, transparency
+VARYING_BIND(14) flat in lowp int vGSParticleSheetCount[GEOMETRY_SHADER_INPUT_SIZE];
 
 #define vGSTCColor(index) (vGSTexCoords1[index].xy)
 #define vGSTCColorTintMask(index) (vGSTexCoords1[index].zw)

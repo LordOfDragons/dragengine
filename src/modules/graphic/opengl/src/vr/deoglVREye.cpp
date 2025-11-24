@@ -263,8 +263,7 @@ void deoglVREye::Submit( deBaseVRModule &vrmodule ){
 			// to operate on a sharp image instead of an upscaled one
 			deoglRenderThread &renderThread = pVR.GetCamera().GetRenderThread();
 			
-			deoglFramebuffer * const fboView = pVRViewImages[ acquiredImageIndex ].fbo;
-			renderThread.GetFramebuffer().Activate( fboView );
+			renderThread.GetFramebuffer().Activate(pVRViewImages[acquiredImageIndex].fbo);
 			
 			OGL_CHECK( renderThread, pglBindFramebuffer(
 				GL_READ_FRAMEBUFFER, pRenderTarget->GetFBO()->GetFBO() ) );
@@ -402,38 +401,31 @@ void deoglVREye::pUpdateEyeViews( deBaseVRModule &vrmodule ){
 	}
 	
 	const deoglRestoreFramebuffer restoreFbo( renderThread );
+	const GLenum buffers[1] = {GL_COLOR_ATTACHMENT0};
 	
-	pVRViewImages = new sViewImage[ count ];
+	pVRViewImages = new cViewImage[count];
 	
-	for( pVRViewImageCount=0; pVRViewImageCount<count; pVRViewImageCount++ ){
-		sViewImage &viewImage = pVRViewImages[ pVRViewImageCount ];
-		viewImage.texture = pVRGetViewsBuffer[ pVRViewImageCount ];
+	for(pVRViewImageCount=0; pVRViewImageCount<count; pVRViewImageCount++){
+		cViewImage &vi = pVRViewImages[pVRViewImageCount];
+		vi.texture = pVRGetViewsBuffer[pVRViewImageCount];
 		
-		viewImage.fbo = new deoglFramebuffer( renderThread, false );
-		renderThread.GetFramebuffer().Activate( viewImage.fbo );
+		vi.fbo.TakeOverWith(renderThread, false);
+		renderThread.GetFramebuffer().Activate(vi.fbo);
 		
-		viewImage.fbo->AttachColorTextureLevel( 0, viewImage.texture, 0 );
+		vi.fbo->AttachColorTextureLevel(0, vi.texture, 0);
 		
-		const GLenum buffers[ 1 ] = { GL_COLOR_ATTACHMENT0 };
-		OGL_CHECK( renderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( renderThread, glReadBuffer( GL_COLOR_ATTACHMENT0 ) );
+		OGL_CHECK(renderThread, pglDrawBuffers(1, buffers));
+		OGL_CHECK(renderThread, glReadBuffer(GL_COLOR_ATTACHMENT0));
 		
-		viewImage.fbo->Verify();
+		vi.fbo->Verify();
 	}
 	
-	renderThread.GetLogger().LogInfoFormat( "%s: view images %d", LogPrefix(), pVRViewImageCount );
+	renderThread.GetLogger().LogInfoFormat("%s: view images %d", LogPrefix(), pVRViewImageCount);
 }
 
 void deoglVREye::pDestroyEyeViews(){
 	if( ! pVRViewImages ){
 		return;
-	}
-	
-	int i;
-	for( i=0; i<pVRViewImageCount; i++ ){
-		if( pVRViewImages[ i ].fbo ){
-			delete pVRViewImages[ i ].fbo;
-		}
 	}
 	
 	delete [] pVRViewImages;

@@ -3,7 +3,7 @@
 	<id>ch.dragondreams.deigde</id>
 	
 	<name>Dragengine IGDE</name>
-	<summary>Game project editor for the Drag[en]gine Game Engine.</summary>
+	<summary>Edit Drag[en]gine game projects.</summary>
 	
 	<metadata_license>MIT</metadata_license>
 	<project_license>MIT</project_license>
@@ -11,6 +11,12 @@
 	<developer id="ch.dragondreams">
 		<name>DragonDreams GmbH</name>
 	</developer>
+	
+	<categories>
+		<category>Game</category>
+		<category>Development</category>
+		<category>IDE</category>
+	</categories>
 	
 	<recommends>
 		<control>keyboard</control>
@@ -39,31 +45,27 @@
 		</p>
 		<p>
 		Recommended additional software to use with IGDE:
+		</p>
 		<ul>
-			<li>Blender 3D (org.blender.Blender):
-				Create 3D models</li>
-			<li>GIMP (org.gimp.GIMP),
-				Krita (org.kde.krita),
-				InkScape (org.inkscape.Inkscape):
-				Create textures, decals and images</li>
-			<li>Audacity (org.audacityteam.Audacity):
-				Create sound files</li>
-			<li>Visual Studio Code (com.visualstudio.code):
-				Edit game scripts</li>
+		<li>Blender 3D (org.blender.Blender): Create 3D models.</li>
+		<li>GIMP (org.gimp.GIMP), Krita (org.kde.krita),
+			InkScape (org.inkscape.Inkscape):
+			Create textures, decals and images.</li>
+		<li>Audacity (org.audacityteam.Audacity): Create sound files.</li>
+		<li>Visual Studio Code (com.visualstudio.code): Edit game scripts</li>
 		</ul>
+		<p>
+		More information on the Wiki: https://developer.dragondreams.ch/wiki/doku.php/gamedev:deigde
 		</p>
 	</description>
 	
-	<launchable type="desktop-id">ch.dragondreams.deigde</launchable>
+	<launchable type="desktop-id">ch.dragondreams.deigde.desktop</launchable>
 	
 	<provides>
-		<mediatype>application/dragengine-delga</mediatype>
-		<mediatype>application/dragengine-gamedefinition</mediatype>
-		<library>libdelauncher.so.1</library>
-		<library>libdragengine.so.1</library>
-		<binary>delauncher</binary>
-		<binary>delauncher-gui</binary>
-		<binary>delauncher-console</binary>
+		<mediatype>application/deigde-gameproject</mediatype>
+		<mediatype>application/deigde-gamedefinition</mediatype>
+		<library>libigdeshared.so.1</library>
+		<binary>deigde</binary>
 	</provides>
 	
 	<branding>
@@ -80,12 +82,26 @@
 	
 	<screenshots>
 		<screenshot type="default">
-			<image>https://dragondreams.ch/wp-content/uploads/2025/11/screenshot_guilauncher.png</image>
-			<caption>Gui launcher window.</caption>
+			<image>https://dragondreams.ch/wp-content/uploads/2025/11/deigde1.png</image>
+			<caption>IGDE World Editor.</caption>
+		</screenshot>
+		<screenshot>
+			<image>https://dragondreams.ch/wp-content/uploads/2025/11/deigde2.png</image>
+			<caption>IGDE Animator Editor.</caption>
+		</screenshot>
+		<screenshot>
+			<image>https://dragondreams.ch/wp-content/uploads/2025/11/deigde3.png</image>
+			<caption>IGDE Skin Editor.</caption>
 		</screenshot>
 	</screenshots>
 	
 	<releases>
+		<release version="1.29.1" date="2025-11-24">
+			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29-1</url>
+			<description>
+				<p>Drag[en]gine 1.29.1 Release. See "details" for full release notes.</p>
+			</description>
+		</release>
 		<release version="1.29" date="2025-11-09">
 			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29</url>
 			<description>
@@ -93,10 +109,4 @@
 			</description>
 		</release>
 	</releases>
-	
-	<custom>
-		<value key="DragonDreams::EngineVersion">%{ENGINE_VERSION}</value>
-		<value key="DragonDreams::DistroMaintained">%{DISTRO_MAINTAINED}</value>
-		<value key="DragonDreams::DistroMaintainedUpdateUrl">%{DISTRO_MAINTAINED_UPDATE_URL}</value>
-	</custom>
 </component>

@@ -1,7 +1,7 @@
 #include "shared/preamble.glsl"
 
 // layout specifications
-#if LAYERED_RENDERING_STEREO
+#ifdef LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout(lines_adjacency, invocations=2) in;
 	#else
@@ -30,7 +30,7 @@
 	// this problem can be solved by moving the calculation of vertices in the beam into
 	// a compute shader filling a VBO. this way all kinds of sheet counts can be done
 	// without even needing a geometry shader to begin with.
-	#if LAYERED_RENDERING_STEREO
+	#ifdef LAYERED_RENDERING_STEREO
 		#ifdef GS_INSTANCING
 			layout(triangle_strip, max_vertices=16) out;
 		#else
@@ -42,7 +42,7 @@
 	#endif
 	
 #else
-	#if LAYERED_RENDERING_STEREO
+	#ifdef LAYERED_RENDERING_STEREO
 		#ifdef GS_INSTANCING
 			layout(triangle_strip, max_vertices=4) out;
 		#else
@@ -214,7 +214,7 @@ void emitRibbon(in int layer){
 void main(void){
 	// NOTE: quest requires EmitVertex to be called in main()
 	int layer;
-	#if LAYERED_RENDERING_STEREO
+	#ifdef LAYERED_RENDERING_STEREO
 		#ifdef GS_INSTANCING
 			layer = gl_InvocationID;
 		#else

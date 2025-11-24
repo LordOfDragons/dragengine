@@ -10,17 +10,17 @@ precision HIGHP int;
 #include "shared/defren/gi/probe_flags.glsl"
 #include "shared/octahedral.glsl"
 
-layout(binding=0) uniform sampler2D texPosition;
-layout(binding=0) uniform sampler2DArray texPositionArray;
+layout(binding=0) uniform mediump sampler2D texPosition;
+layout(binding=0) uniform mediump sampler2DArray texPositionArray;
 
-layout(binding=1) uniform sampler2D texDiffuse;
-layout(binding=1) uniform sampler2DArray texDiffuseArray;
+layout(binding=1) uniform lowp sampler2D texDiffuse;
+layout(binding=1) uniform lowp sampler2DArray texDiffuseArray;
 
-layout(binding=2) uniform sampler2D texNormal;
-layout(binding=2) uniform sampler2DArray texNormalArray;
+layout(binding=2) uniform lowp sampler2D texNormal;
+layout(binding=2) uniform lowp sampler2DArray texNormalArray;
 
-layout(binding=3) uniform sampler2D texEmissive;
-layout(binding=3) uniform sampler2DArray texEmissiveArray;
+layout(binding=3) uniform mediump sampler2D texEmissive;
+layout(binding=3) uniform mediump sampler2DArray texEmissiveArray;
 
 // WithGI
 layout(binding=4) uniform lowp sampler2DArray texGIIrradiance;

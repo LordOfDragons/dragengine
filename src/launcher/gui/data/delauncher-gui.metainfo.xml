@@ -12,6 +12,11 @@
 		<name>DragonDreams GmbH</name>
 	</developer>
 	
+	<categories>
+		<category>Game</category>
+		<category>LauncherStore</category>
+	</categories>
+	
 	<recommends>
 		<control>keyboard</control>
 		<control>pointing</control>
@@ -62,20 +67,18 @@
 	
 	<screenshots>
 		<screenshot type="default">
-			<image>https://dragondreams.ch/wp-content/uploads/2025/11/deigde1.png</image>
-			<caption>IGDE World Editor.</caption>
-		</screenshot>
-		<screenshot>
-			<image>https://dragondreams.ch/wp-content/uploads/2025/11/deigde2.png</image>
-			<caption>IGDE Animator Editor.</caption>
-		</screenshot>
-		<screenshot>
-			<image>https://dragondreams.ch/wp-content/uploads/2025/11/deigde3.png</image>
-			<caption>IGDE Skin Editor.</caption>
+			<image>https://dragondreams.ch/wp-content/uploads/2025/11/screenshot_guilauncher.png</image>
+			<caption>Gui launcher window.</caption>
 		</screenshot>
 	</screenshots>
 	
 	<releases>
+		<release version="1.29.1" date="2025-11-24">
+			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29-1</url>
+			<description>
+				<p>Drag[en]gine 1.29.1 Release. See "details" for full release notes.</p>
+			</description>
+		</release>
 		<release version="1.29" date="2025-11-09">
 			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29</url>
 			<description>
@@ -83,4 +86,10 @@
 			</description>
 		</release>
 	</releases>
+	
+	<custom>
+		<value key="DragonDreams::EngineVersion">%{ENGINE_VERSION}</value>
+		<value key="DragonDreams::DistroMaintained">%{DISTRO_MAINTAINED}</value>
+		<value key="DragonDreams::DistroMaintainedUpdateUrl">%{DISTRO_MAINTAINED_UPDATE_URL}</value>
+	</custom>
 </component>
