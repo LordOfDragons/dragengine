@@ -56,9 +56,9 @@ struct sInstanceParameters{
 	vec3 instColorTint; // color.tint
 	float instColorGamma; // color.gamma
 	
+	vec2 instSolidityRemap; // (remap.lower, remap.upper): combined solidity.multiplier, solidity.invert
 	float instColorSolidityMultiplier; // color.solidity.multiplier
 	float instTransparencyMultiplier; // transparency.multiplier
-	float instSolidityMultiplier; // solidity.multiplier
 	float instAOSolidityMultiplier; // ambient.occlusion.solidity.multiplier
 	
 	vec2 instHeightRemap; // height.scale, height.offset
@@ -158,9 +158,9 @@ UBOLAYOUT_BIND(2) uniform InstanceParameters{
 	vec3 pInstColorTint; // color.tint
 	float pInstColorGamma; // color.gamma
 	
+	vec2 pInstSolidityRemap; // (remap.lower, remap.upper): combined solidity.multiplier, solidity.invert
 	float pInstColorSolidityMultiplier; // color.solidity.multiplier
 	float pInstTransparencyMultiplier; // transparency.multiplier
-	float pInstSolidityMultiplier; // solidity.multiplier
 	float pInstAOSolidityMultiplier; // ambient.occlusion.solidity.multiplier
 	
 	vec2 pInstHeightRemap; // height.scale, height.offset

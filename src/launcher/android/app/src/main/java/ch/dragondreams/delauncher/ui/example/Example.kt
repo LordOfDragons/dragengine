@@ -95,6 +95,7 @@ class Example(
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             //addFlags(Intent.FLAG_DEBUG_LOG_RESOLUTION)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             putExtra(RunDelgaActivity.EXTRA_OWNER_PACKAGE, activity.packageName)
             putExtra(RunDelgaActivity.EXTRA_GAME_ID, gameId)
         }

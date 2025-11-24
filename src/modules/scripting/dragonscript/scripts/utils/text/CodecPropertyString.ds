@@ -843,11 +843,16 @@ class CodecPropertyString
 				string = string + pEncodeTokenSeparator
 			end
 			
-			quoteString = false
-			for j = 0 to separatorCount
-				if lstring.find(pTokenSeparators.getAt(j), 0) != -1
-					quoteString = true
-					break
+			if lstring.empty()
+				quoteString = true
+				
+			else
+				quoteString = false
+				for j = 0 to separatorCount
+					if lstring.find(pTokenSeparators.getAt(j), 0) != -1
+						quoteString = true
+						break
+					end
 				end
 			end
 			

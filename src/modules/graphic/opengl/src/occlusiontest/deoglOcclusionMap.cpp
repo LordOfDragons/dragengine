@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "deoglOcclusionMap.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../framebuffer/deoglFramebuffer.h"
@@ -51,7 +47,6 @@ pRenderThread( renderThread  ){
 	}
 	
 	pTexture = NULL;
-	pFBOs = NULL;
 	
 	pWidth = width;
 	pHeight = height;
@@ -78,11 +73,7 @@ deoglOcclusionMap::~deoglOcclusionMap(){
 ///////////////
 
 deoglFramebuffer *deoglOcclusionMap::GetFBOAt( int level ){
-	if( level < 0 || level >= pLevelCount ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	return pFBOs[ level ];
+	return (deoglFramebuffer*)pFBOs.GetAt(level);
 }
 
 
@@ -91,18 +82,7 @@ deoglFramebuffer *deoglOcclusionMap::GetFBOAt( int level ){
 //////////////////////
 
 void deoglOcclusionMap::pCleanUp(){
-	if( pFBOs ){
-		int i;
-		
-		for( i=0; i<pLevelCount; i++ ){
-			if( pFBOs[ i ] ){
-				delete pFBOs[ i ];
-			}
-		}
-		
-		delete [] pFBOs;
-	}
-	
+	pFBOs.RemoveAll();
 	if( pTexture ){
 		delete pTexture;
 	}
@@ -130,25 +110,19 @@ void deoglOcclusionMap::pCreateTextures(){
 
 void deoglOcclusionMap::pCreateFBOs(){
 	const deoglRestoreFramebuffer restoreFbo( pRenderThread );
+	const GLenum buffers[1] = {GL_NONE};
 	int i;
 	
-	pFBOs = new deoglFramebuffer*[ pLevelCount ];
-	
-	for( i=0; i<pLevelCount; i++ ){
-		pFBOs[ i ] = NULL;
-	}
-	
-	for( i=0; i<pLevelCount; i++ ){
-		pFBOs[ i ] = new deoglFramebuffer( pRenderThread, false );
+	for(i=0; i<pLevelCount; i++){
+		const deoglFramebuffer::Ref fbo(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
+		pRenderThread.GetFramebuffer().Activate(fbo);
 		
-		pRenderThread.GetFramebuffer().Activate( pFBOs[ i ] );
+		fbo->AttachDepthArrayTextureLevel(pTexture, i);
 		
-		pFBOs[ i ]->AttachDepthArrayTextureLevel( pTexture, i );
+		OGL_CHECK(pRenderThread, pglDrawBuffers(1, buffers));
+		OGL_CHECK(pRenderThread, glReadBuffer(GL_NONE));
 		
-		const GLenum buffers[ 1 ] = { GL_NONE };
-		OGL_CHECK( pRenderThread, pglDrawBuffers( 1, buffers ) );
-		OGL_CHECK( pRenderThread, glReadBuffer( GL_NONE ) );
-		
-		pFBOs[ i ]->Verify();
+		fbo->Verify();
+		pFBOs.Add(fbo);
 	}
 }

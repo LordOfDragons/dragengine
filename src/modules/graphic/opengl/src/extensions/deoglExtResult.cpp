@@ -754,3 +754,11 @@ GLAPI PFNGLTEXSTORAGE3DPROC pglTexStorage3D = nullptr;
 ///////////////////////////////////////////////////////////////////
 
 GLAPI PFNGLMAXSHADERCOMPILERTHREADSKHRPROC pglMaxShaderCompilerThreads = nullptr;
+
+
+#ifdef WITH_OPENGLES
+// GL_OVR_multiview : opengl es version 3.0
+/////////////////////////////////////////////
+
+GLAPI PFNGLFRAMEBUFFERTEXTUREMULTIVIEWOVRPROC pglFramebufferTextureMultiviewOVR = nullptr;
+#endif

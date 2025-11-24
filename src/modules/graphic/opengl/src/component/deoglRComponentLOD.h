@@ -26,6 +26,7 @@
 #define _DEOGLRCOMPONENTLOD_H_
 
 #include "../deoglBasics.h"
+#include "../framebuffer/deoglFramebuffer.h"
 #include "../memory/consumption/deoglMemoryConsumptionGPUUse.h"
 #include "../rendering/task/config/deoglRenderTaskConfig.h"
 #include "../shaders/paramblock/deoglSPBlockSSBO.h"
@@ -35,7 +36,6 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 
-class deoglFramebuffer;
 class deoglModelLOD;
 class deoglRComponent;
 class deoglTexture;
@@ -89,7 +89,7 @@ public:
 	GLuint pVBOTransformVertices;
 	GLuint pTBOTransformVertices;
 	deoglTexture *pTexTransformNormTan;
-	deoglFramebuffer *pFBOCalcNormalTangent;
+	deoglFramebuffer::Ref pFBOCalcNormalTangent;
 	
 	deoglGIBVHDynamic *pGIBVHDynamic;
 	bool pDirtyGIBVHPositions;

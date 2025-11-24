@@ -444,6 +444,12 @@
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebuffer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferArray.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferCube.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2326,6 +2332,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferArray.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\modules\graphic\opengl\src\framebuffer\deoglFramebufferManager.cpp">

@@ -50,7 +50,7 @@ void main( void ){
 		gl_Position.z = gl_Position.z * pDebugDepthScale + pDebugDepthOffset;
 	}
 	
-	#ifdef SUPPORTS_VSLAYER
+	#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 	if(VSRenderLayer){
 		gl_Layer = vLayer;
 	}

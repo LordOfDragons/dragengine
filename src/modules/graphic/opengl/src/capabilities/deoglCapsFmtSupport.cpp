@@ -187,34 +187,36 @@ void deoglCapsFmtSupport::DetectFormats( GLuint fbo ){
 	pDetectFBOArrayTexFormats( fbo );
 	
 	#ifdef OS_ANDROID
-	/*{
-	const deoglCapsTextureFormatList* lists[ 7 ] = {
-		&pFoundTex2DFormats, &pFoundTexCubeFormats, &pFoundArrTexFormats, &pFoundFBOTex2DFormats,
-		&pFoundFBOTexCubeFormats, &pFoundFBOArrTexFormats, &pFoundRenBufFormats };
-	const char *listNames[ 7 ] = {
-		"Tex2DFormats", "TexCubeFormats", "ArrTexFormats", "FBOTex2DFormats",
-		"FBOTexCubeFormats", "FBOArrTexFormats", "RenBufFormats" };
+	/*
+	{
+	const deoglCapsTextureFormatList* lists[6] = {
+		&pFoundTex2DFormats, &pFoundTexCubeFormats, &pFoundArrTexFormats,
+		&pFoundFBOTex2DFormats, &pFoundFBOTexCubeFormats, &pFoundFBOArrTexFormats};
+	const char *listNames[6] = {
+		"Tex2DFormats", "TexCubeFormats", "ArrTexFormats",
+		"FBOTex2DFormats", "FBOTexCubeFormats", "FBOArrTexFormats"};
 	int i, j;
-	for( i=0; i<7; i++ ){
-		renderThread.GetLogger().LogInfo( listNames[i] );
+	for(i=0; i<6; i++){
+		renderThread.GetLogger().LogInfo(listNames[i]);
 		const int count = lists[i]->GetFormatCount();
-		for( j=0; j<count; j++ ){
-			renderThread.GetLogger().LogInfoFormat( "- %s", lists[i]->GetFormatAt(j)->GetName().GetString() );
+		for(j=0; j<count; j++){
+			renderThread.GetLogger().LogInfoFormat("- %s", lists[i]->GetFormatAt(j)->GetName().GetString());
 		}
 	}
 	
-	const deoglCapsTextureFormat** lists2[ 7 ] = {
-		&pUseTex2DFormats[0], &pUseTexCubeFormats[0], &pUseArrTexFormats[0], &pUseFBOTex2DFormats[0],
-		&pUseFBOTexCubeFormats[0], &pUseFBOArrTexFormats[0], &pUseRenBufFormats[0] };
+	const deoglCapsTextureFormat** lists2[6] = {
+		&pUseTex2DFormats[0], &pUseTexCubeFormats[0], &pUseArrTexFormats[0],
+		&pUseFBOTex2DFormats[0], &pUseFBOTexCubeFormats[0], &pUseFBOArrTexFormats[0]};
 		
-	for( i=0; i<7; i++ ){
-		renderThread.GetLogger().LogInfoFormat( "Use-%s", listNames[i] );
-		for( j=0; j<UseTextureFormatCount; j++ ){
-			renderThread.GetLogger().LogInfoFormat( "- %s = %s", vTextureFormatNames[j],
-				lists2[i][j] ? lists2[i][j]->GetName().GetString() : "-" );
+	for(i=0; i<6; i++){
+		renderThread.GetLogger().LogInfoFormat("Use-%s", listNames[i]);
+		for(j=0; j<UseTextureFormatCount; j++){
+			renderThread.GetLogger().LogInfoFormat("- %s = %s", vTextureFormatNames[j],
+				lists2[i][j] ? lists2[i][j]->GetName().GetString() : "-");
 		}
 	}
-	}*/
+	}
+	*/
 	#endif
 }
 

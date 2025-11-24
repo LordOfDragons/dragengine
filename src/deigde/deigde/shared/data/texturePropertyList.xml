@@ -417,6 +417,22 @@
 		</affects>
 	</property>
 	
+	<property name='solidity.invert'>
+		<description>
+			Defines if the solidity is inverted. Useful if textues have been created with 0
+			meaning solid instead of 1. A value of 1 (or above 0.5) inverts solidity values.
+			A value of 0 (or below 0.5) does not.
+		</description>
+		<type>value</type>
+		<components>1</components>
+		<default>
+			<value>0</value>
+		</default>
+		<affects>
+			<module>graphic</module>
+		</affects>
+	</property>
+	
 	<property name='solidity.filterPriority'>
 		<description>
 			Defines the filter priority. Graphic modules use Mip-Mapping to calculate down

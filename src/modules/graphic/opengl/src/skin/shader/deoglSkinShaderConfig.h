@@ -204,7 +204,7 @@ public:
 	bool pDynamicColorSolidityMultiplier;
 	bool pDynamicAmbientOcclusionSolidityMultiplier;
 	bool pDynamicTransparencyMultiplier;
-	bool pDynamicSolidityMultiplier;
+	bool pDynamicSolidityRemap;
 	bool pDynamicHeightRemap;
 	bool pDynamicNormalStrength;
 	bool pDynamicNormalSolidityMultiplier;
@@ -502,11 +502,11 @@ public:
 	/** Set if transparency multiplier texture property is dynamic. */
 	void SetDynamicTransparencyMultiplier( bool dynamic );
 	
-	/** Solidity multiplier texture property is dynamic. */
-	inline bool GetDynamicSolidityMultiplier() const{ return pDynamicSolidityMultiplier; }
+	/** Solidity remap texture property is dynamic. */
+	inline bool GetDynamicSolidityRemap() const{ return pDynamicSolidityRemap; }
 	
-	/** Set if solidity multiplier texture property is dynamic. */
-	void SetDynamicSolidityMultiplier( bool dynamic );
+	/** Set if solidity remap texture property is dynamic. */
+	void SetDynamicSolidityRemap( bool dynamic );
 	
 	/** Height scale and height offset texture properties are dynamic. */
 	inline bool GetDynamicHeightRemap() const{ return pDynamicHeightRemap; }

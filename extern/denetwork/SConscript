@@ -11,7 +11,8 @@ if parent_env['platform_webwasm']:
 
 envLibrary = parent_env.Clone()
 
-srcVersion = 'nightly'
+srcVersion = '1.2'
+
 if envLibrary['platform_android'] != 'no':
 	sysarch = 'android-{}'.format(envLibrary['ANDROID_ARCH_ID'])
 else:
@@ -25,7 +26,7 @@ libFileName = envLibrary.subst('{}/lib/${{LIBPREFIX}}{}${{LIBSUFFIX}}'.format(sr
 baseUrl = 'https://github.com/LordOfDragons/denetwork/releases/download'
 
 nodeArtifacts = envLibrary.DownloadArtifactHelper('{}.tar.bz2'.format(srcdir),
-	srcVersion, 'lib_denetwork_fetch', baseUrl=baseUrl)
+	'v{}'.format(srcVersion), 'lib_denetwork_fetch', baseUrl=baseUrl)
 
 if 'with_denetwork_inc' in envLibrary and envLibrary['with_denetwork_inc']:
 	envLibrary.Append(CPPPATH = [envLibrary['with_denetwork_inc']])

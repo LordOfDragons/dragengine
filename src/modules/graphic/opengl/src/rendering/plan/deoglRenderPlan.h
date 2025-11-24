@@ -137,8 +137,7 @@ private:
 	bool pUseLayerMask;
 	decLayerMask pLayerMask;
 	
-	deoglFramebuffer *pFBOTarget;
-	deoglFramebuffer *pFBOMaterial;
+	deoglFramebuffer *pFBOTarget, *pFBOMaterial;
 	decMatrix pFBOMaterialMatrix;
 	
 	deoglDCollisionFrustum pCustomFrustum;

@@ -352,37 +352,41 @@ void projWindowMain::UpdateShowActionPath(){
 	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 	
 	decPath path;
-	path.SetFromNative( gameProject.GetDirectoryPath() );
-	path.AddUnixPath( gameProject.GetPathData() );
-	pActionShowContent->SetPath( path.GetPathNative() );
+	path.SetFromNative(gameProject.GetDirectoryPath());
+	path.AddUnixPath(gameProject.GetPathData());
+	pActionShowContent->SetPath(path.GetPathNative());
+	pActionShowContent->SetEnsureExists(true);
 	
-	path.SetFromNative( gameProject.GetDirectoryPath() );
-	path.AddUnixPath( "cache/testrun/config" );
-	pActionShowConfig->SetPath( path.GetPathNative() );
+	path.SetFromNative(gameProject.GetDirectoryPath());
+	path.AddUnixPath("cache/testrun/config");
+	pActionShowConfig->SetPath(path.GetPathNative());
+	pActionShowConfig->SetEnsureExists(true);
 	
-	path.SetFromNative( gameProject.GetDirectoryPath() );
-	path.AddUnixPath( "cache/testrun/overlay" );
-	pActionShowOverlay->SetPath( path.GetPathNative() );
+	path.SetFromNative(gameProject.GetDirectoryPath());
+	path.AddUnixPath("cache/testrun/overlay");
+	pActionShowOverlay->SetPath(path.GetPathNative());
+	pActionShowOverlay->SetEnsureExists(true);
 	
-	path.SetFromNative( gameProject.GetDirectoryPath() );
-	path.AddUnixPath( "cache/testrun/capture" );
-	pActionShowCapture->SetPath( path.GetPathNative() );
+	path.SetFromNative(gameProject.GetDirectoryPath());
+	path.AddUnixPath("cache/testrun/capture");
+	pActionShowCapture->SetPath(path.GetPathNative());
+	pActionShowCapture->SetEnsureExists(true);
 	
-	path.SetFromNative( gameProject.GetDirectoryPath() );
-	path.AddComponent( "testRun.log" );
-	pActionShowLogs->SetPath( path.GetPathNative() );
+	path.SetFromNative(gameProject.GetDirectoryPath());
+	path.AddComponent("testRun.log");
+	pActionShowLogs->SetPath(path.GetPathNative());
 	
-	const projProfile * const profile = pProject ? pProject->GetActiveProfile() : NULL;
-	if( profile ){
-		path.SetFromNative( gameProject.GetDirectoryPath() );
-		path.AddUnixPath( profile->GetDelgaPath() );
+	const projProfile * const profile = pProject ? pProject->GetActiveProfile() : nullptr;
+	if(profile){
+		path.SetFromNative(gameProject.GetDirectoryPath());
+		path.AddUnixPath(profile->GetDelgaPath());
 		path.RemoveLastComponent();
-		pActionShowDelga->SetPath( path.GetPathNative() );
-		pActionShowDelga->SetEnabled( true );
+		pActionShowDelga->SetPath(path.GetPathNative());
+		pActionShowDelga->SetEnabled(true);
 		
 	}else{
-		pActionShowDelga->SetPath( "" );
-		pActionShowDelga->SetEnabled( false );
+		pActionShowDelga->SetPath("");
+		pActionShowDelga->SetEnabled(false);
 	}
 }
 

@@ -914,7 +914,7 @@ void deoglSkinTexturePipelines::pSetDynamicGeometry( deoglSkinShaderConfig &conf
 	config.SetDynamicColorSolidityMultiplier( ISPROPDYN( empColorSolidityMultiplier ) );
 	config.SetDynamicAmbientOcclusionSolidityMultiplier( ISPROPDYN( empAmbientOcclusionSolidityMultiplier ) );
 	config.SetDynamicTransparencyMultiplier( ISPROPDYN( empTransparencyMultiplier ) );
-	config.SetDynamicSolidityMultiplier( ISPROPDYN( empSolidityMultiplier ) );
+	config.SetDynamicSolidityRemap(ISPROPDYN(empSolidityMultiplier));
 	config.SetDynamicHeightRemap( ISPROPDYN( empHeightScale ) || ISPROPDYN( empHeightOffset ) );
 	config.SetDynamicNormalStrength( ISPROPDYN( empNormalStrength ) );
 	config.SetDynamicNormalSolidityMultiplier( ISPROPDYN( empNormalSolidityMultiplier ) );

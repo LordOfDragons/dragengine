@@ -1,7 +1,7 @@
 #include "shared/preamble.glsl"
 
 // layout definitions
-#if LAYERED_RENDERING_STEREO
+#ifdef LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout(triangles, invocations=2) in;
 		layout(triangle_strip, max_vertices=3) out;
@@ -22,7 +22,7 @@
 
 
 // dual view rendering
-#if LAYERED_RENDERING_STEREO
+#ifdef LAYERED_RENDERING_STEREO
 
 void emitCorner(in int layer, in int corner, in vec4 position, in vec4 preTransformedPosition){
 	gl_Position = preTransformedPosition;
@@ -76,7 +76,7 @@ void emitCorner(in int layer, in int corner, in vec4 position){
 // Main Function
 //////////////////
 
-#if LAYERED_RENDERING_STEREO
+#ifdef LAYERED_RENDERING_STEREO
 
 void main(void){
 	// NOTE: quest requires EmitVertex to be called in main()

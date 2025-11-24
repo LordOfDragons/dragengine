@@ -2,22 +2,22 @@
 // #include "shared/interface/skin/tessellation_evaluate.glsl"
 
 
-VARYING_BIND(0) in vec4 vTESTexCoords1[]; // color, colorTintMask
-VARYING_BIND(1) in vec4 vTESTexCoords2[]; // normal, reflectivity
-VARYING_BIND(2) in vec4 vTESTexCoords3[]; // emissivity, refractionDistort
-VARYING_BIND(3) in vec2 vTESTexCoords4[]; // ao
-VARYING_BIND(4) in vec4 vTESNormalHTMask[]; // normal, HTMask
-VARYING_BIND(5) in vec4 vTESTangentFadeZ[]; // tangent, fadeZ
-VARYING_BIND(6) in vec3 vTESBitangent[];
-VARYING_BIND(7) in vec3 vTESReflectDir[];
-VARYING_BIND(8) in vec3 vTESClipCoord[];
-VARYING_BIND(9) in vec3 vTESSkinClipCoord[];
-VARYING_BIND(10) in vec3 vTESPosition[];
-VARYING_BIND(11) flat in ivec4 vTESIndicesFlags[]; // doubleSided, SPBIndex, SPBFlags, layer
+VARYING_BIND(0) in mediump vec4 vTESTexCoords1[]; // color, colorTintMask
+VARYING_BIND(1) in mediump vec4 vTESTexCoords2[]; // normal, reflectivity
+VARYING_BIND(2) in mediump vec4 vTESTexCoords3[]; // emissivity, refractionDistort
+VARYING_BIND(3) in lowp vec2 vTESTexCoords4[]; // ao
+VARYING_BIND(4) in mediump vec4 vTESNormalHTMask[]; // normal, HTMask
+VARYING_BIND(5) in mediump vec4 vTESTangentFadeZ[]; // tangent, fadeZ
+VARYING_BIND(6) in mediump vec3 vTESBitangent[];
+VARYING_BIND(7) in mediump vec3 vTESReflectDir[];
+VARYING_BIND(8) in mediump vec3 vTESClipCoord[];
+VARYING_BIND(9) in mediump vec3 vTESSkinClipCoord[];
+VARYING_BIND(10) in mediump vec3 vTESPosition[];
+VARYING_BIND(11) flat in mediump ivec4 vTESIndicesFlags[]; // doubleSided, SPBIndex, SPBFlags, layer
 
-VARYING_BIND(12) in vec3 vTESParticle0[]; // size, emissivity, rotation
-VARYING_BIND(13) in vec4 vTESParticle1[]; // red, green, blue, transparency
-VARYING_BIND(14) flat in int vTESParticleSheetCount[];
+VARYING_BIND(12) in mediump vec3 vTESParticle0[]; // size, emissivity, rotation
+VARYING_BIND(13) in lowp vec4 vTESParticle1[]; // red, green, blue, transparency
+VARYING_BIND(14) flat in lowp int vTESParticleSheetCount[];
 
 #define vTESTCColor(index) (vTESTexCoords1[index].xy)
 #define vTESTCColorTintMask(index) (vTESTexCoords1[index].zw)

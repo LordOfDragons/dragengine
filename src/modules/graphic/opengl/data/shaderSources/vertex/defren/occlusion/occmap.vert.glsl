@@ -81,7 +81,7 @@ void main(void){
 	vSPBIndex = spbIndex;
 	vSPBFlags = spbFlags;
 	
-	#ifdef SUPPORTS_VSLAYER
+	#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 	if(VSRenderLayer){
 		gl_Layer = vLayer;
 	}

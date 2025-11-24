@@ -27,12 +27,12 @@
 
 #include <dragengine/common/math/decMath.h>
 #include "../deoglBasics.h"
+#include "../framebuffer/deoglFramebufferManager.h"
 
 class deoglRenderThread;
 class deoglTexture;
 class deoglCubeMap;
 class deoglArrayTexture;
-class deoglFramebuffer;
 class deoglRenderableColorTexture;
 class deoglRenderableDepthTexture;
 class deoglRenderableColorCubeMap;
@@ -53,8 +53,8 @@ class deoglShadowMapper{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglFramebuffer *pFBOTextureSolid;
-	deoglFramebuffer *pFBOTextureTransp;
+	deoglFramebufferManager::Usage pFBOTextureSolid;
+	deoglFramebufferManager::Usage pFBOTextureTransp;
 	deoglRenderableDepthTexture *pTextureDepthSolid;
 	deoglRenderableDepthTexture *pTextureDepthTransp;
 	deoglRenderableColorTexture *pTextureColorTransp;
@@ -65,7 +65,7 @@ private:
 	deoglTexture *pUseTexDepthTransp;
 	deoglTexture *pUseTexColorTransp;
 	
-	deoglFramebuffer *pFBOCube;
+	deoglFramebufferManager::Usage pFBOCube;
 	deoglRenderableDepthCubeMap *pCubeMapDepthSolid;
 	deoglRenderableDepthCubeMap *pCubeMapDepthTransp;
 	deoglRenderableColorCubeMap *pCubeMapColorTransp;
@@ -76,7 +76,7 @@ private:
 	deoglCubeMap *pUseCubeMapDepthTransp;
 	deoglCubeMap *pUseCubeMapColorTransp;
 	
-	deoglFramebuffer *pFBOArrTex;
+	deoglFramebufferManager::Usage pFBOArrTex;
 	deoglRenderableDepthArrayTexture *pArrTexSolidDepth;
 	deoglRenderableDepthArrayTexture *pArrTexTranspDepth;
 	deoglRenderableColorArrayTexture *pArrTexTranspColor;
@@ -87,15 +87,15 @@ private:
 	deoglArrayTexture *pUseArrTexTranspDepth;
 	deoglArrayTexture *pUseArrTexTranspColor;
 	
-	deoglFramebuffer *pFBOOcclusion;
+	deoglFramebufferManager::Usage pFBOOcclusion;
 	deoglRenderableColorTexture *pTextureOcclusion;
 	
-	deoglFramebuffer *pFBOAmbient;
+	deoglFramebufferManager::Usage pFBOAmbient;
 	deoglRenderableDepthTexture *pTextureAmbient;
 	deoglTexture *pForeignTexAmbient;
 	deoglTexture *pUseTexAmbient;
 	
-	deoglFramebuffer *pFBOCubeAmbient;
+	deoglFramebufferManager::Usage pFBOCubeAmbient;
 	deoglRenderableDepthCubeMap *pCubeMapAmbient;
 	deoglCubeMap *pForeignCubeMapAmbient;
 	deoglCubeMap *pUseCubeMapAmbient;

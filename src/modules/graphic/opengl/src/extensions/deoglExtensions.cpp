@@ -203,7 +203,10 @@ static const char * const vExtensionNames[ deoglExtensions::EXT_COUNT ] = {
 	"GLX_EXT_swap_control_tear",
 	
 	"WGL_EXT_swap_control",
-	"WGL_EXT_swap_control_tear"
+	"WGL_EXT_swap_control_tear",
+	
+	"GL_OVR_multiview",
+	"GL_OVR_multiview2"
 };
 
 
@@ -718,7 +721,8 @@ void deoglExtensions::pScanExtensions(){
 		|| pHasExtension[ ext_ARB_compute_shader ];
 	
 	pSupportsVSLayer = pHasExtension[ ext_ARB_shader_viewport_layer_array ]
-		|| pHasExtension[ ext_AMD_vertex_shader_layer ];
+		|| pHasExtension[ ext_AMD_vertex_shader_layer ]
+		|| pHasExtension[ ext_OVR_multiview ];
 	
 	#ifdef WITH_OPENGLES
 	/*
@@ -1374,6 +1378,14 @@ void deoglExtensions::pFetchOptionalFunctions(){
 		pGetOptionalFunction((void**)&pglMaxShaderCompilerThreads,
 			"glMaxShaderCompilerThreadsKHR", ext_KHR_parallel_shader_compile);
 	}
+	
+#ifdef WITH_OPENGLES
+	// GL_OVR_multiview : opengl es version 3.0
+	if(pHasExtension[ext_OVR_multiview]){
+		pGetOptionalFunction((void**)&pglFramebufferTextureMultiviewOVR,
+			"glFramebufferTextureMultiviewOVR", ext_OVR_multiview);
+	}
+#endif
 }
 
 void deoglExtensions::pOptionalDisableExtensions(){

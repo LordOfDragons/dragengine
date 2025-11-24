@@ -33,7 +33,6 @@
 #include "../capabilities/deoglCapabilities.h"
 #include "../configuration/deoglConfiguration.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
-#include "../framebuffer/deoglFramebuffer.h"
 #include "../gi/deoglGIBVHDynamic.h"
 #include "../memory/deoglMemoryManager.h"
 #include "../model/deoglModelLOD.h"
@@ -124,7 +123,6 @@ pMemUse( component.GetRenderThread().GetMemoryManager().GetConsumption().bufferO
 pVBOTransformVertices( 0 ),
 pTBOTransformVertices( 0 ),
 pTexTransformNormTan( NULL ),
-pFBOCalcNormalTangent( NULL ),
 
 pGIBVHDynamic( NULL ),
 pDirtyGIBVHPositions( true )
@@ -752,9 +750,7 @@ void deoglRComponentLOD::pCleanUp(){
 	if( pTexTransformNormTan ){
 		delete pTexTransformNormTan;
 	}
-	if( pFBOCalcNormalTangent ){
-		delete pFBOCalcNormalTangent;
-	}
+	pFBOCalcNormalTangent = nullptr;
 	if( pVAO ){
 		delete pVAO;
 	}

@@ -12,6 +12,11 @@
 		<name>DragonDreams GmbH</name>
 	</developer>
 	
+	<categories>
+		<category>Game</category>
+		<category>LauncherStore</category>
+	</categories>
+	
 	<recommends>
 		<control>keyboard</control>
 		<control>pointing</control>
@@ -68,10 +73,16 @@
 	</screenshots>
 	
 	<releases>
-		<release version="1.28.1" date="2025-11-02">
-			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-28</url>
+		<release version="1.29.1" date="2025-11-24">
+			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29-1</url>
 			<description>
-				<p>Drag[en]gine 1.28 Release. See "details" for full release notes.</p>
+				<p>Drag[en]gine 1.29.1 Release. See "details" for full release notes.</p>
+			</description>
+		</release>
+		<release version="1.29" date="2025-11-09">
+			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29</url>
+			<description>
+				<p>Drag[en]gine 1.29 Release. See "details" for full release notes.</p>
 			</description>
 		</release>
 	</releases>

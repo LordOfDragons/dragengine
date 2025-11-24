@@ -23,7 +23,7 @@
  */
 
 #ifndef _REWPBONELISTENER_H_
-#define _REWPBOELISTENER_H_
+#define _REWPBONELISTENER_H_
 
 #include "../../rig/reRigNotifier.h"
 

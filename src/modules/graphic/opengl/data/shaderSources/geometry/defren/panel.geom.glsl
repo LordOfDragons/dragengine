@@ -1,6 +1,6 @@
 #include "shared/preamble.glsl"
 
-#if LAYERED_RENDERING_STEREO
+#ifdef LAYERED_RENDERING_STEREO
 	#ifdef GS_INSTANCING
 		layout( triangles, invocations=2 ) in;
 		layout( triangle_strip, max_vertices=3 ) out;
@@ -21,7 +21,7 @@ UNIFORM_BIND(2) uniform mat4 pMatrixVP2;
 #include "shared/interface/2d/geometry.glsl"
 
 
-#if LAYERED_RENDERING_STEREO
+#ifdef LAYERED_RENDERING_STEREO
 
 void main( void ){
 	int eye;

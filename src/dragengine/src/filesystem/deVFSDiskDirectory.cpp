@@ -653,6 +653,11 @@ TIME_SYSTEM deVFSDiskDirectory::GetFileModificationTime( const decPath &path ){
 #endif
 }
 
+void deVFSDiskDirectory::EnsureDiskDirectoryExists(){
+	pEnsureDirectoryExists(pDiskPath);
+}
+
+
 
 
 // Private Functions

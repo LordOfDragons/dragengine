@@ -50,6 +50,9 @@ while len(libVersionString.split('.')) < 3:
 envIGDELib.Append(CXXFLAGS = ['-I{}'.format(envIGDELib.Dir('shared/src').srcnode().abspath)])
 envIGDELib.Replace(WINDOWS_INSERT_DEF = 1) # generated .def file if dll is build
 
+if not envIGDELib['with_engine_module_checks']:
+	envIGDELib.Append(CXXFLAGS = ['-DNO_ENGINE_MODULE_CHECKS'])
+
 # create environment for the progam
 envIGDEApp = envIGDELib.Clone()
 
@@ -301,28 +304,33 @@ if envIGDEApp['OSPosix']:
 	
 	for s in ['256', '128', '64', '32']:
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'apps', 'dragengine-deigde.png')
+			'{}x{}'.format(s, s), 'apps', 'ch.dragondreams.deigde.png')
 		source = 'data/deigde{}.png'.format(s)
 		installApp.append(envIGDEApp.InstallAs(target, source))
 		archiveApp[target] = envIGDEApp.File(source).srcnode()
 		
 		target = os.path.join(pathDataDir, 'icons', 'hicolor',
-			'{}x{}'.format(s, s), 'mimetypes', 'dragengine-deigde.png')
+			'{}x{}'.format(s, s), 'mimetypes', 'ch.dragondreams.deigde.png')
 		source = 'data/deigde{}.png'.format(s)
 		installApp.append(envIGDEApp.InstallAs(target, source))
 		archiveApp[target] = envIGDEApp.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'pixmaps', 'dragengine-deigde.png')
+	target = os.path.join(pathDataDir, 'pixmaps', 'ch.dragondreams.deigde.png')
 	source = 'data/deigde256.png'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'applications', 'dragengine-deigde.desktop')
+	target = os.path.join(pathDataDir, 'applications', 'ch.dragondreams.deigde.desktop')
 	source = 'data/deigde.desktop'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()
 	
-	target = os.path.join(pathDataDir, 'mime', 'packages', 'dragengine-deigde.xml')
+	target = os.path.join(pathDataDir, 'metainfo', 'ch.dragondreams.deigde.metainfo.xml')
+	source = 'data/deigde.metainfo.xml'
+	installApp.append(envIGDEApp.InstallAs(target, source))
+	archiveApp[target] = envIGDEApp.File(source).srcnode()
+	
+	target = os.path.join(pathDataDir, 'mime', 'packages', 'ch.dragondreams.deigde-mime.xml')
 	source = 'data/mimetypes.xml'
 	installApp.append(envIGDEApp.InstallAs(target, source))
 	archiveApp[target] = envIGDEApp.File(source).srcnode()

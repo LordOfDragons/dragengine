@@ -322,6 +322,7 @@ public:
 	
 	/** Framebuffer related. */
 	inline deoglRTFramebuffer &GetFramebuffer() const{ return *pFramebuffer; }
+	inline bool HasFramebuffer() const{ return pFramebuffer != nullptr; }
 	
 	/** Logger. */
 	inline deoglRTLogger &GetLogger() const{ return *pLogger; }

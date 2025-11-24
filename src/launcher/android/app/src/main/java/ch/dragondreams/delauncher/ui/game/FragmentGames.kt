@@ -315,6 +315,8 @@ class FragmentGames : Fragment() {
             intent.setClassName(ownerPackage, "${ownerPackage}.MainActivity")
         }
 
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         intent.putExtra(RunDelgaActivity.EXTRA_GAME_ID, game.identifier)
         try {
             a.startActivity(intent)

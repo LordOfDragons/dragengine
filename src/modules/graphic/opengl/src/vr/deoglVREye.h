@@ -42,9 +42,13 @@ class deBaseVRModule;
  */
 class deoglVREye{
 public:
-	struct sViewImage {
-		deoglFramebuffer *fbo;
+	class cViewImage{
+	public:
+		deoglFramebuffer::Ref fbo;
 		GLuint texture;
+		
+	public:
+		cViewImage() = default;
 	};
 	
 	
@@ -53,30 +57,24 @@ private:
 	deoglVR &pVR;
 	deBaseVRModule::eEye pEye;
 	
-	decPoint pTargetSize;
-	decPoint pRenderSize;
+	decPoint pTargetSize, pRenderSize;
 	deBaseVRModule::eVRRenderFormat pRenderFormat;
 	
-	double pProjectionLeft;
-	double pProjectionRight;
-	double pProjectionTop;
-	double pProjectionBottom;
+	double pProjectionLeft, pProjectionRight, pProjectionTop, pProjectionBottom;
 	
 	decMatrix pMatrixViewToEye;
 	deModel::Ref pHiddenMesh;
 	deoglRModel::Ref pHiddenRMesh;
 	
 	deoglRenderTarget::Ref pRenderTarget;
-	decVector2 pCanvasTCFrom;
-	decVector2 pCanvasTCTo;
+	decVector2 pCanvasTCFrom, pCanvasTCTo;
 	
 	GLuint *pVRGetViewsBuffer;
 	int pVRGetViewsBufferSize;
 	
-	sViewImage *pVRViewImages;
+	cViewImage *pVRViewImages;
 	int pVRViewImageCount;
-	decVector2 pVRViewTCFrom;
-	decVector2 pVRViewTCTo;
+	decVector2 pVRViewTCFrom, pVRViewTCTo;
 	
 	bool pUseGammaCorrection;
 	

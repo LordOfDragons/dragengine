@@ -23,7 +23,7 @@
  */
 
 #ifndef _IGDEWANGLERANGE_H_
-#define _IGDEWWANGLERANGE_H_
+#define _IGDEWANGLERANGE_H_
 
 #include "igdeWDebugDrawerShape.h"
 

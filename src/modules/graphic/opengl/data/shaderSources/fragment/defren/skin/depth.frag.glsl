@@ -139,7 +139,7 @@ void main(void){
 		}
 		
 		if(TextureNormal){
-			normal = TEXTURE(texNormal, tcNormal).rgb;
+			normal = TEXTURE(texNormal, texNormalArray, tcNormal).rgb;
 			normal = normal * vec3(1.9921569) + vec3(-0.9921722);
 			
 		}else{
@@ -173,25 +173,25 @@ void main(void){
 	// get texture properties from textures
 	vec3 color;
 	if(OutputMode == OutputModeColor){
-		color = vec3(TEXTURE(texColor, tcColor));
+		color = vec3(TEXTURE(texColor, texColorArray, tcColor));
 	}
 	
 	float solidity;
 	if(WithSolidity){
 		if(TextureSolidity){
-			solidity = TEXTURE(texSolidity, tcColor).r * getSolidityMultiplier(vSPBIndex);
+			solidity = remapSolidity(vSPBIndex, TEXTURE(texSolidity, texSolidityArray, tcColor).r);
 			
 		}else if(WithOutline){
 			solidity = getOutlineSolidity(vSPBIndex);
 			
 		}else{
-			solidity = getSolidityMultiplier(vSPBIndex);
+			solidity = getSolidityRemap(vSPBIndex).y;
 		}
 		
 		if(SkinClipPlane){
 			float skinClipDist = dot(vSkinClipCoord, vec3(pInstSkinClipPlaneNormal));
 			
-			float skinClipSolidity = getSkinClipPlaneBorder(vSPBIndex) > 0
+			float skinClipSolidity = getSkinClipPlaneBorder(vSPBIndex) > 0.0
 				? smoothstep(pInstSkinClipPlaneNormal.w,
 					pInstSkinClipPlaneNormal.w + getSkinClipPlaneBorder(vSPBIndex),
 					skinClipDist)
@@ -199,7 +199,7 @@ void main(void){
 					pInstSkinClipPlaneNormal.w,
 					skinClipDist);
 			
-			solidity *= mix(1, skinClipSolidity, getSkinClipPlane(vSPBIndex));
+			solidity *= mix(1.0, skinClipSolidity, getSkinClipPlane(vSPBIndex));
 		}
 	}
 	
@@ -211,7 +211,7 @@ void main(void){
 		}else{
 			emissivity = vec3(0.0);
 			if(TextureEmissivity){
-				emissivity += vec3(TEXTURE(texEmissivity, tcColor));
+				emissivity += vec3(TEXTURE(texEmissivity, texEmissivityArray, tcColor));
 			}
 			if(TextureRimEmissivity){
 				if(getRimAngle(vSPBIndex) > 0.5){
@@ -220,7 +220,9 @@ void main(void){
 					// 
 					// using "normal" is not giving the results one expects especially if close up.
 					// instead the normal is dotted with the normalized fragment direction.
-					emissivity += pow(TEXTURE(texRimEmissivity, tcEmissivity).rgb, vec3(getColorGamma(vSPBIndex)))
+					emissivity +=
+						pow(TEXTURE(texRimEmissivity, texRimEmissivityArray, tcEmissivity).rgb,
+							vec3(getColorGamma(vSPBIndex)))
 						* finalEmissivityIntensity(getRimEmissivityIntensity(vSPBIndex))
 						* vec3(max(1.0 - pow(asin(abs(dot(fragmentDirection, normal)))
 							* getRimAngle(vSPBIndex), getRimExponent(vSPBIndex)), 0.0));

@@ -35,7 +35,7 @@ void main(void){
 	
 	if(VSRenderLayer){
 		vLayer = layer;
-		#ifdef SUPPORTS_VSLAYER
+		#if defined SUPPORTS_VSLAYER && ! defined OPENGLES
 		gl_Layer = layer;
 		#endif
 	}

@@ -29,10 +29,7 @@
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../framebuffer/deoglFramebufferManager.h"
 
-class deoglFramebuffer;
-class deoglFramebufferManager;
 class deoglRenderThread;
-
 
 
 /**
@@ -43,12 +40,7 @@ private:
 	deoglFramebufferManager pManager;
 	
 	deoglFramebuffer *pActive;
-	
-	deoglFramebuffer pPrimary;
-	
-	deoglFramebuffer pEnvMap;
-	deoglFramebuffer pEnvMapMaterial;
-	
+	const deoglFramebuffer::Ref pPrimary, pEnvMap, pEnvMapMaterial;
 	
 	
 public:
@@ -70,22 +62,19 @@ public:
 	inline const deoglFramebufferManager &GetManager() const{ return pManager; }
 	
 	/** Primary framebuffer. */
-	inline deoglFramebuffer &GetPrimary(){ return pPrimary; }
-	inline const deoglFramebuffer &GetPrimary() const{ return pPrimary; }
+	inline const deoglFramebuffer::Ref &GetPrimary() const{ return pPrimary; }
 	
 	/** Active framebuffer. */
 	inline deoglFramebuffer *GetActive() const{ return pActive; }
 	
 	/** Activate framebuffer or \em NULL to activate the primary framebuffer. */
-	void Activate( deoglFramebuffer *framebuffer );
+	void Activate(deoglFramebuffer *framebuffer);
 	
 	/** Environment map framebuffer. */
-	inline deoglFramebuffer &GetEnvMap(){ return pEnvMap; }
-	inline const deoglFramebuffer &GetEnvMap() const{ return pEnvMap; }
+	inline const deoglFramebuffer::Ref &GetEnvMap() const{ return pEnvMap; }
 	
 	/** Environment material map framebuffer. */
-	inline deoglFramebuffer &GetEnvMapMaterial(){ return pEnvMapMaterial; }
-	inline const deoglFramebuffer &GetEnvMapMaterial() const{ return pEnvMapMaterial; }
+	inline const deoglFramebuffer::Ref &GetEnvMapMaterial() const{ return pEnvMapMaterial; }
 	/*@}*/
 	
 private:

@@ -22,15 +22,12 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
 #include "deoglFramebuffer.h"
 #include "../capabilities/deoglCapabilities.h"
 #include "../capabilities/deoglCapsTextureFormat.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../renderthread/deoglRenderThread.h"
+#include "../renderthread/deoglRTChoices.h"
 #include "../renderthread/deoglRTFramebuffer.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../renderthread/deoglRTDebug.h"
@@ -336,11 +333,22 @@ void deoglFramebuffer::AttachColorArrayTextureLevel( int index, deoglArrayTextur
 		DETHROW( deeInvalidParam );
 	}
 	
+	if(texture->GetLayerCount() == 1){
+		AttachColorArrayTextureLayerLevel(index, texture, 0, level);
+		return;
+	}
+	
 	const GLuint image = texture->GetTexture();
 	
 	if( pAttColor[ index ].DoesNotMatch( image, eatArrayTexture, level ) ){
 		DetachColorImage( index );
 		
+#ifdef WITH_OPENGLES
+		if(pglFramebufferTextureMultiviewOVR && false){
+			OGL_CHECK(pRenderThread, pglFramebufferTextureMultiviewOVR(GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0 + index, image, level, 0, texture->GetLayerCount()));
+		}else
+#endif
 		if( pglFramebufferTexture ){
 			OGL_CHECK( pRenderThread, pglFramebufferTexture( GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + index, image, level ) );
@@ -553,25 +561,25 @@ void deoglFramebuffer::AttachDepthArrayTextureLevel( deoglArrayTexture *texture,
 		DETHROW( deeInvalidParam );
 	}
 	
+	if(texture->GetLayerCount() == 1){
+		AttachDepthArrayTextureLayerLevel(texture, 0, level);
+		return;
+	}
+	
 	const GLuint image = texture->GetTexture();
 	
 	if( pAttDepth.DoesNotMatch( image, eatArrayTexture, level ) ){
 		DetachDepthImage();
 		
-		if(pglFramebufferTexture){
 #ifdef WITH_OPENGLES
-			try{
+		if(pglFramebufferTextureMultiviewOVR && false){
+			OGL_CHECK(pRenderThread, pglFramebufferTextureMultiviewOVR(GL_FRAMEBUFFER,
+				GL_DEPTH_ATTACHMENT, image, level, 0, texture->GetLayerCount()));
+		}else
 #endif
+		if(pglFramebufferTexture){
 			OGL_CHECK(pRenderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT, image, level));
-	#ifdef WITH_OPENGLES
-			}catch(const deException &){
-				pRenderThread.GetLogger().LogInfoFormat(
-					"deoglFramebuffer::AttachDepthArrayTextureLevel Failed: img=%d size(%d,%d) level=%d f=%s",
-					image, texture->GetWidth(), texture->GetHeight(), level, texture->GetFormat()->GetName().GetString());
-				throw;
-			}
-#endif
 			
 		}else{
 			DETHROW(deeInvalidAction);
@@ -677,11 +685,22 @@ void deoglFramebuffer::AttachStencilArrayTextureLevel( deoglArrayTexture *textur
 		DETHROW( deeInvalidParam );
 	}
 	
+	if(texture->GetLayerCount() == 1){
+		AttachStencilArrayTextureLayerLevel(texture, 0, level);
+		return;
+	}
+	
 	const GLuint image = texture->GetTexture();
 	
 	if( pAttStencil.DoesNotMatch( image, eatArrayTexture, level ) ){
 		DetachStencilImage();
 		
+#ifdef WITH_OPENGLES
+		if(pglFramebufferTextureMultiviewOVR && false){
+			OGL_CHECK(pRenderThread, pglFramebufferTextureMultiviewOVR(GL_FRAMEBUFFER,
+				GL_STENCIL_ATTACHMENT, image, level, 0, texture->GetLayerCount()));
+		}else
+#endif
 		if(pglFramebufferTexture){
 			OGL_CHECK(pRenderThread, pglFramebufferTexture(GL_FRAMEBUFFER,
 				GL_STENCIL_ATTACHMENT, image, level));
@@ -900,13 +919,17 @@ void deoglFramebuffer::SetDebugObjectLabel( const char *name ){
 //////////////////////
 
 void deoglFramebuffer::pCleanUp(){
-	if( pUsageCount > 0 ){
+	if(pUsageCount > 0){
 		pRenderThread.GetLogger().LogWarnFormat(
-			"Framebuffer ( %i x %i ) has %i usage count on deletion!",
-			pUsageWidth, pUsageHeight, pUsageCount );
+			"Framebuffer (%d x %d) has %d usage count on deletion!",
+			pUsageWidth, pUsageHeight, pUsageCount);
 	}
 	
-	if( ! pPrimary ){
-		pRenderThread.GetDelayedOperations().DeleteOpenGLFramebuffer( pFBO );
+	if(!pPrimary){
+		if(pRenderThread.HasFramebuffer() && pRenderThread.GetFramebuffer().GetActive() == this){
+			pRenderThread.GetFramebuffer().Activate(nullptr);
+		}
+		
+		pRenderThread.GetDelayedOperations().DeleteOpenGLFramebuffer(pFBO);
 	}
 }

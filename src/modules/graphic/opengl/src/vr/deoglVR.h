@@ -65,7 +65,7 @@ private:
 	
 	bool pUseRenderStereo;
 	decPoint pRenderStereoSize;
-	deoglFramebuffer *pFBOStereo;
+	deoglFramebuffer::Ref pFBOStereo;
 	
 	decPoint pDebugPanelSize;
 	deoglRenderTarget::Ref pRenderTargetDebugPanel;

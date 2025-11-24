@@ -23,7 +23,7 @@
  */
 
 #ifndef _REUSETSHAPECAPSULEHALHEIGHT_H_
-#define _REUSETSHAPECAPSULEHALFHEIGHT_H_
+#define _REUSETSHAPECAPSULEHALHEIGHT_H_
 
 #include <deigde/undo/igdeUndo.h>
 #include "dragengine/common/math/decMath.h"

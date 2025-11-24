@@ -8,33 +8,33 @@
 // light volume position (location 3)
 // used by:
 // - LayeredRendering != LayeredRenderingNone
-VARYING_BIND(3) in vec3 vGSLightVolumePos[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(3) in mediump vec3 vGSLightVolumePos[GEOMETRY_SHADER_INPUT_SIZE];
 
-VARYING_BIND(3) out vec3 vLightVolumePos;
+VARYING_BIND(3) out mediump vec3 vLightVolumePos;
 
 
 // particle light color (location 4)
 // used by:
 // - LightMode == LightModeParticle
-VARYING_BIND(4) in vec3 vGSParticleLightColor[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(4) in mediump vec3 vGSParticleLightColor[GEOMETRY_SHADER_INPUT_SIZE];
 
-VARYING_BIND(4) out vec3 vParticleLightColor;
+VARYING_BIND(4) out mediump vec3 vParticleLightColor;
 
 
 // particle light range (location 5)
 // used by:
 // - LightMode == LightModeParticle
-VARYING_BIND(5) in float vGSParticleLightRange[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(5) in mediump float vGSParticleLightRange[GEOMETRY_SHADER_INPUT_SIZE];
 
-VARYING_BIND(5) out float vParticleLightRange;
+VARYING_BIND(5) out mediump float vParticleLightRange;
 
 
 // particle light position (location 6)
 // used by:
 // - LightMode == LightModeParticle
-VARYING_BIND(6) in vec3 vGSParticleLightPosition[GEOMETRY_SHADER_INPUT_SIZE];
+VARYING_BIND(6) in mediump vec3 vGSParticleLightPosition[GEOMETRY_SHADER_INPUT_SIZE];
 
-VARYING_BIND(6) out vec3 vParticleLightPosition;
+VARYING_BIND(6) out mediump vec3 vParticleLightPosition;
 
 
 // default outputs

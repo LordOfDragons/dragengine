@@ -7,12 +7,12 @@
 // - LayeredRendering != LayeredRenderingNone
 #ifdef WITH_GEOMETRY_SHADER
 	// opengl
-	VARYING_BIND(0) out vec2 vGSTexCoord;
+	VARYING_BIND(0) out mediump vec2 vGSTexCoord;
 	#define vTexCoord vGSTexCoord
 	
 #else
 	// spir-v
-	VARYING_BIND(0) out vec2 vTexCoord;
+	VARYING_BIND(0) out mediump vec2 vTexCoord;
 #endif
 
 
@@ -21,12 +21,12 @@
 // - FullScreenQuad
 #ifdef WITH_GEOMETRY_SHADER
 	// opengl
-	VARYING_BIND(1) out vec2 vGSScreenCoord;
+	VARYING_BIND(1) out mediump vec2 vGSScreenCoord;
 	#define vScreenCoord vGSScreenCoord
 	
 #else
 	// spir-v
-	VARYING_BIND(1) out vec2 vScreenCoord;
+	VARYING_BIND(1) out mediump vec2 vScreenCoord;
 #endif
 
 
@@ -35,12 +35,12 @@
 // - LayeredRendering != LayeredRenderingNone
 #ifdef WITH_GEOMETRY_SHADER
 	// opengl
-	VARYING_BIND(2) flat out int vGSLayer;
+	VARYING_BIND(2) flat out lowp int vGSLayer;
 	#define vLayer vGSLayer
 	
 #else
 	// spir-v
-	VARYING_BIND(2) flat out int vLayer;
+	VARYING_BIND(2) flat out lowp int vLayer;
 #endif
 
 

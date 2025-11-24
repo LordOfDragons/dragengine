@@ -1030,11 +1030,13 @@ deoglSkinTexture &texture, const deSkinPropertyValue &property ){
 			
 			texture.SetHasSolidity( true );
 			
+			const float realValue = texture.GetSolidityInvert() ? 1.0f - value : value;
+			
 			if( texture.GetSolidityMasked() ){
-				texture.SetHasZeroSolidity( value < 0.5f );
+				texture.SetHasZeroSolidity( realValue < 0.5f );
 				
 			}else{
-				texture.SetHasZeroSolidity( value < 0.001f );
+				texture.SetHasZeroSolidity( realValue < 0.001f );
 			}
 		}
 		break;
@@ -1109,11 +1111,13 @@ deoglSkinTexture &texture, const deSkinPropertyColor &property ){
 			
 			texture.SetHasSolidity( true );
 			
+			const float realValue = texture.GetSolidityInvert() ? 1.0f - color.r : color.r;
+			
 			if( texture.GetSolidityMasked() ){
-				texture.SetHasZeroSolidity( color.r < 0.5f );
+				texture.SetHasZeroSolidity( realValue < 0.5f );
 				
 			}else{
-				texture.SetHasZeroSolidity( color.r < 0.001f );
+				texture.SetHasZeroSolidity( realValue < 0.001f );
 			}
 		}
 		break;

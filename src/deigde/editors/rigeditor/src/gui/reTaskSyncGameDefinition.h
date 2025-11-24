@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-#ifndef _RAETASKSYNCGAMEDEFINITION_H_
+#ifndef _RETASKSYNCGAMEDEFINITION_H_
 #define _RETASKSYNCGAMEDEFINITION_H_
 
 #include <deigde/gui/igdeStepableTask.h>

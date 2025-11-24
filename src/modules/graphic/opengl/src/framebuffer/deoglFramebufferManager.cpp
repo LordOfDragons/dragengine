@@ -35,6 +35,53 @@
 #include <dragengine/common/exceptions.h>
 
 
+// Class deoglFramebufferManager::Usage
+/////////////////////////////////////////
+
+deoglFramebufferManager::Usage::Usage() :
+pFBO(nullptr){
+}
+
+deoglFramebufferManager::Usage::Usage(deoglFramebuffer *fbo) :
+pFBO(fbo)
+{
+	if(fbo){
+		fbo->IncreaseUsageCount();
+	}
+}
+
+deoglFramebufferManager::Usage::Usage(const Usage &usage) :
+pFBO(usage.pFBO)
+{
+	if(usage.pFBO){
+		usage.pFBO->IncreaseUsageCount();
+	}
+}
+
+deoglFramebufferManager::Usage::~Usage(){
+	if(pFBO){
+		pFBO->DecreaseUsageCount();
+	}
+}
+
+deoglFramebufferManager::Usage &deoglFramebufferManager::Usage::operator=(const Usage &usage){
+	if(pFBO){
+		pFBO->DecreaseUsageCount();
+	}
+	pFBO = usage.pFBO;
+	if(usage.pFBO){
+		usage.pFBO->IncreaseUsageCount();
+	}
+	return *this;
+}
+
+void deoglFramebufferManager::Usage::Clear(){
+	if(pFBO){
+		pFBO->DecreaseUsageCount();
+		pFBO = nullptr;
+	}
+}
+
 
 // Class deoglFramebufferManager
 //////////////////////////////////
@@ -42,60 +89,32 @@
 // Constructor, destructor
 ////////////////////////////
 
-deoglFramebufferManager::deoglFramebufferManager( deoglRenderThread &renderThread ) :
-pRenderThread( renderThread ),
-pFBOs( NULL ),
-pFBOCount( 0 ),
-pFBOSize( 0 ){
+deoglFramebufferManager::deoglFramebufferManager(deoglRenderThread &renderThread) :
+pRenderThread(renderThread){
 }
-
-deoglFramebufferManager::~deoglFramebufferManager(){
-	int i;
-	
-	if( pFBOs ){
-		for( i=0; i<pFBOCount; i++ ){
-			delete pFBOs[ i ];
-		}
-		
-		delete [] pFBOs;
-	}
-}
-
 
 
 // Management
 ///////////////
 
-
-
-// Framebuffer Management
-///////////////////////////
-
-const deoglFramebuffer *deoglFramebufferManager::GetFBOAt( int index ) const{
-	if( index < 0 || index >= pFBOCount ) DETHROW( deeInvalidParam );
-	return pFBOs[ index ];
+int deoglFramebufferManager::GetFBOCount() const{
+	return pFBOs.GetCount();
 }
 
-deoglFramebuffer *deoglFramebufferManager::GetFBOWithResolution( int width, int height ){
+const deoglFramebuffer &deoglFramebufferManager::GetFBOAt(int index) const{
+	return *((deoglFramebuffer*)pFBOs[index]);
+}
+
+deoglFramebufferManager::Usage deoglFramebufferManager::GetFBOWithResolution(int width, int height){
 	// if we have to hand out only one fbo use the first one
-	if( pRenderThread.GetConfiguration().GetUseOneFBO() ){
-		// make sure one fbo exists
-		if( pFBOCount == 0 ){
-			if( pFBOSize == 0 ){
-				pFBOs = new deoglFramebuffer*[ 1 ];
-				if( ! pFBOs ) DETHROW( deeOutOfMemory );
-				pFBOSize = 1;
-			}
-			
-			pFBOs[ 0 ] = new deoglFramebuffer( pRenderThread, false );
-			if( ! pFBOs[ 0 ] ) DETHROW( deeOutOfMemory );
-			pFBOCount = 1;
+	if(pRenderThread.GetConfiguration().GetUseOneFBO()){
+		if(pFBOs.GetCount() == 0){
+			pFBOs.Add(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
 		}
 		
-		pFBOs[ 0 ]->SetUsageResolution( width, height );
-		pFBOs[ 0 ]->IncreaseUsageCount();
-		
-		return pFBOs[ 0 ];
+		deoglFramebuffer * const fbo = (deoglFramebuffer*)pFBOs[0];
+		fbo->SetUsageResolution(width, height);
+		return Usage(fbo);
 		
 	// otherwise hand out an fbo for each resolution
 	}else{
@@ -103,45 +122,30 @@ deoglFramebuffer *deoglFramebufferManager::GetFBOWithResolution( int width, int 
 		int i;
 		
 		// try to find a framebuffer with the same dimensions or one that is reusable
-		for( i=0; i<pFBOCount; i++ ){
-			if( pFBOs[ i ]->GetUsageWidth() == width && pFBOs[ i ]->GetUsageHeight() == height ){
-				pFBOs[ i ]->IncreaseUsageCount();
-				return pFBOs[ i ];
+		const int count = pFBOs.GetCount();
+		for(i=0; i<count; i++){
+			deoglFramebuffer * const fbo = (deoglFramebuffer*)pFBOs[i];
+			if(fbo->GetUsageWidth() == width && fbo->GetUsageHeight() == height){
+				return Usage(fbo);
 			//	
-			//}else if( ! reusableFBO && pFBOs[ i ]->GetUsageCount() == 0 ){
-			//	reusableFBO = pFBOs[ i ];
+			//}else if(!reusableFBO && fbo->GetUsageCount() == 0){
+			//	reusableFBO = fbo;
 			}
 		}
 		
 		// if we have a reusable fbo change the size and hand it out
-		//if( reusableFBO ){
-		//	pRenderThread.GetLogger().LogInfoFormat( "FBO Manager: Resize FBO ( %i x %i )", width, height );
-		//	reusableFBO->SetUsageResolution( width, height );
-		//	reusableFBO->IncreaseUsageCount();
-		//	return reusableFBO;
+		//if(reusableFBO){
+		//	pRenderThread.GetLogger().LogInfoFormat("FBO Manager: Resize FBO (%d x %d)", width, height);
+		//	reusableFBO->SetUsageResolution(width, height);
+		//	return Usage(reusableFBO);
 		//}
 		
 		// otherwise create a new fbo with the given size and hand it out
-		if( pFBOCount == pFBOSize ){
-			int newSize = pFBOSize * 3 / 2 + 1;
-			deoglFramebuffer **newArray = new deoglFramebuffer*[ newSize ];
-			if( ! newArray ) DETHROW( deeOutOfMemory );
-			if( pFBOs ){
-				memcpy( newArray, pFBOs, sizeof( deoglFramebuffer* ) * pFBOSize );
-				delete [] pFBOs;
-			}
-			pFBOs = newArray;
-			pFBOSize = newSize;
-		}
+		pFBOs.Add(deoglFramebuffer::Ref::NewWith(pRenderThread, false));
 		
-		pFBOs[ pFBOCount ] = new deoglFramebuffer( pRenderThread, false );
-		if( ! pFBOs[ pFBOCount ] ) DETHROW( deeOutOfMemory );
-		pFBOCount++;
-		
-		pFBOs[ pFBOCount - 1 ]->SetUsageResolution( width, height );
-		pFBOs[ pFBOCount - 1 ]->IncreaseUsageCount();
-		
-		pRenderThread.GetLogger().LogInfoFormat( "FBO Manager: Create FBO ( %i x %i )", width, height );
-		return pFBOs[ pFBOCount - 1 ];
+		deoglFramebuffer * const fbo = (deoglFramebuffer*)pFBOs[pFBOs.GetCount() - 1];
+		fbo->SetUsageResolution(width, height);
+		pRenderThread.GetLogger().LogInfoFormat("FBO Manager: Create FBO (%d x %d)", width, height);
+		return Usage(fbo);
 	}
 }

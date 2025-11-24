@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/../../../dragengine/build/include",
-                "${workspaceFolder}/../../../../extern/freetype/build/include/freetype2",
+                "/usr/include/freetype2",
                 "${workspaceFolder}/../../../../../testing/include"
             ],
             "defines": [

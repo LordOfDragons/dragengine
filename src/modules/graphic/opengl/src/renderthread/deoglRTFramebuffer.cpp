@@ -28,11 +28,8 @@
 
 #include "deoglRTFramebuffer.h"
 #include "deoglRenderThread.h"
-#include "../framebuffer/deoglFramebuffer.h"
-#include "../framebuffer/deoglFramebufferManager.h"
 
 #include <dragengine/common/exceptions.h>
-
 
 
 // Class deoglRTFramebuffer
@@ -42,17 +39,17 @@
 ////////////////////////////
 
 deoglRTFramebuffer::deoglRTFramebuffer( deoglRenderThread &renderThread ) :
-pManager( renderThread ),
-pActive( NULL ),
-pPrimary( renderThread, true ),
-pEnvMap( renderThread, false ),
-pEnvMapMaterial( renderThread, false )
+pManager(renderThread),
+pActive(nullptr),
+pPrimary(deoglFramebuffer::Ref::NewWith(renderThread, true)),
+pEnvMap(deoglFramebuffer::Ref::NewWith(renderThread, false)),
+pEnvMapMaterial(deoglFramebuffer::Ref::NewWith(renderThread, false))
 {
 	try{
 		// primary framebuffer is the active one by default
-		pActive = &pPrimary;
+		pActive = pPrimary;
 		
-	}catch( const deException & ){
+	}catch(const deException &){
 		pCleanUp();
 		throw;
 	}
@@ -63,16 +60,15 @@ deoglRTFramebuffer::~deoglRTFramebuffer(){
 }
 
 
-
 // Management
 ///////////////
 
-void deoglRTFramebuffer::Activate( deoglFramebuffer *framebuffer ){
-	if( ! framebuffer ){
-		framebuffer = &pPrimary;
+void deoglRTFramebuffer::Activate(deoglFramebuffer *framebuffer){
+	if(!framebuffer){
+		framebuffer = pPrimary;
 	}
 	
-	if( pActive == framebuffer ){
+	if(pActive == framebuffer){
 		return;
 	}
 	
@@ -81,10 +77,9 @@ void deoglRTFramebuffer::Activate( deoglFramebuffer *framebuffer ){
 }
 
 
-
 // Private Functions
 //////////////////////
 
 void deoglRTFramebuffer::pCleanUp(){
-	Activate( &pPrimary );
+	Activate(pPrimary);
 }

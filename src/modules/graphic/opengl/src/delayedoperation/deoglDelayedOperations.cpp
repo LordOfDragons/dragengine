@@ -777,7 +777,6 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 	const decPoint3 &size = channel.GetSize();
 	deoglArrayTexture *coneMapArr = NULL;
 	deoglTexture *coneMap = NULL;
-	deoglFramebuffer *fbo = NULL;
 	deoglShaderCompiled *shader;
 	int stepCount;
 	
@@ -823,7 +822,8 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 		}
 		
 		// obtain a temporary fbo and set it up
-		fbo = pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution( size.x, size.y );
+		const deoglFramebufferManager::Usage fbo(
+			pRenderThread.GetFramebuffer().GetManager().GetFBOWithResolution(size.x, size.y));
 		
 		pRenderThread.GetFramebuffer().Activate( fbo );
 		
@@ -913,9 +913,6 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 		// clean up
 		pRenderThread.GetFramebuffer().Activate( oldFBO );
 		
-		fbo->DecreaseUsageCount();
-		fbo = NULL;
-		
 		if( coneMap ){
 			pRenderThread.GetDebug().GetDebugSaveTexture().SaveTextureConversion(
 				*coneMap, "generate_conemap", deoglDebugSaveTexture::ecNoConversion );
@@ -934,9 +931,6 @@ void deoglDelayedOperations::pGenerateConeMap( deoglRSkin &skin, const deoglSkin
 	}catch( const deException & ){
 		pRenderThread.GetFramebuffer().Activate( oldFBO );
 		
-		if( fbo ){
-			fbo->DecreaseUsageCount();
-		}
 		if( coneMapArr ){
 			delete coneMapArr;
 		}

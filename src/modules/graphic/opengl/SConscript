@@ -215,32 +215,59 @@ for f in data:
 
 def transpileOpenGLSpirV(env):
 	def buildTranspileOpenGLSpirV(target, source, env):
+		sourcePath = source[0].abspath
+		
+		if env['platform_android'] != 'no':
+			with open(sourcePath, 'r') as f:
+				data = f.read()
+			s = os.path.split(sourcePath)
+			sourcePath = os.path.join(s[0], '_{}'.format(s[1]))
+			with open(sourcePath, 'w') as f:
+				f.write('#version 320 es\n')
+				f.write(data)
+		
 		script = []
 		script.append('mkdir -p "{}" || exit 1'.format(target[0].get_dir().abspath))
 		
 		parts = []
 		parts.append('glslangValidator')
 		parts.append('-G')
-		parts.extend(['--glsl-version', '460'])  # 430 minimum
+		if env['platform_android'] != 'no':
+			parts.extend(['--glsl-version', '320es']) # ES 320
+		else:
+			parts.extend(['--glsl-version', '460']) # 430 minimum
 		
 		parts.append('-P"#extension GL_ARB_shading_language_include : require"')
 		parts.append('-P"#extension GL_EXT_shader_integer_mix : require"')
 		if source[0].get_path().endswith('.vert.glsl'):
-			parts.append('-P"#extension GL_ARB_shader_viewport_layer_array : require"')
-			parts.append('-P"#extension GL_ARB_shader_draw_parameters : require"')
+			if env['platform_android'] == 'no':
+				parts.append('-P"#extension GL_ARB_shader_viewport_layer_array : require"')
+				parts.append('-P"#extension GL_ARB_shader_draw_parameters : require"')
 		elif source[0].get_path().endswith('.geom.glsl'):
 			#parts.append('-P"#extension GL_ARB_gpu_shader5 : require"')
 			pass
 		
 		parts.append('-DWITH_SPIRV_OPENGL=1')
+		parts.append('-DARG_CONST=const')
+		
+		if env['platform_android'] != 'no':
+			parts.append('-DANDROID=1')
+			parts.append('-DOPENGLES=1')
+		
 		parts.append('--enhanced-msgs')
 		parts.append('--error-column')
 		for p in env['GLSL_INCPATH']:
 			parts.append('-I"{}"'.format(p.abspath))
-		parts.append(source[0].abspath)
+		parts.append(sourcePath)
 		parts.extend(['-o', target[0].abspath])
 		script.append('{} || exit 1'.format(' '.join(parts)))
-		return 1 if os.system('\n'.join(script)) else None
+		
+		result = os.system('\n'.join(script))
+		
+		if env['platform_android'] != 'no':
+			os.remove(sourcePath)
+		
+		return 1 if result else None
 	
 	dataPath = 'shaderSources/spirv/opengl'
 	basePathTranspiled = env.Dir('data').Dir(dataPath)
@@ -318,7 +345,7 @@ def transpileOpenGLSpirV(env):
 if envModule['OSWindows']:
 	transpileOpenGLSpirV(envModule.Clone())
 elif envModule['platform_android'] != 'no':
-	# transpileOpenGLSpirV(envModule.Clone())
+	transpileOpenGLSpirV(envModule.Clone())
 	pass
 elif envModule['OSBeOS']:
 	pass

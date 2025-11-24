@@ -56,7 +56,7 @@
 					// 
 					// the meaning of corners.w is different in the position only case to deal
 					// with double sided faces
-					condition = det < 0.0 || det * corners.w > 0.0;
+					condition = det < 0.0 || det * float(corners.w) > 0.0;
 				
 				}else{
 					// check parallelity

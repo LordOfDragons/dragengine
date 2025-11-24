@@ -292,7 +292,9 @@ void fbxSkinModule::pLoadMaterial( deSkin &skin, fbxScene &scene, const fbxMater
 		}
 		
 		if( fbxTexTransparencyFactor ){
-			pAddPropertyImage( *texture, "solidity", fbxTexTransparencyFactor );
+			// warning! TransparencyFactor is inverse to solidity (0=solid, 1=transparent)
+			pAddPropertyImage(*texture, "solidity", fbxTexTransparencyFactor);
+			pAddPropertyValue(*texture, "solidity.invert", 1.0f);
 			
 		}else if( solidity < 1.0f - 1e-4f ){
 			pAddPropertyValue( *texture, "solidity", solidity );
