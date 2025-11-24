@@ -73,6 +73,12 @@
 	</screenshots>
 	
 	<releases>
+		<release version="1.29.1" date="2025-11-24">
+			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29-1</url>
+			<description>
+				<p>Drag[en]gine 1.29.1 Release. See "details" for full release notes.</p>
+			</description>
+		</release>
 		<release version="1.29" date="2025-11-09">
 			<url type="details">https://dragondreams.ch/index.php/changelog-release-1-29</url>
 			<description>
