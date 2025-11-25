@@ -92,6 +92,7 @@
 		<value key="DragonDreams::DistroMaintained">%{DISTRO_MAINTAINED}</value>
 		<value key="DragonDreams::DistroMaintainedUpdateUrl">%{DISTRO_MAINTAINED_UPDATE_URL}</value>
 	</custom>
+  
 	<keywords>
 		<keyword>delga file runner</keyword>
 		<keyword>game launcher</keyword>

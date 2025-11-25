@@ -109,9 +109,12 @@
 			</description>
 		</release>
 	</releases>
+  
 	<keywords>
-		<keyword>delga file runner</keyword>
-		<keyword>game launcher</keyword>
-		<keyword>dragengine game engine</keyword>
+		<keyword>game editor</keyword>
+		<keyword>delga file creator</keyword>
+		<keyword>dragengine</keyword>
+		<keyword>game development software</keyword>
+		<keyword>indie game creation tool</keyword>
 	</keywords>
 </component>
