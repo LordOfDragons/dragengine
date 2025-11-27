@@ -35,6 +35,10 @@
 #include "dexsiDeviceCoreMouse.h"
 #include "dexsiDeviceCoreKeyboard.h"
 
+#include "parameters/dexsiPRawMouseInput.h"
+#include "parameters/dexsiPRawMouseInputSensivity.h"
+#include "parameters/dexsiPLogLevel.h"
+
 #include <dragengine/deEngine.h>
 #include <dragengine/app/deOSUnix.h>
 #include <dragengine/common/exceptions.h>
@@ -95,7 +99,16 @@ pIsListening( false ),
 pSystemAutoRepeatEnabled( false ),
 pAutoRepeatEnabled( false ),
 
-pKeyStates( NULL ){
+pKeyStates( NULL ),
+
+pLogLevel(LogLevel::info),
+pEnableRawMouseInput(false),
+pRawMouseInputActive(false),
+pAccumRawMouseInputX(0.0),
+pAccumRawMouseInputY(0.0),
+pRawMouseInputSensitivity(1.0)
+{
+	pCreateParameters();
 }
 
 deXSystemInput::~deXSystemInput(){
@@ -105,6 +118,15 @@ deXSystemInput::~deXSystemInput(){
 
 // Management
 ///////////////
+
+void deXSystemInput::SetEnableRawMouseInput(bool enable){
+	pEnableRawMouseInput = enable;
+}
+
+void deXSystemInput::SetRawMouseInputSensitivity(double sensitivity){
+	pRawMouseInputSensitivity = decMath::max(sensitivity, 0.01);
+	LogInfoFormat("Mouse sensitivity set to %.2f", pRawMouseInputSensitivity);
+}
 
 bool deXSystemInput::Init(){
 	XWindowAttributes xwa;
@@ -310,7 +332,8 @@ deInputEvent::eKeyLocation location ){
 ///////////
 
 void deXSystemInput::ProcessEvents(){
-	pQueryMousePosition( true );
+	pUpdateRawMouseInput();
+	pQueryMousePosition(true);
 	pDevices->Update();
 }
 
@@ -474,25 +497,73 @@ void deXSystemInput::EventLoop( XEvent &event ){
 			break;
 		}
 		}break;
+		
+	case GenericEvent:
+		if(pRawMouseInputActive){
+			Display * const display = pOSUnix->GetDisplay();
+			XGetEventData(display, &event.xcookie);
+			if(event.xcookie.evtype == XI_RawMotion){
+				const XIRawEvent &re = *((XIRawEvent*)event.xcookie.data);
+				if(re.valuators.mask_len == 0){
+					XFreeEventData(display, &event.xcookie);
+					break;
+				}
+				
+				if(XIMaskIsSet(re.valuators.mask, 0) != 0){
+					pAccumRawMouseInputX += re.raw_values[0] * pRawMouseInputSensitivity;
+				}
+				if(XIMaskIsSet(re.valuators.mask, 1) != 0){
+					pAccumRawMouseInputY += re.raw_values[1] * pRawMouseInputSensitivity;
+				}
+				XFreeEventData(display, &event.xcookie);
+				
+				const int movedX = (int)pAccumRawMouseInputX;
+				const int movedY = (int)pAccumRawMouseInputY;
+				if(movedX == 0 && movedY == 0){
+					break;
+				}
+				
+				int state = 0;
+				const deRenderWindow * const renderWindow =
+					GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+				if(renderWindow){
+					int rx, ry, cx, cy;
+					unsigned int s;
+					Window dr, dc;
+					if(XQueryPointer(display, renderWindow->GetWindow(), &dr, &dc, &rx, &ry, &cx, &cy, &s)){
+						state = pModifiersFromXState(s);
+					}
+				}
+				
+				timeval eventTime{};
+				gettimeofday(&eventTime, nullptr);
+				pAddMouseMove(pDevices->GetPrimaryMouse()->GetIndex(), state, movedX, movedY, eventTime);
+				pCenterPointer();
+				pAccumRawMouseInputX -= (double)movedX;
+				pAccumRawMouseInputY -= (double)movedY;
+			}
+			break;
+		}
+		break;
 	}
 }
 
 void deXSystemInput::CaptureInputDevicesChanged(){
-	if( ! pOSUnix ){
+	if(!pOSUnix){
 		return; // not inited yet
 	}
 	
 	pUpdateAutoRepeat();
-	pQueryMousePosition( false );
+	pQueryMousePosition(false);
 }
 
 void deXSystemInput::AppActivationChanged(){
-	if( ! pOSUnix ){
+	if(!pOSUnix){
 		return; // not inited yet
 	}
 	
 	pUpdateAutoRepeat();
-	pQueryMousePosition( false );
+	pQueryMousePosition(false);
 }
 
 
@@ -558,6 +629,31 @@ void deXSystemInput::AddDeviceAttachedDetached( const timeval &eventTime ){
 
 
 
+// Parameters
+///////////////
+
+int deXSystemInput::GetParameterCount() const{
+	return pParameters.GetParameterCount();
+}
+
+void deXSystemInput::GetParameterInfo(int index, deModuleParameter &info) const{
+	info = pParameters.GetParameterAt(index).GetParameter();
+}
+
+int deXSystemInput::IndexOfParameterNamed(const char *name) const{
+	return pParameters.IndexOfParameterNamed(name);
+}
+
+decString deXSystemInput::GetParameterValue(const char *name) const{
+	return pParameters.GetParameterNamed(name).GetParameterValue();
+}
+
+void deXSystemInput::SetParameterValue(const char *name, const char *value){
+	pParameters.GetParameterNamed(name).SetParameterValue(value);
+}
+
+
+
 // Private functions
 //////////////////////
 
@@ -588,7 +684,7 @@ void deXSystemInput::pCenterPointer(){
 
 void deXSystemInput::pQueryMousePosition( bool sendEvents ){
 	const bool capture = GetGameEngine()->GetInputSystem()->GetCaptureInputDevices();
-	if( capture && ! pIsListening ){
+	if(capture && (!pIsListening || pEnableRawMouseInput)){
 		return;
 	}
 	
@@ -823,16 +919,13 @@ bool deXSystemInput::pLookUpKey( XKeyEvent &event, deXSystemInput::sKey &key ){
 }
 
 void deXSystemInput::pUpdateAutoRepeat(){
-	if( GetGameEngine()->GetInputSystem()->GetCaptureInputDevices() ){
-		if( pOSUnix->GetAppActive() ){
-			if( pIsListening ){
-				pSetAutoRepeatEnabled( false );
-				return;
-			}
-		}
+	if(GetGameEngine()->GetInputSystem()->GetCaptureInputDevices()
+	&& pOSUnix->GetAppActive() && pIsListening){
+		pSetAutoRepeatEnabled(false);
+		return;
 	}
 	
-	pSetAutoRepeatEnabled( pSystemAutoRepeatEnabled );
+	pSetAutoRepeatEnabled(pSystemAutoRepeatEnabled);
 }
 
 void deXSystemInput::pSetAutoRepeatEnabled( bool enabled ){
@@ -857,6 +950,58 @@ void deXSystemInput::pSetAutoRepeatEnabled( bool enabled ){
 	//XSync( display, False ); // to make sure it is applied
 }
 
+void deXSystemInput::pUpdateRawMouseInput(){
+	Display * const display = pOSUnix->GetDisplay();
+	if(!display){
+		return;
+	}
+	
+	const deRenderWindow * const renderWindow = GetGameEngine()->GetGraphicSystem()->GetRenderWindow();
+	if(!renderWindow){
+		return;
+	}
+	
+	const bool enable = GetGameEngine()->GetInputSystem()->GetCaptureInputDevices()
+		&& pOSUnix->GetAppActive() && pIsListening && pEnableRawMouseInput;
+	if(enable == pRawMouseInputActive){
+		return;
+	}
+	
+	LogInfoFormat("RawMouseInput: %s\n", enable ? "enable" : "disable");
+	
+	unsigned char mask[XIMaskLen(XI_RawMotion)] = {0};
+	
+	if(enable){
+		XISetMask(mask, XI_RawMotion);
+	}
+	
+	XIEventMask em{};
+	em.deviceid = XIAllMasterDevices;
+	em.mask_len = sizeof(mask);
+	em.mask = mask;
+	
+	XISelectEvents(display, XDefaultRootWindow(display), &em, 1);
+	
+	if(enable){
+		XGrabPointer(display, renderWindow->GetWindow(), True, PointerMotionMask,
+			GrabModeAsync, GrabModeAsync, None, None, CurrentTime);
+		
+	}else{
+		XUngrabPointer(display, CurrentTime);
+	}
+	pCenterPointer();
+	
+	pRawMouseInputActive = enable;
+	pAccumRawMouseInputX = pAccumRawMouseInputY = 0.0;
+}
+
+void deXSystemInput::pCreateParameters(){
+	pParameters.AddParameter(dexsiParameter::Ref::New(new dexsiPRawMouseInput(*this)));
+	pParameters.AddParameter(dexsiParameter::Ref::New(new dexsiPRawMouseInputSensivity(*this)));
+	pParameters.AddParameter(dexsiParameter::Ref::New(new dexsiPLogLevel(*this)));
+}
+
+
 #ifdef WITH_INTERNAL_MODULE
 #include <dragengine/systems/modules/deInternalModule.h>
 
@@ -864,8 +1009,9 @@ class dexsiModuleInternal : public deInternalModule{
 public:
 	dexsiModuleInternal(deModuleSystem *system) : deInternalModule(system){
 		SetName("XSystemInput");
-		SetDescription("Processes input using the X-Server of linux Operating systems. \
-Supports Mouse and Keyboard for the time beeing.");
+		SetDescription(
+			"Processes input using the X-Server of linux Operating systems. "
+			"Supports mouse, keyboard and gamepad type input devices.");
 		SetAuthor("DragonDreams GmbH (info@dragondreams.ch)");
 		SetVersion(MODULE_VERSION);
 		SetType(deModuleSystem::emtInput);
