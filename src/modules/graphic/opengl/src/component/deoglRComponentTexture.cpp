@@ -258,17 +258,17 @@ void deoglRComponentTexture::UpdateSkinState( deoglComponent &component ){
 	//   -> the above mentioned case. component has skin state because it has dynamic skin.
 	//      texture needs own skin state since it uses the dynamic skin of the component
 	//      and the component skin state does not match the texture skin
-	if( pSkin && ( pDynamicSkin || pComponent.GetDynamicSkin()
-	|| pSkin->GetCalculatedPropertyCount() > 0 || pSkin->GetConstructedPropertyCount() > 0 ) ){
-		if( ! pSkinState ){
-			SetSkinState( new deoglSkinState( pComponent.GetRenderThread(), pComponent, pIndex ) );
+	if(pSkin && (pDynamicSkin || pComponent.GetDynamicSkin()
+	|| pSkin->GetCalculatedPropertyCount() > 0 || pSkin->GetConstructedPropertyCount() > 0)){
+		if(!pSkinState){
+			SetSkinState(new deoglSkinState(pComponent.GetRenderThread(), pComponent, pIndex));
 			component.DirtyRenderableMapping();
 			component.DirtyTextureUseSkin();
 		}
 		
 	}else{
-		if( pSkinState ){
-			SetSkinState( NULL );
+		if(pSkinState){
+			SetSkinState(nullptr);
 			component.DirtyRenderableMapping();
 			component.DirtyTextureUseSkin();
 		}
@@ -303,13 +303,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	
 	if( pSkinState ){
 		pUseSkinState = pSkinState;
-		
-		if( pDynamicSkin ){
-			pUseDynamicSkin = pDynamicSkin;
-			
-		}else{
-			pUseDynamicSkin = pComponent.GetDynamicSkin();
-		}
+		pUseDynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
 	}else{
 		pUseSkinState = pComponent.GetSkinState(); // for textures with no own skin
@@ -318,13 +312,7 @@ void deoglRComponentTexture::UpdateUseSkin(){
 	
 	if( pSkin ){
 		pUseSkin = pSkin;
-		
-		if( pUseSkin->GetTextureCount() == 0 ){
-			pUseTextureNumber = -1;
-			
-		}else{
-			pUseTextureNumber = 0;
-		}
+		pUseTextureNumber = pUseSkin->GetTextureCount() == 0 ? -1 : 0;
 	}
 	
 	if( ! pUseSkin ){
@@ -351,12 +339,7 @@ decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
 	
 	if( pSkinState ){
 		useSkinState = pSkinState;
-		if( pDynamicSkin ){
-			useDynamicSkin = pDynamicSkin;
-			
-		}else{
-			useDynamicSkin = pComponent.GetDynamicSkin();
-		}
+		useDynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
 	}else{
 		// for texture with no own skin
@@ -672,13 +655,7 @@ void deoglRComponentTexture::PrepareTUCs(){
 			
 			if( pSkinState ){
 				skinState = pSkinState;
-				
-				if( pDynamicSkin ){
-					dynamicSkin = pDynamicSkin;
-					
-				}else{
-					dynamicSkin = pComponent.GetDynamicSkin();
-				}
+				dynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 				
 			}else{
 				// for texture with no own skin
@@ -774,12 +751,7 @@ deoglTexUnitsConfig *deoglRComponentTexture::BareGetTUCFor( deoglSkinTexturePipe
 	
 	if( pSkinState ){
 		skinState = pSkinState;
-		if( pDynamicSkin ){
-			dynamicSkin = pDynamicSkin;
-			
-		}else{
-			dynamicSkin = pComponent.GetDynamicSkin();
-		}
+		dynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
 	}else{
 		// for texture with no own skin
@@ -823,12 +795,7 @@ deoglSkinTexturePipelines::eTypes type ) const{
 	
 	if( pSkinState ){
 		skinState = pSkinState;
-		if( pDynamicSkin ){
-			dynamicSkin = pDynamicSkin;
-			
-		}else{
-			dynamicSkin = pComponent.GetDynamicSkin();
-		}
+		dynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
 		
 	}else{
 		// for texture with no own skin
@@ -975,31 +942,23 @@ int element, const deoglSkinShader &skinShader ){
 
 
 void deoglRComponentTexture::PrepareSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
-	if( ! pSkinState ){
+	if(!pSkinState){
 		return;
 	}
 	
-	if( pDynamicSkin ){
-		pSkinState->PrepareRenderables( pSkin, pDynamicSkin, renderPlanMask );
-		
-	}else{
-		pSkinState->PrepareRenderables( pSkin, pComponent.GetDynamicSkin(), renderPlanMask );
-	}
+	pSkinState->PrepareRenderables(pSkin,
+		pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin(), renderPlanMask);
 	
 	pUpdateIsRendered();
 }
 
 void deoglRComponentTexture::RenderSkinStateRenderables( const deoglRenderPlanMasked *renderPlanMask ){
-	if( ! pSkinState ){
+	if(!pSkinState){
 		return;
 	}
 	
-	if( pDynamicSkin ){
-		pSkinState->RenderRenderables( pSkin, pDynamicSkin, renderPlanMask );
-		
-	}else{
-		pSkinState->RenderRenderables( pSkin, pComponent.GetDynamicSkin(), renderPlanMask );
-	}
+	pSkinState->RenderRenderables(pSkin,
+		pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin(), renderPlanMask);
 }
 
 void deoglRComponentTexture::PrepareSkinStateConstructed(){
@@ -1018,8 +977,8 @@ void deoglRComponentTexture::UpdateRenderableMapping(){
 	pSkinState->RemoveAllRenderables();
 	
 	deoglRDynamicSkin * const dynamicSkin = pDynamicSkin ? pDynamicSkin : pComponent.GetDynamicSkin();
-	if( pSkin && dynamicSkin ){
-		pSkinState->AddRenderables( *pSkin, *dynamicSkin );
+	if(pSkin && dynamicSkin){
+		pSkinState->AddRenderables(*pSkin, *dynamicSkin);
 	}
 	
 	MarkParamBlocksDirty();

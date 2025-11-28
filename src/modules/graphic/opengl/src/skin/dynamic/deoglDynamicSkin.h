@@ -69,6 +69,9 @@ public:
 	
 	/** \name Management */
 	/*@{*/
+	/** Graphic module. */
+	inline deGraphicOpenGl &GetOgl() const{ return pOgl; }
+	
 	/** Dynamic skin resources. */
 	inline const deDynamicSkin &GetDynamicSkin() const{ return pDynamicSkin; }
 	

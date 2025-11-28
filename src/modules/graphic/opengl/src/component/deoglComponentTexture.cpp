@@ -135,9 +135,9 @@ void deoglComponentTexture::DirtyRenderableMapping(){
 }
 
 void deoglComponentTexture::InitSkinState(){
-	if( pRTexture->GetSkinState() ){
-		pSkinStateController->Init( *pRTexture->GetSkinState(),
-			pRTexture->GetSkin(), 0, pComponent.GetParentWorld() );
+	if(pRTexture->GetSkinState()){
+		pSkinStateController->Init(*pRTexture->GetSkinState(),
+			pRTexture->GetSkin(), 0, pComponent.GetParentWorld());
 		
 	}else{
 		pSkinStateController->Clear();

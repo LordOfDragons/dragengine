@@ -91,10 +91,10 @@ deoglTexture *deoglRDSRenderableColor::GetRenderTexture(){
 	}
 	
 	if( pDirty ){
-		const deoglPixelBuffer::Ref pixelBuffer( deoglPixelBuffer::Ref::New(
-			new deoglPixelBuffer( deoglPixelBuffer::epfByte4, 1, 1, 1 ) ) );
-		pixelBuffer->SetToFloatColor( pColor.r, pColor.g, pColor.b, pColor.a );
-		pTexture->SetPixels( pixelBuffer );
+		const deoglPixelBuffer::Ref pixelBuffer(deoglPixelBuffer::Ref::NewWith(
+			deoglPixelBuffer::epfByte4, 1, 1, 1));
+		pixelBuffer->SetToFloatColor(pColor.r, pColor.g, pColor.b, pColor.a);
+		pTexture->SetPixels(pixelBuffer);
 		
 		pDirty = false;
 	}
