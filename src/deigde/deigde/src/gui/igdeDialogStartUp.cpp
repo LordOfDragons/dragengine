@@ -137,7 +137,7 @@ pWindowMain( windowMain )
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	SetInitialSize( decPoint( 600, 0 ) );
+	SetSize(decPoint(600, 0));
 	
 	igdeLabelReference label;
 	label.TakeOver( new igdeLabel( env, "Recently used Game Projects" ) );

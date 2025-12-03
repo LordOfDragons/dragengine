@@ -45,8 +45,7 @@ private:
 	decString pTitle;
 	igdeIconReference pIcon;
 	bool pCanResize;
-	decPoint pPosition;
-	decPoint pSize;
+	decPoint pPosition, pSize;
 	bool pEnabled;
 	
 	
@@ -55,8 +54,8 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create window. */
-	igdeWindow( igdeEnvironment &environment, const char *title,
-		igdeIcon *icon = NULL, bool canResize = true );
+	igdeWindow(igdeEnvironment &environment, const char *title,
+		igdeIcon *icon = NULL, bool canResize = true);
 	
 	
 	
@@ -74,13 +73,13 @@ public:
 	inline const decString &GetTitle() const{ return pTitle; }
 	
 	/** \brief Set title. */
-	void SetTitle( const char *title );
+	void SetTitle(const char *title);
 	
 	/** \brief Icon or NULL. */
 	inline igdeIcon *GetIcon() const{ return pIcon; }
 	
 	/** \brief Set icon or NULL. */
-	void SetIcon( igdeIcon *icon );
+	void SetIcon(igdeIcon *icon);
 	
 	/** \brief Window can be resized by user. */
 	inline bool GetCanResize() const{ return pCanResize; }
@@ -89,19 +88,19 @@ public:
 	inline const decPoint &GetSize() const{ return pSize; }
 	
 	/** \brief Set window size. */
-	void SetSize( const decPoint &size );
+	void SetSize(const decPoint &size);
 	
 	/** \brief Window is enabled. */
 	inline bool GetEnabled() const{ return pEnabled; }
 	
 	/** \brief Set if window is enabled. */
-	void SetEnabled( bool enabled );
+	void SetEnabled(bool enabled);
 	
 	/** \brief Window position. */
 	inline const decPoint &GetPosition() const{ return pPosition; }
 	
 	/** \brief Set window position. */
-	void SetPosition( const decPoint &position );
+	void SetPosition(const decPoint &position);
 	
 	/** \brief Raise and activate window. */
 	virtual void RaiseAndActivate();
@@ -113,7 +112,7 @@ public:
 	 * 
 	 * Windows can contain only one widget. This is usually a container.
 	 */
-	virtual void AddChild( igdeWidget *child );
+	virtual void AddChild(igdeWidget *child);
 	
 	
 	

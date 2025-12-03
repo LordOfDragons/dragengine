@@ -80,7 +80,6 @@ public:
 private:
 	igdeWidget *pOwner;
 	bool pAccepted;
-	decPoint pInitialSize;
 	
 	
 	
@@ -103,12 +102,6 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Initial size when shown or (0,0) to choose automatically. */
-	inline const decPoint &GetInitialSize() const{ return pInitialSize; }
-	
-	/** \brief Set initial size when shown or (0,0) to choose automatically. */
-	void SetInitialSize( const decPoint &initialSize );
-	
 	/**
 	 * \brief Default action changed requiring dialog to update.
 	 * 

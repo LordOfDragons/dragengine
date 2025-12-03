@@ -33,7 +33,7 @@ class igdeWindowMain;
 
 
 /**
- * \brief IGDE Configuration.
+ * IGDE Configuration.
  */
 class igdeConfiguration{
 private:
@@ -58,77 +58,70 @@ private:
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/
-	/** Creates a new configuration. */
-	igdeConfiguration( igdeWindowMain &windowMain );
-	/** Cleans up the configuration. */
+	/** Create configuration. */
+	igdeConfiguration(igdeWindowMain &windowMain);
+	
+	/** Clean up configuration. */
 	~igdeConfiguration();
 	/*@}*/
 	
+	
 	/** \name Management */
 	/*@{*/
-	/** Retrieves the main window. */
+	/** Main window. */
 	inline igdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
-	/** Retrieves the system config path. */
+	
+	/** System config path. */
 	inline const decString &GetPathConfigSystem() const{ return pPathConfigSystem; }
-	/** Sets the system config path. */
-	void SetPathConfigSystem( const char *path );
-	/** Retrieves the user config path. */
+	void SetPathConfigSystem(const char *path);
+	
+	/** User config path. */
 	inline const decString &GetPathConfigUser() const{ return pPathConfigUser; }
-	/** Sets the user config path. */
-	void SetPathConfigUser( const char *path );
-	/** Retrieves the shares path. */
+	void SetPathConfigUser(const char *path);
+	
+	/** Shares path. */
 	inline const decString &GetPathShares() const{ return pPathShares; }
-	/** Sets the shares path. */
-	void SetPathShares( const char *path );
-	/** Retrieves the library path. */
+	void SetPathShares(const char *path);
+	
+	/** Library path. */
 	inline const decString &GetPathLib() const{ return pPathLib; }
-	/** Sets the library path. */
-	void SetPathLib( const char *path );
-	/** Retrieves the logs path. */
+	void SetPathLib(const char *path);
+	
+	/** Logs path. */
 	inline const decString &GetPathLogs() const{ return pPathLogs; }
-	/** Sets the logs path. */
-	void SetPathLogs( const char *path );
-	/** Retrieves the default path for projects. */
+	void SetPathLogs(const char *path);
+	
+	/** Default path for projects. */
 	inline const decString &GetPathProjects() const{ return pPathProjects; }
-	/** Sets the default path for projects. */
-	void SetPathProjects( const char *path );
+	void SetPathProjects(const char *path);
 	
 	
-	
-	/** \brief Path to the igde shared data. */
+	/** Path to igde shared data. */
 	inline const decString &GetPathIGDEData() const{ return pPathIGDEData; }
+	void SetPathIGDEData(const char *path);
 	
-	/** \brief Set path to the igde shared  data. */
-	void SetPathIGDEData( const char *path );
-	
-	/** \brief Path to the igde project templates. */
+	/** Path to igde project templates. */
 	inline const decString &GetPathIGDETemplates() const{ return pPathIGDETemplates; }
+	void SetPathIGDETemplates(const char *path);
 	
-	/** \brief Set path to the igde project templates. */
-	void SetPathIGDETemplates( const char *path );
-	
-	/** \brief Path to the igde shared game definitions. */
+	/** Path to igde shared game definitions. */
 	inline const decString &GetPathIGDEGameDefs() const{ return pPathIGDEGameDefs; }
+	void SetPathIGDEGameDefs(const char *path);
 	
-	/** \brief Set path to the igde shared game definitions. */
-	void SetPathIGDEGameDefs( const char *path );
-	
-	/** \brief Path to the igde editors shared data. */
+	/** Path to igde editors shared data. */
 	inline const decString &GetPathIGDEEditorData() const{ return pPathIGDEEditorData; }
-	
-	/** \brief Set path to the igde editors shared data. */
-	void SetPathIGDEEditorData( const char *path );
+	void SetPathIGDEEditorData(const char *path);
 	
 	
-	
-	/** \brief Retrieves the list of recently loaded game project file names. */
+	/** List of recently loaded game project file names. */
 	inline decStringList &GetRecentProjectList(){ return pRecentProjectList; }
 	inline const decStringList &GetRecentProjectList() const{ return pRecentProjectList; }
-	/** \brief Retrieves the maximal size of the recenr project list. */
+	
+	/** Maximal size of the recenr project list. */
 	inline int GetMaxRecentProjectEntries() const{ return pMaxRecentProjectEntries; }
-	/** \brief Sets the maximal size of the recenr project list. */
-	void SetMaxRecentProjectEntries( int entries );
+	void SetMaxRecentProjectEntries(int entries);
+	
 	
 	/** Locate path. */
 	void LocatePath();

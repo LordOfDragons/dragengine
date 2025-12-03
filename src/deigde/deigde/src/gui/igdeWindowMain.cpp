@@ -491,7 +491,7 @@ pTaskSyncGameDefinition( NULL )
 {
 	pEnvironmentIGDE.SetWindowMain( this );
 	
-	SetInitialSize( decPoint( 900, 600 ) );
+	SetSize(decPoint(1600, 900));
 	
 	try{
 		pConfiguration.LocatePath();

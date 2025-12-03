@@ -48,7 +48,11 @@
 igdeMainWindow::igdeMainWindow( igdeEnvironment &environment, const char *title ) :
 igdeWindow( environment, title, NULL, true ),
 pEngineController( NULL ),
-pWindowState( ewsNormal ){
+pWindowState( ewsNormal ),
+pNormalPosition(GetPosition()),
+pNormalSize(GetSize()),
+pNormalPositionSet(false),
+pNormalSizeSet(false){
 }
 
 igdeMainWindow::~igdeMainWindow(){
@@ -64,10 +68,6 @@ igdeMainWindow::~igdeMainWindow(){
 // Management
 ///////////////
 
-void igdeMainWindow::SetInitialSize( const decPoint &initialSize ){
-	pInitialSize = initialSize.Largest( decPoint() );
-}
-
 void igdeMainWindow::SetWindowState( eWindowStates windowState ){
 	if( windowState == pWindowState ){
 		return;
@@ -79,7 +79,15 @@ void igdeMainWindow::SetWindowState( eWindowStates windowState ){
 	OnWindowState();
 }
 
+void igdeMainWindow::SetNormalPosition(const decPoint &position){
+	pNormalPosition = position;
+	pNormalPositionSet = true;
+}
 
+void igdeMainWindow::SetNormalSize(const decPoint &size){
+	pNormalSize = size;
+	pNormalSizeSet = true;
+}
 
 void igdeMainWindow::StartEngine(){
 	if( pEngineController->GetRunning() ){

@@ -119,10 +119,6 @@ igdeDialog::~igdeDialog(){
 // Management
 ///////////////
 
-void igdeDialog::SetInitialSize( const decPoint &initialSize ){
-	pInitialSize = initialSize.Largest( decPoint() );
-}
-
 void igdeDialog::DefaultActionChanged(){
 	// TODO find a way to tell FOX to update
 }

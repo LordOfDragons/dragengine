@@ -49,7 +49,7 @@ pMainWindow( mainWindow )
 	igdeEnvironment &environment = mainWindow.GetEnvironment();
 	igdeWidgetReference panel;
 	
-	SetInitialSize( decPoint( 800, 600 ) );
+	SetSize(decPoint(800, 600));
 	
 	pTabPanels.TakeOver( new igdeTabBook( environment ) );
 	

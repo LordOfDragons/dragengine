@@ -22,10 +22,6 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "igdeConfiguration.h"
 #include "igdeConfigurationXML.h"
 #include "../gui/igdeWindowMain.h"
@@ -40,7 +36,6 @@
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -49,144 +44,148 @@
 #include <dragengine/common/exceptions.h>
 
 
-
 // Class igdeConfigurationXML
 ///////////////////////////////
 
 // Constructors and Destructors
 /////////////////////////////////
 
-igdeConfigurationXML::igdeConfigurationXML( deLogger *logger, const char *loggerSource ) : igdeBaseXML( logger, loggerSource ){
+igdeConfigurationXML::igdeConfigurationXML(deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource){
 }
 
 igdeConfigurationXML::~igdeConfigurationXML(){
 }
 
 
-
 // Management
 ///////////////
 
-void igdeConfigurationXML::ReadFromFile( decBaseFileReader &reader, igdeConfiguration &config ){
-	decXmlDocumentReference xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+void igdeConfigurationXML::ReadFromFile(decBaseFileReader &reader, igdeConfiguration &config){
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser parser( GetLogger() );
-	parser.ParseXml( &reader, xmlDoc );
+	decXmlParser parser(GetLogger());
+	parser.ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || strcmp( root->GetName(), "deigde" ) != 0 ) DETHROW( deeInvalidParam );
+	DEASSERT_NOTNULL(root)
+	DEASSERT_TRUE(root->GetName() == "deigde")
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void igdeConfigurationXML::WriteToFile( decBaseFileWriter &writer, const igdeConfiguration &config ){
-	decXmlWriter xmlWriter( &writer );
+void igdeConfigurationXML::WriteToFile(decBaseFileWriter &writer, const igdeConfiguration &config){
+	decXmlWriter xmlWriter(&writer);
 	
 	xmlWriter.WriteXMLDeclaration();
 	
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
-
 
 
 // Private Functions
 //////////////////////
 
-void igdeConfigurationXML::pReadConfig( const decXmlElementTag &root, igdeConfiguration &config ){
+void igdeConfigurationXML::pReadConfig(const decXmlElementTag &root, igdeConfiguration &config){
 	decStringList &recentProjects = config.GetRecentProjectList();
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "windowMain" ){
-			pReadWindowMain( *tag, config.GetWindowMain() );
+		if(tag->GetName() == "windowMain"){
+			pReadWindowMain(*tag, config.GetWindowMain());
 			
-		}else if( tag->GetName() == "maxRecentProjectEntries" ){
-			config.SetMaxRecentProjectEntries( GetCDataInt( *tag ) );
+		}else if(tag->GetName() == "maxRecentProjectEntries"){
+			config.SetMaxRecentProjectEntries(GetCDataInt(*tag));
 			
-		}else if( tag->GetName() == "recentProject" ){
-			recentProjects.Add( GetCDataString( *tag ) );
+		}else if(tag->GetName() == "recentProject"){
+			recentProjects.Add(GetCDataString(*tag));
 		}
 	}
 	
-	while( recentProjects.GetCount() > config.GetMaxRecentProjectEntries() ){
-		recentProjects.RemoveFrom( recentProjects.GetCount() - 1 );
+	while(recentProjects.GetCount() > config.GetMaxRecentProjectEntries()){
+		recentProjects.RemoveFrom(recentProjects.GetCount() - 1);
 	}
 }
 
-void igdeConfigurationXML::pReadWindowMain( const decXmlElementTag &root, igdeWindowMain &window ){
+void igdeConfigurationXML::pReadWindowMain(const decXmlElementTag &root, igdeWindowMain &window){
 	const int count = root.GetElementCount();
+	bool hasPosition = false, hasSize = false;
 	decPoint position, size;
-	bool hasPosition = false;
-	bool hasSize = false;
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "x" ){
-			position.x = GetCDataInt( *tag );
+		if(tag->GetName() == "x"){
+			position.x = GetCDataInt(*tag);
 			hasPosition = true;
 			
-		}else if( tag->GetName() == "y" ){
-			position.y = GetCDataInt( *tag );
+		}else if(tag->GetName() == "y"){
+			position.y = GetCDataInt(*tag);
 			hasPosition = true;
 			
-		}else if( tag->GetName() == "width" ){
-			size.x = GetCDataInt( *tag );
+		}else if(tag->GetName() == "width"){
+			size.x = GetCDataInt(*tag);
 			hasSize = true;
 			
-		}else if( tag->GetName() == "height" ){
-			size.y = GetCDataInt( *tag );
+		}else if(tag->GetName() == "height"){
+			size.y = GetCDataInt(*tag);
 			hasSize = true;
+			
+		}else if(tag->GetName() == "maximized"){
+			window.SetWindowState(GetCDataBool(*tag)
+				? igdeMainWindow::ewsMaximized
+				: igdeMainWindow::ewsNormal);
 		}
 	}
 	
-	if( hasPosition ){
-		window.SetPosition( position );
+	if(hasPosition){
+		window.SetNormalPosition(position);
+		window.SetPosition(position);
 	}
-	if( hasSize ){
-		window.SetSize( size );
+	if(hasSize){
+		window.SetNormalSize(size);
+		window.SetSize(size);
 	}
 }
 
 
-
-void igdeConfigurationXML::pWriteConfig( decXmlWriter &writer, const igdeConfiguration &config ){
-	writer.WriteOpeningTag( "deigde", false, true );
+void igdeConfigurationXML::pWriteConfig(decXmlWriter &writer, const igdeConfiguration &config){
+	writer.WriteOpeningTag("deigde", false, true);
 	
-	pWriteWindowMain( writer, config.GetWindowMain(), "windowMain" );
+	pWriteWindowMain(writer, config.GetWindowMain());
 	
-	writer.WriteDataTagInt( "maxRecentProjectEntries", config.GetMaxRecentProjectEntries() );
+	writer.WriteDataTagInt("maxRecentProjectEntries", config.GetMaxRecentProjectEntries());
 	const decStringList &recentProjectList = config.GetRecentProjectList();
 	const int recentProjectCount = recentProjectList.GetCount();
 	int i;
-	for( i=0; i<recentProjectCount; i++ ){
-		writer.WriteDataTagString( "recentProject", recentProjectList.GetAt( i ).GetString() );
+	for(i=0; i<recentProjectCount; i++){
+		writer.WriteDataTagString("recentProject", recentProjectList.GetAt(i).GetString());
 	}
 	
-	writer.WriteClosingTag( "deigde", true );
+	writer.WriteClosingTag("deigde", true);
 }
 
-void igdeConfigurationXML::pWriteWindowMain( decXmlWriter &writer, const igdeWindowMain &window, const char *tagName ){
-	writer.WriteOpeningTag( tagName, false, true );
+void igdeConfigurationXML::pWriteWindowMain(decXmlWriter &writer, const igdeWindowMain &window){
+	writer.WriteOpeningTag("windowMain", false, true);
 	
-	writer.WriteDataTagInt( "x", window.GetPosition().x );
-	writer.WriteDataTagInt( "y", window.GetPosition().y );
-	writer.WriteDataTagInt( "width", window.GetSize().x );
-	writer.WriteDataTagInt( "height", window.GetSize().y );
+	writer.WriteDataTagInt("x", window.GetNormalPosition().x);
+	writer.WriteDataTagInt("y", window.GetNormalPosition().y);
+	writer.WriteDataTagInt("width", window.GetNormalSize().x);
+	writer.WriteDataTagInt("height", window.GetNormalSize().y);
+	writer.WriteDataTagBool("maximized", window.GetWindowState() == igdeMainWindow::ewsMaximized);
 	
-	writer.WriteClosingTag( tagName, true );
+	writer.WriteClosingTag("windowMain", true);
 }

@@ -37,7 +37,6 @@ class decXmlElementTag;
 class igdeWindowMain;
 
 
-
 /**
  * \brief Load/Save Configuration XML.
  */
@@ -46,31 +45,29 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create configuration xml read/save. */
-	igdeConfigurationLocalXML( deLogger *logger, const char *loggerSource );
+	igdeConfigurationLocalXML(deLogger *logger, const char *loggerSource);
 	
 	/** \brief Clean up configuration xml read/save. */
-	virtual ~igdeConfigurationLocalXML();
+	~igdeConfigurationLocalXML() override;
 	/*@}*/
-	
 	
 	
 	/** \name Management */
 	/*@{*/
 	/** \brief Read from XML file. */
-	void ReadFromFile( decBaseFileReader &reader, igdeConfigurationLocal &config );
+	void ReadFromFile(decBaseFileReader &reader, igdeConfigurationLocal &config);
 	
 	/** \brief Write to XML file. */
-	void WriteToFile( decBaseFileWriter &writer, const igdeConfigurationLocal &config );
+	void WriteToFile(decBaseFileWriter &writer, const igdeConfigurationLocal &config);
 	/*@}*/
 	
 	
-	
 private:
-	void pReadConfig( const decXmlElementTag &root, igdeConfigurationLocal &config );
-	void pReadRecentEditors( const decXmlElementTag &root, igdeConfigurationLocal &config );
+	void pReadConfig(const decXmlElementTag &root, igdeConfigurationLocal &config);
+	void pReadRecentEditors(const decXmlElementTag &root, igdeConfigurationLocal &config);
 	
-	void pWriteConfig( decXmlWriter &writer, const igdeConfigurationLocal &config );
-	void pWriteRecentEditors( decXmlWriter &writer, const igdeConfigurationLocal &config );
+	void pWriteConfig(decXmlWriter &writer, const igdeConfigurationLocal &config);
+	void pWriteRecentEditors(decXmlWriter &writer, const igdeConfigurationLocal &config);
 };
 
 #endif

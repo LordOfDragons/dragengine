@@ -190,7 +190,7 @@ pViewMode( evmPreview )
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	SetInitialSize( decPoint( 1000, 600 ) );
+	SetSize(decPoint(1000, 600));
 	
 	pActionPISizeSmall.TakeOver( new igdeDialogBrowser_ActionPreviewSize( *this, epsSmall,
 		"Small Preview Image", NULL, "Small Preview Image" ) );

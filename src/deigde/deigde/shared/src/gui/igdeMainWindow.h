@@ -52,9 +52,9 @@ public:
 	
 private:
 	igdeEngineController *pEngineController;
-	decPoint pInitialSize;
 	eWindowStates pWindowState;
-	
+	decPoint pNormalPosition, pNormalSize;
+	bool pNormalPositionSet, pNormalSizeSet;
 	
 	
 public:
@@ -79,18 +79,29 @@ protected:
 public:
 	/** \name Management */
 	/*@{*/
-	/** \brief Initial size when shown or (0,0) to choose automatically. */
-	inline const decPoint &GetInitialSize() const{ return pInitialSize; }
-	
-	/** \brief Set initial size when shown or (0,0) to choose automatically. */
-	void SetInitialSize( const decPoint &initialSize );
-	
 	/** \brief Window state. */
 	inline eWindowStates GetWindowState() const{ return pWindowState; }
 	
 	/** \brief Set window state. */
 	void SetWindowState( eWindowStates windowState );
 	
+	/** \brief Position in normal state. */
+	inline const decPoint &GetNormalPosition() const{ return pNormalPosition; }
+	
+	/** \brief Set position in normal state. */
+	void SetNormalPosition(const decPoint &position);
+	
+	/** \brief Size in normal state. */
+	inline const decPoint &GetNormalSize() const{ return pNormalSize; }
+	
+	/** \brief Set size in normal state. */
+	void SetNormalSize(const decPoint &size);
+	
+	/** \brief Normal position has been set at least once. */
+	inline bool GetNormalPositionSet() const{ return pNormalPositionSet; }
+	
+	/** \brief Normal size has been set at least once. */
+	inline bool GetNormalSizeSet() const{ return pNormalSizeSet; }
 	
 	
 	/** \brief Get engine controller or NULL if not present. */

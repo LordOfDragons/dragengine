@@ -67,7 +67,7 @@ igdeDialogTexturePropertyList::igdeDialogTexturePropertyList( igdeEnvironment &e
 igdeDialog( environment, "Texture Property List" ){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	SetInitialSize( decPoint( 1000, 500 ) );
+	SetSize(decPoint(1000, 500));
 	
 	igdeContainerSplittedReference content;
 	content.TakeOver( new igdeContainerSplitted( environment, igdeContainerSplitted::espLeft, 300 ) );

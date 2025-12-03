@@ -44,7 +44,7 @@ igdeTriggerExpressionDialog::igdeTriggerExpressionDialog( igdeEnvironment &envir
 const igdeTriggerTargetList &targetList, igdeTriggerExpressionParser &parser, const char *title ) :
 igdeDialog( environment, title )
 {
-	SetInitialSize( decPoint( 800, 500 ) );
+	SetSize(decPoint(800, 500));
 	
 	pEditor.TakeOver( new igdeTriggerExpressionEditor( environment ) );
 	igdeTriggerExpressionEditor &editor = ( igdeTriggerExpressionEditor& )( igdeWidget& )pEditor;

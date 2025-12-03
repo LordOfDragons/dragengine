@@ -70,7 +70,7 @@ igdeNativeFoxMainWindow::igdeNativeFoxMainWindow( igdeMainWindow &powner ) :
 FXMainWindow( FXApp::instance(), powner.GetTitle().GetString(),
 	powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL,
 	powner.GetIcon() ? ( FXIcon* ) powner.GetIcon()->GetNativeIcon() : NULL,
-	DECOR_ALL, 0, 0, powner.GetInitialSize().x, powner.GetInitialSize().y ),
+	DECOR_ALL, 0, 0, 800, 600),
 pOwner( &powner )
 {
 	if( ! pOwner->GetVisible() ){
@@ -93,7 +93,18 @@ void igdeNativeFoxMainWindow::PostCreateNativeWidget(){
 	create();
 	
 	// here maximize seems to work
-	maximize( true );
+	switch(pOwner->GetWindowState()){
+	case igdeMainWindow::ewsMinimized:
+		minimize(true);
+		break;
+		
+	case igdeMainWindow::ewsMaximized:
+		maximize(true);
+		break;
+		
+	default:
+		break;
+	}
 	
 	raise();
 }
@@ -110,8 +121,14 @@ void igdeNativeFoxMainWindow::DestroyNativeWidget(){
 ///////////////
 
 void igdeNativeFoxMainWindow::create(){
+	const decPoint position(pOwner->GetPosition());
+	const decPoint size(pOwner->GetSize());
+	
 	FXMainWindow::create();
-	show( PLACEMENT_SCREEN );
+	resize(size.x, size.y);
+	move(position.x, position.y);
+	
+	show(pOwner->GetNormalPositionSet() ? PLACEMENT_DEFAULT : PLACEMENT_SCREEN);
 }
 
 void igdeNativeFoxMainWindow::destroy(){
@@ -198,11 +215,14 @@ void igdeNativeFoxMainWindow::UpdateEnabled(){
 }
 
 void igdeNativeFoxMainWindow::UpdatePosition(){
-	if( pOwner->GetPosition().x == getX() && pOwner->GetPosition().y == getY() ){
+	if(isMinimized() || isMaximized()){
+		return;
+	}
+	if(pOwner->GetPosition().x == getX() && pOwner->GetPosition().y == getY()){
 		return;
 	}
 	
-	move( pOwner->GetPosition().x, pOwner->GetPosition().y );
+	move(pOwner->GetPosition().x, pOwner->GetPosition().y);
 }
 
 void igdeNativeFoxMainWindow::UpdateIcon(){
@@ -216,7 +236,14 @@ void igdeNativeFoxMainWindow::UpdateTitle(){
 }
 
 void igdeNativeFoxMainWindow::UpdateSize(){
-	resize( pOwner->GetSize().x, pOwner->GetSize().y );
+	if(isMinimized() || isMaximized()){
+		return;
+	}
+	if(pOwner->GetSize().x == getX() && pOwner->GetSize().y == getY()){
+		return;
+	}
+	
+	resize(pOwner->GetSize().x, pOwner->GetSize().y);
 }
 
 void igdeNativeFoxMainWindow::SetWindowState(){
@@ -243,19 +270,27 @@ void igdeNativeFoxMainWindow::GetAppFontConfig( igdeFont::sConfiguration &config
 
 
 
-long igdeNativeFoxMainWindow::onConfigure( FXObject *sender, FXSelector selector, void *pdata ){
-	const int result = FXMainWindow::onConfigure( sender, selector, pdata );
+long igdeNativeFoxMainWindow::onConfigure(FXObject *sender, FXSelector selector, void *pdata){
+	const int result = FXMainWindow::onConfigure(sender, selector, pdata);
 	
-	const decPoint position( getX(), getY() );
-	if( position != pOwner->GetPosition() ){
-		pOwner->SetPosition( position );
+	if(!isMinimized()){
+		const decPoint position(getX(), getY());
+		const decPoint size(getWidth(), getHeight());
+		
+		if(!isMaximized()){
+			pOwner->SetNormalPosition(position);
+			pOwner->SetNormalSize(size);
+		}
+		
+		if(position != pOwner->GetPosition()){
+			pOwner->SetPosition(position);
+		}
+		if(size != pOwner->GetSize()){
+			pOwner->SetSize(size);
+			pOwner->OnResize();
+		}
 	}
 	
-	const decPoint size( getWidth(), getHeight() );
-	if( size != pOwner->GetSize() ){
-		pOwner->SetSize( size );
-		pOwner->OnResize();
-	}
 	return result;
 }
 

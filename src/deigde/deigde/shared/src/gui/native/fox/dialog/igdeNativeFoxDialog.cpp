@@ -75,20 +75,18 @@ pOwner( &powner )
 igdeNativeFoxDialog::~igdeNativeFoxDialog(){
 }
 
-igdeNativeFoxDialog *igdeNativeFoxDialog::CreateNativeWidget( igdeDialog &powner, igdeWidget *ownerOwner ){
-	if( powner.GetParent() ){
-		DETHROW( deeInvalidParam );
-	}
+igdeNativeFoxDialog *igdeNativeFoxDialog::CreateNativeWidget(igdeDialog &powner, igdeWidget *ownerOwner){
+	DEASSERT_NULL(powner.GetParent())
 	
-	FXWindow *nativeOwner = NULL;
-	if( ownerOwner ){
-		nativeOwner = ( FXWindow* )ownerOwner->GetNativeWidget();
-	}
+	FXWindow *nativeOwner = ownerOwner ? (FXWindow*)ownerOwner->GetNativeWidget() : nullptr;
 	
-	return new igdeNativeFoxDialog( powner, nativeOwner, *powner.GetGuiTheme() );
+	return new igdeNativeFoxDialog(powner, nativeOwner, *powner.GetGuiTheme());
 }
 
 void igdeNativeFoxDialog::PostCreateNativeWidget(){
+	const decPoint size(pOwner->GetSize());
+	resize(size.x, size.y);
+	
 	create();
 }
 
@@ -133,11 +131,7 @@ void igdeNativeFoxDialog::UpdateSize(){
 }
 
 void igdeNativeFoxDialog::ShowDialog(){
-	const decPoint &initialSize = pOwner->GetInitialSize();
-	if( initialSize != decPoint() ){
-		resize( decMath::max( getWidth(), initialSize.x ), decMath::max( getHeight(), initialSize.y ) );
-	}
-	show( PLACEMENT_OWNER );
+	show(getParent() ? PLACEMENT_OWNER : PLACEMENT_SCREEN);
 }
 
 void igdeNativeFoxDialog::CloseDialog( bool accepted ){

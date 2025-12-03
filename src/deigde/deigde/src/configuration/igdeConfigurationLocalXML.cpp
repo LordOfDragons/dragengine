@@ -30,6 +30,7 @@
 #include "../module/igdeEditorModuleManager.h"
 
 #include <dragengine/logger/deLogger.h>
+#include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decDiskFileReader.h>
@@ -41,8 +42,6 @@
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
-#include <dragengine/common/exceptions.h>
-
 
 
 // Class igdeConfigurationLocalXML
@@ -51,114 +50,105 @@
 // Constructors and Destructors
 /////////////////////////////////
 
-igdeConfigurationLocalXML::igdeConfigurationLocalXML( deLogger *logger, const char *loggerSource ) :
-igdeBaseXML( logger, loggerSource ){
+igdeConfigurationLocalXML::igdeConfigurationLocalXML(deLogger *logger, const char *loggerSource) :
+igdeBaseXML(logger, loggerSource){
 }
 
 igdeConfigurationLocalXML::~igdeConfigurationLocalXML(){
 }
 
 
-
 // Management
 ///////////////
 
-void igdeConfigurationLocalXML::ReadFromFile( decBaseFileReader &reader, igdeConfigurationLocal &config ){
-	decXmlDocumentReference xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+void igdeConfigurationLocalXML::ReadFromFile(decBaseFileReader &reader, igdeConfigurationLocal &config){
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
-	decXmlParser parser( GetLogger() );
-	parser.ParseXml( &reader, xmlDoc );
+	decXmlParser parser(GetLogger());
+	parser.ParseXml(&reader, xmlDoc);
 	
 	xmlDoc->StripComments();
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	if( ! root || root->GetName() != "deigde" ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(root)
+	DEASSERT_TRUE(root->GetName() == "deigde")
 	
-	pReadConfig( *root, config );
+	pReadConfig(*root, config);
 }
 
-void igdeConfigurationLocalXML::WriteToFile( decBaseFileWriter &writer, const igdeConfigurationLocal &config ){
-	decXmlWriter xmlWriter( &writer );
+void igdeConfigurationLocalXML::WriteToFile(decBaseFileWriter &writer, const igdeConfigurationLocal &config){
+	decXmlWriter xmlWriter(&writer);
 	xmlWriter.WriteXMLDeclaration();
-	pWriteConfig( xmlWriter, config );
+	pWriteConfig(xmlWriter, config);
 }
-
 
 
 // Private Functions
 //////////////////////
 
-void igdeConfigurationLocalXML::pReadConfig( const decXmlElementTag &root, igdeConfigurationLocal &config ){
+void igdeConfigurationLocalXML::pReadConfig(const decXmlElementTag &root, igdeConfigurationLocal &config){
 	const int count = root.GetElementCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "recentEditorFiles" ){
-			config.GetRecentEditorFiles().ReadFromXml( *tag );
+		if(tag->GetName() == "recentEditorFiles"){
+			config.GetRecentEditorFiles().ReadFromXml(*tag);
 			
-		}else if( tag->GetName() == "recentEditors" ){
-			pReadRecentEditors( *tag, config );
+		}else if(tag->GetName() == "recentEditors"){
+			pReadRecentEditors(*tag, config);
 			
 		}else{
-			LogWarnUnknownTag( root, *tag );
+			LogWarnUnknownTag(root, *tag);
 		}
 	}
 }
 
-void igdeConfigurationLocalXML::pReadRecentEditors( const decXmlElementTag &root, igdeConfigurationLocal &config ){
+void igdeConfigurationLocalXML::pReadRecentEditors(const decXmlElementTag &root, igdeConfigurationLocal &config){
 	igdeEditorModuleManager &moduleManger = config.GetWindowMain().GetModuleManager();
 	const int count = root.GetElementCount();
-	int position = 0;
-	int i;
+	int i, position = 0;
 	
-	for( i=0; i<count; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
+	for(i=0; i<count; i++){
+		const decXmlElementTag * const tag = root.GetElementIfTag(i);
+		if(!tag){
 			continue;
 		}
 		
-		if( tag->GetName() == "editor" ){
-			igdeEditorModuleDefinition * const module = moduleManger.GetModuleWithID ( GetCDataString( *tag ) );
-			if( module ){
-				moduleManger.ChangeModuleRecentUsedPosition( module, position++ );
+		if(tag->GetName() == "editor"){
+			igdeEditorModuleDefinition * const module = moduleManger.GetModuleWithID(GetCDataString(*tag));
+			if(module){
+				moduleManger.ChangeModuleRecentUsedPosition(module, position++);
 			}
-			
-		}else{
-			DETHROW( deeInvalidParam );
 		}
 	}
 }
 
 
-
-void igdeConfigurationLocalXML::pWriteConfig( decXmlWriter &writer, const igdeConfigurationLocal &config ){
-	writer.WriteOpeningTag( "deigde", false, true );
+void igdeConfigurationLocalXML::pWriteConfig(decXmlWriter &writer, const igdeConfigurationLocal &config){
+	writer.WriteOpeningTag("deigde", false, true);
 	
-	config.GetRecentEditorFiles().WriteToXml( writer, "recentEditorFiles" );
-	pWriteRecentEditors( writer, config );
+	config.GetRecentEditorFiles().WriteToXml(writer, "recentEditorFiles");
+	pWriteRecentEditors(writer, config);
 	
-	writer.WriteClosingTag( "deigde", true );
+	writer.WriteClosingTag("deigde", true);
 }
 
-void igdeConfigurationLocalXML::pWriteRecentEditors( decXmlWriter &writer, const igdeConfigurationLocal &config ){
+void igdeConfigurationLocalXML::pWriteRecentEditors(decXmlWriter &writer, const igdeConfigurationLocal &config){
 	igdeEditorModuleManager &moduleManger = config.GetWindowMain().GetModuleManager();
 	const int count = moduleManger.GetModuleCount();
 	int i;
 	
-	writer.WriteOpeningTag( "recentEditors" );
+	writer.WriteOpeningTag("recentEditors");
 	
-	for( i=0; i<count; i++ ){
-		writer.WriteDataTagString( "editor", moduleManger.GetRecentModuleAt( i )->GetID() );
+	for(i=0; i<count; i++){
+		writer.WriteDataTagString("editor", moduleManger.GetRecentModuleAt(i)->GetID());
 	}
 	
-	writer.WriteClosingTag( "recentEditors" );
+	writer.WriteClosingTag("recentEditors");
 }
