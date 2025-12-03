@@ -257,6 +257,9 @@
 #include "classes/world/deClassSkinBuilder.h"
 #include "classes/world/deClassWorld.h"
 
+#include "parameters/dedsPLogLevel.h"
+#include "parameters/dedsPForceDpiAware.h"
+
 #include "resourceloader/dedsResourceLoader.h"
 
 #include "utils/dedsColliderListenerAdaptor.h"
@@ -346,6 +349,8 @@ void deScriptingDragonScript::sModuleVersion::SetVersion( const char *pversion )
 deScriptingDragonScript::deScriptingDragonScript( deLoadableModule &loadableModule ) :
 deBaseScriptingModule( loadableModule ),
 pState( esStopped ),
+pLogLevel(LogLevel::warning),
+pForceDpiAware(false),
 pClsAISys( nullptr ),
 pClsAnim( nullptr ),
 pClsAnimBuilder( nullptr ),
@@ -538,6 +543,7 @@ pGameObj( nullptr ),
 pRestartRequested( false )
 {
 	pModuleVersion.SetVersion( DS_MODULE_VERSION );
+	pCreateParameters();
 }
 
 deScriptingDragonScript::~deScriptingDragonScript(){
@@ -1179,6 +1185,31 @@ bool deScriptingDragonScript::OnAppActivate(){
 
 
 
+// Parameters
+///////////////
+
+int deScriptingDragonScript::GetParameterCount() const{
+	return pParameters.GetParameterCount();
+}
+
+void deScriptingDragonScript::GetParameterInfo(int index, deModuleParameter &info) const{
+	info = pParameters.GetParameterAt(index).GetParameter();
+}
+
+int deScriptingDragonScript::IndexOfParameterNamed(const char *name) const{
+	return pParameters.IndexOfParameterNamed(name);
+}
+
+decString deScriptingDragonScript::GetParameterValue(const char *name) const{
+	return pParameters.GetParameterNamed(name).GetParameterValue();
+}
+
+void deScriptingDragonScript::SetParameterValue(const char *name, const char *value){
+	pParameters.GetParameterNamed(name).SetParameterValue(value);
+}
+
+
+
 // helper functions
 const decVector &deScriptingDragonScript::GetVector( dsRealObject *myself ) const{
 	return pClsVec->GetVector( myself );
@@ -1263,9 +1294,12 @@ void deScriptingDragonScript::LogExceptionDS( const duException &exception ){
 	LogExceptionDSTrace();
 }
 
-
-
 // private functions
+void deScriptingDragonScript::pCreateParameters(){
+	pParameters.AddParameter(dedsParameter::Ref::New(new dedsPForceDpiAware(*this)));
+	pParameters.AddParameter(dedsParameter::Ref::New(new dedsPLogLevel(*this)));
+}
+
 void deScriptingDragonScript::pLoadBasicPackage(){
 	deVirtualFileSystem &vfs = GetVFS();
 	deEngine *engine = GetGameEngine();
@@ -1914,7 +1948,7 @@ void deScriptingDragonScript::pRemoveVFSContainerHideScriptDirectory(){
 }
 
 void deScriptingDragonScript::pPreprocessEventDpiAware(deInputEvent &event){
-	if(pClsEngine->GetDpiAware()){
+	if(pClsEngine->GetReallyDpiAware()){
 		return;
 	}
 	

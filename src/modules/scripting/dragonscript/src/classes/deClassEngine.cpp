@@ -590,3 +590,7 @@ void deClassEngine::SetDefaultEnableAuralization( bool enable ){
 void deClassEngine::SetDpiAware(bool dpiAware){
 	pDpiAware = dpiAware;
 }
+
+bool deClassEngine::GetReallyDpiAware() const{
+	return pDpiAware || pDS.GetForceDpiAware();
+}

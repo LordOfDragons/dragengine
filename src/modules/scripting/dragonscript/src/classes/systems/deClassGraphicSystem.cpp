@@ -395,7 +395,7 @@ void deClassGraphicSystem::CreateClassMembers(dsEngine *engine){
 }
 
 int deClassGraphicSystem::CoordCanvas2Window(int coordinates) const{
-	return pDS.GetClassEngine()->GetDpiAware() ? coordinates
+	return pDS.GetClassEngine()->GetReallyDpiAware() ? coordinates
 		: CoordCanvas2WindowAlways(coordinates);
 }
 
@@ -409,7 +409,7 @@ int deClassGraphicSystem::CoordCanvas2WindowAlways(int coordinates) const{
 }
 
 int deClassGraphicSystem::CoordWindows2Canvas(int coordinates) const{
-	return pDS.GetClassEngine()->GetDpiAware() ? coordinates
+	return pDS.GetClassEngine()->GetReallyDpiAware() ? coordinates
 		: CoordWindows2CanvasAlways(coordinates);
 }
 
@@ -431,7 +431,7 @@ void deClassGraphicSystem::ResizeActiveRenderWindowCanvas() const{
 }
 
 void deClassGraphicSystem::ResizeRenderWindowCanvas(deRenderWindow& renderWindow) const{
-	if(pDS.GetClassEngine()->GetDpiAware()){
+	if(pDS.GetClassEngine()->GetReallyDpiAware()){
 		return;
 	}
 

@@ -93,6 +93,11 @@ public:
 	 * modules apply the scaling making DPI changes transparent. Default is disabled.
 	 */
 	void SetDpiAware(bool dpiAware);
+	
+	/**
+	 * \brief Scripts are DPI aware or forcing DPI aware.
+	 */
+	bool GetReallyDpiAware() const;
 	/*@}*/
 	
 	

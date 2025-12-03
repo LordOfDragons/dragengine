@@ -33,6 +33,7 @@
 #include "dedsLoadingScreen.h"
 #include "dedsVRPlaceholder.h"
 #include "dedsEngineException.h"
+#include "parameters/dedsParameterList.h"
 
 
 class deClassPhysicsSystem;
@@ -270,10 +271,22 @@ public:
 		void SetVersion( const char *version );
 	};
 	
+	enum class LogLevel{
+		error,
+		warning,
+		info,
+		debug
+	};
+	
+	
 private:
 	sModuleVersion pCompatibleVersion;
 	sModuleVersion pModuleVersion;
 	eState pState;
+	dedsParameterList pParameters;
+	
+	LogLevel pLogLevel;
+	bool pForceDpiAware;
 	
 	deClassAISystem *pClsAISys;
 	deClassAnimation *pClsAnim;
@@ -496,20 +509,20 @@ public:
 	
 	// runtime
 	/**
-	 * \brief Directory relative to the module share directory where shared module data is located.
+	 * Directory relative to the module share directory where shared module data is located.
 	 * \returns \em NULL if no such directory is used.
 	 */
-	virtual const char *GetSharedDataDir() const;
+	const char *GetSharedDataDir() const override;
 	
 	/**
-	 * \brief VFS directory where the module share directory is shown at.
+	 * VFS directory where the module share directory is shown at.
 	 * \returns \em NULL if no such directory is used.
 	 */
-	virtual const char *GetVFSSharedDataDir() const;
+	const char *GetVFSSharedDataDir() const override;
 	
-	virtual bool Init( const char *scriptDirectory, const char *gameObject );
+	bool Init( const char *scriptDirectory, const char *gameObject ) override;
 	
-	virtual void ShutDown();
+	void ShutDown() override;
 
 	// script packages
 	void LoadPackage(const char *name, const char *directory);
@@ -517,42 +530,42 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Creates a peer for the given collider object. */
-	virtual deBaseScriptingCollider *CreateCollider( deCollider *collider );
+	deBaseScriptingCollider *CreateCollider( deCollider *collider ) override;
 	/** Creates a peer for the given server object. */
-	virtual deBaseScriptingServer *CreateServer( deServer *server );
+	deBaseScriptingServer *CreateServer( deServer *server ) override;
 	/** Creates a peer for the given connection object. */
-	virtual deBaseScriptingConnection *CreateConnection( deConnection *connection );
+	deBaseScriptingConnection *CreateConnection( deConnection *connection ) override;
 	/** Creates a peer for the given network state object. */
-	virtual deBaseScriptingNetworkState *CreateNetworkState( deNetworkState *state );
+	deBaseScriptingNetworkState *CreateNetworkState( deNetworkState *state ) override;
 	/** Creates a peer for the given touch sensor object. */
-	virtual deBaseScriptingTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor );
+	deBaseScriptingTouchSensor *CreateTouchSensor( deTouchSensor *touchSensor ) override;
 	/** Creates a peer for the given prop field object. */
-	virtual deBaseScriptingPropField *CreatePropField( dePropField *propField );
+	deBaseScriptingPropField *CreatePropField( dePropField *propField ) override;
 	/** Creates a peer for the given particle emitter instance object or NULL if not used. */
-	virtual deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance( deParticleEmitterInstance *instance );
+	deBaseScriptingParticleEmitterInstance *CreateParticleEmitterInstance( deParticleEmitterInstance *instance ) override;
 	
-	/** \brief Create deSoundLevelMeter peer. */
-	virtual deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter );
+	/** Create deSoundLevelMeter peer. */
+	deBaseScriptingSoundLevelMeter *CreateSoundLevelMeter( deSoundLevelMeter *meter ) override;
 	
-	/** \brief Create deSpeaker peer. */
-	virtual deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker );
+	/** Create deSpeaker peer. */
+	deBaseScriptingSpeaker *CreateSpeaker( deSpeaker *speaker ) override;
 	
 	/**
-	 * \brief Create deService peer.
+	 * Create deService peer.
 	 * \version 1.23
 	 */
-	virtual deBaseScriptingService *CreateService( deService *service );
+	deBaseScriptingService *CreateService( deService *service ) override;
 	
 	/**
 	 * Initializes the game scripts. This usually involves creating the
 	 * game objects and calling init functions on them.
 	 */
-	virtual bool InitGame();
+	bool InitGame() override;
 	/**
 	 * Exits the game scripts. This usually involves calling exit functions
 	 * and freeing game objects.
 	 */
-	virtual bool ExitGame();
+	bool ExitGame() override;
 	/**
 	 * Called at the beginning of each update cycle. This gives the game
 	 * scripts the chance to do frame update related tasks that do not
@@ -560,30 +573,54 @@ public:
 	 * render targets but you should not update the screen itself.
 	 * @return true if the call has been successfull or false otherwise
 	 */
-	virtual bool OnFrameUpdate();
+	bool OnFrameUpdate() override;
 	/**
 	 * Called after the render window changed size.
 	 */
-	virtual bool OnResizeRenderWindow();
+	bool OnResizeRenderWindow() override;
 	/**
 	 * Send the given event to game scripts.
 	 * @return true if the call has been successfull or false otherwise
 	 */
-	virtual bool SendEvent( deInputEvent *event );
+	bool SendEvent( deInputEvent *event ) override;
 	
 	/**
-	 * \brief User requested window to be closed.
+	 * User requested window to be closed.
 	 * 
 	 * Default implementation calls deEngine.Quit().
 	 */
-	virtual void UserRequestQuit();
+	void UserRequestQuit() override;
 	
 	/**
-	 * \brief Called after the application received or lost focus.
+	 * Called after the application received or lost focus.
 	 * \return true if the call has been successfull or false otherwise
 	 * \version 1.22
 	 */
-	virtual bool OnAppActivate();
+	bool OnAppActivate() override;
+	
+	
+	/** \name Parameters */
+	/*@{*/
+	/** Number of parameters. */
+	int GetParameterCount() const override;
+	
+	/**
+	 * Get information about parameter.
+	 * \param[in] index Index of the parameter
+	 * \param[in] parameter Object to fill with information about the parameter
+	 */
+	void GetParameterInfo(int index, deModuleParameter &parameter) const override;
+	
+	/** Index of named parameter or -1 if not found. */
+	int IndexOfParameterNamed(const char *name) const override;
+	
+	/** Value of named parameter. */
+	decString GetParameterValue(const char *name) const override;
+	
+	/** Set value of named parameter. */
+	void SetParameterValue(const char *name, const char *value) override;
+	/*@}*/
+	
 	
 	/** Requested compatible module version. */
 	inline const sModuleVersion &GetModuleVersion() const{ return pModuleVersion; }
@@ -610,11 +647,19 @@ public:
 	/** Retrieves the shared collision info. */
 	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
 	
-	/** \brief Shared collider listener closest. */
+	/** Shared collider listener closest. */
 	inline dedsColliderListenerClosest &GetColliderListenerClosest() const{ return *pColliderListenerClosest; }
 	
-	/** \brief Shared collider listener adaptor. */
+	/** Shared collider listener adaptor. */
 	inline dedsColliderListenerAdaptor &GetColliderListenerAdaptor() const{ return *pColliderListenerAdaptor; }
+	
+	/** Log level. */
+	inline LogLevel GetLogLevel() const{ return pLogLevel; }
+	inline void SetLogLevel(LogLevel level){ pLogLevel = level; }
+	
+	/** Force dpi aware. */
+	inline bool GetForceDpiAware() const{ return pForceDpiAware; }
+	inline void SetForceDpiAware(bool forceDpiAware){ pForceDpiAware = forceDpiAware; }
 	
 	// classes
 	inline deClassAISystem *GetClassAISystem() const{ return pClsAISys; }
@@ -827,19 +872,20 @@ public:
 	inline const decString &GetRestartInfo() const{ return pRestartInfo; }
 	void RequestRestart( const char *info );
 	
-	/** \brief Adds a value to delete later. */
+	/** Adds a value to delete later. */
 	void AddValueDeleteLater( dsValue *value );
-	/** \brief Delete all values registered to be deleted later. */
+	/** Delete all values registered to be deleted later. */
 	void DeleteValuesDeleteLater();
 	
-	/** \brief Add dragonscript exception to the module trace. */
+	/** Add dragonscript exception to the module trace. */
 	void SetErrorTraceDS( const duException &exception );
 	
-	/** \brief Log dragonscript exception. */
+	/** Log dragonscript exception. */
 	void LogExceptionDS( const duException &exception );
 	/*@}*/
 	
 private:
+	void pCreateParameters();
 	void pLoadBasicPackage();
 	void pLoadGamePackage( const char *directory, const char *gameClass );
 	void pAddScripts( dsPackage *package, deVirtualFileSystem &vfs, const char *pathDir );
