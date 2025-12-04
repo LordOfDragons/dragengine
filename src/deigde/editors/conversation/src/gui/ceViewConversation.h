@@ -27,7 +27,7 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener::Ref.h>
 
 #include <dragengine/resources/canvas/deCanvasPaintReference.h>
 
@@ -54,7 +54,7 @@ private:
 	deCanvasPaintReference pCanvasBackground;
 	
 	igdeMouseCameraListenerReference pCameraMouseListener;
-	igdeMouseKeyListenerReference pPlaybackListener;
+	igdeMouseKeyListener::Ref pPlaybackListener;
 	
 	
 public:

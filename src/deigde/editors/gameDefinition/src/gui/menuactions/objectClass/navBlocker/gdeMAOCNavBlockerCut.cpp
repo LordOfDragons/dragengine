@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 #include "../../../../undosys/objectClass/navblocker/gdeUOCRemoveNavBlocker.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -74,7 +74,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	deObjectReference clipOCNavigationBlocker;
 	clipOCNavigationBlocker.TakeOver( new gdeOCNavigationBlocker( *navBlocker ) );
 	
-	igdeClipboardDataReference clipData;
+	igdeClipboardData::Ref clipData;
 	clipData.TakeOver( new gdeClipboardDataOCNavBlocker( ( gdeOCNavigationBlocker* )( deObject* )clipOCNavigationBlocker ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );

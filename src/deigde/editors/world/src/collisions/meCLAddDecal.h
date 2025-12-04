@@ -27,7 +27,7 @@
 
 #include "meCLHitList.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
@@ -55,7 +55,7 @@ private:
 	
 	bool pAlignWithNormal;
 	
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	// constructor, destructor

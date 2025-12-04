@@ -26,7 +26,7 @@
 #define _MEWPSELECTION_H_
 
 #include <deigde/gui/igdeSwitcher.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 
 class meWPSelectionListener;
 class meWindowProperties;
@@ -44,10 +44,10 @@ private:
 	
 	meWorld *pWorld;
 	
-	igdeWidgetReference pPanelObject;
-	igdeWidgetReference pPanelObjectShape;
-	igdeWidgetReference pPanelDecal;
-	igdeWidgetReference pPanelNavSpace;
+	igdeWidget::Ref pPanelObject;
+	igdeWidget::Ref pPanelObjectShape;
+	igdeWidget::Ref pPanelDecal;
+	igdeWidget::Ref pPanelNavSpace;
 	
 	
 	

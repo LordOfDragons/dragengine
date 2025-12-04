@@ -26,7 +26,7 @@
 #define _IGDENVNODE_H_
 
 #include "../igdeContainer.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget::Ref.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>

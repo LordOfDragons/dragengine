@@ -52,7 +52,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -419,7 +419,7 @@ void meSaveSupport::SaveHTNavSpace( meWorld &world, meHeightTerrainNavSpace &nav
 	}
 	
 	pWindowMain->GetLogger()->LogInfoFormat( LOGSOURCE, "Saving height terrain navigation space to %s", filename.GetString() );
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( navspace.GetEngine().GetVirtualFileSystem()->OpenFileForWriting(
 		decPath::CreatePathUnix( filename ) ) );
 	saveNavSpace.Save( *navspace.GetEngineNavSpace(), writer );

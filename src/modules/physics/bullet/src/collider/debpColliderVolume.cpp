@@ -58,7 +58,7 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deCollider::Ref.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/debug/deDebugDrawerShape.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
@@ -499,7 +499,7 @@ void debpColliderVolume::DetectCustomCollision( float elapsed ){
 			ApplyFakeDynamicResponse( *colinfo );
 			
 		}else{
-			deColliderReference guard( &pColliderVolume ); // avoid collider being removed while in use
+			deCollider::Ref guard( &pColliderVolume ); // avoid collider being removed while in use
 			
 			colinfo->SetDistance( localElapsed * ( 1.0f - colliderMoveHits.GetHitDistance() ) );
 			pColliderVolume.GetPeerScripting()->CollisionResponse( &pColliderVolume, colinfo ); // can potentially remove collider

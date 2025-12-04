@@ -62,7 +62,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -426,7 +426,7 @@ void gdeWPSTIMObjectClass::SelectBestMatching( const char *string ){
 //////////////////////
 
 void gdeWPSTIMObjectClass::pAddSubObjects(){
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	const gdeOCBillboardList &billboards = pObjectClass->GetBillboards();

@@ -52,7 +52,7 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
@@ -66,7 +66,7 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -91,7 +91,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, emitter, controller ) );
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
@@ -115,7 +115,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editSlider->GetValue(), emitter, controller ) );
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
@@ -148,7 +148,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( emitter ) );
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );

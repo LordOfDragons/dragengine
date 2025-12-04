@@ -39,8 +39,8 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/string/decString.h>
@@ -49,10 +49,10 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSContainer::Ref.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 
@@ -206,7 +206,7 @@ void igdeCreateProject::pCreateGameAliasId(){
 
 void igdeCreateProject::pCreateDirectories(){
 	const decPath pathDeleteMe( decPath::CreatePathUnix( "/deleteMe" ) );
-	deVFSContainerReference diskDirectory;
+	deVFSContainer::Ref diskDirectory;
 	decPath path;
 	
 	// create data directory if absent
@@ -246,7 +246,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	decPath path( pNativePathProject );
 	path.AddComponent( ".gitignore" );
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( new decDiskFileWriter( path.GetPathNative(), false ) );
 	writer->WriteString( pProject->GetPathLocal() + "\n" );
 	writer->WriteString( pPathCache + "\n" );
@@ -405,7 +405,7 @@ void igdeCreateProject::pApplyTemplate(){
 	// create vfs directories to work with
 	pVFS.TakeOver( new deVirtualFileSystem );
 	
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_DATA ),
 		decPath::CreatePathNative( pNativePathData ) ) );
 	pVFS->AddContainer( container );
@@ -443,7 +443,7 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	
 	// find files
 	if( ! file.GetPattern().IsEmpty() ){
-		deVirtualFileSystemReference vfs;
+		deVirtualFileSystem::Ref vfs;
 		vfs.TakeOver( new deVirtualFileSystem );
 		
 		deCollectFileSearchVisitor collect( file.GetPattern() );
@@ -460,8 +460,8 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	
 	// process files
 	const int count = list.GetCount();
-	decBaseFileReaderReference reader;
-	decBaseFileWriterReference writer;
+	decBaseFileReader::Ref reader;
+	decBaseFileWriter::Ref writer;
 	int i;
 	
 	for( i=0; i<count; i++ ){

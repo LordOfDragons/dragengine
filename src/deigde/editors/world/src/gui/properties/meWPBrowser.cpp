@@ -89,10 +89,10 @@
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/model/igdeTreeItem.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 #include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -188,7 +188,7 @@ public:
 		
 		meObjectTexture *texture = object->GetTextureNamed( pName );
 		const decString &newskin = gdskin->GetPath();
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		if( texture ){
 			if( newskin.Equals( texture->GetSkinPath() ) ){
@@ -230,7 +230,7 @@ public:
 		}
 		
 		const decString &newValue = gdskin->GetPath();
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		if( object->GetProperties().Has( pName ) ){
 			const decString &oldValue = object->GetProperties().GetAt( pName );
@@ -406,7 +406,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUSetObjectClass( list, cname ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -447,7 +447,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUObjectTextureSetSkin( list, newskin ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -488,7 +488,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUDecalSkin( list, newskin ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -781,7 +781,7 @@ void meWPBrowser::AddCategoryToList( igdeGDCategory *category, igdeTreeItem *par
 	const int categoryCount = category->GetCategoryCount();
 	int i;
 	
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	item.TakeOver( new igdeTreeItem( category->GetName(), category ) );
 	pTreeCategories->AppendItem( parent, item );
 	
@@ -854,7 +854,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 	igdeGDPreviewManager &pvmgr = *GetEnvironment().GetGDPreviewManager();
 	igdeGDAddToListVisitor visitor( GetEnvironment(), pListItems, GetPreviewIconSize() );
 	
-	igdeIconReference icon;
+	igdeIcon::Ref icon;
 	const int iconSize = GetPreviewIconSize();
 	icon.TakeOver( new igdeIcon( *pvmgr.GetImageCreating(), iconSize, iconSize ) );
 	

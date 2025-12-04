@@ -58,7 +58,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeTextStyle.h>
-#include <deigde/gui/resources/igdeTextStyleReference.h>
+#include <deigde/gui/resources/igdeTextStyle::Ref.h>
 
 
 
@@ -247,7 +247,7 @@ pMaxLines(500)
 	// logs widget
 	pEditLogs.TakeOver(new igdeTextArea(env, 60, 10, false));
 	
-	igdeTextStyleReference style;
+	igdeTextStyle::Ref style;
 	style.TakeOver(new igdeTextStyle(styleWarning));
 	style->SetColor(decColor(0.0f, 0.0f, 0.0f));
 	style->SetBgColor(decColor(1.0f, 0.815f, 0.0f));

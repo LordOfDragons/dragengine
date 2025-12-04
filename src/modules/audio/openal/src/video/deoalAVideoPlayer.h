@@ -27,7 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/resources/video/deVideoPlayer.h>
-#include <dragengine/resources/video/deVideoAudioDecoderReference.h>
+#include <dragengine/resources/video/deVideoAudioDecoder::Ref.h>
 
 class deoalAudioThread;
 class deVideo;
@@ -41,7 +41,7 @@ class deoalAVideoPlayer : public deObject{
 private:
 	deoalAudioThread &pAudioThread;
 	
-	deVideoAudioDecoderReference pDecoder;
+	deVideoAudioDecoder::Ref pDecoder;
 	deVideoPlayer::ePlayState pPlayState;
 	float pPlayPosition;
 	float pPlayFrom;

@@ -38,6 +38,13 @@ class igdeWidget;
  * \brief IGDE UI Mouse/Key Listener.
  */
 class DE_DLL_EXPORT igdeMouseKeyListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeMouseKeyListener> Ref;
+	
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

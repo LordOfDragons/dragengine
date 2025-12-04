@@ -41,7 +41,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -71,7 +71,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSkySetBgColor( sky, colorBox->GetColor() ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );

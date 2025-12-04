@@ -36,6 +36,13 @@ class igdeEditVector;
  * \brief IGDE UI EditVector Listener.
  */
 class DE_DLL_EXPORT igdeEditVectorListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditVectorListener> Ref;
+	
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

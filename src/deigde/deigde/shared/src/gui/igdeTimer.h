@@ -35,6 +35,13 @@ class igdeEnvironment;
  * \brief IGDE UI Timer.
  */
 class DE_DLL_EXPORT igdeTimer : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTimer> Ref;
+	
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	void *pNativeTimer;

@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 #include "../../../../undosys/objectClass/speaker/gdeUOCRemoveSpeaker.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -74,7 +74,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	deObjectReference clipOCSpeaker;
 	clipOCSpeaker.TakeOver( new gdeOCSpeaker( *speaker ) );
 	
-	igdeClipboardDataReference clipData;
+	igdeClipboardData::Ref clipData;
 	clipData.TakeOver( new gdeClipboardDataOCSpeaker( ( gdeOCSpeaker* )( deObject* )clipOCSpeaker ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );

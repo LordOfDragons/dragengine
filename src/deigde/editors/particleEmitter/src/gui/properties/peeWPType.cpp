@@ -70,7 +70,7 @@
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -86,7 +86,7 @@
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/deObjectReference.h>
@@ -112,7 +112,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, emitter, type ) );
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
@@ -138,7 +138,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( emitter, type ) );
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
@@ -162,7 +162,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editPath->GetPath(), emitter, type ) );
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
@@ -186,7 +186,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, emitter, type ) );
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
@@ -211,7 +211,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new peeUEmitterToggleEmitBurst( emitter ) );
 		emitter->GetUndoSystem()->Add( undo );
 	}
@@ -233,7 +233,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new peeUEmitterSetBurstLifetime( emitter, value ) );
 		emitter->GetUndoSystem()->Add( undo );
 	}
@@ -307,7 +307,7 @@ public:
 			deObjectReference type;
 			type.TakeOver( new peeType( emitter->GetEngine(), name ) );
 			
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( new peeUTypeAdd( emitter, ( peeType* )( deObject *)type ) );
 			emitter->GetUndoSystem()->Add( undo );
 			return;

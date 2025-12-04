@@ -25,7 +25,7 @@
 #ifndef _IGDETRIGGEREXPRESSIONDIALOG_H_
 #define _IGDETRIGGEREXPRESSIONDIALOG_H_
 
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget::Ref.h"
 #include "../dialog/igdeDialog.h"
 
 
@@ -39,7 +39,7 @@ class igdeTriggerTargetList;
  */
 class DE_DLL_EXPORT igdeTriggerExpressionDialog : public igdeDialog{
 private:
-	igdeWidgetReference pEditor;
+	igdeWidget::Ref pEditor;
 	
 	
 	

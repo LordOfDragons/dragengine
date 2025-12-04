@@ -50,7 +50,7 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/layout/igdeContainerSplittedReference.h>
@@ -66,7 +66,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -333,7 +333,7 @@ public:
 	cActionBase( window, text, icon, description, mnemonic ){}
 	
 	virtual void OnAction(){
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetSAnimation() ) );
 		if( undo ){
 			pWindow.GetSAnimation()->GetUndoSystem()->Add( undo );

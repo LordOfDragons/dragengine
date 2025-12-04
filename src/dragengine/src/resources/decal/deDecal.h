@@ -27,7 +27,7 @@
 
 #include "../deResource.h"
 #include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../skin/dynamic/deDynamicSkin::Ref.h"
 #include "../../common/math/decMath.h"
 
 class deDecalManager;
@@ -67,7 +67,7 @@ private:
 	
 	deSkinReference pSkin;
 	int pTexture;
-	deDynamicSkinReference pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	bool pVisible;
 	

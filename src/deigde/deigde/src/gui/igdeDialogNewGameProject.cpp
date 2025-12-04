@@ -59,7 +59,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSContainer::Ref.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 
@@ -415,7 +415,7 @@ bool igdeDialogNewGameProject::CheckValidInput(){
 		}
 	}
 	
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	container.TakeOver( new deVFSDiskDirectory(
 		decPath::CreatePathNative( pEditPathProject->GetDirectory() ) ) );
 	if( container->ExistsFile( decPath() ) ){

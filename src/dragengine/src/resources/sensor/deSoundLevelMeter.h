@@ -26,7 +26,7 @@
 #define _DESOUNDLEVELMETER_H_
 
 #include "../deResource.h"
-#include "../sound/deSpeakerReference.h"
+#include "../sound/deSpeaker::Ref.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 
@@ -77,7 +77,7 @@ public:
 	 */
 	class DE_DLL_EXPORT cAudibleSpeaker {
 	private:
-		deSpeakerReference pSpeaker;
+		deSpeaker::Ref pSpeaker;
 		float pVolume;
 		
 	public:

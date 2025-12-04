@@ -28,7 +28,7 @@
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #endif
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
 
 class projTestRunProcess;
 
@@ -47,7 +47,7 @@ private:
 	decString pPathConfigUser;
 	decString pPathShares;
 	
-	deVirtualFileSystemReference pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	
 	
 	

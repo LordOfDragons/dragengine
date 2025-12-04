@@ -26,7 +26,7 @@
 #define _DEBASEVIDEOAUDIODECODER_H_
 
 #include "../deBaseModule.h"
-#include "../../../common/file/decBaseFileReaderReference.h"
+#include "../../../common/file/decBaseFileReader::Ref.h"
 
 
 /**
@@ -39,7 +39,7 @@
  */
 class DE_DLL_EXPORT deBaseVideoAudioDecoder{
 private:
-	decBaseFileReaderReference pFile;
+	decBaseFileReader::Ref pFile;
 	
 	
 	

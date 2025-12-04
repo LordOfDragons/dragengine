@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXCOMBOBOXFILTER_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont::Ref.h"
 
 class igdeComboBoxFilter;
 class igdeEnvironment;
@@ -52,7 +52,7 @@ public:
 	
 private:
 	igdeComboBoxFilter *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXLabel *pLabelFilter;
 	FXTextField *pEditFilter;
 	FXColor pOrgBackColor;

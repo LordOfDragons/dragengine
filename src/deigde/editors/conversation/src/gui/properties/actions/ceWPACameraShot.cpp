@@ -56,7 +56,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -82,7 +82,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCACameraShotSetName( topic, action, comboBox->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -102,7 +102,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCACShotSetDuration( topic, action, duration ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -121,7 +121,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCACShotSetCameraTarget( topic, action, comboBox->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -140,7 +140,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCACShotSetLookAtTarget( topic, action, comboBox->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}

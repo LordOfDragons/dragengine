@@ -30,7 +30,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/video/deVideoReference.h>
-#include <dragengine/resources/video/deVideoPlayerReference.h>
+#include <dragengine/resources/video/deVideoPlayer::Ref.h>
 
 class seDynamicSkin;
 
@@ -85,7 +85,7 @@ private:
 	
 	decString pPathVideo;
 	deVideoReference pEngVideo;
-	deVideoPlayerReference pEngVideoPlayer;
+	deVideoPlayer::Ref pEngVideoPlayer;
 	
 	// camera stuff
 	

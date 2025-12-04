@@ -65,7 +65,7 @@
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -91,7 +91,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetActor( topic, action, comboBox->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -110,7 +110,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action,
 			decUnicodeString::NewFromUTF8( textField->GetText() ) ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
@@ -140,7 +140,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action, decUnicodeString::NewFromUTF8( text ) ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -159,7 +159,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxTextTranslate( topic, action, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -197,7 +197,7 @@ public:
 		
 		conversation->SetLangPackEntryName( name );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		ceLangPackEntry::Ref entry( langpack->GetEntryNamed( name ) );
 		if( entry ){
@@ -251,7 +251,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action, entry->GetText() ) );
 		conversation->GetUndoSystem()->Add( undo );
 	}
@@ -327,7 +327,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxTextStyle( topic, action, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -346,7 +346,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetMovement( topic, action, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -365,7 +365,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetPathSound( topic, action, editPath->GetPath() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -385,7 +385,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetMinSpeechTime( topic, action, time ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -405,7 +405,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakToggleUseSpeechAnimation( topic, action ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}

@@ -36,6 +36,13 @@ class igdeTextField;
  * \brief IGDE UI TextField Listener.
  */
 class DE_DLL_EXPORT igdeTextFieldListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTextFieldListener> Ref;
+	
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

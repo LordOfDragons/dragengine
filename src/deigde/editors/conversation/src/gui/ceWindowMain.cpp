@@ -40,7 +40,7 @@
 #include "../conversation/file/ceConversationFile.h"
 #include "../conversation/topic/ceConversationTopic.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -50,7 +50,7 @@
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
 #include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
@@ -71,7 +71,7 @@
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -512,7 +512,7 @@ public:
 		if( ! pWindow.GetConversation() ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetConversation() ) );
 		if( undo ){
 			pWindow.GetConversation()->GetUndoSystem()->Add( undo );

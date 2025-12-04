@@ -26,8 +26,8 @@
 #define _IGDENATIVEFOXTREEITEM_H_
 
 #include "foxtoolkit.h"
-#include "../../model/igdeTreeItemReference.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../model/igdeTreeItem::Ref.h"
+#include "../../resources/igdeFont::Ref.h"
 
 
 /**
@@ -39,7 +39,7 @@ protected:
 	   igdeNativeFoxTreeItem();
 	
 private:
-	igdeTreeItemReference pOwner;
+	igdeTreeItem::Ref pOwner;
 	
 	
 public:

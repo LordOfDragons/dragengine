@@ -69,7 +69,7 @@
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -98,7 +98,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -123,7 +123,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -146,7 +146,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -169,7 +169,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -192,7 +192,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editDVector->GetDVector(), world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );

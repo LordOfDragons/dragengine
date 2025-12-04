@@ -27,7 +27,7 @@
 
 #include "../deResource.h"
 #include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../skin/dynamic/deDynamicSkin::Ref.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 
@@ -69,7 +69,7 @@ private:
 	decVector2 pSize;
 	decVector2 pOffset;
 	deSkinReference pSkin;
-	deDynamicSkinReference pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	bool pLocked;
 	bool pSpherical;
 	bool pSizeFixedToScreen;

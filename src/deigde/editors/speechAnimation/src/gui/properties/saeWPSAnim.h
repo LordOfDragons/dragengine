@@ -31,7 +31,7 @@
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class saeWindowProperties;
@@ -52,7 +52,7 @@ private:
 	saeWPSAnimListener *pListener;
 	saeSAnimation *pSAnimation;
 	
-	igdeActionReference pActionWordAddIpa;
+	igdeAction::Ref pActionWordAddIpa;
 	
 	igdeEditPathReference pEditRigPath;
 	igdeEditPathReference pEditAnimPath;

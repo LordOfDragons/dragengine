@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 #include "../../../../undosys/objectClass/component/gdeUOCRemoveComponent.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -74,7 +74,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	deObjectReference clipOCComponent;
 	clipOCComponent.TakeOver( new gdeOCComponent( *component ) );
 	
-	igdeClipboardDataReference clipData;
+	igdeClipboardData::Ref clipData;
 	clipData.TakeOver( new gdeClipboardDataOCComponent( ( gdeOCComponent* )( deObject* )clipOCComponent ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );

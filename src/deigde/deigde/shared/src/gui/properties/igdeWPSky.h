@@ -34,7 +34,7 @@
 #include "../igdeTextFieldReference.h"
 #include "../composed/igdeEditSliderTextReference.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../layout/igdeContainerFlow.h"
 
 
@@ -81,7 +81,7 @@ private:
 	igdeContainerReference pFraControllers;
 	decObjectList pControllers;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

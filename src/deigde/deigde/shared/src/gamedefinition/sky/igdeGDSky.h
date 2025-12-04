@@ -38,6 +38,13 @@ class igdeGDSkyController;
  * \brief Game sky.
  */
 class DE_DLL_EXPORT igdeGDSky : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDSky> Ref;
+	
+	
+	
 private:
 	decString pPath;
 	decString pName;

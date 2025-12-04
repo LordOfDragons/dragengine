@@ -29,7 +29,7 @@
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
@@ -54,7 +54,7 @@ private:
 	
 	igdeTextFieldReference pEditName;
 	igdeTextAreaReference pEditDescription;
-	igdeWidgetReference pAutoCategorizePattern;
+	igdeWidget::Ref pAutoCategorizePattern;
 	igdeCheckBoxReference pChkHidden;
 	
 	igdeListBoxReference pListElements;

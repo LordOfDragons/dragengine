@@ -26,16 +26,16 @@
 #define _IGDEGDPPCSKIN_H_
 
 #include "igdeGDPreviewCreator.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener::Ref.h"
 
 #include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/component/deComponentReference.h>
+#include <dragengine/resources/component/deComponent::Ref.h>
 #include <dragengine/resources/model/deModelReference.h>
 #include <dragengine/resources/skin/deSkinReference.h>
-#include <dragengine/resources/skin/dynamic/deDynamicSkinReference.h>
-#include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin::Ref.h>
+#include <dragengine/resources/camera/deCamera::Ref.h>
+#include <dragengine/resources/world/deWorld::Ref.h>
+#include <dragengine/resources/light/deLight::Ref.h>
 
 class igdeGDSkin;
 class igdeWSky;
@@ -49,19 +49,19 @@ class DE_DLL_EXPORT igdeGDPCSkin : public igdeGDPreviewCreator{
 private:
 	igdeGDSkin *pGDSkin;
 	
-	deWorldReference pWorld;
-	deCameraReference pCamera;
-	deLightReference pLight;
-	deComponentReference pComponent;
+	deWorld::Ref pWorld;
+	deCamera::Ref pCamera;
+	deLight::Ref pLight;
+	deComponent::Ref pComponent;
 	deModelReference pModel;
 	deSkinReference pSkin;
-	deDynamicSkinReference pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	deModelReference pLightBoxModel;
 	deSkinReference pLightBoxSkin;
 	igdeWSky *pSky;
 	deCanvasRenderWorldReference pCanvasRenderWorld;
 	
-	igdeResourceLoaderListenerReference pResLoader;
+	igdeResourceLoaderListener::Ref pResLoader;
 	bool pResLoadFinished;
 	
 	

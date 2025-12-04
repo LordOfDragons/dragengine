@@ -29,8 +29,8 @@
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/input/deInputEvent.h>
-#include <dragengine/resources/canvas/deCanvasReference.h>
-#include <dragengine/resources/rendering/deRenderWindowReference.h>
+#include <dragengine/resources/canvas/deCanvas::Ref.h>
+#include <dragengine/resources/rendering/deRenderWindow::Ref.h>
 
 class deCanvas;
 class deCamera;
@@ -52,9 +52,9 @@ public:
 	
 	
 private:
-	deRenderWindowReference pRenderWindow;
-	deCanvasReference pCanvasRenderWorld;
-	deCanvasReference pCanvasBackground;
+	deRenderWindow::Ref pRenderWindow;
+	deCanvas::Ref pCanvasRenderWorld;
+	deCanvas::Ref pCanvasBackground;
 	bool pEnableRendering;
 	bool pEngineRunning;
 	

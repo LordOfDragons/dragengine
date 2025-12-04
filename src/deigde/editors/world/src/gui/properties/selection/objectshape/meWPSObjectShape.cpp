@@ -60,7 +60,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -516,7 +516,7 @@ void meWPSObjectShape::OnShapeChanged(){
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	decShape *shape = NULL;
 	
 	try{

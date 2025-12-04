@@ -67,7 +67,7 @@
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
@@ -79,7 +79,7 @@
 #include <deigde/gui/layout/igdeContainerScrollReference.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -108,7 +108,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( project, project->GetActiveProfile() ) );
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
@@ -141,7 +141,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, project, profile ) );
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
@@ -170,7 +170,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textArea, project, profile ) );
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
@@ -199,7 +199,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editPoint, project, profile ) );
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );

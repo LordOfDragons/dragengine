@@ -26,8 +26,8 @@
 #define _SEVIEWCONSTRUCTEDVIEW_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeMouseKeyListener::Ref.h>
 #include <deigde/gui/event/igdeMouseDragListenerReference.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -52,30 +52,30 @@ private:
 	seWindowMain &pWindowMain;
 	seViewConstructedViewListener *pListener;
 	
-	igdeMouseKeyListenerReference pKeyHandling;
+	igdeMouseKeyListener::Ref pKeyHandling;
 	igdeMouseDragListenerReference pDragNode;
 	
 	seSkin *pSkin;
 	
-	igdeActionReference pActionConstructedFromImage;
-	igdeActionReference pActionAddShape;
-	igdeActionReference pActionAddImage;
-	igdeActionReference pActionAddText;
-	igdeActionReference pActionRemoveNode;
-	igdeActionReference pActionCopyNode;
-	igdeActionReference pActionCutNode;
-	igdeActionReference pActionPasteNode;
-	igdeActionReference pActionEnterGroup;
-	igdeActionReference pActionExitGroup;
-	igdeActionReference pActionGroupNodes;
-	igdeActionReference pActionUngroupNodes;
-	igdeActionReference pActionMoveNodeTop;
-	igdeActionReference pActionMoveNodeUp;
-	igdeActionReference pActionMoveNodeDown;
-	igdeActionReference pActionMoveNodeBottom;
-	igdeActionReference pActionSetMask;
-	igdeActionReference pActionRemoveMask;
-	igdeActionReference pActionSizeFromImage;
+	igdeAction::Ref pActionConstructedFromImage;
+	igdeAction::Ref pActionAddShape;
+	igdeAction::Ref pActionAddImage;
+	igdeAction::Ref pActionAddText;
+	igdeAction::Ref pActionRemoveNode;
+	igdeAction::Ref pActionCopyNode;
+	igdeAction::Ref pActionCutNode;
+	igdeAction::Ref pActionPasteNode;
+	igdeAction::Ref pActionEnterGroup;
+	igdeAction::Ref pActionExitGroup;
+	igdeAction::Ref pActionGroupNodes;
+	igdeAction::Ref pActionUngroupNodes;
+	igdeAction::Ref pActionMoveNodeTop;
+	igdeAction::Ref pActionMoveNodeUp;
+	igdeAction::Ref pActionMoveNodeDown;
+	igdeAction::Ref pActionMoveNodeBottom;
+	igdeAction::Ref pActionSetMask;
+	igdeAction::Ref pActionRemoveMask;
+	igdeAction::Ref pActionSizeFromImage;
 	
 	
 	

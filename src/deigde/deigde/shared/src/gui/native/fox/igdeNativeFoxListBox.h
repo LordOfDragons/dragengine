@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXLISTBOX_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont::Ref.h"
 
 
 class igdeListBox;
@@ -51,7 +51,7 @@ public:
 	
 private:
 	igdeListBox *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXList *pListBox;
 	igdeNativeFoxResizer *pResizer;
 	

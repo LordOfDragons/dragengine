@@ -30,7 +30,7 @@
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class peeEmitter;
@@ -49,10 +49,10 @@ private:
 	
 	peeEmitter *pEmitter;
 	
-	igdeActionReference pActionControllerAdd;
-	igdeActionReference pActionControllerRemove;
-	igdeActionReference pActionControllerUp;
-	igdeActionReference pActionControllerDown;
+	igdeAction::Ref pActionControllerAdd;
+	igdeAction::Ref pActionControllerRemove;
+	igdeAction::Ref pActionControllerUp;
+	igdeAction::Ref pActionControllerDown;
 	
 	igdeListBoxReference pListController;
 	

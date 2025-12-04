@@ -65,7 +65,7 @@
 #include "../aeIGDEModule.h"
 #include "../animatoreditor.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -74,7 +74,7 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/layout/igdeContainerSplittedReference.h>
@@ -94,7 +94,7 @@
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -263,7 +263,7 @@ void aeWindowMain::CreateRule( deAnimatorRuleVisitorIdentify::eRuleTypes type, b
 	int index = pAnimator->GetRules().GetCount();
 	aeRuleGroup *parentGroup = NULL;
 	deObjectReference refRule;
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	
 	if( activeRule ){
 		if( intoGroup ){
@@ -473,7 +473,7 @@ public:
 		if( ! pWindow.GetAnimator() ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetAnimator() ) );
 		if( undo ){
 			pWindow.GetAnimator()->GetUndoSystem()->Add( undo );

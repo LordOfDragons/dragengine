@@ -48,7 +48,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -83,7 +83,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUShapeHullAddPoint( hull, decVector(), hull->GetPointCount() ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -110,7 +110,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUShapeHullRemovePoint( hull, index ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -139,7 +139,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUShapeHullSetPoint( hull, editVector->GetVector(), index ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );

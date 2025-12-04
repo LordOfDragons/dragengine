@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -72,7 +72,7 @@ igdeUndo *gdeMAOCEnvMapProbeCopy::OnActionSubObject( gdeGameDefinition &gameDefi
 	deObjectReference clipOCEnvMapProbe;
 	clipOCEnvMapProbe.TakeOver( new gdeOCEnvMapProbe( *envMapProbe ) );
 	
-	igdeClipboardDataReference clipData;
+	igdeClipboardData::Ref clipData;
 	clipData.TakeOver( new gdeClipboardDataOCEnvMapProbe( ( gdeOCEnvMapProbe* )( deObject* )clipOCEnvMapProbe ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );

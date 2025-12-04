@@ -43,7 +43,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -53,7 +53,7 @@
 #include <dragengine/resources/animator/deAnimatorInstance.h>
 #include <dragengine/resources/animator/deAnimatorInstanceManager.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
-#include <dragengine/resources/animator/deAnimatorReference.h>
+#include <dragengine/resources/animator/deAnimator::Ref.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleAnimation.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
@@ -87,7 +87,7 @@
 #include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkinManager.h>
-#include <dragengine/resources/skin/dynamic/deDynamicSkinReference.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin::Ref.h>
 #include <dragengine/resources/skin/dynamic/renderables/deDSRenderableColor.h>
 #include <dragengine/resources/world/deWorld.h>
 
@@ -326,7 +326,7 @@ deComponentTexture &engTexture, int engTextureIndex ){
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
 	deSkinReference occtextureSkin;
-	deDynamicSkinReference gdctDynamicSkin;
+	deDynamicSkin::Ref gdctDynamicSkin;
 	deSkin *useSkin = NULL;
 	int useTexture = 0;
 	deDynamicSkin *useDynamicSkin = NULL;

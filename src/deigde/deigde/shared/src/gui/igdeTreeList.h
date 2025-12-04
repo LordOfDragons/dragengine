@@ -28,8 +28,8 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
-#include "model/igdeTreeItemReference.h"
-#include "model/igdeTreeItemSorterReference.h"
+#include "model/igdeTreeItem::Ref.h"
+#include "model/igdeTreeItemSorter::Ref.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
@@ -38,7 +38,7 @@
 class igdeTreeListListener;
 class igdeIcon;
 class igdeTreeItem;
-class igdeTreeItemReference;
+class igdeTreeItem::Ref;
 
 
 /**
@@ -47,9 +47,9 @@ class igdeTreeItemReference;
 class DE_DLL_EXPORT igdeTreeList : public igdeWidget{
 private:
 	bool pEnabled;
-	igdeTreeItemReference pFirstChild;
-	igdeTreeItemReference pSelection;
-	igdeTreeItemSorterReference pSorter;
+	igdeTreeItem::Ref pFirstChild;
+	igdeTreeItem::Ref pSelection;
+	igdeTreeItemSorter::Ref pSorter;
 	int pRows;
 	decString pDescription;
 	
@@ -134,7 +134,7 @@ public:
 	igdeTreeItem *AppendItem( igdeTreeItem *parent, const char *text,
 		igdeIcon *icon = NULL, void *data = NULL );
 	
-	void AppendItem( igdeTreeItem *parent, igdeTreeItemReference &item, const char *text,
+	void AppendItem( igdeTreeItem *parent, igdeTreeItem::Ref &item, const char *text,
 		igdeIcon *icon = NULL, void *data = NULL );
 	
 	/** \brief Insert item before another. */
@@ -144,7 +144,7 @@ public:
 	igdeTreeItem *InsertItemBefore( igdeTreeItem *beforeItem, const char *text,
 		igdeIcon *icon = NULL, void *data = NULL );
 	
-	void InsertItemBefore( igdeTreeItem *beforeItem, igdeTreeItemReference &item,
+	void InsertItemBefore( igdeTreeItem *beforeItem, igdeTreeItem::Ref &item,
 		const char *text, igdeIcon *icon = NULL, void *data = NULL );
 	
 	/** \brief Insert item after another. */
@@ -154,7 +154,7 @@ public:
 	igdeTreeItem *InsertItemAfter( igdeTreeItem *afterItem, const char *text,
 		igdeIcon *icon = NULL, void *data = NULL );
 	
-	void InsertItemAfter( igdeTreeItem *afterItem, igdeTreeItemReference &item,
+	void InsertItemAfter( igdeTreeItem *afterItem, igdeTreeItem::Ref &item,
 		const char *text, igdeIcon *icon = NULL, void *data = NULL );
 	
 	/** \brief Move item before another. */

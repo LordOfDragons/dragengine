@@ -47,7 +47,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -74,7 +74,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUShapeSetProperty( shape, textField->GetText() ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -104,7 +104,7 @@ void reWPPanelShape::cEditPosition::OnVectorChanged( igdeEditVector *editVector 
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new reUSetShapePosition( shape, editVector->GetVector() ) );
 	if( undo ){
 		rig->GetUndoSystem()->Add( undo );
@@ -131,7 +131,7 @@ void reWPPanelShape::cEditRotation::OnVectorChanged( igdeEditVector *editVector 
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new reUSetShapeOrientation( shape, editVector->GetVector() ) );
 	if( undo ){
 		rig->GetUndoSystem()->Add( undo );

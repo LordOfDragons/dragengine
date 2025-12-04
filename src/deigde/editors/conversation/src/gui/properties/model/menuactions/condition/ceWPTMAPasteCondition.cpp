@@ -38,7 +38,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -83,7 +83,7 @@ void ceWPTMAPasteCondition::OnAction(){
 	ceConversationConditionList conditions;
 	conditions.Add( condition );
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( CreateUndo( conditions ) );
 	pConversation->GetUndoSystem()->Add( undo );
 }

@@ -27,7 +27,7 @@
 
 #include "../../../conversation/strip/ceStripList.h"
 
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener::Ref.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -83,7 +83,7 @@ private:
 	deCanvasViewReference pCanvasHandles;
 	
 	int pBarHeight;
-	igdeMouseKeyListenerReference pMouseKeyListener;
+	igdeMouseKeyListener::Ref pMouseKeyListener;
 	int pSelectionFrom;
 	int pSelectionTo;
 	

@@ -26,8 +26,8 @@
 #define _IGDENATIVEFOXNVBOARD_H_
 
 #include "../foxtoolkit.h"
-#include "../../../resources/igdeFontReference.h"
-#include "../../../nodeview/igdeNVLinkReference.h"
+#include "../../../resources/igdeFont::Ref.h"
+#include "../../../nodeview/igdeNVLink::Ref.h"
 
 
 class igdeNVBoard;
@@ -58,7 +58,7 @@ private:
 	igdeNativeFoxNVSlot *pCreateLinkTarget;
 	decPoint pCreateLinkPosition;
 	
-	igdeNVLinkReference pHoverLink;
+	igdeNVLink::Ref pHoverLink;
 	
 	decPoint pDragBoard;
 	bool pIsDragBoard;

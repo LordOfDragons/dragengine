@@ -25,7 +25,7 @@
 #ifndef _DEDSLCONTROLLERMAPPING_H_
 #define _DEDSLCONTROLLERMAPPING_H_
 
-#include <dragengine/resources/animator/deAnimatorInstanceReference.h>
+#include <dragengine/resources/animator/deAnimatorInstance::Ref.h>
 
 
 class dedsLocomotion;
@@ -95,7 +95,7 @@ public:
 	
 private:
 	/** \brief Animator instance. */
-	deAnimatorInstanceReference pAnimatorInstance;
+	deAnimatorInstance::Ref pAnimatorInstance;
 	
 	/** \brief Index of controller in the animator. */
 	int pController;

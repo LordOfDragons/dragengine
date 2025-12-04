@@ -27,7 +27,7 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
 
 class gdeOCSpeaker;
 class igdeWDebugDrawerShape;
@@ -42,7 +42,7 @@ class gdeVAOSpeaker : public gdeVAOSubObject{
 private:
 	gdeOCSpeaker *pOCSpeaker;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

@@ -25,8 +25,8 @@
 #ifndef _DEPARTICLEEMITTERINSTANCETYPE_H_
 #define _DEPARTICLEEMITTERINSTANCETYPE_H_
 
-#include "../component/deComponentReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../component/deComponent::Ref.h"
+#include "../skin/dynamic/deDynamicSkin::Ref.h"
 #include "../../common/math/decMath.h"
 
 
@@ -63,8 +63,8 @@ public:
 	
 	
 private:
-	deComponentReference pComponent;
-	deDynamicSkinReference pDynamicSkin;
+	deComponent::Ref pComponent;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	int pParticleCount;
 	sParticle *pParticleArray;

@@ -33,12 +33,12 @@
 #include "menu/igdeMenuCascade.h"
 #include "menu/igdeMenuCascadeReference.h"
 #include "model/igdeListItem.h"
-#include "model/igdeListItemReference.h"
+#include "model/igdeListItem::Ref.h"
 #include "model/igdeListItemSorter.h"
 #include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
+#include "resources/igdeFont::Ref.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -196,11 +196,11 @@ void igdeListBox::AddItem( igdeListItem *item ){
 }
 
 void igdeListBox::AddItem( const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	AddItem( item, text, icon, data );
 }
 
-void igdeListBox::AddItem( igdeListItemReference &item, const char *text, igdeIcon *icon, void *data ){
+void igdeListBox::AddItem( igdeListItem::Ref &item, const char *text, igdeIcon *icon, void *data ){
 	item.TakeOver( new igdeListItem( text, icon, data ) );
 	AddItem( item );
 }
@@ -223,11 +223,11 @@ void igdeListBox::InsertItem( int index, igdeListItem *item ){
 }
 
 void igdeListBox::InsertItem( int index, const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	InsertItem( item, index, text, icon, data );
 }
 
-void igdeListBox::InsertItem( igdeListItemReference &item, int index, const char *text,
+void igdeListBox::InsertItem( igdeListItem::Ref &item, int index, const char *text,
 igdeIcon *icon, void *data ){
 	item.TakeOver( new igdeListItem( text, icon, data ) );
 	InsertItem( index, item );
@@ -308,7 +308,7 @@ void igdeListBox::SetDefaultSorter(){
 }
 
 static void igdeListBox_Sort( decObjectList &items, igdeListItemSorter &sorter, int left, int right ){
-	igdeListItemReference pivot( ( igdeListItem* )items.GetAt( left ) );
+	igdeListItem::Ref pivot( ( igdeListItem* )items.GetAt( left ) );
 	const int r_hold = right;
 	const int l_hold = left;
 	

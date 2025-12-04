@@ -56,7 +56,7 @@
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -149,7 +149,7 @@ void ceWPTTreeModel::AddChild( ceWPTTreeItemModel *child ){
 	pChildren.Add( child );
 	child->SetTree( this );
 	
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
 	pTreeList->AppendItem( NULL, item );
 	( ( ceWPTTreeItem& )( igdeTreeItem& )item ).SetModel( child );
@@ -172,7 +172,7 @@ void ceWPTTreeModel::InsertChild( ceWPTTreeItemModel *child, int position ){
 		}
 	}
 	
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
 	
 	if( beforeItem ){

@@ -118,7 +118,7 @@
 #include "../../undosys/topic/ceUCTopicDuplicate.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -137,7 +137,7 @@
 #include <deigde/gui/event/igdeTreeListListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -227,7 +227,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		deObjectReference group;
 		group.TakeOver( new ceConversationFile( name ) );
 		undo.TakeOver( new ceUCFileAdd( conversation, ( ceConversationFile* )( deObject* )group ) );
@@ -249,7 +249,7 @@ public:
 	
 	virtual void OnAction(){
 		if( pPanel.GetFile() ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( new ceUCFileRemove( pPanel.GetFile() ) );
 			pPanel.GetConversation()->GetUndoSystem()->Add( undo );
 		}
@@ -285,7 +285,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCFileSetID( *conversation, file, name ) );
 		conversation->GetUndoSystem()->Add( undo );
 	}
@@ -309,7 +309,7 @@ public:
 			return;
 		}
 		
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		ceConversationFileList list;
 		list.Add( file );
 		clip.TakeOver( new ceClipboardDataFile( list ) );
@@ -337,7 +337,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCFilePaste( conversation, clip->GetFiles() ) );
 		conversation->GetUndoSystem()->Add( undo );
 	}
@@ -373,7 +373,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCFileDuplicate( conversation, *file, name ) );
 		conversation->GetUndoSystem()->Add( undo );
 	}
@@ -480,7 +480,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		deObjectReference topic;
 		topic.TakeOver( new ceConversationTopic( name ) );
 		undo.TakeOver( new ceUCTopicAdd( file, ( ceConversationTopic* )( deObject* )topic ) );
@@ -502,7 +502,7 @@ public:
 	
 	virtual void OnAction(){
 		if( pPanel.GetTopic() ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( new ceUCTopicRemove( pPanel.GetTopic() ) );
 			pPanel.GetConversation()->GetUndoSystem()->Add( undo );
 		}
@@ -539,7 +539,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCTopicSetID( *conversation, topic, name ) );
 		conversation->GetUndoSystem()->Add( undo );
 	}
@@ -586,7 +586,7 @@ public:
 			return;
 		}
 		
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		ceConversationTopicList list;
 		list.Add( topic );
 		clip.TakeOver( new ceClipboardDataTopic( list ) );
@@ -614,7 +614,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCTopicPaste( file, clip->GetTopics() ) );
 		pPanel.GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -650,7 +650,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCTopicDuplicate( file, *topic, name ) );
 		pPanel.GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -800,7 +800,7 @@ pPanelCTrigger( NULL )
 	
 	// actions
 	igdeContainerBorderReference groupActions;
-	igdeWidgetReference panel;
+	igdeWidget::Ref panel;
 	
 	helper.GroupBoxStaticBorder( *this, groupActions, "Actions:", true );
 	helper.TreeList( 10, "Topic Actions", pTreeActions, new cTreeActionsListener( *this ) );

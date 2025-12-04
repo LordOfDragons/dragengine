@@ -26,7 +26,7 @@
 #define _DECOLLIDERCOMPONENT_H_
 
 #include "deColliderRig.h"
-#include "../component/deComponentReference.h"
+#include "../component/deComponent::Ref.h"
 
 class deCollisionInfo;
 
@@ -56,7 +56,7 @@ public:
 	
 	
 private:
-	deComponentReference pComponent;
+	deComponent::Ref pComponent;
 	
 	
 	

@@ -25,8 +25,8 @@
 #ifndef _IGDECAMERA_H_
 #define _IGDECAMERA_H_
 
-#include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/resources/camera/deCamera::Ref.h>
+#include <dragengine/resources/world/deWorld::Ref.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
@@ -48,8 +48,8 @@ class deWorld;
 class DE_DLL_EXPORT igdeCamera{
 private:
 	deEngine *pEngine;
-	deCameraReference pEngCamera;
-	deWorldReference pEngWorld;
+	deCamera::Ref pEngCamera;
+	deWorld::Ref pEngWorld;
 	
 	decString pName;
 	decDVector pPosition;

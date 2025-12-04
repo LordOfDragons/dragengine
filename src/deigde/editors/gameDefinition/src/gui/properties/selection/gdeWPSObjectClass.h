@@ -34,10 +34,10 @@
 #include <deigde/gui/igdeIconListBoxReference.h>
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
@@ -62,16 +62,16 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeActionReference pActionInheritAdd;
-	igdeActionReference pActionInheritRemove;
-	igdeActionReference pActionInheritRemoveAll;
-	igdeActionReference pActionPropertyValueSet;
-	igdeActionReference pActionPropertyValueRemove;
-	igdeActionReference pActionPropertyValueClear;
-	igdeActionReference pActionPropertyValuesFromSubObjects;
+	igdeAction::Ref pActionInheritAdd;
+	igdeAction::Ref pActionInheritRemove;
+	igdeAction::Ref pActionInheritRemoveAll;
+	igdeAction::Ref pActionPropertyValueSet;
+	igdeAction::Ref pActionPropertyValueRemove;
+	igdeAction::Ref pActionPropertyValueClear;
+	igdeAction::Ref pActionPropertyValuesFromSubObjects;
 	igdeActionContextMenuReference pActionTexturesMenu;
-	igdeActionReference pActionTextureAdd;
-	igdeActionReference pActionTextureRemove;
+	igdeAction::Ref pActionTextureAdd;
+	igdeAction::Ref pActionTextureRemove;
 	
 	igdeTextFieldReference pEditName;
 	igdeTextAreaReference pEditDescription;
@@ -92,8 +92,8 @@ private:
 	igdeCheckBoxReference pChkInheritSOWorlds;
 	igdeTextFieldReference pEditDefaultInheritPropertyPrefix;
 	
-	igdeWidgetReference pEditProperties;
-	igdeWidgetReference pEditTextureProperties;
+	igdeWidget::Ref pEditProperties;
+	igdeWidget::Ref pEditTextureProperties;
 	
 	igdeComboBoxReference pCBPropertyValuesKeys;
 	igdeButtonReference pBtnPropertyValueSet;
@@ -102,8 +102,8 @@ private:
 	igdeComboBoxFilterReference pCBCategory;
 	igdeButtonReference pBtnJumpToCategory;
 	
-	igdeWidgetReference pListHideTags;
-	igdeWidgetReference pListPartialHideTags;
+	igdeWidget::Ref pListHideTags;
+	igdeWidget::Ref pListPartialHideTags;
 	
 	igdeListBoxReference pListInherits;
 	igdeComboBoxFilterReference pInheritCBClass;

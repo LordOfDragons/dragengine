@@ -40,7 +40,7 @@
 #include <dragengine/app/deOSConsole.h>
 #include <dragengine/app/deOSWindows.h>
 #include <dragengine/app/deCmdLineArgs.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSContainer::Ref.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVFSNull.h>
 #include <dragengine/filesystem/deVFSRedirect.h>
@@ -190,7 +190,7 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 	const bool notEmptyPathData = pathData.GetComponentCount() > 0;
 	deLogger &logger = *pMainWindow.GetLogger();
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	decPath diskPath, rootPath;
 	
 	// set engine specific parameters

@@ -46,21 +46,21 @@
 #include "../../undosys/source/group/seUSourceGroupRemoveSource.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeTreeList.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeTreeListListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeTreeItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -186,7 +186,7 @@ public:
 			return;
 		}
 		
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new seClipboardDataSource( source ) );
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 	}
@@ -210,11 +210,11 @@ public:
 			return;
 		}
 		
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new seClipboardDataSource( source ) );
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		if( source->GetParentGroup() ){
 			undo.TakeOver( new seUSourceGroupRemoveSource( source->GetParentGroup(), source ) );
 			
@@ -251,7 +251,7 @@ public:
 		
 		seSource * const source = pPanel.GetSource();
 		seSourceGroup * const group = source ? source->GetParentGroup() : NULL;
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		if( group ){
 			undo.TakeOver( new seUSourceGroupPasteSource( group, cdata->GetSources(),
@@ -291,7 +291,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		seSourceGroup * const group = ( seSourceGroup* )source;
 		undo.TakeOver( new seUSourceGroupPasteSource( group, cdata->GetSources(), group->GetSources().GetCount() ) );
 		
@@ -352,7 +352,7 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	content->AddChild( pSwitcher );
 	
-	igdeWidgetReference panel;
+	igdeWidget::Ref panel;
 	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 	pSwitcher->AddChild( panel );
 	
@@ -464,7 +464,7 @@ void seWPSource::UpdateSourceTree(){
 			seSource * const source = pSynthesizer->GetSources().GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItemReference item;
+				igdeTreeItem::Ref item;
 				item.TakeOver( new igdeTreeItem( "" ) );
 				pTreeSource->AppendItem( NULL, item );
 				nextItem = item;
@@ -526,7 +526,7 @@ void seWPSource::UpdateSourceTreeItem( igdeTreeItem *item, seSource *source ){
 			seSource * const source2 = sourceGroup.GetSources().GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItemReference child;
+				igdeTreeItem::Ref child;
 				child.TakeOver( new igdeTreeItem( "" ) );
 				pTreeSource->AppendItem( item, child );
 				nextItem = child;

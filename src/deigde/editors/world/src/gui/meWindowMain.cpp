@@ -78,7 +78,7 @@
 #include "../meIGDEModule.h"
 #include "../worldedit.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -87,7 +87,7 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/layout/igdeContainerSplittedReference.h>
@@ -107,7 +107,7 @@
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -443,7 +443,7 @@ void meWindowMain::RotateActiveObjectBy( const decVector &rotation ){
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new meUSetObjectRotation( object, object->GetRotation() + rotation ) );
 	pWorld->GetUndoSystem()->Add( undo );
 }
@@ -489,7 +489,7 @@ public:
 		if( ! pWindow.GetWorld() ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetWorld() ) );
 		if( undo ){
 			pWindow.GetWorld()->GetUndoSystem()->Add( undo );
@@ -597,7 +597,7 @@ public:
 		deInputEvent::ekcX, deInputEvent::ekcT ){}
 	
 	virtual igdeUndo *OnAction( meWorld *world ){
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		
 		switch( world->GetGuiParameters().GetElementMode() ){
 		case meWorldGuiParameters::eemObject:
@@ -624,7 +624,7 @@ public:
 		deInputEvent::ekcC, deInputEvent::ekcC ){}
 	
 	virtual igdeUndo *OnAction( meWorld *world ){
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		
 		switch( world->GetGuiParameters().GetElementMode() ){
 		case meWorldGuiParameters::eemObject:
@@ -1378,7 +1378,7 @@ public:
 	
 	virtual igdeUndo * OnActionShape( meWorld *world, meObject *object, const char *property ){
 		meObjectShapeSelection &selection = world->GetSelectionObjectShape();
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		decShape * const shape = CreateShape();
 		undo.TakeOver( new meUObjectShapeAdd( object, property, *shape ) );

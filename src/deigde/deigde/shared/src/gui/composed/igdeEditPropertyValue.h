@@ -37,7 +37,7 @@
 #include "../composed/igdeEditVectorReference.h"
 #include "../composed/igdeEditVector2Reference.h"
 #include "../composed/igdeEditPathReference.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../../codec/igdeCodecPropertyString.h"
 #include "../../triggersystem/igdeTriggerExpressionParser.h"
@@ -86,12 +86,12 @@ private:
 	
 	decObjectOrderedSet pListeners;
 	
-	igdeActionReference pActionEditRawValue;
-	igdeActionReference pActionBooleanValue;
-	igdeActionReference pActionEditList;
-	igdeActionReference pActionEditTriggerExpression;
-	igdeActionReference pActionEditShape;
-	igdeActionReference pActionEditShapeList;
+	igdeAction::Ref pActionEditRawValue;
+	igdeAction::Ref pActionBooleanValue;
+	igdeAction::Ref pActionEditList;
+	igdeAction::Ref pActionEditTriggerExpression;
+	igdeAction::Ref pActionEditShape;
+	igdeAction::Ref pActionEditShapeList;
 	
 	igdeCodecPropertyString pCodec;
 	igdeTriggerExpressionParser pTriggerExpressionParser;

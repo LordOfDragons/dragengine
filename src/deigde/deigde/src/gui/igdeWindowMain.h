@@ -34,25 +34,25 @@
 #include <deigde/gui/igdeSwitcherReference.h>
 #include <deigde/gui/igdeProgressBarReference.h>
 #include <deigde/gui/igdeStatusBarReference.h>
-#include <deigde/gui/igdeTimerReference.h>
+#include <deigde/gui/igdeTimer::Ref.h>
 #include <deigde/gui/igdeToolBarReference.h>
 #include <deigde/gui/igdeToolBarDockReference.h>
 #include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/logger/igdeWindowLoggerReference.h>
 #include <deigde/gui/menu/igdeMenuBarReference.h>
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 #include <deigde/gui/resources/igdeFont.h>
-#include <deigde/gui/theme/igdeGuiThemeReference.h>
+#include <deigde/gui/theme/igdeGuiTheme::Ref.h>
 #include <deigde/resourceloader/igdeResourceLoader.h>
 
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
-#include <dragengine/logger/deLoggerReference.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/logger/deLogger::Ref.h>
+#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
 #include <dragengine/resources/rig/deRigReference.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/skin/deSkin.h>
@@ -91,36 +91,36 @@ private:
 	igdeTexturePropertyList *pTexturePropertyList;
 	igdeLoggerHistory::Ref pLoggerHistory;
 	igdeWindowLoggerReference pWindowLogger;
-	deVirtualFileSystemReference pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	igdeTemplateList *pTemplates;
 	igdeGameDefinitionList *pSharedGameDefinitions;
 	igdeGameDefinition *pIGDEGameDefinition;
 	igdeGameProject *pGameProject;
-	igdeGuiThemeReference pDefaultGuiTheme;
+	igdeGuiTheme::Ref pDefaultGuiTheme;
 	decObjectDictionary pGuiThemes;
 	igdeSharedFontList *pSharedFontList;
 	deRigReference pSharedModelCollisionRig;
 	igdeResourceLoader *pResourceLoader;
 	igdeUIHelper *pUIHelper;
 	igdeUIHelper *pUIHelperProperties;
-	igdeTimerReference pTimerFrameUpdate;
-	igdeTimerReference pTimerSyncProject;
+	igdeTimer::Ref pTimerFrameUpdate;
+	igdeTimer::Ref pTimerSyncProject;
 	
 	
-	igdeIconReference pIconApplication;
+	igdeIcon::Ref pIconApplication;
 	
-	igdeIconReference pIconGameNew;
-	igdeIconReference pIconGameOpen;
-	igdeIconReference pIconGameSave;
-	igdeIconReference pIconGameSaveAs;
-	igdeIconReference pIconGameExit;
-	igdeIconReference pIconGameReloadXMLElementClasses;
-	igdeIconReference pIconSettingsIGDE;
-	igdeIconReference pIconSettingsEngine;
-	igdeIconReference pIconSettingsTexPropList;
+	igdeIcon::Ref pIconGameNew;
+	igdeIcon::Ref pIconGameOpen;
+	igdeIcon::Ref pIconGameSave;
+	igdeIcon::Ref pIconGameSaveAs;
+	igdeIcon::Ref pIconGameExit;
+	igdeIcon::Ref pIconGameReloadXMLElementClasses;
+	igdeIcon::Ref pIconSettingsIGDE;
+	igdeIcon::Ref pIconSettingsEngine;
+	igdeIcon::Ref pIconSettingsTexPropList;
 	
 	static const int pStockImageCount = igdeEnvironment::esiConfig + 1;
-	igdeIconReference pStockIcons[ pStockImageCount ];
+	igdeIcon::Ref pStockIcons[ pStockImageCount ];
 	
 	static const int pStockSkinCount = igdeEnvironment::essEditRimOutline + 1;
 	deSkin::Ref pStockSkins[ pStockSkinCount ];
@@ -131,18 +131,18 @@ private:
 	static const int pStockModelCount = igdeEnvironment::esmGizmoMove + 1;
 	deModel::Ref pStockModels[ pStockModelCount ];
 	
-	igdeActionReference pActionGameNew;
-	igdeActionReference pActionGameOpen;
-	igdeActionReference pActionGameSave;
-	igdeActionReference pActionGameSaveAs;
-	igdeActionReference pActionGameSettings;
-	igdeActionReference pActionGameQuit;
-	igdeActionReference pActionGameReloadXMLElementClasses;
-	igdeActionReference pActionSettingsIgde;
-	igdeActionReference pActionSettingsEngine;
-	igdeActionReference pActionSettingsModules;
-	igdeActionReference pActionSettingsTexPropList;
-	igdeActionReference pActionSettingsLogging;
+	igdeAction::Ref pActionGameNew;
+	igdeAction::Ref pActionGameOpen;
+	igdeAction::Ref pActionGameSave;
+	igdeAction::Ref pActionGameSaveAs;
+	igdeAction::Ref pActionGameSettings;
+	igdeAction::Ref pActionGameQuit;
+	igdeAction::Ref pActionGameReloadXMLElementClasses;
+	igdeAction::Ref pActionSettingsIgde;
+	igdeAction::Ref pActionSettingsEngine;
+	igdeAction::Ref pActionSettingsModules;
+	igdeAction::Ref pActionSettingsTexPropList;
+	igdeAction::Ref pActionSettingsLogging;
 	
 	igdeMenuCascadeReference pMenuGame;
 	igdeMenuCascadeReference pMenuRecentProjects;

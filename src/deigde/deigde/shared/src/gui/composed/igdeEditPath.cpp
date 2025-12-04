@@ -33,10 +33,10 @@
 #include "../igdeContainerReference.h"
 #include "../igdeUIHelper.h"
 #include "../browse/igdeDialogBrowserSkin.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../event/igdeActionExternOpen.h"
 #include "../event/igdeActionExternOpenReference.h"
-#include "../event/igdeTextFieldListenerReference.h"
+#include "../event/igdeTextFieldListener::Ref.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../menu/igdeMenuCascadeReference.h"
@@ -87,7 +87,7 @@ igdeEditPath::cActionButton::~cActionButton(){
 void igdeEditPath::cActionButton::OnAction(){
 	if( pEditPath.GetSelectPathActionCount() > 0 ){
 		// guard reference to avoid action getting deleted while in use
-		igdeActionReference( pEditPath.GetSelectPathActionAt( 0 ) )->OnAction();
+		igdeAction::Ref( pEditPath.GetSelectPathActionAt( 0 ) )->OnAction();
 	}
 }
 
@@ -589,7 +589,7 @@ void igdeEditPath::UpdateSelectPathActions(){
 void igdeEditPath::SetSelectPathActions(){
 	RemoveAllSelectPathActions();
 	
-	igdeActionReference action;
+	igdeAction::Ref action;
 	
 	switch( pResourceType ){
 	case igdeEnvironment::efpltSkin:

@@ -56,7 +56,7 @@
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -82,7 +82,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCASetAParamSetActor( topic, action, comboBox->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -101,7 +101,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCASetAParamSetName( topic, action, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -126,7 +126,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCASetAParamSetOp( topic, action, newOperator ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -146,7 +146,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCASetAParamSetValue( topic, action, value ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -165,7 +165,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCASetAParamSetValueVariable( topic, action, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}

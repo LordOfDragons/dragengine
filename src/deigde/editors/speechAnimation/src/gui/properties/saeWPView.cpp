@@ -38,11 +38,11 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/properties/igdeWPSky.h>
@@ -162,7 +162,7 @@ pSAnimation( NULL )
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	igdeContainerReference content, groupBox;
-	igdeActionReference action;
+	igdeAction::Ref action;
 	
 	pListener = new saeWPViewListener( *this );
 	

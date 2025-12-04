@@ -50,7 +50,7 @@
 #include "../model/igdeListItem.h"
 #include "../model/igdeTreeItem.h"
 #include "../resources/igdeIcon.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon::Ref.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../gamedefinition/igdeGDCategory.h"
 #include "../../gamedefinition/visitor/igdeGDAddToListVisitor.h"
@@ -295,7 +295,7 @@ void igdeDialogBrowser::AddCategoryToList( igdeGDCategory *category, igdeTreeIte
 	const int categoryCount = category->GetCategoryCount();
 	int i;
 	
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	item.TakeOver( new igdeTreeItem( category->GetName(), category ) );
 	pTreeCategories->AppendItem( parent, item );
 	
@@ -330,7 +330,7 @@ void igdeDialogBrowser::RebuildPISelectedItem(){
 	
 	igdeGDPreviewManager &pvmgr = *GetEnvironment().GetGDPreviewManager();
 	
-	igdeIconReference icon;
+	igdeIcon::Ref icon;
 	const int iconSize = GetPreviewIconSize();
 	icon.TakeOver( new igdeIcon( *pvmgr.GetImageCreating(), iconSize, iconSize ) );
 	

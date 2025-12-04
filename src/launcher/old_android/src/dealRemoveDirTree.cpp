@@ -30,10 +30,10 @@
 #include "filesystem/dePathList.h"
 #include "filesystem/deCollectDirectorySearchVisitor.h"
 #include "filesystem/deVFSDiskDirectory.h"
-#include "filesystem/deVFSContainerReference.h"
+#include "filesystem/deVFSContainer::Ref.h"
 #include "filesystem/deCollectFileSearchVisitor.h"
 #include "filesystem/deVirtualFileSystem.h"
-#include "filesystem/deVirtualFileSystemReference.h"
+#include "filesystem/deVirtualFileSystem::Ref.h"
 #include "logger/deLogger.h"
 
 
@@ -74,10 +74,10 @@ void dealRemoveDirTree::Remove( const char *path ){
 	diskPath.RemoveLastComponent();
 	
 	// create container for base directory
-	deVirtualFileSystemReference vfs;
+	deVirtualFileSystem::Ref vfs;
 	vfs.TakeOver( new deVirtualFileSystem );
 	
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	container.TakeOver( new deVFSDiskDirectory( diskPath ) );
 	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( false );
 	vfs->AddContainer( container );

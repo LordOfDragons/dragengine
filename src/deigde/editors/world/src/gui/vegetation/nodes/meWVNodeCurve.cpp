@@ -42,7 +42,7 @@
 #include <deigde/gui/nodeview/igdeNVSlot.h>
 #include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -57,7 +57,7 @@ namespace {
 class cEditCurve : public igdeViewCurveBezierListener{
 protected:
 	meWVNodeCurve &pNode;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	cEditCurve( meWVNodeCurve &node ) : pNode( node ){ }

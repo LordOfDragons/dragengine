@@ -31,7 +31,7 @@
 #include "igdeNVNode.h"
 #include "igdeNVSlot.h"
 #include "igdeNVLink.h"
-#include "igdeNVLinkReference.h"
+#include "igdeNVLink::Ref.h"
 #include "../native/toolkit.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeContainer.h"
@@ -41,7 +41,7 @@
 #include "../menu/igdeMenuCascadeReference.h"
 #include "../resources/igdeIcon.h"
 #include "../resources/igdeFont.h"
-#include "../resources/igdeFontReference.h"
+#include "../resources/igdeFont::Ref.h"
 #include "../theme/igdeGuiTheme.h"
 #include "../../environment/igdeEnvironment.h"
 
@@ -310,7 +310,7 @@ igdeNVLink *igdeNVBoard::AddLink( igdeNVSlot *source, igdeNVSlot *target ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeNVLinkReference link;
+	igdeNVLink::Ref link;
 	link.TakeOver( new igdeNVLink( source, target ) );
 	link->SetOwnerBoard( this );
 	pLinks.Add( ( igdeNVLink* )link );

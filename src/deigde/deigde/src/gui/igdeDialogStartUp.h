@@ -28,7 +28,7 @@
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/dialog/igdeDialog.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 
 
 class igdeWindowMain;
@@ -47,10 +47,10 @@ private:
 	
 	igdeListBoxReference pListRecentProjects;
 	
-	igdeActionReference pActionLoadRecent;
-	igdeActionReference pActionLoadFile;
-	igdeActionReference pActionNewProject;
-	igdeActionReference pActionQuit;
+	igdeAction::Ref pActionLoadRecent;
+	igdeAction::Ref pActionLoadFile;
+	igdeAction::Ref pActionNewProject;
+	igdeAction::Ref pActionQuit;
 	
 	
 	

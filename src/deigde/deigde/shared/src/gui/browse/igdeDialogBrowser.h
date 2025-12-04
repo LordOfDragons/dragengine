@@ -34,7 +34,7 @@
 #include "../igdeIconListBoxReference.h"
 #include "../igdeTextFieldReference.h"
 #include "../igdeTextAreaReference.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 
 class decPath;
 class igdeGDCategory;
@@ -73,12 +73,12 @@ private:
 	ePreviewSize pPreviewSize;
 	eViewModes pViewMode;
 	
-	igdeActionReference pActionPISizeSmall;
-	igdeActionReference pActionPISizeMedium;
-	igdeActionReference pActionPISizeLarge;
+	igdeAction::Ref pActionPISizeSmall;
+	igdeAction::Ref pActionPISizeMedium;
+	igdeAction::Ref pActionPISizeLarge;
 	
-	igdeActionReference pActionPIViewList;
-	igdeActionReference pActionPIViewPreview;
+	igdeAction::Ref pActionPIViewList;
+	igdeAction::Ref pActionPIViewPreview;
 	
 protected:
 	/** \name Constructors and Destructors */

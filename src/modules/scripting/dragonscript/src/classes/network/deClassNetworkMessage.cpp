@@ -33,8 +33,8 @@
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
 
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/resources/network/deNetworkMessageReader.h>
 #include <dragengine/resources/network/deNetworkMessageWriter.h>
@@ -124,7 +124,7 @@ void deClassNetworkMessage::nfGetReader::RunFunction( dsRunTime *rt, dsValue *my
 	deNetworkMessage * const message = ( ( sNMNatDat* )p_GetNativeData( myself ) )->message;
 	deScriptingDragonScript &ds = ( ( deClassNetworkMessage* )GetOwnerClass() )->GetDS();
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( new deNetworkMessageReader( message ) );
 	ds.GetClassFileReader()->PushFileReader( rt, reader );
 }
@@ -140,7 +140,7 @@ void deClassNetworkMessage::nfGetWriter::RunFunction( dsRunTime *rt, dsValue *my
 	deScriptingDragonScript &ds = ( ( deClassNetworkMessage* )GetOwnerClass() )->GetDS();
 	
 	const bool append = rt->GetValue( 0 )->GetBool();
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( new deNetworkMessageWriter( message, append ) );
 	ds.GetClassFileWriter()->PushFileWriter( rt, writer );
 }

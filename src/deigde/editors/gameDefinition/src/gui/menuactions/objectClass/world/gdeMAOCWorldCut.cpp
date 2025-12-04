@@ -30,7 +30,7 @@
 #include "../../../../gamedef/objectClass/world/gdeOCWorld.h"
 #include "../../../../undosys/objectClass/world/gdeUOCRemoveWorld.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>

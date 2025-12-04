@@ -47,7 +47,7 @@
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
@@ -61,17 +61,17 @@
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decDiskFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSContainer::Ref.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -219,7 +219,7 @@ void projWindowMain::LoadProject(){
 		project = new projProject( &GetEnvironment() );
 		
 		// load project
-		decBaseFileReaderReference reader;
+		decBaseFileReader::Ref reader;
 		
 		try{
 			reader.TakeOver( new decDiskFileReader( project->GetFilePath() ) );
@@ -259,11 +259,11 @@ void projWindowMain::LoadProject(){
 void projWindowMain::LoadProjectLocal( projProject &project ){
 	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 	
-	deVFSContainerReference directory;
+	deVFSContainer::Ref directory;
 	directory.TakeOver( new deVFSDiskDirectory( 
 		decPath::CreatePathNative( gameProject.GetDirectoryPath() ) ) );
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	decPath path( decPath::CreatePathUnix( gameProject.GetPathLocal() ) );
 	path.AddComponent( "project.xml" );
 	
@@ -285,7 +285,7 @@ void projWindowMain::SaveProject(){
 		return;
 	}
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( new decDiskFileWriter( pProject->GetFilePath(), false ) );
 	projProjectXml( GetLogger(), LOGSOURCE ).WriteToFile( writer, *pProject );
 	pProject->SetChanged( false );
@@ -298,11 +298,11 @@ void projWindowMain::SaveProjectLocal(){
 	
 	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 	
-	deVFSContainerReference directory;
+	deVFSContainer::Ref directory;
 	directory.TakeOver( new deVFSDiskDirectory( 
 		decPath::CreatePathNative( gameProject.GetDirectoryPath() ) ) );
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	decPath path( decPath::CreatePathUnix( gameProject.GetPathLocal() ) );
 	path.AddComponent( "project.xml" );
 	writer.TakeOver( directory->OpenFileForWriting( path ) );
@@ -587,7 +587,7 @@ public:
 		const projProfile * const selectedProfile = project->GetActiveProfile();
 		projProfile *safeProfile = NULL;
 		projProfile *profile = NULL;
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		try{
 			profile = new projProfile;
@@ -643,7 +643,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new projUProfileRemove( project, profile ) );
 		project->GetUndoSystem()->Add( undo );
 	}
@@ -691,7 +691,7 @@ public:
 		
 		projProfile *safeProfile = NULL;
 		projProfile *duplicatedProfile = NULL;
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		try{
 			duplicatedProfile = new projProfile( *profile );

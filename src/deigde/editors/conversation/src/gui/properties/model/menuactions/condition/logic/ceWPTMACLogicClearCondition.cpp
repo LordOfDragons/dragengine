@@ -40,7 +40,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 
 
@@ -64,7 +64,7 @@ pLogic( &logic ){
 ///////////////
 
 void ceWPTMACLogicClearCondition::OnAction(){
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new ceUCCLogicRemoveAll( pTopic, pAction, pLogic ) );
 	GetConversation().GetUndoSystem()->Add( undo );
 }

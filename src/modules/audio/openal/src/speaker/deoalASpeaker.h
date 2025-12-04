@@ -31,7 +31,7 @@
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
-#include <dragengine/resources/sound/deSoundDecoderReference.h>
+#include <dragengine/resources/sound/deSoundDecoder::Ref.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 
 class deoalAudioThread;
@@ -64,7 +64,7 @@ private:
 	deoalASynthesizerInstance *pSynthesizer;
 	deoalAVideoPlayer *pVideoPlayer;
 	unsigned int pSourceUpdateTracker;
-	deSoundDecoderReference pSoundDecoder;
+	deSoundDecoder::Ref pSoundDecoder;
 	
 	deSpeaker::eSpeakerType pSpeakerType;
 	decDVector pPosition;

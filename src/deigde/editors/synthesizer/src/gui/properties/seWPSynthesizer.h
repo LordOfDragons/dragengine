@@ -29,7 +29,7 @@
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class seSynthesizer;
@@ -48,9 +48,9 @@ private:
 	
 	seSynthesizer *pSynthesizer;
 	
-	igdeActionReference pActionPlay;
-	igdeActionReference pActionPause;
-	igdeActionReference pActionStop;
+	igdeAction::Ref pActionPlay;
+	igdeAction::Ref pActionPause;
+	igdeAction::Ref pActionStop;
 	
 	igdeComboBoxReference pCBChannelCount;
 	igdeComboBoxReference pCBSampleRate;

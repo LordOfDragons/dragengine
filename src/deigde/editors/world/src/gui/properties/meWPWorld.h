@@ -29,12 +29,12 @@
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
@@ -55,15 +55,15 @@ private:
 	meWorld *pWorld;
 	
 	igdeActionContextMenuReference pActionPFTTypes;
-	igdeActionReference pActionPFTTypeAdd;
-	igdeActionReference pActionPFTTypeRemove;
-	igdeActionReference pActionPFTTypeClear;
-	igdeActionReference pActionMusicPlay;
-	igdeActionReference pActionMusicPause;
-	igdeActionReference pActionMusicStop;
+	igdeAction::Ref pActionPFTTypeAdd;
+	igdeAction::Ref pActionPFTTypeRemove;
+	igdeAction::Ref pActionPFTTypeClear;
+	igdeAction::Ref pActionMusicPlay;
+	igdeAction::Ref pActionMusicPause;
+	igdeAction::Ref pActionMusicStop;
 	
 	
-	igdeWidgetReference pEditProperties;
+	igdeWidget::Ref pEditProperties;
 	
 	igdeEditDVectorReference pEditSize;
 	igdeEditVectorReference pEditGravity;

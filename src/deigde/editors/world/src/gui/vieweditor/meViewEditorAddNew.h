@@ -27,9 +27,9 @@
 
 #include "meViewEditorNavigation.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deCollider::Ref.h>
 
 class meCLAddDecal;
 class meCLClosestElement;
@@ -47,9 +47,9 @@ private:
 	meCLSnapPoint *pCLSnapPoint;
 	meFilterObjectsByClass *pFilterObjectsByClass;
 	meCLAddDecal *pAddDecal;
-	igdeUndoReference pUndoAddObject;
-	igdeUndoReference pUndoAddNavSpace;
-	deColliderReference pCLCollider;
+	igdeUndo::Ref pUndoAddObject;
+	igdeUndo::Ref pUndoAddNavSpace;
+	deCollider::Ref pCLCollider;
 	
 	
 	

@@ -40,7 +40,7 @@
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeScrollBarListener.h>
@@ -156,7 +156,7 @@ pViewNode( NULL )
 	AddChild( pSBVertical, igdeContainerBorder::eaRight );
 	
 	
-	igdeWidgetReference view;
+	igdeWidget::Ref view;
 	view.TakeOver( pViewNode = new seViewConstructedView( windowMain ) );
 	AddChild( view, igdeContainerBorder::eaCenter );
 }

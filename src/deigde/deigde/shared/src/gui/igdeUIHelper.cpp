@@ -67,7 +67,7 @@
 #include "igdeTreeList.h"
 #include "igdeTreeListReference.h"
 #include "igdeWidget.h"
-#include "igdeWidgetReference.h"
+#include "igdeWidget::Ref.h"
 #include "igdeSpacer.h"
 #include "igdeSpacerReference.h"
 #include "composed/igdeEditPath.h"
@@ -128,7 +128,7 @@
 #include "menu/igdeMenuOption.h"
 #include "menu/igdeMenuSeparator.h"
 #include "model/igdeListHeader.h"
-#include "model/igdeListHeaderReference.h"
+#include "model/igdeListHeader::Ref.h"
 #include "properties/igdeWPCamera.h"
 #include "properties/igdeWPCameraReference.h"
 #include "properties/igdeWPWObject.h"
@@ -1128,7 +1128,7 @@ igdeIconListBoxListener *listener ){
 
 static void igdeUIHelperIconListBoxShared( igdeIconListBox &listBox,
 const igdeUIHelper::sColumnHeader *headers, int headerCount, igdeIconListBoxListener *listener ){
-	igdeListHeaderReference realHeader;
+	igdeListHeader::Ref realHeader;
 	
 	int i;
 	for( i=0; i<headerCount; i++ ){
@@ -1260,7 +1260,7 @@ igdeViewCurveBezierListener *listener ){
 
 
 void igdeUIHelper::Separator( igdeContainer &parent, bool horizontal ){
-	igdeWidgetReference entry;
+	igdeWidget::Ref entry;
 	entry.TakeOver( new igdeSeparator( pEnvironment,
 		horizontal ? igdeSeparator::eoHorizontal : igdeSeparator::eoVertical ) );
 	parent.AddChild( entry );
@@ -1422,7 +1422,7 @@ bool takeOverAction ){
 
 
 void igdeUIHelper::MenuCommand( igdeMenuCascade &menu, igdeAction *action, bool takeOverAction ){
-	igdeWidgetReference entry;
+	igdeWidget::Ref entry;
 	entry.TakeOver( new igdeMenuCommand( pEnvironment, action ) );
 	if( takeOverAction && action ){
 		action->FreeReference();
@@ -1435,7 +1435,7 @@ void igdeUIHelper::MenuCommand(igdeMenuCascade &menu, const igdeAction::Ref &act
 }
 
 void igdeUIHelper::MenuCheck( igdeMenuCascade &menu, igdeAction *action, bool takeOverAction ){
-	igdeWidgetReference entry;
+	igdeWidget::Ref entry;
 	entry.TakeOver( new igdeMenuCheck( pEnvironment, action ) );
 	if( takeOverAction && action ){
 		action->FreeReference();
@@ -1448,7 +1448,7 @@ void igdeUIHelper::MenuCheck(igdeMenuCascade &menu, const igdeAction::Ref &actio
 }
 
 void igdeUIHelper::MenuOption( igdeMenuCascade &menu, igdeAction *action, bool takeOverAction ){
-	igdeWidgetReference entry;
+	igdeWidget::Ref entry;
 	entry.TakeOver( new igdeMenuOption( pEnvironment, action ) );
 	if( takeOverAction && action ){
 		action->FreeReference();
@@ -1474,7 +1474,7 @@ void igdeUIHelper::MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recen
 
 
 void igdeUIHelper::ToolBarButton( igdeToolBar &toolBar, igdeAction *action, bool takeOverAction ){
-	igdeWidgetReference widget;
+	igdeWidget::Ref widget;
 	widget.TakeOver( new igdeButton( pEnvironment, action, igdeButton::ebsToolBar ) );
 	if( takeOverAction && action ){
 		action->FreeReference();
@@ -1483,7 +1483,7 @@ void igdeUIHelper::ToolBarButton( igdeToolBar &toolBar, igdeAction *action, bool
 }
 
 void igdeUIHelper::ToolBarToggleButton( igdeToolBar &toolBar, igdeAction *action, bool takeOverAction ){
-	igdeWidgetReference widget;
+	igdeWidget::Ref widget;
 	widget.TakeOver( new igdeToggleButton( pEnvironment, action, igdeToggleButton::ebsToolBar ) );
 	if( takeOverAction && action ){
 		action->FreeReference();
@@ -1492,7 +1492,7 @@ void igdeUIHelper::ToolBarToggleButton( igdeToolBar &toolBar, igdeAction *action
 }
 
 void igdeUIHelper::ToolBarSeparator( igdeToolBar &toolBar ){
-	igdeWidgetReference widget;
+	igdeWidget::Ref widget;
 	widget.TakeOver( new igdeToolBarSeparator( pEnvironment ) );
 	toolBar.AddChild( widget );
 }

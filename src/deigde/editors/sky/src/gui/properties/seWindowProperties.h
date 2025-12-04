@@ -26,7 +26,7 @@
 #define _SEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
 
 class seWindowMain;
@@ -40,11 +40,11 @@ class seWindowProperties : public igdeTabBook{
 private:
 	seWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelController;
-	igdeWidgetReference pPanelLink;
-	igdeWidgetReference pPanelLayer;
-	igdeWidgetReference pPanelSky;
-	igdeWidgetReference pPanelView;
+	igdeWidget::Ref pPanelController;
+	igdeWidget::Ref pPanelLink;
+	igdeWidget::Ref pPanelLayer;
+	igdeWidget::Ref pPanelSky;
+	igdeWidget::Ref pPanelView;
 	igdeWPUndoHistoryReference pPanelUndoHistory;
 	
 	

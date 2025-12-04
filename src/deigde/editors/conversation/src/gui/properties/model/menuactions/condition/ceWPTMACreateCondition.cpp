@@ -42,7 +42,7 @@
 #include "../../../../../conversation/condition/ceCConditionGameCommand.h"
 #include "../../../../../conversation/condition/ceCConditionTrigger.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -71,7 +71,7 @@ void ceWPTMACreateCondition::OnAction(){
 	ceConversationConditionReference condition;
 	condition.TakeOver( CreateCondition() );
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( CreateUndo( condition ) );
 	GetConversation().GetUndoSystem()->Add( undo );
 }

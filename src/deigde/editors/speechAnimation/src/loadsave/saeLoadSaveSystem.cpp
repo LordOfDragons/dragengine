@@ -44,9 +44,9 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decDiskFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -105,7 +105,7 @@ void saeLoadSaveSystem::SaveSAnimation( saeSAnimation *sanimation, const char *f
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileWriterReference fileWriter;
+	decBaseFileWriter::Ref fileWriter;
 	
 	fileWriter.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()->
 		OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );

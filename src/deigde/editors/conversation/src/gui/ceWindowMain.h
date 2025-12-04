@@ -29,10 +29,10 @@
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBarReference.h>
 #include <deigde/gui/igdeTabBookReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionUndoReference.h>
 #include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 
 class decStringList;
@@ -92,62 +92,62 @@ private:
 	
 	ceWindowMainListener *pListener;
 	
-	igdeIconReference pIconActionCameraShot;
-	igdeIconReference pIconActionMusic;
-	igdeIconReference pIconActionActorSpeak;
-	igdeIconReference pIconActionIfElse;
-	igdeIconReference pIconActionIfElseCaseIf;
-	igdeIconReference pIconActionIfElseCaseElse;
-	igdeIconReference pIconActionPlayerChoice;
-	igdeIconReference pIconActionOption;
-	igdeIconReference pIconActionSnippet;
-	igdeIconReference pIconActionStop;
-	igdeIconReference pIconActionActorCommand;
-	igdeIconReference pIconActionCommand;
-	igdeIconReference pIconActionVariable;
-	igdeIconReference pIconActionWait;
-	igdeIconReference pIconActionTrigger;
-	igdeIconReference pIconActionActorAdd;
-	igdeIconReference pIconActionActorRemove;
-	igdeIconReference pIconActionCoordSysAdd;
-	igdeIconReference pIconActionCoordSysRemove;
-	igdeIconReference pIconActionComment;
+	igdeIcon::Ref pIconActionCameraShot;
+	igdeIcon::Ref pIconActionMusic;
+	igdeIcon::Ref pIconActionActorSpeak;
+	igdeIcon::Ref pIconActionIfElse;
+	igdeIcon::Ref pIconActionIfElseCaseIf;
+	igdeIcon::Ref pIconActionIfElseCaseElse;
+	igdeIcon::Ref pIconActionPlayerChoice;
+	igdeIcon::Ref pIconActionOption;
+	igdeIcon::Ref pIconActionSnippet;
+	igdeIcon::Ref pIconActionStop;
+	igdeIcon::Ref pIconActionActorCommand;
+	igdeIcon::Ref pIconActionCommand;
+	igdeIcon::Ref pIconActionVariable;
+	igdeIcon::Ref pIconActionWait;
+	igdeIcon::Ref pIconActionTrigger;
+	igdeIcon::Ref pIconActionActorAdd;
+	igdeIcon::Ref pIconActionActorRemove;
+	igdeIcon::Ref pIconActionCoordSysAdd;
+	igdeIcon::Ref pIconActionCoordSysRemove;
+	igdeIcon::Ref pIconActionComment;
 	
-	igdeIconReference pIconConditionLogic;
-	igdeIconReference pIconConditionActorCommand;
-	igdeIconReference pIconConditionCommand;
-	igdeIconReference pIconConditionVariable;
-	igdeIconReference pIconConditionHasActor;
-	igdeIconReference pIconConditionActorInConversation;
-	igdeIconReference pIconConditionTrigger;
+	igdeIcon::Ref pIconConditionLogic;
+	igdeIcon::Ref pIconConditionActorCommand;
+	igdeIcon::Ref pIconConditionCommand;
+	igdeIcon::Ref pIconConditionVariable;
+	igdeIcon::Ref pIconConditionHasActor;
+	igdeIcon::Ref pIconConditionActorInConversation;
+	igdeIcon::Ref pIconConditionTrigger;
 	
-	igdeIconReference pIconPlayAction;
-	igdeIconReference pIconPlayFromHere;
-	igdeIconReference pIconPlayPause;
-	igdeIconReference pIconPlaySelectCurAction;
+	igdeIcon::Ref pIconPlayAction;
+	igdeIcon::Ref pIconPlayFromHere;
+	igdeIcon::Ref pIconPlayPause;
+	igdeIcon::Ref pIconPlaySelectCurAction;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
 	igdeActionUndoReference pActionEditUndo;
 	igdeActionRedoReference pActionEditRedo;
 	
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeActionReference pActionViewCTSLoad;
-	igdeActionReference pActionViewCTSSave;
-	igdeActionReference pActionViewCTALoad;
-	igdeActionReference pActionViewCTASave;
-	igdeActionReference pActionViewCTGSLoad;
-	igdeActionReference pActionViewCTGSSave;
-	igdeActionReference pActionViewShowRuleOfThirdsAid;
-	igdeActionReference pActionViewAttachLangPack;
-	igdeActionReference pActionViewDetachLangPack;
-	igdeActionReference pActionViewMissingWords;
+	igdeAction::Ref pActionViewCTSLoad;
+	igdeAction::Ref pActionViewCTSSave;
+	igdeAction::Ref pActionViewCTALoad;
+	igdeAction::Ref pActionViewCTASave;
+	igdeAction::Ref pActionViewCTGSLoad;
+	igdeAction::Ref pActionViewCTGSSave;
+	igdeAction::Ref pActionViewShowRuleOfThirdsAid;
+	igdeAction::Ref pActionViewAttachLangPack;
+	igdeAction::Ref pActionViewDetachLangPack;
+	igdeAction::Ref pActionViewMissingWords;
 	
 	igdeToolBarReference pTBFile;
 	igdeToolBarReference pTBEdit;

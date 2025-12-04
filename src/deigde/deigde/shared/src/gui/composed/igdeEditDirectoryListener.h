@@ -36,6 +36,13 @@ class igdeEditDirectory;
  * \brief IGDE UI EditDirectory Listener.
  */
 class DE_DLL_EXPORT igdeEditDirectoryListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditDirectoryListener> Ref;
+	
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

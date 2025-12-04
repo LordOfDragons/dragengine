@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 #include "../../../../undosys/objectClass/envmapprobe/gdeUOCAddEnvMapProbe.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Environment Map Probe",
 ///////////////
 
 igdeUndo *gdeMAOCEnvMapProbePaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCEnvMapProbe::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;

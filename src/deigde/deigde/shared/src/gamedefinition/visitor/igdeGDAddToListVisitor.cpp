@@ -36,9 +36,9 @@
 #include "../../gui/igdeIconListBox.h"
 #include "../../gui/browse/igdeBrowseItemGDPreviewListener.h"
 #include "../../gui/model/igdeListItem.h"
-#include "../../gui/model/igdeListItemReference.h"
+#include "../../gui/model/igdeListItem::Ref.h"
 #include "../../gui/resources/igdeIcon.h"
-#include "../../gui/resources/igdeIconReference.h"
+#include "../../gui/resources/igdeIcon::Ref.h"
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
@@ -68,11 +68,11 @@ igdeGDAddToListVisitor::~igdeGDAddToListVisitor(){
 ///////////////
 
 void igdeGDAddToListVisitor::AddItemToList( const char *caption, deImage &image, void *userPointer ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	AddItemToList( item, caption, image, userPointer );
 }
 
-void igdeGDAddToListVisitor::AddItemToList( igdeListItemReference &item,
+void igdeGDAddToListVisitor::AddItemToList( igdeListItem::Ref &item,
 const char *caption, deImage &image, void *userPointer ){
 	if( ! caption ){
 		DETHROW( deeInvalidParam );
@@ -128,7 +128,7 @@ const char *caption, deImage &image, void *userPointer ){
 	*/
 	const char * const text = caption;
 	
-	igdeIconReference icon;
+	igdeIcon::Ref icon;
 	if( image.GetWidth() > image.GetHeight() ){
 		icon.TakeOver( new igdeIcon( image, pSize, pSize * image.GetHeight() / image.GetWidth() ) );
 		
@@ -157,7 +157,7 @@ void igdeGDAddToListVisitor::VisitObjectClass( igdeGDClass *gdclass ){
 	}
 	
 	deImage * const image = pEnvironment.GetGDPreviewManager()->GetPreviewObjectClass( gdclass );
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	if( image ){
 		AddItemToList( item, gdclass->GetName(), *image, gdclass );
 		return;
@@ -179,7 +179,7 @@ void igdeGDAddToListVisitor::VisitSkin( igdeGDSkin *gdskin ){
 	}
 	
 	deImage * const image = pEnvironment.GetGDPreviewManager()->GetPreviewSkin( gdskin );
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	if( image ){
 		AddItemToList( item, gdskin->GetName(), *image, gdskin );
 		return;
@@ -201,7 +201,7 @@ void igdeGDAddToListVisitor::VisitSky( igdeGDSky *gdsky ){
 	}
 	
 	deImage * const image = pEnvironment.GetGDPreviewManager()->GetPreviewSky( gdsky );
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	if( image ){
 		AddItemToList( item, gdsky->GetName(), *image, gdsky );
 		return;

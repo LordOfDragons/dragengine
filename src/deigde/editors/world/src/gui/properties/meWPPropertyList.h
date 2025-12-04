@@ -34,10 +34,10 @@
 #include <deigde/gui/igdeIconListBoxReference.h>
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/composed/igdeEditPropertyValueReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 
 class igdeUndo;
@@ -60,8 +60,8 @@ private:
 	igdeClipboard *pClipboard;
 	decStringDictionary pProperties;
 	
-	igdeIconReference pIconUnknownKey;
-	igdeIconReference pIconInvalidValue;
+	igdeIcon::Ref pIconUnknownKey;
+	igdeIcon::Ref pIconInvalidValue;
 	
 	igdeComboBoxFilterReference pCBKeys;
 	igdeButtonReference pBtnKeyAdd;
@@ -70,17 +70,17 @@ private:
 	igdeEditPropertyValueReference pEditPropertyValue;
 	igdeTextAreaReference pDisplayInfo;
 	
-	igdeActionReference pActionPropertyAdd;
-	igdeActionReference pActionPropertyRemove;
-	igdeActionReference pActionPropertyClear;
-	igdeActionReference pActionPropertyCopy;
-	igdeActionReference pActionPropertyCopyAll;
-	igdeActionReference pActionPropertyCut;
-	igdeActionReference pActionPropertyCutAll;
-	igdeActionReference pActionPropertyPaste;
-	igdeActionReference pActionPropertyRename;
-	igdeActionReference pActionPropertyExport;
-	igdeActionReference pActionPropertyImport;
+	igdeAction::Ref pActionPropertyAdd;
+	igdeAction::Ref pActionPropertyRemove;
+	igdeAction::Ref pActionPropertyClear;
+	igdeAction::Ref pActionPropertyCopy;
+	igdeAction::Ref pActionPropertyCopyAll;
+	igdeAction::Ref pActionPropertyCut;
+	igdeAction::Ref pActionPropertyCutAll;
+	igdeAction::Ref pActionPropertyPaste;
+	igdeAction::Ref pActionPropertyRename;
+	igdeAction::Ref pActionPropertyExport;
+	igdeAction::Ref pActionPropertyImport;
 	
 	bool pEnabled;
 	

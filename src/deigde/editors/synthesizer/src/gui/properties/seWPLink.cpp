@@ -61,7 +61,7 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -85,7 +85,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, link ) );
 		if( undo ){
 			link->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -110,7 +110,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( link ) );
 		if( undo ){
 			link->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -163,7 +163,7 @@ public:
 		
 		deObjectReference link;
 		link.TakeOver( new seLink );
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seULinkAdd( synthesizer, ( seLink* )( deObject* )link ) );
 		synthesizer->GetUndoSystem()->Add( undo );
 	}
@@ -206,7 +206,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seULinkSetController( link, controller ) );
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -225,7 +225,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seULinkSetRepeat( link, value ) );
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -233,7 +233,7 @@ public:
 
 class cEditCurve : public igdeViewCurveBezierListener{
 	seWPLink &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	cEditCurve( seWPLink &panel ) : pPanel( panel ){ }

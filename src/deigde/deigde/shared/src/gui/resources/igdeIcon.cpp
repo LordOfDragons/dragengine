@@ -35,7 +35,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageReference.h>
@@ -69,7 +69,7 @@ igdeIcon *igdeIcon::LoadPNG( igdeEnvironment &environment, const char *filename 
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( environment.GetFileSystemIGDE()->
 		OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 	
@@ -94,7 +94,7 @@ igdeIcon *igdeIcon::LoadPNG( const igdeEditorModule &editor, const char *filenam
 	path.AddComponent( editor.GetEditorDirectory() );
 	path.AddUnixPath( filename );
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading( path ) );
 	void * const native = igdeNativeIcon::CreateNativeIconPNG( reader );
 	

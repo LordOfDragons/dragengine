@@ -41,7 +41,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -66,7 +66,7 @@ pIfElse( &ifElse ){
 void ceWPTMAIfElseCaseAdd::OnAction(){
 	ceCAIfElseCase *selectIfCase = NULL;
 	ceCAIfElseCase *ifCase = NULL;
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	
 	try{
 		ifCase = new ceCAIfElseCase;

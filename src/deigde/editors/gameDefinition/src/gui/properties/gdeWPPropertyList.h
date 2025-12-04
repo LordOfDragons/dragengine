@@ -37,10 +37,10 @@
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeSwitcherReference.h>
 #include <deigde/gui/composed/igdeEditPropertyValueReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 
 class gdeGameDefinition;
@@ -63,21 +63,21 @@ private:
 	gdeGameDefinition *pGameDefinition;
 	igdeClipboard *pClipboard;
 	
-	igdeIconReference pIconIdentifierUsage;
-	igdeIconReference pIconIdentifierNoUsage;
+	igdeIcon::Ref pIconIdentifierUsage;
+	igdeIcon::Ref pIconIdentifierNoUsage;
 	
 	igdeActionContextMenuReference pActionPropertiesMenu;
-	igdeActionReference pActionPropertyAdd;
-	igdeActionReference pActionPropertyRemove;
-	igdeActionReference pActionPropertyCopy;
-	igdeActionReference pActionPropertyCut;
-	igdeActionReference pActionPropertyPaste;
+	igdeAction::Ref pActionPropertyAdd;
+	igdeAction::Ref pActionPropertyRemove;
+	igdeAction::Ref pActionPropertyCopy;
+	igdeAction::Ref pActionPropertyCut;
+	igdeAction::Ref pActionPropertyPaste;
 	
-	igdeActionReference pActionOptionAdd;
-	igdeActionReference pActionOptionRemove;
+	igdeAction::Ref pActionOptionAdd;
+	igdeAction::Ref pActionOptionRemove;
 	
-	igdeActionReference pActionCustomPatternAdd;
-	igdeActionReference pActionCustomPatternRemove;
+	igdeAction::Ref pActionCustomPatternAdd;
+	igdeAction::Ref pActionCustomPatternRemove;
 	
 	igdeActionContextMenuReference pActionCustomPatternMenu;
 	

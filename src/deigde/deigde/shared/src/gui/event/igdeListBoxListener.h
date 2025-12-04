@@ -37,6 +37,13 @@ class igdeMenuCascade;
  * \brief IGDE UI ListBox Listener.
  */
 class DE_DLL_EXPORT igdeListBoxListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeListBoxListener> Ref;
+	
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

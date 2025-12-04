@@ -43,7 +43,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
@@ -160,8 +160,8 @@ void seDialogAddTexture::SetTextureName( const char *name ){
 ////////////////////////
 
 void seDialogAddTexture::pUpdateModelTextureList(){
-	igdeIconReference iconUsed( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallPlus ) );
-	igdeIconReference iconAvailable( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallMinus ) );
+	igdeIcon::Ref iconUsed( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallPlus ) );
+	igdeIcon::Ref iconAvailable( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallMinus ) );
 	const seSkin * const skin = pWindowMain.GetSkin();
 	const deModel *engModel = NULL;
 	

@@ -33,7 +33,7 @@
 #include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
+#include "resources/igdeFont::Ref.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -170,7 +170,7 @@ void igdeButton::Focus(){
 void igdeButton::OnAction(){
 	if( pAction ){
 		// guard against action being deleted while in use
-		igdeActionReference( pAction )->OnAction();
+		igdeAction::Ref( pAction )->OnAction();
 	}
 }
 

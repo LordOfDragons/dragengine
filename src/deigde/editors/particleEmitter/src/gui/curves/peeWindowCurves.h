@@ -27,10 +27,10 @@
 
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/resources/igdeIconReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 class peeEmitter;
 class peeParameter;
@@ -61,13 +61,13 @@ private:
 	
 	peeEmitter *pEmitter;
 	
-	igdeIconReference pIconCurveEmpty;
-	igdeIconReference pIconCurveUsed;
+	igdeIcon::Ref pIconCurveEmpty;
+	igdeIcon::Ref pIconCurveUsed;
 	
 	igdeListBoxReference pListCurves;
 	igdeViewCurveBezierReference pEditCurve;
 	
-	igdeUndoReference pUndoSetCurve;
+	igdeUndo::Ref pUndoSetCurve;
 	
 	
 	

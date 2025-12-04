@@ -29,9 +29,9 @@
 #include "../../../gui/wrapper/igdeWObject.h"
 
 #include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <dragengine/resources/camera/deCamera::Ref.h>
+#include <dragengine/resources/world/deWorld::Ref.h>
+#include <dragengine/resources/light/deLight::Ref.h>
 
 class igdeGDClass;
 class igdeWSky;
@@ -53,9 +53,9 @@ private:
 	
 	igdeGDClass *pGDClass;
 	
-	deWorldReference pWorld;
-	deCameraReference pCamera;
-	deLightReference pLight;
+	deWorld::Ref pWorld;
+	deCamera::Ref pCamera;
+	deLight::Ref pLight;
 	igdeWObject::Ref pObject;
 	igdeWSky *pSky;
 	deCanvasRenderWorldReference pCanvasRenderWorld;

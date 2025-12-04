@@ -58,7 +58,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -91,7 +91,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUParticleEmitterSetPath( particleEmitter, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -109,7 +109,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUParticleEmitterSetName( particleEmitter, textField->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -127,7 +127,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUParticleEmitterSetDescription( particleEmitter, textArea->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -145,7 +145,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUParticleEmitterSetCategory( particleEmitter, comboBox->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}

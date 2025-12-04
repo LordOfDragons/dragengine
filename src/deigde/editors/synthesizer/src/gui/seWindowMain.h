@@ -32,10 +32,10 @@
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBarReference.h>
 #include <deigde/gui/igdeTabBookReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionUndoReference.h>
 #include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceVisitorIdentify.h>
@@ -57,64 +57,64 @@ class seWindowMain : public igdeEditorWindow{
 private:
 	seWindowMainListener *pListener;
 	
-	igdeIconReference pIconSourceSound;
-	igdeIconReference pIconSourceWave;
-	igdeIconReference pIconSourceChain;
-	igdeIconReference pIconSourceGroup;
-	igdeIconReference pIconSourceSynthesizer;
+	igdeIcon::Ref pIconSourceSound;
+	igdeIcon::Ref pIconSourceWave;
+	igdeIcon::Ref pIconSourceChain;
+	igdeIcon::Ref pIconSourceGroup;
+	igdeIcon::Ref pIconSourceSynthesizer;
 	
-	igdeIconReference pIconEffectStretch;
+	igdeIcon::Ref pIconEffectStretch;
 	
-	igdeIconReference pIconPlay;
-	igdeIconReference pIconPause;
-	igdeIconReference pIconStop;
+	igdeIcon::Ref pIconPlay;
+	igdeIcon::Ref pIconPause;
+	igdeIcon::Ref pIconStop;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
 	igdeActionUndoReference pActionEditUndo;
 	igdeActionRedoReference pActionEditRedo;
 	
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeActionReference pActionControllerAdd;
-	igdeActionReference pActionControllerRemove;
-	igdeActionReference pActionControllerUp;
-	igdeActionReference pActionControllerDown;
+	igdeAction::Ref pActionControllerAdd;
+	igdeAction::Ref pActionControllerRemove;
+	igdeAction::Ref pActionControllerUp;
+	igdeAction::Ref pActionControllerDown;
 	
-	igdeActionReference pActionSourceAddSound;
-	igdeActionReference pActionSourceAddWave;
-	igdeActionReference pActionSourceAddChain;
-	igdeActionReference pActionSourceAddGroup;
-	igdeActionReference pActionSourceAddSynthesizer;
+	igdeAction::Ref pActionSourceAddSound;
+	igdeAction::Ref pActionSourceAddWave;
+	igdeAction::Ref pActionSourceAddChain;
+	igdeAction::Ref pActionSourceAddGroup;
+	igdeAction::Ref pActionSourceAddSynthesizer;
 	
-	igdeActionReference pActionSourceInsertSound;
-	igdeActionReference pActionSourceInsertWave;
-	igdeActionReference pActionSourceInsertChain;
-	igdeActionReference pActionSourceInsertGroup;
-	igdeActionReference pActionSourceInsertSynthesizer;
+	igdeAction::Ref pActionSourceInsertSound;
+	igdeAction::Ref pActionSourceInsertWave;
+	igdeAction::Ref pActionSourceInsertChain;
+	igdeAction::Ref pActionSourceInsertGroup;
+	igdeAction::Ref pActionSourceInsertSynthesizer;
 	
-	igdeActionReference pActionSourceGroupAddSound;
-	igdeActionReference pActionSourceGroupAddWave;
-	igdeActionReference pActionSourceGroupAddChain;
-	igdeActionReference pActionSourceGroupAddGroup;
-	igdeActionReference pActionSourceGroupAddSynthesizer;
+	igdeAction::Ref pActionSourceGroupAddSound;
+	igdeAction::Ref pActionSourceGroupAddWave;
+	igdeAction::Ref pActionSourceGroupAddChain;
+	igdeAction::Ref pActionSourceGroupAddGroup;
+	igdeAction::Ref pActionSourceGroupAddSynthesizer;
 	
-	igdeActionReference pActionSourceRemove;
-	igdeActionReference pActionSourceUp;
-	igdeActionReference pActionSourceDown;
+	igdeAction::Ref pActionSourceRemove;
+	igdeAction::Ref pActionSourceUp;
+	igdeAction::Ref pActionSourceDown;
 	
-	igdeActionReference pActionEffectAddStretch;
+	igdeAction::Ref pActionEffectAddStretch;
 	
-	igdeActionReference pActionEffectInsertStretch;
+	igdeAction::Ref pActionEffectInsertStretch;
 	
-	igdeActionReference pActionEffectRemove;
-	igdeActionReference pActionEffectUp;
-	igdeActionReference pActionEffectDown;
+	igdeAction::Ref pActionEffectRemove;
+	igdeAction::Ref pActionEffectUp;
+	igdeAction::Ref pActionEffectDown;
 	
 	igdeToolBarReference pTBFile;
 	igdeToolBarReference pTBEdit;

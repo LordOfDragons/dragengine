@@ -66,7 +66,7 @@
 #include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -93,7 +93,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( pPanel.GetObjectClass(), billboard, editVector2->GetVector2() ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -118,7 +118,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnActionBillboard( pPanel.GetObjectClass(), billboard ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -157,7 +157,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), billboard ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -181,7 +181,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), billboard ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -206,7 +206,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCBillboardSetSkinPath(
 			pPanel.GetObjectClass(), billboard, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -396,7 +396,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCBillboardSetPropertyName(
 			pPanel.GetObjectClass(), billboard, propertyName, comboBox->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );

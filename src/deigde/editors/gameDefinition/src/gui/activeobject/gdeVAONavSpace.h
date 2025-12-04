@@ -27,7 +27,7 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
 
 class gdeOCNavigationSpace;
 
@@ -42,8 +42,8 @@ class gdeVAONavSpace : public gdeVAOSubObject{
 private:
 	gdeOCNavigationSpace *pOCNavSpace;
 	
-	deDebugDrawerReference pDDSpace;
-	deDebugDrawerReference pDDBlocker;
+	deDebugDrawer::Ref pDDSpace;
+	deDebugDrawer::Ref pDDBlocker;
 	igdeWDebugDrawerShape *pDDSSpace;
 	igdeWDebugDrawerShape *pDDSBlocker;
 	

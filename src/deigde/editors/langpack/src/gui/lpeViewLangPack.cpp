@@ -44,7 +44,7 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeIconListBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -53,12 +53,12 @@
 #include <deigde/gui/event/igdeTextAreaListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
-#include <deigde/gui/event/igdeIconListBoxListenerReference.h>
+#include <deigde/gui/event/igdeIconListBoxListener::Ref.h>
 #include <deigde/gui/model/igdeListItemSorter.h>
-#include <deigde/gui/model/igdeListItemSorterReference.h>
+#include <deigde/gui/model/igdeListItemSorter::Ref.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
@@ -106,7 +106,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new lpeULangPackEntrySetName( entry, name ) );
 		if( undo ){
 			langpack.GetUndoSystem()->Add( undo );
@@ -133,7 +133,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		if( entry->GetLangPack() == pView.GetLangPack() ){
 			undo.TakeOver( new lpeULangPackEntrySetText( entry, text ) );
@@ -208,7 +208,7 @@ public:
 	}
 	
 	void UpdateSorter( igdeIconListBox &listBox ){
-		igdeListItemSorterReference sorter;
+		igdeListItemSorter::Ref sorter;
 		
 		switch( pSorting ){
 		case esNameDescending:
@@ -225,7 +225,7 @@ public:
 	}
 	
 	static void AddToListBox( lpeViewLangPack &window, igdeIconListBox &listBox ){
-		igdeIconListBoxListenerReference listener;
+		igdeIconListBoxListener::Ref listener;
 		listener.TakeOver( new cListEntries( window ) );
 		listBox.AddListener( listener );
 		

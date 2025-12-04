@@ -64,7 +64,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -93,7 +93,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), navspace ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -117,7 +117,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), navspace ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -141,7 +141,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), navspace ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -165,7 +165,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCNavSpaceSetPath( pPanel.GetObjectClass(), navspace, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -340,7 +340,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCNavSpaceSetPropertyName(
 			pPanel.GetObjectClass(), pPanel.GetNavigationSpace(), propertyName, comboBox->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );

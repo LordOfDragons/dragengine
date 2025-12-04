@@ -28,7 +28,7 @@
 #include <string.h>
 
 #include "deAnimator.h"
-#include "deAnimatorReference.h"
+#include "deAnimator::Ref.h"
 #include "deAnimatorInstance.h"
 #include "deAnimatorInstanceManager.h"
 #include "controller/deAnimatorController.h"
@@ -79,7 +79,7 @@ void deAnimatorInstance::SetAnimator( deAnimator *animator, bool keepValues ){
 		// NOTE the guard is required to keep the controller name alive during transfering.
 		//      we can not use pControllers names since they are destroyed during
 		//      pUpdateControllers(). instead controller names from guarded animator is used
-		const deAnimatorReference guard( pAnimator );
+		const deAnimator::Ref guard( pAnimator );
 		const int count = pControllerCount;
 		struct sControllerValue{
 			const char *name;

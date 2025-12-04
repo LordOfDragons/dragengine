@@ -51,9 +51,9 @@
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -145,7 +145,7 @@ public:
 		}
 		
 		const decString value( pPanel.GetGDDefaultValue( key ) );
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoAddProperty( key, value ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
@@ -174,7 +174,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoRemoveProperty( property ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
@@ -200,7 +200,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSetProperties( decStringDictionary() ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
@@ -240,7 +240,7 @@ public:
 		properties.SetAt( name, properties.GetAt( property ) );
 		properties.Remove( property );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSetProperties( properties ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
@@ -271,7 +271,7 @@ public:
 		
 		decStringDictionary properties;
 		properties.SetAt( property, pPanel.GetPropertyValue() );
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		clip.TakeOver( new meCDProperties( properties ) );
 		pPanel.GetClipboard()->Set( clip );
 	}
@@ -296,7 +296,7 @@ public:
 			return;
 		}
 		
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		clip.TakeOver( new meCDProperties( pPanel.GetProperties() ) );
 		pPanel.GetClipboard()->Set( clip );
 	}
@@ -322,7 +322,7 @@ public:
 		
 		cActionPropertyCopy::OnAction();
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoRemoveProperty( property ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
@@ -349,7 +349,7 @@ public:
 		
 		cActionPropertyCopyAll::OnAction();
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSetProperties( decStringDictionary() ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
@@ -387,7 +387,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSetProperties( properties ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
@@ -494,7 +494,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSetProperties( properties ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
@@ -510,7 +510,7 @@ public:
 class cEditPropertyValue : public igdeEditPropertyValueListener {
 protected:
 	meWPPropertyList &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	decString pOldValue;
 	
 public:
@@ -793,7 +793,7 @@ void meWPPropertyList::EditPropertyValueInDialog(){
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( UndoSetProperty( selection->GetText(), oldValue, newValue ) );
 	if( undo ){
 		pUndoSystem->Add( undo );

@@ -27,8 +27,8 @@
 
 #include "igdeWidget.h"
 #include "event/igdeActionListener.h"
-#include "event/igdeActionReference.h"
-#include "resources/igdeIconReference.h"
+#include "event/igdeAction::Ref.h"
+#include "resources/igdeIcon::Ref.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -55,10 +55,10 @@ private:
 	eButtonStyle pStyle;
 	decString pText;
 	decString pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pEnabled;
 	bool pDefault;
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 public:

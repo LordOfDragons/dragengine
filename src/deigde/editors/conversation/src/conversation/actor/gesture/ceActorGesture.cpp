@@ -35,7 +35,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -110,7 +110,7 @@ void ceActorGesture::pLoadAnimator(){
 	}
 	
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	deAnimator *animator = NULL;
 	
 	try{

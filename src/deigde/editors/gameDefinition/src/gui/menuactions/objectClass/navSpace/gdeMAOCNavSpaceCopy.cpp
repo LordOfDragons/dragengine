@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -72,7 +72,7 @@ igdeUndo *gdeMAOCNavSpaceCopy::OnActionSubObject( gdeGameDefinition &gameDefinit
 	deObjectReference clipOCNavigationSpace;
 	clipOCNavigationSpace.TakeOver( new gdeOCNavigationSpace( *navSpace ) );
 	
-	igdeClipboardDataReference clipData;
+	igdeClipboardData::Ref clipData;
 	clipData.TakeOver( new gdeClipboardDataOCNavSpace( ( gdeOCNavigationSpace* )( deObject* )clipOCNavigationSpace ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );

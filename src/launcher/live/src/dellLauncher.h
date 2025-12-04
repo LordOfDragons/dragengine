@@ -31,8 +31,8 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
-#include <dragengine/logger/deLoggerReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
+#include <dragengine/logger/deLogger::Ref.h>
 
 #ifdef OS_BEOS
 #include <delauncher/game/delGame.h>

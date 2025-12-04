@@ -32,7 +32,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -72,7 +72,7 @@ void gdeBaseAction::OnAction(){
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( OnAction( *gameDefinition ) );
 	if( undo ){
 		gameDefinition->GetUndoSystem()->Add( undo );

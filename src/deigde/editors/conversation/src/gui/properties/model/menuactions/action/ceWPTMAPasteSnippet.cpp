@@ -40,7 +40,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -75,7 +75,7 @@ void ceWPTMAPasteSnippet::OnAction(){
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( CreateUndo( dialog.GetActions() ) );
 	//undo->SetShortInfo( "Paste Conversation Snippet" );
 	pConversation->GetUndoSystem()->Add( undo );

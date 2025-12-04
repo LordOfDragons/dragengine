@@ -65,7 +65,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -91,7 +91,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, source ) );
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -114,7 +114,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, source ) );
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -139,7 +139,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( source ) );
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );

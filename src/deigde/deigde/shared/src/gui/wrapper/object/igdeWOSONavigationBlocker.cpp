@@ -39,7 +39,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/logger/deLogger.h>

@@ -35,7 +35,7 @@
 #include "../../conversation/ceConversation.h"
 
 #include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 
@@ -53,7 +53,7 @@ ceWindowProperties::ceWindowProperties( ceWindowMain &windowMain ) :
 igdeTabBook( windowMain.GetEnvironment() ),
 pWindowMain( windowMain )
 {
-	igdeWidgetReference panel;
+	igdeWidget::Ref panel;
 	
 	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
 	

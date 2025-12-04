@@ -27,8 +27,8 @@
 
 #include "igdeWOSubObject.h"
 
-#include <dragengine/resources/navigation/blocker/deNavigationBlockerReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/navigation/blocker/deNavigationBlocker::Ref.h>
+#include <dragengine/resources/collider/deCollider::Ref.h>
 
 
 class deColliderAttachment;
@@ -41,9 +41,9 @@ class igdeGDCNavigationBlocker;
 class DE_DLL_EXPORT igdeWOSONavigationBlocker : public igdeWOSubObject{
 private:
 	const igdeGDCNavigationBlocker &pGDNavigationBlocker;
-	deNavigationBlockerReference pNavigationBlocker;
+	deNavigationBlocker::Ref pNavigationBlocker;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
 	
 	

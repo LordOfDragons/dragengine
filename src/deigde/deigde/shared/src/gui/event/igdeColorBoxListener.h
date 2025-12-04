@@ -36,6 +36,13 @@ class igdeColorBox;
  * \brief IGDE UI ColorBox Listener.
  */
 class DE_DLL_EXPORT igdeColorBoxListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeColorBoxListener> Ref;
+	
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

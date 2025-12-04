@@ -86,7 +86,7 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/composed/igdeEditSliderTextListener.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -98,7 +98,7 @@
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/model/igdeTreeItem.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -131,7 +131,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( skin, texture, property, node ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -176,7 +176,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *textField, skin, texture, property, node ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -203,7 +203,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *editPath, skin, texture, property, node ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -230,7 +230,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *colorBox, skin, texture, property, node ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -257,7 +257,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *editPoint3, skin, texture, property, node ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -284,7 +284,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *editPoint, skin, texture, property, node ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -311,7 +311,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *comboBox, skin, texture, property, node ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -485,7 +485,7 @@ public:
 
 class cSliderTransparency : public igdeEditSliderTextListener{
 	seWPNode &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	cSliderTransparency( seWPNode &panel ) : pPanel( panel ){ }
@@ -655,7 +655,7 @@ public:
 
 class cTextText : public igdeTextFieldListener{
 	seWPNode &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 public:
 	cTextText( seWPNode &panel ) : pPanel( panel ){ }
 	
@@ -744,7 +744,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUPropertyNodeSetMapped( node, type, newMapped ) );
 		skin->GetUndoSystem()->Add( undo );
 	}

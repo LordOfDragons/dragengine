@@ -30,10 +30,10 @@
 #include "igdeEditVector2Listener.h"
 #include "../igdeLabel.h"
 #include "../igdeTextField.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget::Ref.h"
 #include "../igdeContainerReference.h"
 #include "../igdeUIHelper.h"
-#include "../event/igdeTextFieldListenerReference.h"
+#include "../event/igdeTextFieldListener::Ref.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/exceptions.h>
@@ -237,7 +237,7 @@ void igdeEditVector2::pCreateContent( igdeUIHelper &helper ){
 	pTextY->SetFloat( pVector2.y );
 	
 	// add listener
-	igdeTextFieldListenerReference listener;
+	igdeTextFieldListener::Ref listener;
 	listener.TakeOver( new cListener( *this, pTextX, pTextY ) );
 	pTextX->AddListener( listener );
 	pTextY->AddListener( listener );

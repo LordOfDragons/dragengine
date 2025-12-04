@@ -27,9 +27,9 @@
 
 #include "../igdeWidget.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../resources/igdeHotKey.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon::Ref.h"
 
 
 /**
@@ -48,9 +48,9 @@ private:
 	decString pDescription;
 	igdeHotKey pHotKey;
 	deInputEvent::eKeyCodes pMnemonic;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pEnabled;
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

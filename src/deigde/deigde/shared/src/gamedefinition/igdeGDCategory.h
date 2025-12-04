@@ -42,6 +42,13 @@ class decPath;
  * category and an optional list of children cathegories.
  */
 class DE_DLL_EXPORT igdeGDCategory : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDCategory> Ref;
+	
+	
+	
 private:
 	decString pName;
 	decString pDescription;

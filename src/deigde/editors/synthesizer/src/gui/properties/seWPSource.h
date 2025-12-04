@@ -27,7 +27,7 @@
 
 #include <deigde/gui/igdeTreeListReference.h>
 #include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 
@@ -66,10 +66,10 @@ private:
 	seWPAPanelSourceSynthesizer *pPanelSynthesizer;
 	seWPAPanelSource *pActivePanel;
 	
-	igdeActionReference pActionSourceCut;
-	igdeActionReference pActionSourceCopy;
-	igdeActionReference pActionSourcePaste;
-	igdeActionReference pActionSourcePasteIntoGroup;
+	igdeAction::Ref pActionSourceCut;
+	igdeAction::Ref pActionSourceCopy;
+	igdeAction::Ref pActionSourcePaste;
+	igdeAction::Ref pActionSourcePasteIntoGroup;
 	
 	
 	

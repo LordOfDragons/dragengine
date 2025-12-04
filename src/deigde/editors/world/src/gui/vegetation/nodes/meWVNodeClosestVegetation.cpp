@@ -58,7 +58,7 @@ public:
 			return;
 		}
 		
-// 		igdeUndoReference undo;
+// 		igdeUndo::Ref undo;
 // 		undo.TakeOver( new meUHTVRuleCPSetRadius( pNode.GetWindowVegetation().GetVLayer(),
 // 			pNode.GetRuleClosestProp(), value ) );
 // 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -78,7 +78,7 @@ public:
 			return;
 		}
 		
-// 		igdeUndoReference undo;
+// 		igdeUndo::Ref undo;
 // 		undo.TakeOver( new meUHTVRuleCPSetRadius( pNode.GetWindowVegetation().GetVLayer(),
 // 			pNode.GetRuleClosestProp(), value ) );
 // 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );

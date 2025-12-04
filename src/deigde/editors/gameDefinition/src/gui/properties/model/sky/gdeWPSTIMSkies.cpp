@@ -36,7 +36,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -76,7 +76,7 @@ gdeWPSTIMSky *gdeWPSTIMSkies::GetChildWith( gdeSky *sky ) const{
 void gdeWPSTIMSkies::StructureChanged(){
 	const gdeSkyList &list = GetGameDefinition().GetSkies();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	// update existing and add new categories
@@ -110,7 +110,7 @@ void gdeWPSTIMSkies::StructureChanged(){
 void gdeWPSTIMSkies::OnAddedToTree(){
 	const gdeSkyList &list = GetGameDefinition().GetSkies();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	for( i=0; i<count; i++ ){

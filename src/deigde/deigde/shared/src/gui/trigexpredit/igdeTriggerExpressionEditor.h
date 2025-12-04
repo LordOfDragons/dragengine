@@ -31,7 +31,7 @@
 #include "../igdeListBoxReference.h"
 #include "../igdeTreeListReference.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/string/decString.h>
@@ -67,7 +67,7 @@ private:
 	igdeTextFieldReference pEditExpression;
 	igdeTreeListReference pTreeExpression;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

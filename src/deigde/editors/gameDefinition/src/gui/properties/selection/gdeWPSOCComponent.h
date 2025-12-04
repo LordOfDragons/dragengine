@@ -38,11 +38,11 @@
 #include <deigde/gui/igdeIconListBoxReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
@@ -70,12 +70,12 @@ private:
 	bool pDirtyEngModelTexNames;
 	
 	igdeActionContextMenuReference pActionTexturesMenu;
-	igdeActionReference pActionTextureAdd;
-	igdeActionReference pActionTextureRemove;
+	igdeAction::Ref pActionTextureAdd;
+	igdeAction::Ref pActionTextureRemove;
 	decObjectList pActionsTextureAddFromModel;
-	igdeActionReference pActionTexturePropertyValueSet;
-	igdeActionReference pActionTexturePropertyValueRemove;
-	igdeActionReference pActionTexturePropertyValueClear;
+	igdeAction::Ref pActionTexturePropertyValueSet;
+	igdeAction::Ref pActionTexturePropertyValueRemove;
+	igdeAction::Ref pActionTexturePropertyValueClear;
 	
 	igdeEditPathReference pEditPathModel;
 	igdeEditPathReference pEditPathSkin;

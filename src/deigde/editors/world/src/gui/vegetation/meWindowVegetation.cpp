@@ -77,12 +77,12 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/nodeview/igdeNVBoardListener.h>
-#include <deigde/gui/nodeview/igdeNVBoardListenerReference.h>
+#include <deigde/gui/nodeview/igdeNVBoardListener::Ref.h>
 #include <deigde/gui/nodeview/igdeNVLink.h>
-#include <deigde/gui/nodeview/igdeNVLinkReference.h>
+#include <deigde/gui/nodeview/igdeNVLink::Ref.h>
 #include <deigde/gui/nodeview/igdeNVNode.h>
 #include <deigde/gui/nodeview/igdeNVNodeReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/logger/deLogger.h>
@@ -115,7 +115,7 @@ public:
 		rule.TakeOver( CreateRule() );
 		( ( meHTVRule& )( deObject& )rule ).SetPosition( pPosition );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleAdd( pView.GetVLayer(), ( meHTVRule* )( deObject* )rule ) );
 		pView.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -406,7 +406,7 @@ public:
 		ruleLink.TakeOver( new meHTVRLink( wvnodeSource.GetRule(), indexSlotSource,
 			wvnodeTarget.GetRule(), indexSlotTarget ) );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVLinkAdd( pView.GetVLayer(), ( meHTVRLink* )( deObject* )ruleLink ) );
 		pView.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -421,7 +421,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVLinkCut( pView.GetVLayer() ) );
 		( ( meUHTVLinkCut& )( igdeUndo& )undo ).AddLinkToCut( ruleLink );
 		pView.GetWorld()->GetUndoSystem()->Add( undo );

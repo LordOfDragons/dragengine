@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
-#include "model/igdeListItemSorterReference.h"
+#include "model/igdeListItemSorter::Ref.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
@@ -51,7 +51,7 @@ private:
 	decObjectList pItems;
 	int pSelection;
 	decString pText;
-	igdeListItemSorterReference pSorter;
+	igdeListItemSorter::Ref pSorter;
 	int pColumns;
 	int pRows;
 	bool pEditable;

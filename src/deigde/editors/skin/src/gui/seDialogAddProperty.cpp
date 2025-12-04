@@ -50,7 +50,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringList.h>
@@ -185,8 +185,8 @@ void seDialogAddProperty::pInitPropertyList(){
 	seTexture &texture = *pWindowMain.GetSkin()->GetActiveTexture();
 	const sePropertyList &propList = texture.GetPropertyList();
 	const int propertyCount = envPropList.GetCount();
-	igdeIconReference iconUsed( environment.GetStockIcon( igdeEnvironment::esiSmallPlus ) );
-	igdeIconReference iconAvailable( environment.GetStockIcon( igdeEnvironment::esiSmallMinus ) );
+	igdeIcon::Ref iconUsed( environment.GetStockIcon( igdeEnvironment::esiSmallPlus ) );
+	igdeIcon::Ref iconAvailable( environment.GetStockIcon( igdeEnvironment::esiSmallMinus ) );
 	int i;
 	
 	for( i=0; i<propertyCount; i++ ){

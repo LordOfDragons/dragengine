@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 #include "../../../../undosys/objectClass/component/gdeUOCAddComponent.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Component",
 ///////////////
 
 igdeUndo *gdeMAOCComponentPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCComponent::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;

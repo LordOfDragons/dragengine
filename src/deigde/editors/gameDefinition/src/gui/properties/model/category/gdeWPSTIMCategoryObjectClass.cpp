@@ -35,7 +35,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -83,7 +83,7 @@ gdeCategory* category, bool deep ) const{
 void gdeWPSTIMCategoryObjectClass::CategoriesChanged(){
 	const gdeCategoryList &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	// update existing and add new categories
@@ -120,7 +120,7 @@ void gdeWPSTIMCategoryObjectClass::CategoriesChanged(){
 void gdeWPSTIMCategoryObjectClass::OnAddedToTree(){
 	const gdeCategoryList &list = GetCategory()->GetCategories();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	for( i=0; i<count; i++ ){

@@ -76,7 +76,7 @@
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -103,7 +103,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), light ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -127,7 +127,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), light ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -151,7 +151,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), light ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -176,7 +176,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnActionLight( pPanel.GetObjectClass(), light ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -214,7 +214,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCLightSetColor( pPanel.GetObjectClass(), light, colorBox->GetColor() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -461,7 +461,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCLightSetLightSkinPath(
 			pPanel.GetObjectClass(), light, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -499,7 +499,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCLightSetPropertyName(
 			pPanel.GetObjectClass(), light, propertyName, comboBox->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -535,7 +535,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCLightSetTriggerName(
 			pPanel.GetObjectClass(), pPanel.GetLight(), triggerName, comboBox->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );

@@ -60,7 +60,7 @@
 #include "../../../undosys/rule/aeUSetRuleVertexPositionSets.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -83,7 +83,7 @@
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/rule/deAnimatorRule.h>
@@ -116,7 +116,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( animator, rule ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -157,7 +157,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, animator, rule ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -181,7 +181,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -351,7 +351,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		clip.TakeOver( new aeClipboardDataBones( rule->GetListBones() ) );
 		pPanel.GetWindowMain().GetClipboard().Set( clip );
 		return NULL;
@@ -565,7 +565,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position set" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		clip.TakeOver( new aeClipboardDataVertexPositionSets( rule->GetListVertexPositionSets() ) );
 		pPanel.GetWindowMain().GetClipboard().Set( clip );
 		return nullptr;

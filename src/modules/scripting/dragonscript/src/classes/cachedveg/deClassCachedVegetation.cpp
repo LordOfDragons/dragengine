@@ -51,7 +51,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <libdscript/exceptions.h>
 
 
@@ -521,7 +521,7 @@ public:
 		try{
 			path.SetFromUnix( cacheFile );
 			
-			decBaseFileReaderReference reader;
+			decBaseFileReader::Ref reader;
 			reader.TakeOver( vfs->OpenFileForReading( path ) );
 			sector->LoadCacheFile( pEngine, reader );
 			

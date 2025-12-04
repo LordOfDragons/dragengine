@@ -26,7 +26,7 @@
 #define _IGDELABEL_H_
 
 #include "igdeWidget.h"
-#include "resources/igdeIconReference.h"
+#include "resources/igdeIcon::Ref.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -63,7 +63,7 @@ private:
 	decString pText;
 	int pAlignment;
 	decString pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	
 	
 	

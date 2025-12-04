@@ -31,7 +31,7 @@
 #include <dragengine/app/include_windows.h>
 #endif
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 
 #include "profile/projTRProfileList.h"
 
@@ -54,7 +54,7 @@ private:
 	projTRProfile *pLauncherProfile;
 	
 	decString pPathLogFile;
-	decBaseFileReaderReference pLogFileReader;
+	decBaseFileReader::Ref pLogFileReader;
 	
 	#ifdef OS_W32
 	HANDLE pPipeIn;

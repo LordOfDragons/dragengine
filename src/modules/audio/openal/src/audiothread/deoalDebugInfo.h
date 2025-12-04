@@ -30,7 +30,7 @@
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
 
 class deoalAudioThread;
 
@@ -69,7 +69,7 @@ private:
 	decTimer pDebugTimerRenderThread3;
 	
 	deDebugBlockInfo *pDIActiveMic;
-	deDebugDrawerReference pDDActiveMicRays;
+	deDebugDrawer::Ref pDDActiveMicRays;
 	
 	deDebugBlockInfo *pDISpeakerAtPosition;
 	decPointerList pDIClosestSpeakers;

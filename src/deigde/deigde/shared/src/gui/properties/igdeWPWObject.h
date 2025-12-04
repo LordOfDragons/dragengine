@@ -33,7 +33,7 @@
 #include "../igdeTextFieldReference.h"
 #include "../composed/igdeEditVectorReference.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../wrapper/igdeWObject.h"
 #include "../../gamedefinition/class/igdeGDClass.h"
@@ -117,7 +117,7 @@ private:
 	igdeCheckBoxReference pChkVisible;
 	igdeCheckBoxReference pChkDynamicCollider;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	igdeUndoSystem *pUndoSystem;
 	
 	

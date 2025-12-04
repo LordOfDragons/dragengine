@@ -33,7 +33,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
@@ -48,7 +48,7 @@
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/model/deModelReference.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
-#include <dragengine/resources/particle/deParticleEmitterReference.h>
+#include <dragengine/resources/particle/deParticleEmitter::Ref.h>
 #include <dragengine/resources/particle/deParticleEmitterManager.h>
 #include <dragengine/resources/particle/deParticleEmitterController.h>
 #include <dragengine/resources/particle/deParticleEmitterParameter.h>
@@ -386,10 +386,10 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 			
 			const decPath trailPath( decPath::AbsolutePathUnix( path, basePath ) );
 			
-			decBaseFileReaderReference trailReader;
+			decBaseFileReader::Ref trailReader;
 			trailReader.TakeOver( particleEmitter.GetEngine()->GetVirtualFileSystem()->OpenFileForReading( trailPath ) );
 			
-			deParticleEmitterReference trailEmitter;
+			deParticleEmitter::Ref trailEmitter;
 			trailEmitter.TakeOver( particleEmitter.GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter() );
 			Load( trailPath.GetPathUnix(), trailEmitter, trailReader );
 			
@@ -434,10 +434,10 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 			
 			const decPath colPath( decPath::AbsolutePathUnix( path, basePath ) );
 			
-			decBaseFileReaderReference colReader;
+			decBaseFileReader::Ref colReader;
 			colReader.TakeOver( particleEmitter.GetEngine()->GetVirtualFileSystem()->OpenFileForReading( colPath ) );
 			
-			deParticleEmitterReference colEmitter;
+			deParticleEmitter::Ref colEmitter;
 			colEmitter.TakeOver( particleEmitter.GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter() );
 			Load( colPath.GetPathUnix(), colEmitter, colReader );
 			

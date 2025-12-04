@@ -33,7 +33,7 @@
 #include <deigde/gui/igdeTreeListReference.h>
 #include <deigde/gui/igdeSwitcherReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 
 class meWorld;
@@ -85,19 +85,19 @@ private:
 	meWorld *pWorld;
 	
 	
-	igdeActionReference pActionSetClass;
-	igdeActionReference pActionSetSkin;
-	igdeActionReference pActionSetDecal;
-	igdeActionReference pActionSetSky;
+	igdeAction::Ref pActionSetClass;
+	igdeAction::Ref pActionSetSkin;
+	igdeAction::Ref pActionSetDecal;
+	igdeAction::Ref pActionSetSky;
 	
-	igdeActionReference pActionPISizeSmall;
-	igdeActionReference pActionPISizeMedium;
-	igdeActionReference pActionPISizeLarge;
+	igdeAction::Ref pActionPISizeSmall;
+	igdeAction::Ref pActionPISizeMedium;
+	igdeAction::Ref pActionPISizeLarge;
 	
-	igdeActionReference pActionPIViewList;
-	igdeActionReference pActionPIViewPreview;
+	igdeAction::Ref pActionPIViewList;
+	igdeAction::Ref pActionPIViewPreview;
 	
-	igdeActionReference pActionPIRebuild;
+	igdeAction::Ref pActionPIRebuild;
 	
 	
 	igdeComboBoxReference pCBTypes;

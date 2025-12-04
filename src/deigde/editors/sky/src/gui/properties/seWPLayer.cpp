@@ -76,7 +76,7 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
@@ -99,9 +99,9 @@
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
-#include <deigde/gui/event/igdeSpinTextFieldListenerReference.h>
+#include <deigde/gui/event/igdeSpinTextFieldListener::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -127,7 +127,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -151,7 +151,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -175,7 +175,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector2->GetVector2(), sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -199,7 +199,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( colorBox->GetColor(), sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -223,7 +223,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editPath->GetPath(), sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -256,7 +256,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( sky ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -480,7 +480,7 @@ public:
 
 class cSliderTransparency : public igdeEditSliderTextListener{
 	seWPLayer &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 public:
 	cSliderTransparency( seWPLayer &panel ) : pPanel( panel ){ }
 	
@@ -506,7 +506,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo( pUndo );
+		igdeUndo::Ref undo( pUndo );
 		pUndo = NULL;
 		
 		( ( seULayerSetTransparency& )( igdeUndo& )undo ).SetNewTransparency( sliderText->GetValue() );

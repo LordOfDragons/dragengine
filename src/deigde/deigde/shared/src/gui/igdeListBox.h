@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
-#include "model/igdeListItemSorterReference.h"
+#include "model/igdeListItemSorter::Ref.h"
 
 #include <dragengine/common/collection/decIntSet.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -39,7 +39,7 @@
 class igdeListBoxListener;
 class igdeIcon;
 class igdeListItem;
-class igdeListItemReference;
+class igdeListItem::Ref;
 
 
 /**
@@ -63,7 +63,7 @@ private:
 	decObjectList pItems;
 	eSelectionMode pSelectionMode;
 	int pSelection;
-	igdeListItemSorterReference pSorter;
+	igdeListItemSorter::Ref pSorter;
 	int pRows;
 	decString pDescription;
 	
@@ -150,7 +150,7 @@ public:
 	/** \brief Add item of type igdeListItem with text. */
 	void AddItem( const char *text, igdeIcon *icon = NULL, void *data = NULL );
 	
-	void AddItem( igdeListItemReference &item, const char *text, igdeIcon *icon = NULL, void *data = NULL );
+	void AddItem( igdeListItem::Ref &item, const char *text, igdeIcon *icon = NULL, void *data = NULL );
 	
 	/** \brief Insert item at index. */
 	void InsertItem( int index, igdeListItem *item );
@@ -158,7 +158,7 @@ public:
 	/** \brief Insert item of type igdeListItem with text at index. */
 	void InsertItem( int index, const char *text, igdeIcon *icon = NULL, void *data = NULL );
 	
-	void InsertItem( igdeListItemReference &item, int index, const char *text,
+	void InsertItem( igdeListItem::Ref &item, int index, const char *text,
 		igdeIcon *icon = NULL, void *data = NULL );
 	
 	/** \brief Move item. */

@@ -50,9 +50,9 @@
 #include <dragengine/systems/modules/deLoadableModule.h>
 #include <dragengine/systems/modules/skin/deBaseSkinModule.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
 
@@ -154,7 +154,7 @@ igdeGameDefinition *gameDefinition, igdeStepableTask **task ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->
 		OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 	
@@ -176,7 +176,7 @@ void meLoadSaveSystem::SaveWorld( meWorld *world, const char *filename ){
 	meLSWorld * const lsWorld = FindLSWorldMatching( filename );
 	if( ! lsWorld ) DETHROW( deeInvalidParam ); // hack
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->
 		OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
 	lsWorld->SaveWorld( *this, *world, writer );
@@ -225,7 +225,7 @@ void meLoadSaveSystem::LoadHeightTerrain( meHeightTerrain &heightTerrain, const 
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 		decPath::CreatePathUnix( filename ) ) );
 	loader->LoadFromFile( heightTerrain, reader );
@@ -237,7 +237,7 @@ void meLoadSaveSystem::SaveHeightTerrain( meHeightTerrain &heightTerrain, const 
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix( filename ) ) );
 	loader->SaveToFile( heightTerrain, writer );
@@ -249,14 +249,14 @@ void meLoadSaveSystem::SaveHeightTerrain( meHeightTerrain &heightTerrain, const 
 /////////////////////
 
 void meLoadSaveSystem::LoadPFCache( meHeightTerrainSector &sector, const char *filename ){
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 		decPath::CreatePathUnix( filename ) ) );
 	pLSPFCache->LoadFromFile( sector, reader );
 }
 
 void meLoadSaveSystem::SavePFCache( meHeightTerrainSector &sector, const char *filename ){
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix( filename ) ) );
 	pLSPFCache->SaveToFile( sector, writer );
@@ -269,7 +269,7 @@ void meLoadSaveSystem::LoadNavTest( const char *filename, meWorld &world ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 			decPath::CreatePathUnix( filename ) ) );
 	pLSNavTest->LoadNavTest( world, reader );
@@ -280,7 +280,7 @@ void meLoadSaveSystem::SaveNavTest( const char *filename, meWorld &world ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
 			decPath::CreatePathUnix( filename ) ) );
 	pLSNavTest->SaveNavTest( world, writer );

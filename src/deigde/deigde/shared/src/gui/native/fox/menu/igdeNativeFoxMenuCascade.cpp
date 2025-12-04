@@ -26,7 +26,7 @@
 
 #include "igdeNativeFoxMenuCascade.h"
 #include "../../../igdeContainer.h"
-#include "../../../igdeWidgetReference.h"
+#include "../../../igdeWidget::Ref.h"
 #include "../../../igdeWindow.h"
 #include "../../../menu/igdeMenuCascade.h"
 #include "../../../resources/igdeIcon.h"
@@ -400,7 +400,7 @@ void igdeNativeFoxMenuCascade::PostCreateNativePopup( igdeMenuCascade&, void *na
 
 void igdeNativeFoxMenuCascade::ShowPopupWindow( igdeMenuCascade &powner,
 igdeWidget &widgetOwner, const decPoint &position ){
-	igdeWidgetReference window;
+	igdeWidget::Ref window;
 	window.TakeOver( new igdeNativeFoxMenuCascade_PopupWindow( powner ) );
 	( ( igdeNativeFoxMenuCascade_PopupWindow& )( igdeWidget& )window ).Popup( position );
 }

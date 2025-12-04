@@ -35,7 +35,7 @@
 #include "../../igdeTreeList.h"
 #include "../../igdeCommonDialogs.h"
 #include "../../model/igdeTreeItem.h"
-#include "../../model/igdeTreeItemReference.h"
+#include "../../model/igdeTreeItem::Ref.h"
 #include "../../resources/igdeIcon.h"
 #include "../../resources/igdeFont.h"
 #include "../../theme/igdeGuiTheme.h"

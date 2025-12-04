@@ -35,8 +35,8 @@
 
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/logger/deLoggerReference.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/logger/deLogger::Ref.h>
+#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
 
 #include "projTestRunLauncher.h"
 #include "projTestRunEngine.h"
@@ -121,7 +121,7 @@ private:
 	
 	sRunParameters pRunParameters;
 	
-	deLoggerReference pLogger;
+	deLogger::Ref pLogger;
 	
 	projTestRunLauncher pLauncher;
 	projTestRunEngine pEngine;

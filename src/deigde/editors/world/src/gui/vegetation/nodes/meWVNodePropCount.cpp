@@ -52,7 +52,7 @@
 #include <deigde/gui/nodeview/igdeNVSlot.h>
 #include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -76,7 +76,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRulePCSetClass( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRulePropCount(), comboBox->GetText() ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -110,7 +110,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRulePCSetRadius( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRulePropCount(), value ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );

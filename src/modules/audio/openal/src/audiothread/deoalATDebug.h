@@ -28,7 +28,7 @@
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
 
 class deoalAudioThread;
 

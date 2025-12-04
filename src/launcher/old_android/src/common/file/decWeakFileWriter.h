@@ -26,7 +26,7 @@
 #define _DECWEAKFILEWRITER_H_
 
 #include "decBaseFileWriter.h"
-#include "decBaseFileWriterReference.h"
+#include "decBaseFileWriter::Ref.h"
 
 
 /**
@@ -38,7 +38,7 @@
  */
 class decWeakFileWriter : public decBaseFileWriter{
 private:
-	decBaseFileWriterReference pWriter;
+	decBaseFileWriter::Ref pWriter;
 	
 	
 	

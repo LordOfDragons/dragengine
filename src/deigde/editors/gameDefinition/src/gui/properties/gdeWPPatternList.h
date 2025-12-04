@@ -28,7 +28,7 @@
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 
 class igdeUIHelper;
 class igdeUndoSystem;
@@ -50,9 +50,9 @@ private:
 	const decStringSet *pPatternList;
 	igdeUndoSystem *pUndoSystem;
 	
-	igdeActionReference pActionAdd;
-	igdeActionReference pActionRemove;
-	igdeActionReference pActionClear;
+	igdeAction::Ref pActionAdd;
+	igdeAction::Ref pActionRemove;
+	igdeAction::Ref pActionClear;
 	
 	
 	

@@ -27,9 +27,9 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
-#include <dragengine/resources/animator/deAnimatorInstanceReference.h>
+#include <dragengine/resources/component/deComponent::Ref.h>
+#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/animator/deAnimatorInstance::Ref.h>
 
 class gdeOCComponent;
 class gdeOCComponentTexture;
@@ -45,9 +45,9 @@ class gdeVAOComponent : public gdeVAOSubObject{
 private:
 	gdeOCComponent *pOCComponent;
 	
-	deColliderReference pCollider;
-	deComponentReference pComponent;
-	deAnimatorInstanceReference pAnimator;
+	deCollider::Ref pCollider;
+	deComponent::Ref pComponent;
+	deAnimatorInstance::Ref pAnimator;
 	bool pPlayback;
 	
 	

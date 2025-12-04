@@ -30,7 +30,7 @@
 #include "deImageManager.h"
 #include "../../common/exceptions.h"
 #include "../../common/file/decBaseFileReader.h"
-#include "../../common/file/decBaseFileReaderReference.h"
+#include "../../common/file/decBaseFileReader::Ref.h"
 #include "../../common/utils/decXpmImage.h"
 #include "../../systems/deModuleSystem.h"
 #include "../../systems/modules/deLoadableModule.h"
@@ -237,7 +237,7 @@ void deImage::RetainImageData(){
 	if( ! pData ){
 		deImageManager &manager = *( ( deImageManager* )GetResourceManager() );
 // 		manager.LogInfoFormat( "Retain image '%s'", GetFilename().GetString() );
-		decBaseFileReaderReference fileReader;
+		decBaseFileReader::Ref fileReader;
 		deBaseImageInfo *info = NULL;
 		
 		try{

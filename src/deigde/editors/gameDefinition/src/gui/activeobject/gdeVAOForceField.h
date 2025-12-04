@@ -27,8 +27,8 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/forcefield/deForceFieldReference.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
+#include <dragengine/resources/forcefield/deForceField::Ref.h>
 
 class gdeOCForceField;
 class igdeWDebugDrawerShape;
@@ -42,9 +42,9 @@ class gdeVAOForceField : public gdeVAOSubObject{
 private:
 	gdeOCForceField *pOCForceField;
 	
-	deForceFieldReference pForceField;
+	deForceField::Ref pForceField;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

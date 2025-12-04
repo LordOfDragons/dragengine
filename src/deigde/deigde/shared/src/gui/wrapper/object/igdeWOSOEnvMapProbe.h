@@ -27,8 +27,8 @@
 
 #include "igdeWOSubObject.h"
 
-#include <dragengine/resources/probe/deEnvMapProbeReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/probe/deEnvMapProbe::Ref.h>
+#include <dragengine/resources/collider/deCollider::Ref.h>
 
 
 class deColliderAttachment;
@@ -41,9 +41,9 @@ class igdeGDCEnvMapProbe;
 class DE_DLL_EXPORT igdeWOSOEnvMapProbe : public igdeWOSubObject{
 private:
 	const igdeGDCEnvMapProbe &pGDEnvMapProbe;
-	deEnvMapProbeReference pEnvMapProbe;
+	deEnvMapProbe::Ref pEnvMapProbe;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
 	
 	

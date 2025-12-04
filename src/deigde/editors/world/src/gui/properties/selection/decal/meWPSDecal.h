@@ -31,12 +31,12 @@
 #include <deigde/gui/igdeColorBoxReference.h>
 #include <deigde/gui/igdeSpinTextFieldReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWPSelection;
@@ -59,9 +59,9 @@ private:
 	igdeTextFieldReference pEditSelCount;
 	
 	
-	igdeActionReference pActionPropCopyToSel;
-	igdeActionReference pActionPropRemoveFromSel;
-	igdeActionReference pActionPropCloneToSel;
+	igdeAction::Ref pActionPropCopyToSel;
+	igdeAction::Ref pActionPropRemoveFromSel;
+	igdeAction::Ref pActionPropCloneToSel;
 	
 	
 	igdeTextFieldReference pEditID;
@@ -77,7 +77,7 @@ private:
 	igdeTextFieldReference pEditTexCoordRotation;
 	igdeColorBoxReference pClrColorTint;
 	
-	igdeWidgetReference pEditProperties;
+	igdeWidget::Ref pEditProperties;
 	
 	
 	

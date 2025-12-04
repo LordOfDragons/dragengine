@@ -30,7 +30,7 @@
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 
 class meWorld;
 class meWPAddListener;
@@ -48,9 +48,9 @@ private:
 	
 	meWorld *pWorld;
 	
-	igdeActionReference pActionClassAdd;
-	igdeActionReference pActionClassRemove;
-	igdeActionReference pActionClassClear;
+	igdeAction::Ref pActionClassAdd;
+	igdeAction::Ref pActionClassRemove;
+	igdeAction::Ref pActionClassClear;
 	
 	igdeCheckBoxReference pChkFilterObjects;
 	igdeComboBoxFilterReference pComboObjClass;

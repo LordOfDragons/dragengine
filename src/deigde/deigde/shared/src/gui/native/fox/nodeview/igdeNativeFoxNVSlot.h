@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXNVSLOT_H_
 
 #include "../foxtoolkit.h"
-#include "../../../resources/igdeFontReference.h"
+#include "../../../resources/igdeFont::Ref.h"
 
 
 class igdeNVSlot;
@@ -52,7 +52,7 @@ public:
 	
 private:
 	igdeNVSlot *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	igdeNativeFoxNVSocket *pSocket;
 	FXLabel *pLabel;
 	

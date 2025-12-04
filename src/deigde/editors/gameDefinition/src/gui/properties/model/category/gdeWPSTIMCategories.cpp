@@ -39,7 +39,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -69,7 +69,7 @@ gdeWPSTIMCategories::~gdeWPSTIMCategories(){
 
 void gdeWPSTIMCategories::OnAddedToTree(){
 	gdeWPSTreeModel &treeModel = GetTree();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	
 	item.TakeOver( new gdeWPSTIMCategoriesObjectClass( treeModel ) );
 	AppendModel( item );

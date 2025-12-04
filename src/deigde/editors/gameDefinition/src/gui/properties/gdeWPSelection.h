@@ -29,7 +29,7 @@
 
 #include <deigde/gui/igdeTreeListReference.h>
 #include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 class gdeWPSelectionListener;
@@ -54,23 +54,23 @@ private:
 	igdeTreeListReference pTreeObjects;
 	gdeWPSTreeModel *pModelTreeObjects;
 	
-	igdeWidgetReference pPanelCategory;
-	igdeWidgetReference pPanelObjectClass;
-	igdeWidgetReference pPanelOCBillboard;
-	igdeWidgetReference pPanelOCCamera;
-	igdeWidgetReference pPanelOCComponent;
-	igdeWidgetReference pPanelOCEnvMapProbe;
-	igdeWidgetReference pPanelOCLight;
-	igdeWidgetReference pPanelOCNavigationBlocker;
-	igdeWidgetReference pPanelOCNavigationSpace;
-	igdeWidgetReference pPanelOCParticleEmitter;
-	igdeWidgetReference pPanelOCForceField;
-	igdeWidgetReference pPanelOCSnapPoint;
-	igdeWidgetReference pPanelOCSpeaker;
-	igdeWidgetReference pPanelOCWorld;
-	igdeWidgetReference pPanelParticleEmitter;
-	igdeWidgetReference pPanelSkin;
-	igdeWidgetReference pPanelSky;
+	igdeWidget::Ref pPanelCategory;
+	igdeWidget::Ref pPanelObjectClass;
+	igdeWidget::Ref pPanelOCBillboard;
+	igdeWidget::Ref pPanelOCCamera;
+	igdeWidget::Ref pPanelOCComponent;
+	igdeWidget::Ref pPanelOCEnvMapProbe;
+	igdeWidget::Ref pPanelOCLight;
+	igdeWidget::Ref pPanelOCNavigationBlocker;
+	igdeWidget::Ref pPanelOCNavigationSpace;
+	igdeWidget::Ref pPanelOCParticleEmitter;
+	igdeWidget::Ref pPanelOCForceField;
+	igdeWidget::Ref pPanelOCSnapPoint;
+	igdeWidget::Ref pPanelOCSpeaker;
+	igdeWidget::Ref pPanelOCWorld;
+	igdeWidget::Ref pPanelParticleEmitter;
+	igdeWidget::Ref pPanelSkin;
+	igdeWidget::Ref pPanelSky;
 	
 	
 	

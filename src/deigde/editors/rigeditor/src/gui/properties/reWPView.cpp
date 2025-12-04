@@ -48,7 +48,7 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/igdeSlider.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
@@ -61,7 +61,7 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
@@ -557,7 +557,7 @@ pRig( NULL )
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeContainerReference content, groupBox, groupBox2, frameLine, form;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeActionReference action;
+	igdeAction::Ref action;
 	
 	pListener = new reWPViewListener( *this );
 	

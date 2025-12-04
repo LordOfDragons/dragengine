@@ -26,7 +26,7 @@
 #define _IGDEBROWSEITEMGDPREVIEWLISTENER_H_
 
 #include "../igdeIconListBoxReference.h"
-#include "../model/igdeListItemReference.h"
+#include "../model/igdeListItem::Ref.h"
 #include "../../gamedefinition/preview/igdeGDPreviewListener.h"
 
 
@@ -37,7 +37,7 @@
 class DE_DLL_EXPORT igdeBrowseItemGDPreviewListener : public igdeGDPreviewListener{
 private:
 	igdeIconListBoxReference pIconListBox;
-	igdeListItemReference pListItem;
+	igdeListItem::Ref pListItem;
 	int pIconSize;
 	
 	

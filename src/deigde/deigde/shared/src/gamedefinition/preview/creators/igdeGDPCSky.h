@@ -28,8 +28,8 @@
 #include "igdeGDPreviewCreator.h"
 
 #include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/resources/camera/deCamera::Ref.h>
+#include <dragengine/resources/world/deWorld::Ref.h>
 
 class igdeGDSky;
 class igdeWSky;
@@ -43,8 +43,8 @@ class DE_DLL_EXPORT igdeGDPCSky : public igdeGDPreviewCreator{
 private:
 	igdeGDSky *pGDSky;
 	
-	deWorldReference pWorld;
-	deCameraReference pCamera;
+	deWorld::Ref pWorld;
+	deCamera::Ref pCamera;
 	igdeWSky *pSky;
 	deCanvasRenderWorldReference pCanvasRenderWorld;
 	

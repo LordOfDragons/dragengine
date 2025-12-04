@@ -27,8 +27,8 @@
 
 #include "deSoundReference.h"
 #include "../deResource.h"
-#include "../synthesizer/deSynthesizerInstanceReference.h"
-#include "../video/deVideoPlayerReference.h"
+#include "../synthesizer/deSynthesizerInstance::Ref.h"
+#include "../video/deVideoPlayer::Ref.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/shape/decShapeList.h"
@@ -98,8 +98,8 @@ public:
 private:
 	eSpeakerType pType;
 	deSoundReference pSound;
-	deSynthesizerInstanceReference pSynthesizer;
-	deVideoPlayerReference pVideoPlayer;
+	deSynthesizerInstance::Ref pSynthesizer;
+	deVideoPlayer::Ref pVideoPlayer;
 	decDVector pPosition;
 	decQuaternion pOrientation;
 	decVector pVelocity;

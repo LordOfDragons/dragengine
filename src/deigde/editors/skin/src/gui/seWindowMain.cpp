@@ -50,7 +50,7 @@
 #include "../undosys/property/seUPropertyRemove.h"
 #include "../undosys/property/seUPropertyAdd.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
 #include <deigde/gui/igdeApplication.h>
@@ -60,7 +60,7 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
@@ -83,7 +83,7 @@
 #include <deigde/gamedefinition/skin/igdeGDSkinManager.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <deigde/gui/browse/igdeDialogBrowserSkin.h>
 
@@ -451,7 +451,7 @@ public:
 		if( ! pWindow.GetSkin() ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetSkin() ) );
 		if( undo ){
 			pWindow.GetSkin()->GetUndoSystem()->Add( undo );

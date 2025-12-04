@@ -32,7 +32,7 @@
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditPointReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
@@ -54,16 +54,16 @@ private:
 	projProject *pProject;
 	projPanelProfilesListener *pListener;
 	
-	igdeActionReference pActionScriptDirectory;
-	igdeActionReference pActionPathConfig;
-	igdeActionReference pActionPathCapture;
-	igdeActionReference pActionAddIcon;
-	igdeActionReference pActionRemoveIcon;
-	igdeActionReference pActionAddExcludePattern;
-	igdeActionReference pActionRemoveExcludePattern;
-	igdeActionReference pActionAddRequiredExtension;
-	igdeActionReference pActionRemoveRequiredExtension;
-	igdeActionReference pActionDelgaPath;
+	igdeAction::Ref pActionScriptDirectory;
+	igdeAction::Ref pActionPathConfig;
+	igdeAction::Ref pActionPathCapture;
+	igdeAction::Ref pActionAddIcon;
+	igdeAction::Ref pActionRemoveIcon;
+	igdeAction::Ref pActionAddExcludePattern;
+	igdeAction::Ref pActionRemoveExcludePattern;
+	igdeAction::Ref pActionAddRequiredExtension;
+	igdeAction::Ref pActionRemoveRequiredExtension;
+	igdeAction::Ref pActionDelgaPath;
 	igdeActionContextMenuReference pActionMenuIdentifier;
 	
 	igdeListBoxReference pListProfiles;

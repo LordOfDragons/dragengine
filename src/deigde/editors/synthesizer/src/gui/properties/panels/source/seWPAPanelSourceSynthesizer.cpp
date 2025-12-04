@@ -46,7 +46,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -71,7 +71,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourceSynthSetPathSynthesizer( source, editPath->GetPath() ) );
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -105,7 +105,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourceSynthConTargetMore( source ) );
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -129,7 +129,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourceSynthConTargetLess( source ) );
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -159,7 +159,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourceSynthSetConController( source, target, controller ) );
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}

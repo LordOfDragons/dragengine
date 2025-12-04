@@ -29,9 +29,9 @@
 #include "../model/deModelReference.h"
 #include "../rig/deRigReference.h"
 #include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../skin/dynamic/deDynamicSkin::Ref.h"
 #include "../occlusionmesh/deOcclusionMeshReference.h"
-#include "../animator/deAnimatorReference.h"
+#include "../animator/deAnimator::Ref.h"
 #include "../../parallel/deParallelTaskReference.h"
 #include "../../common/collection/decObjectOrderedSet.h"
 #include "../../common/math/decMath.h"
@@ -98,7 +98,7 @@ private:
 	bool pEnableGI;
 	int pHintGIImportance;
 	
-	deAnimatorReference pAnimator;
+	deAnimator::Ref pAnimator;
 	
 	decLayerMask pLayerMask;
 	
@@ -114,7 +114,7 @@ private:
 	deComponentTexture *pTextures;
 	int pTextureCount;
 	
-	deDynamicSkinReference pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	deDecal *pDecalRoot;
 	deDecal *pDecalTail;

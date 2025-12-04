@@ -87,7 +87,7 @@ gdeVAOBillboard::~gdeVAOBillboard(){
 ///////////////
 
 void gdeVAOBillboard::RebuildResources(){
-	const deBillboardReference oldBillboard( pBillboard );
+	const deBillboard::Ref oldBillboard( pBillboard );
 	
 	pReleaseResources();
 	

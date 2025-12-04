@@ -26,7 +26,7 @@
 #define _DEPARTICLEEMITTERTYPE_H_
 
 #include "deParticleEmitterParameter.h"
-#include "deParticleEmitterReference.h"
+#include "deParticleEmitter::Ref.h"
 #include "../model/deModelReference.h"
 #include "../skin/deSkinReference.h"
 #include "../../common/math/decMath.h"
@@ -144,13 +144,13 @@ private:
 	eSimulationTypes pSimulationType;
 	bool pIntervalAsDistance;
 	
-	deParticleEmitterReference pTrailEmitter;
+	deParticleEmitter::Ref pTrailEmitter;
 	int pTrailControllers[ eecAngularVelocity + 1 ];
 	
 	float pPhysicsSize;
 	
 	eCollisionResponses pCollisionResponse;
-	deParticleEmitterReference pCollisionEmitter;
+	deParticleEmitter::Ref pCollisionEmitter;
 	float pEmitMinImpulse;
 	int pEmitControllers[ eecAngularVelocity + 1 ];
 	

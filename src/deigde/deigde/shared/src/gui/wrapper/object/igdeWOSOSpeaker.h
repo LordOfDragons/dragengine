@@ -26,11 +26,11 @@
 #define _IGDEWOSOSPEAKER_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
-#include "../../../triggersystem/igdeTriggerExpressionReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener::Ref.h"
+#include "../../../triggersystem/igdeTriggerExpression::Ref.h"
 
-#include <dragengine/resources/sound/deSpeakerReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/sound/deSpeaker::Ref.h>
+#include <dragengine/resources/collider/deCollider::Ref.h>
 
 
 class deColliderAttachment;
@@ -43,13 +43,13 @@ class igdeGDCSpeaker;
 class DE_DLL_EXPORT igdeWOSOSpeaker : public igdeWOSubObject{
 private:
 	const igdeGDCSpeaker &pGDSpeaker;
-	deSpeakerReference pSpeaker;
-	igdeResourceLoaderListenerReference pResLoad;
+	deSpeaker::Ref pSpeaker;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	igdeTriggerExpressionReference pTriggerPlaying;
-	igdeTriggerExpressionReference pTriggerMuted;
+	igdeTriggerExpression::Ref pTriggerPlaying;
+	igdeTriggerExpression::Ref pTriggerMuted;
 	
 	
 public:

@@ -34,7 +34,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectSet.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <dragengine/resources/light/deLight::Ref.h>
 
 class seDynamicSkin;
 class seDynamicSkinRenderable;
@@ -84,7 +84,7 @@ private:
 	deAnimatorInstance *pEngAnimatorInstance;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deParticleEmitter *pEngParticleEmitter;
-	deLightReference pEngLight;
+	deLight::Ref pEngLight;
 	
 	ePreviewMode pPreviewMode;
 	

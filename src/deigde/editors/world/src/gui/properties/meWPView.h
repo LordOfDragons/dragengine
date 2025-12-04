@@ -32,7 +32,7 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/composed/igdeToggleTagsReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/properties/igdeWPSkyReference.h>
 #include <deigde/gui/properties/igdeWPWObjectReference.h>
 #include <deigde/gui/properties/igdeWPCameraReference.h>
@@ -77,9 +77,9 @@ private:
 	igdeToggleTagsReference pEditClassHideTags;
 	igdeToggleTagsReference pEditClassPartialHideTags;
 	
-	igdeActionReference pActionCameraFreeRoaming;
-	igdeActionReference pActionCameraPlayer;
-	igdeActionReference pActionCameraObject;
+	igdeAction::Ref pActionCameraFreeRoaming;
+	igdeAction::Ref pActionCameraPlayer;
+	igdeAction::Ref pActionCameraObject;
 	
 	igdeCheckBoxReference pChkEnableAuralization;
 	

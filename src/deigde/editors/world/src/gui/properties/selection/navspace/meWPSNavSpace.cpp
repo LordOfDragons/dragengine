@@ -53,7 +53,7 @@
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -109,7 +109,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUNavSpaceSetPath( navspace, editPath->GetPath() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -131,7 +131,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUNavSpaceSetPosition( navspace, editDVector->GetDVector() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -153,7 +153,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUNavSpaceSetOrientation( navspace, editVector->GetVector() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}

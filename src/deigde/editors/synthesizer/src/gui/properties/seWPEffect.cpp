@@ -41,21 +41,21 @@
 #include "../../undosys/source/effect/seUSourceRemoveEffect.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeListBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -135,7 +135,7 @@ public:
 			return;
 		}
 		
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new seClipboardDataEffect( effect ) );
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 	}
@@ -159,11 +159,11 @@ public:
 			return;
 		}
 		
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new seClipboardDataEffect( effect ) );
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourceRemoveEffect( pPanel.GetSource(), effect ) );
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -197,7 +197,7 @@ public:
 		const seEffectList &list = pPanel.GetSource()->GetEffects();
 		const int index = effect ? list.IndexOf( effect ) : list.GetCount();
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourcePasteEffect( pPanel.GetSource(), cdata->GetEffects(), index ) );
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -226,7 +226,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourcePasteEffect( pPanel.GetSource(), cdata->GetEffects(),
 			pPanel.GetSource()->GetEffects().GetCount() ) );
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -271,7 +271,7 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	AddChild( pSwitcher );
 	
-	igdeWidgetReference panel;
+	igdeWidget::Ref panel;
 	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 	pSwitcher->AddChild( panel );
 	

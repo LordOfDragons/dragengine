@@ -30,7 +30,7 @@
 #include "../layout/igdeContainerFlow.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 
 #include <dragengine/common/string/decStringSet.h>
 
@@ -82,11 +82,11 @@ private:
 	
 	decStringSet pTags;
 	
-	igdeActionReference pActionAdd;
-	igdeActionReference pActionRemove;
-	igdeActionReference pActionClear;
+	igdeAction::Ref pActionAdd;
+	igdeAction::Ref pActionRemove;
+	igdeAction::Ref pActionClear;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

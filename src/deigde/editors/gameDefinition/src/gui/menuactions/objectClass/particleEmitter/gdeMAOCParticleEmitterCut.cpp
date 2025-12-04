@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 #include "../../../../undosys/objectClass/particleemitter/gdeUOCRemoveParticleEmitter.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -74,7 +74,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	deObjectReference clipOCParticleEmitter;
 	clipOCParticleEmitter.TakeOver( new gdeOCParticleEmitter( *particleEmitter ) );
 	
-	igdeClipboardDataReference clipData;
+	igdeClipboardData::Ref clipData;
 	clipData.TakeOver( new gdeClipboardDataOCParticleEmitter( ( gdeOCParticleEmitter* )( deObject* )clipOCParticleEmitter ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );

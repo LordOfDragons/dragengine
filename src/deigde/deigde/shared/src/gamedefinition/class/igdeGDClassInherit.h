@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
-#include "igdeGDClassReference.h"
+#include "igdeGDClass::Ref.h"
 
 class igdeGDClassManager;
 
@@ -46,7 +46,7 @@ public:
 	
 private:
 	decString pName;
-	igdeGDClassReference pClass;
+	igdeGDClass::Ref pClass;
 	decString pPropertyPrefix;
 	decString pAutoPropertyPrefixId;
 	bool pUseAutoPropertyPrefixId;

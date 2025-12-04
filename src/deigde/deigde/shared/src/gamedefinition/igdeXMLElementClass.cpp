@@ -47,7 +47,7 @@
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
@@ -112,8 +112,8 @@ private:
 	igdeGDClassManager &pClasses;
 	deLogger &pLogger;
 	const decString &pLoggerSource;
-	decBaseFileReaderReference pReader;
-	igdeGDClassReference pClass;
+	decBaseFileReader::Ref pReader;
+	igdeGDClass::Ref pClass;
 	
 public:
 	igdeXMLElementClassProcessEClasses(igdeXMLElementClass &owner, const char *pattern,

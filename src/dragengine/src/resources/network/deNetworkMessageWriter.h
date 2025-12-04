@@ -25,7 +25,7 @@
 #ifndef _DENETWORKMESSAGEWRITER_H_
 #define _DENETWORKMESSAGEWRITER_H_
 
-#include "deNetworkMessageReference.h"
+#include "deNetworkMessage::Ref.h"
 #include "../../common/file/decBaseFileWriter.h"
 
 class deNetworkMessage;
@@ -42,7 +42,7 @@ public:
 	
 	
 private:
-	deNetworkMessageReference pMessage;
+	deNetworkMessage::Ref pMessage;
 	int pPosition;
 	
 	

@@ -33,7 +33,7 @@
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../undosys/objectClass/gdeUAddObjectClass.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -61,7 +61,7 @@ gdeBaseAction( windowMain, "Paste Object Class",
 ///////////////
 
 igdeUndo *gdeMAObjectClassPaste::OnAction( gdeGameDefinition &gameDefinition ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataObjectClass::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;

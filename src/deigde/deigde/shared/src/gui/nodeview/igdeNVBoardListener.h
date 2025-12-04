@@ -40,6 +40,13 @@ class igdeMenuCascade;
  * \brief IGDE UI NVBoard Listener.
  */
 class DE_DLL_EXPORT igdeNVBoardListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeNVBoardListener> Ref;
+	
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

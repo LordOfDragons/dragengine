@@ -28,17 +28,17 @@
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeScrollBarReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/resources/igdeFontReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/resources/igdeFont::Ref.h>
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/resources/canvas/deCanvasPaintReference.h>
 #include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/sound/deSpeakerReference.h>
+#include <dragengine/resources/sound/deSpeaker::Ref.h>
 #include <dragengine/resources/sound/deSoundReference.h>
 
 
@@ -94,10 +94,10 @@ private:
 	ceWindowDopeSheetListener *pListener;
 	ceConversation *pConversation;
 	
-	igdeActionReference pActionPlayAction;
-	igdeActionReference pActionPlayFromhere;
-	igdeActionReference pActionPause;
-	igdeActionReference pActionSelectCurAction;
+	igdeAction::Ref pActionPlayAction;
+	igdeAction::Ref pActionPlayFromhere;
+	igdeAction::Ref pActionPause;
+	igdeAction::Ref pActionSelectCurAction;
 	
 	igdeButtonReference pBtnPlayAction;
 	igdeButtonReference pBtnPlayFromHere;
@@ -106,7 +106,7 @@ private:
 	
 	igdeScrollBarReference pSBTime;
 	igdeComboBoxReference pCBTimeScale;
-	igdeWidgetReference pDopeSheet;
+	igdeWidget::Ref pDopeSheet;
 	
 	decObjectList pTimeLineLabels;
 	decObjectList pTimeLines;
@@ -126,7 +126,7 @@ private:
 	decObjectList pLanes;
 	ceWDSVAPreview *pVAPreview;
 	
-	igdeFontReference pFontText;
+	igdeFont::Ref pFontText;
 	
 	
 	

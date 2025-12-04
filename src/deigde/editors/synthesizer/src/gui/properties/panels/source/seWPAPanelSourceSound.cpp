@@ -46,7 +46,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -73,7 +73,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, source ) );
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -96,7 +96,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSetSourceSoundPathSound( source, editPath->GetPath() ) );
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -137,7 +137,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUToggleSourceSoundLooping( source ) );
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}

@@ -28,7 +28,7 @@
 #include "../deResource.h"
 #include "../canvas/deCanvasViewReference.h"
 #include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../skin/dynamic/deDynamicSkin::Ref.h"
 #include "../../common/collection/decObjectSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/shape/decShapeList.h"
@@ -209,7 +209,7 @@ private:
 	
 	deSkinReference pLightSkin;
 	deCanvasViewReference pLightCanvas;
-	deDynamicSkinReference pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	decTexMatrix2 pTransform;
 	
 	bool pActivated;

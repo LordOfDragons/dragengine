@@ -29,8 +29,8 @@
 #include "../layout/igdeContainerFlow.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
-#include "../resources/igdeIconReference.h"
+#include "../event/igdeAction::Ref.h"
+#include "../resources/igdeIcon::Ref.h"
 
 #include <dragengine/common/string/decStringSet.h>
 
@@ -70,15 +70,15 @@ protected:
 	
 	
 private:
-	igdeIconReference pIconEnabled;
-	igdeIconReference pIconDisabled;
+	igdeIcon::Ref pIconEnabled;
+	igdeIcon::Ref pIconDisabled;
 	
 	igdeListBoxReference pListBox;
 	
-	igdeActionReference pActionEnableAll;
-	igdeActionReference pActionDisableAll;
+	igdeAction::Ref pActionEnableAll;
+	igdeAction::Ref pActionDisableAll;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

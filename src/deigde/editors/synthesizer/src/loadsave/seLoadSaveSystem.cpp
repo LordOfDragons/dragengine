@@ -39,7 +39,7 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/exceptions.h>
@@ -87,7 +87,7 @@ seSynthesizer *seLoadSaveSystem::LoadSynthesizer( const char *filename, const ch
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference fileReader;
+	decBaseFileReader::Ref fileReader;
 	seSynthesizer *synthesizer = NULL;
 	decPath path;
 	

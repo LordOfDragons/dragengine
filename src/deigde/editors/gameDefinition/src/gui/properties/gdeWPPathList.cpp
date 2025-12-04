@@ -34,12 +34,12 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
-#include <deigde/gui/event/igdeListBoxListenerReference.h>
+#include <deigde/gui/event/igdeListBoxListener::Ref.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -73,7 +73,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( *pPanel.GetPathList() + pEditPath->GetPath() ) );
 		pPanel.GetUndoSystem()->Add( undo );
 		
@@ -105,7 +105,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		decStringList list( *pPanel.GetPathList() );
 		list.InsertAt( pEditPath->GetPath(), position );
 		undo.TakeOver( pPanel.UndoSet( list ) );
@@ -139,7 +139,7 @@ public:
 			paths.RemoveFrom( index );
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( paths ) );
 		pPanel.GetUndoSystem()->Add( undo );
 		
@@ -162,7 +162,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( decStringList() ) );
 		pPanel.GetUndoSystem()->Add( undo );
 	}

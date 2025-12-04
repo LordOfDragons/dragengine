@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include "igdeGDProperty.h"
-#include "igdeGDPropertyReference.h"
+#include "igdeGDProperty::Ref.h"
 #include "igdeGDPropertyList.h"
 
 #include <dragengine/common/exceptions.h>
@@ -128,7 +128,7 @@ void igdeGDPropertyList::RemoveAll(){
 
 void igdeGDPropertyList::SetToDeepCopyFrom( const igdeGDPropertyList &list ){
 	const int count = list.pProperties.GetCount();
-	igdeGDPropertyReference property;
+	igdeGDProperty::Ref property;
 	int i;
 	
 	for( i=0; i<count; i++ ){

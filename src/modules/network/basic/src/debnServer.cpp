@@ -41,7 +41,7 @@
 #include <dragengine/resources/deResourceManager.h>
 #include <dragengine/resources/network/deServer.h>
 #include <dragengine/resources/network/deConnection.h>
-#include <dragengine/resources/network/deConnectionReference.h>
+#include <dragengine/resources/network/deConnection::Ref.h>
 #include <dragengine/resources/network/deConnectionManager.h>
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingServer.h>
@@ -114,7 +114,7 @@ void debnServer::ProcessConnectionRequest( debnAddress &address, decBaseFileRead
 	eProtocols protocol = epDENetworkProtocol;
 	
 	// create connection 
-	deConnectionReference connection;
+	deConnection::Ref connection;
 	connection.TakeOver( pNetBasic->GetGameEngine()->GetConnectionManager()->CreateConnection() );
 	( ( debnConnection* )connection->GetPeerNetwork() )->AcceptConnection( pSocket, address, protocol );
 	

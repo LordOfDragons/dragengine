@@ -40,9 +40,9 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/event/igdeScrollBarListener.h>
-#include <deigde/gui/event/igdeScrollBarListenerReference.h>
+#include <deigde/gui/event/igdeScrollBarListener::Ref.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
-#include <deigde/gui/event/igdeComboBoxListenerReference.h>
+#include <deigde/gui/event/igdeComboBoxListener::Ref.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 #include <dragengine/deEngine.h>
@@ -108,7 +108,7 @@ pViewImage( NULL )
 		igdeContainerFlow::esFirst ) );
 	AddChild( bottomLine, igdeContainerBorder::eaBottom );
 	
-	igdeScrollBarListenerReference scrollView;
+	igdeScrollBarListener::Ref scrollView;
 	scrollView.TakeOver( new cScrollView( *this ) );
 	
 	pSBHorizontal.TakeOver( new igdeScrollBar( env, igdeScrollBar::eoHorizontal ) );
@@ -127,7 +127,7 @@ pViewImage( NULL )
 	pCBZoom->SetSelection( 0 ); // 100
 	bottomLine->AddChild( pCBZoom );
 	
-	igdeComboBoxListenerReference changeZoom;
+	igdeComboBoxListener::Ref changeZoom;
 	changeZoom.TakeOver( new cChangeZoom( *this ) );
 	pCBZoom->AddListener( changeZoom );
 	

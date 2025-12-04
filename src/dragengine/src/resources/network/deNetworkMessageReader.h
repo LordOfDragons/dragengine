@@ -25,7 +25,7 @@
 #ifndef _DENETWORKMESSAGEREADER_H_
 #define _DENETWORKMESSAGEREADER_H_
 
-#include "deNetworkMessageReference.h"
+#include "deNetworkMessage::Ref.h"
 #include "../../common/file/decBaseFileReader.h"
 
 
@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	deNetworkMessageReference pMessage;
+	deNetworkMessage::Ref pMessage;
 	int pPosition;
 	
 	

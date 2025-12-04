@@ -26,7 +26,7 @@
 #define _PEEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
 
 class peeWindowMain;
@@ -41,9 +41,9 @@ class peeWindowProperties : public igdeTabBook{
 private:
 	peeWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelType;
-	igdeWidgetReference pPanelController;
-	igdeWidgetReference pPanelView;
+	igdeWidget::Ref pPanelType;
+	igdeWidget::Ref pPanelController;
+	igdeWidget::Ref pPanelView;
 	igdeWPUndoHistoryReference pPanelUndoHistory;
 	
 	

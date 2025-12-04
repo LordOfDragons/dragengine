@@ -32,7 +32,7 @@
 #include "igdeCommonDialogs.h"
 #include "native/toolkit.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
+#include "resources/igdeFont::Ref.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"

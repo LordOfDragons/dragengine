@@ -25,7 +25,7 @@
 #ifndef _DESYNTHESIZERINSTANCE_H_
 #define _DESYNTHESIZERINSTANCE_H_
 
-#include "deSynthesizerReference.h"
+#include "deSynthesizer::Ref.h"
 #include "source/deSynthesizerSource.h"
 #include "../deResource.h"
 #include "../../common/collection/decObjectOrderedSet.h"
@@ -76,7 +76,7 @@ public:
 	
 	
 private:
-	deSynthesizerReference pSynthesizer;
+	deSynthesizer::Ref pSynthesizer;
 	
 	decObjectOrderedSet pControllers;
 	

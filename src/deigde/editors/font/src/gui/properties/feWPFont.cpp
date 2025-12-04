@@ -49,19 +49,19 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/gui/event/igdeTextFieldListenerReference.h>
+#include <deigde/gui/event/igdeTextFieldListener::Ref.h>
 #include <deigde/gui/composed/igdeEditPoint.h>
 #include <deigde/gui/composed/igdeEditPointListener.h>
-#include <deigde/gui/composed/igdeEditPointListenerReference.h>
+#include <deigde/gui/composed/igdeEditPointListener::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decPath.h>
@@ -92,7 +92,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, font ) );
 		if( undo ){
 			font->GetUndoSystem()->Add( undo );
@@ -184,7 +184,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new feUFontToggleColorFont( font ) );
 		font->GetUndoSystem()->Add( undo );
 	}

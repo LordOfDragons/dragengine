@@ -30,7 +30,7 @@
 #include "ceWPTTreeItemModel.h"
 
 #include <deigde/gui/igdeTreeList.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -83,7 +83,7 @@ void ceWPTTreeItem::AddItem( ceWPTTreeItemModel *model ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
 	pTreeList->AppendItem( this, item );
 	( ( ceWPTTreeItem& )( igdeTreeItem& )item ).SetModel( model );
@@ -103,7 +103,7 @@ void ceWPTTreeItem::InsertItem( ceWPTTreeItemModel *model, int position ){
 		}
 	}
 	
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
 	
 	if( beforeItem ){

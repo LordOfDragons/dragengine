@@ -32,8 +32,8 @@
 #include "../igdeTextField.h"
 #include "../igdeContainerReference.h"
 #include "../igdeUIHelper.h"
-#include "../event/igdeSliderListenerReference.h"
-#include "../event/igdeTextFieldListenerReference.h"
+#include "../event/igdeSliderListener::Ref.h"
+#include "../event/igdeTextFieldListener::Ref.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/exceptions.h>

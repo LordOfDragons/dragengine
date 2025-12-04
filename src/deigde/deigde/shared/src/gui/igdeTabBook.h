@@ -26,7 +26,7 @@
 #define _IGDETABBOOK_H_
 
 #include "igdeContainer.h"
-#include "resources/igdeIconReference.h"
+#include "resources/igdeIcon::Ref.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
@@ -109,7 +109,7 @@ public:
 	public:
 		decString text;
 		decString description;
-		igdeIconReference icon;
+		igdeIcon::Ref icon;
 		
 		cHeader( const char *text, igdeIcon *icon, const char *description );
 		virtual ~cHeader();

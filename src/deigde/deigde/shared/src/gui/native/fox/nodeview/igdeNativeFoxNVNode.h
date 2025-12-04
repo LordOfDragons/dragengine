@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXNVNODE_H_
 
 #include "../foxtoolkit.h"
-#include "../../../resources/igdeFontReference.h"
+#include "../../../resources/igdeFont::Ref.h"
 
 
 class igdeNVNode;
@@ -52,7 +52,7 @@ public:
 	
 private:
 	igdeNVNode *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 	FXLabel *pLabTitle;
 	FXHorizontalFrame *pFrameTitle;

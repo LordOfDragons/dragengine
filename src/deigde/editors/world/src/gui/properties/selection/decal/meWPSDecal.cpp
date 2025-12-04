@@ -83,7 +83,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 
 
@@ -107,7 +107,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -132,7 +132,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -155,7 +155,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -178,7 +178,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editDVector->GetDVector(), decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -201,7 +201,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector2->GetVector2(), decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -292,7 +292,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUDecalSkin( decal, editPath->GetPath() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -341,7 +341,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUDecalColorTint( decal, colorBox->GetColor() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}

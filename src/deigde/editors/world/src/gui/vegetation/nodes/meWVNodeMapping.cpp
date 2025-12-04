@@ -47,7 +47,7 @@
 #include <deigde/gui/nodeview/igdeNVSlot.h>
 #include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -72,7 +72,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleMapSetLower( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRuleMapping(), value ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -92,7 +92,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleMapSetUpper( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRuleMapping(), value ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -112,7 +112,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleMapSetValue( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRuleMapping(), value ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -128,7 +128,7 @@ public:
 		igdeAction( "Inversed", NULL, "Invert value" ), pNode( node ){ }
 	
 	virtual void OnAction(){
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleMapToggleInversed(
 			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleMapping() ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );

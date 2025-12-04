@@ -29,10 +29,10 @@
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeTabBookReference.h>
 #include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionUndoReference.h>
 #include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 class seConfiguration;
 class seEngineController;
@@ -58,29 +58,29 @@ class seWindowMain : public igdeEditorWindow{
 private:
 	seWindowMainListener *pListener;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileNewModel;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileNewModel;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
 	igdeActionUndoReference pActionEditUndo;
 	igdeActionRedoReference pActionEditRedo;
 	
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeActionReference pActionMappedAdd;
-	igdeActionReference pActionMappedRemove;
+	igdeAction::Ref pActionMappedAdd;
+	igdeAction::Ref pActionMappedRemove;
 	
-	igdeActionReference pActionTextureAdd;
-	igdeActionReference pActionTextureRemove;
-	igdeActionReference pActionTextureImportFromGDef;
-	igdeActionReference pActionTextureImportFromFile;
+	igdeAction::Ref pActionTextureAdd;
+	igdeAction::Ref pActionTextureRemove;
+	igdeAction::Ref pActionTextureImportFromGDef;
+	igdeAction::Ref pActionTextureImportFromFile;
 	
-	igdeActionReference pActionPropertyAdd;
-	igdeActionReference pActionPropertyRemove;
+	igdeAction::Ref pActionPropertyAdd;
+	igdeAction::Ref pActionPropertyRemove;
 	
 	igdeToolBarReference pTBFile;
 	igdeToolBarReference pTBEdit;

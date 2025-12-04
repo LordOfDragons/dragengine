@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -72,7 +72,7 @@ igdeUndo *gdeMAOCBillboardCopy::OnActionSubObject( gdeGameDefinition &gameDefini
 	deObjectReference clipOCBillboard;
 	clipOCBillboard.TakeOver( new gdeOCBillboard( *billboard ) );
 	
-	igdeClipboardDataReference clipData;
+	igdeClipboardData::Ref clipData;
 	clipData.TakeOver( new gdeClipboardDataOCBillboard( ( gdeOCBillboard* )( deObject* )clipOCBillboard ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );

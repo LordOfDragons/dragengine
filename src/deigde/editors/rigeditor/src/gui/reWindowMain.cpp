@@ -69,7 +69,7 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/layout/igdeContainerSplittedReference.h>
@@ -86,7 +86,7 @@
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/deObjectReference.h>
@@ -355,7 +355,7 @@ public:
 	pWindow( window ){}
 	
 	virtual void OnAction(){
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetRig() ) );
 		if( undo ){
 			pWindow.GetRig()->GetUndoSystem()->Add( undo );
@@ -1183,7 +1183,7 @@ public:
 		deObjectReference refImportRig;
 		refImportRig.TakeOver( pWindow.GetLoadSaveSystem().LoadRig( dialog.GetPath() ) );
 		
-		igdeUndoReference refUndo;
+		igdeUndo::Ref refUndo;
 		refUndo.TakeOver( new reUBoneImportFromFile( rig, ( reRig* )refImportRig.operator->() ) );
 		reUBoneImportFromFile &undo = ( reUBoneImportFromFile& )( igdeUndo& )refUndo;
 		

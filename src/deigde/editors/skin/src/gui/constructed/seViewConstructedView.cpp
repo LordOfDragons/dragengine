@@ -55,16 +55,16 @@
 #include "../../undosys/property/node/group/seUPNGroupNodes.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 #include <deigde/module/igdeEditorModule.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -72,7 +72,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/canvas/deCanvasReference.h>
+#include <dragengine/resources/canvas/deCanvas::Ref.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
@@ -109,7 +109,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( skin, property ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -273,7 +273,7 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode* ){
-		igdeClipboardDataReference data;
+		igdeClipboardData::Ref data;
 		data.TakeOver( new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) );
 		pView.GetWindowMain().GetClipboard().Set( data );
 		return NULL;
@@ -286,7 +286,7 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ), "Cut nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode *node ){
-		igdeClipboardDataReference data;
+		igdeClipboardData::Ref data;
 		data.TakeOver( new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) );
 		pView.GetWindowMain().GetClipboard().Set( data );
 		
@@ -1180,7 +1180,7 @@ void seViewConstructedView::pRecreateContentCanvas( const sePropertyNodeGroup &n
 	deCanvasManager &canvasManager = *pWindowMain.GetEngine()->GetCanvasManager();
 	const int activeLayer = GetActiveProperty()->GetActiveNodeLayer();
 	const int count = nodeGroup.GetNodeCount();
-	deCanvasReference canvas;
+	deCanvas::Ref canvas;
 	int i;
 	
 	for( i=0; i<count; i++ ){

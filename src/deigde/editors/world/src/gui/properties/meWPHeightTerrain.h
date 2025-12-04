@@ -38,10 +38,10 @@
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditSliderTextReference.h>
 #include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 
 class meHeightTerrainNavSpaceType;
@@ -71,29 +71,29 @@ private:
 	
 	
 	igdeActionContextMenuReference pActionMenuTexture;
-	igdeActionReference pActionTextureAdd;
-	igdeActionReference pActionTextureRemove;
+	igdeAction::Ref pActionTextureAdd;
+	igdeAction::Ref pActionTextureRemove;
 	
 	igdeActionContextMenuReference pActionMenuNavSpace;
-	igdeActionReference pActionNavSpaceAdd;
-	igdeActionReference pActionNavSpaceRemove;
+	igdeAction::Ref pActionNavSpaceAdd;
+	igdeAction::Ref pActionNavSpaceRemove;
 	
 	igdeActionContextMenuReference pActionMenuNavSpaceType;
-	igdeActionReference pActionNavSpaceTypeAdd;
-	igdeActionReference pActionNavSpaceTypeRemove;
+	igdeAction::Ref pActionNavSpaceTypeAdd;
+	igdeAction::Ref pActionNavSpaceTypeRemove;
 	
-	igdeActionReference pActionNavSpaceFaceAdd;
-	igdeActionReference pActionNavSpaceFaceRemove;
+	igdeAction::Ref pActionNavSpaceFaceAdd;
+	igdeAction::Ref pActionNavSpaceFaceRemove;
 	
 	igdeActionContextMenuReference pActionMenuVLayer;
-	igdeActionReference pActionVLayerAdd;
-	igdeActionReference pActionVLayerRemove;
-	igdeActionReference pActionVLayerUp;
-	igdeActionReference pActionVLayerDown;
+	igdeAction::Ref pActionVLayerAdd;
+	igdeAction::Ref pActionVLayerRemove;
+	igdeAction::Ref pActionVLayerUp;
+	igdeAction::Ref pActionVLayerDown;
 	
 	igdeActionContextMenuReference pActionMenuVVariation;
-	igdeActionReference pActionVVariationAdd;
-	igdeActionReference pActionVVariationRemove;
+	igdeAction::Ref pActionVVariationAdd;
+	igdeAction::Ref pActionVVariationRemove;
 	
 	
 	igdeEditPathReference pEditPathHTerrain;

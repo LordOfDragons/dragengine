@@ -43,7 +43,7 @@
 #include <dragengine/common/curve/decCurveBezierEvaluator.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/component/deComponent.h>
-#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance::Ref.h>
 #include <dragengine/resources/particle/deParticleEmitterController.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
@@ -276,7 +276,7 @@ void debpParticleEmitterInstance::CheckForLastParticle(){
 	
 	pCheckForLastParticle = false;
 	
-	deParticleEmitterInstanceReference guard( pInstance );
+	deParticleEmitterInstance::Ref guard( pInstance );
 	pInstance->NotifyLastParticleDied();
 	if( pInstance->GetRemoveAfterLastParticleDied() ){
 		pInstance->GetParentWorld()->RemoveParticleEmitter( pInstance );

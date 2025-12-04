@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeContainer.h"
-#include "resources/igdeIconReference.h"
+#include "resources/igdeIcon::Ref.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -43,7 +43,7 @@ class igdeWidget;
 class DE_DLL_EXPORT igdeWindow : public igdeContainer{
 private:
 	decString pTitle;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pCanResize;
 	decPoint pPosition, pSize;
 	bool pEnabled;

@@ -33,7 +33,7 @@
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeTabBookReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 #include <dragengine/deObjectReference.h>
@@ -71,9 +71,9 @@ private:
 	
 	deObjectReference pSelectedProfile;
 	
-	igdeActionReference pActionStart;
-	igdeActionReference pActionQuit;
-	igdeActionReference pActionKill;
+	igdeAction::Ref pActionStart;
+	igdeAction::Ref pActionQuit;
+	igdeAction::Ref pActionKill;
 	
 	igdeTabBookReference pTabContent;
 	

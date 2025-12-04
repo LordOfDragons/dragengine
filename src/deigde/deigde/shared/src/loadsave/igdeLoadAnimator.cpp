@@ -34,7 +34,7 @@
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
@@ -48,7 +48,7 @@
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animator/deAnimator.h>
-#include <dragengine/resources/animator/deAnimatorReference.h>
+#include <dragengine/resources/animator/deAnimator::Ref.h>
 #include <dragengine/resources/animator/deAnimatorManager.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
@@ -1282,9 +1282,9 @@ const char *basePath, deAnimator &animator ){
 				
 				try{
 					const decPath realPath( decPath::AbsolutePathNative( pathAnimator, basePath ) );
-					decBaseFileReaderReference reader;
+					decBaseFileReader::Ref reader;
 					reader.TakeOver( vfs.OpenFileForReading( realPath ) );
-					deAnimatorReference subAnimator;
+					deAnimator::Ref subAnimator;
 					subAnimator.TakeOver( animator.GetEngine()->GetAnimatorManager()->CreateAnimator() );
 					Load( realPath.GetPathUnix(), subAnimator, reader );
 					rule->SetSubAnimator( subAnimator );

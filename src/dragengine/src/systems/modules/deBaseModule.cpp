@@ -47,7 +47,7 @@
 #include "../../filesystem/deVFSNull.h"
 #include "../../filesystem/deVFSCacheDiskDirectory.h"
 #include "../../filesystem/deVFSRedirect.h"
-#include "../../filesystem/deVFSContainerReference.h"
+#include "../../filesystem/deVFSContainer::Ref.h"
 
 
 

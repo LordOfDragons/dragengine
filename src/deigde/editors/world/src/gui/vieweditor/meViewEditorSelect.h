@@ -28,7 +28,7 @@
 #include "meViewEditorNavigation.h"
 #include "../meInfoBubble.h"
 
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deCollider::Ref.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
 
@@ -43,7 +43,7 @@ class deFontSize;
 class meViewEditorSelect : public meViewEditorNavigation{
 private:
 	meCLSelect *pCLSelect, *pCLBubbleInfo;
-	deColliderReference pColVol;
+	deCollider::Ref pColVol;
 	
 	deCanvasPaint::Ref pCanvasSelect;
 	

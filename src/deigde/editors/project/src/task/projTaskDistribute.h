@@ -32,10 +32,10 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/filesystem/dePathList.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
 #include <dragengine/systems/deModuleSystem.h>
 
 class projWindowMain;
@@ -74,7 +74,7 @@ private:
 	const projProject &pProject;
 	const projProfile &pProfile;
 	
-	deVirtualFileSystemReference pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	decObjectList pStackDirectories;
 	eStates pState;
 	decStringSet pUsedFileExtensions;
@@ -83,7 +83,7 @@ private:
 	
 	zipFile pZipFile;
 	decString pDelgaPath;
-	decBaseFileWriterReference pDelgaWriter;
+	decBaseFileWriter::Ref pDelgaWriter;
 	
 	long pDelgaSize;
 	long pDelgaPosition;

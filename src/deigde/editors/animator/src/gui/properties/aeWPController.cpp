@@ -49,7 +49,7 @@
 #include "../../undosys/controller/aeUControllerSetDefaultValue.h"
 #include "../../undosys/controller/aeUControllerSetDefaultVector.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -73,7 +73,7 @@
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animation/deAnimation.h>
@@ -103,7 +103,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( animator, controller ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -144,7 +144,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, animator, controller ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -163,7 +163,7 @@ public:
 		"Copy controller to clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeController *controller ){
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new aeClipboardDataController( controller ) );
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
 		return nullptr;
@@ -177,7 +177,7 @@ public:
 		"Cut controller into clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator, aeController *controller ){
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new aeClipboardDataController( controller ) );
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
 		return new aeURemoveController( animator, controller );
@@ -204,7 +204,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeUControllerPaste( animator, cdata->GetControllers() ) );
 		animator->GetUndoSystem()->Add( undo );
 	}
@@ -460,7 +460,7 @@ public:
 		
 		const decVector &vector = editVector->GetVector();
 		if( ! controller->GetDefaultVector().IsEqualTo( vector ) ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( new aeUControllerSetDefaultVector( controller, vector ) );
 			animator->GetUndoSystem()->Add( undo );
 		}

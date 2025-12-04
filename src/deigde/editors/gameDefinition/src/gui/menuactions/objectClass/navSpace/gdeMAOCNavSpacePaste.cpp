@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 #include "../../../../undosys/objectClass/navspace/gdeUOCAddNavSpace.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Space",
 ///////////////
 
 igdeUndo *gdeMAOCNavSpacePaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCNavSpace::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;

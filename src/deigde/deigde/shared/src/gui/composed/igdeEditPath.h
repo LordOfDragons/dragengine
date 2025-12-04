@@ -30,7 +30,7 @@
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
 #include "../event/igdeActionContextMenuReference.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../event/igdeActionSelectFile.h"
 #include "../filedialog/igdeFilePatternList.h"
 #include "../event/igdeTextFieldListener.h"
@@ -164,7 +164,7 @@ private:
 	bool pUseGameVFS;
 	decString pBasePath;
 	
-	igdeActionReference pActionButton;
+	igdeAction::Ref pActionButton;
 	igdeActionContextMenuReference pActionButtonMenu;
 	
 	igdeTextFieldReference pText;

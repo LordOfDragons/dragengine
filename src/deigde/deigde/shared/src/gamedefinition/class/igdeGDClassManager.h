@@ -26,7 +26,7 @@
 #define _IGDEGDCLASSMANAGER_H_
 
 #include "../igdeTagManager.h"
-#include "../igdeGDCategoryReference.h"
+#include "../igdeGDCategory::Ref.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
@@ -49,7 +49,7 @@ class DE_DLL_EXPORT igdeGDClassManager{
 private:
 	decObjectOrderedSet pClasses;
 	
-	igdeGDCategoryReference pCategories;
+	igdeGDCategory::Ref pCategories;
 	
 	igdeTagManager pHideTags;
 	igdeTagManager pPartialHideTags;

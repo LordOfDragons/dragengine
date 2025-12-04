@@ -25,7 +25,7 @@
 #ifndef _DEOALCOMPONENTDEBUG_H_
 #define _DEOALCOMPONENTDEBUG_H_
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
 
 class deoalComponent;
 class deoalWorld;
@@ -37,7 +37,7 @@ class deoalWorld;
 class deoalComponentDebug{
 private:
 	deoalComponent &pComponent;
-	deDebugDrawerReference pDDFaces;
+	deDebugDrawer::Ref pDDFaces;
 	bool pDirtyFaces;
 	
 	

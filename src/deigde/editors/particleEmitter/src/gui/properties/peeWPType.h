@@ -33,8 +33,8 @@
 #include <deigde/gui/igdeSpinTextFieldReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 class peeEmitter;
 class peeType;
@@ -54,13 +54,13 @@ private:
 	
 	peeEmitter *pEmitter;
 	
-	igdeIconReference pIconUnused;
-	igdeIconReference pIconUsed;
+	igdeIcon::Ref pIconUnused;
+	igdeIcon::Ref pIconUsed;
 	
-	igdeActionReference pActionType;
-	igdeActionReference pActionTypeAdd;
-	igdeActionReference pActionTypeRemove;
-	igdeActionReference pActionTypeRename;
+	igdeAction::Ref pActionType;
+	igdeAction::Ref pActionTypeAdd;
+	igdeAction::Ref pActionTypeRemove;
+	igdeAction::Ref pActionTypeRename;
 	
 	igdeComboBoxReference pCBType;
 	igdeButtonReference pBtnType;

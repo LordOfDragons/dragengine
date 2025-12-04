@@ -27,10 +27,10 @@
 
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionUndoReference.h>
 #include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 #include <dragengine/common/math/decMath.h>
 
@@ -65,75 +65,75 @@ class reWindowMain : public igdeEditorWindow{
 private:
 	reWindowMainListener *pListener;
 	
-	igdeIconReference pIconEditBone;
-	igdeIconReference pIconEditShape;
-	igdeIconReference pIconEditConstraint;
-	igdeIconReference pIconEditPush;
-	igdeIconReference pIconEditSelect;
-	igdeIconReference pIconEditMove;
-	igdeIconReference pIconEditScale;
-	igdeIconReference pIconEditRotate;
-// 	igdeIconReference pIconEdit3DCursor;
-	igdeIconReference pIconEditLockAxisX;
-	igdeIconReference pIconEditLockAxisY;
-	igdeIconReference pIconEditLockAxisZ;
-	igdeIconReference pIconEditLockLocal;
+	igdeIcon::Ref pIconEditBone;
+	igdeIcon::Ref pIconEditShape;
+	igdeIcon::Ref pIconEditConstraint;
+	igdeIcon::Ref pIconEditPush;
+	igdeIcon::Ref pIconEditSelect;
+	igdeIcon::Ref pIconEditMove;
+	igdeIcon::Ref pIconEditScale;
+	igdeIcon::Ref pIconEditRotate;
+// 	igdeIcon::Ref pIconEdit3DCursor;
+	igdeIcon::Ref pIconEditLockAxisX;
+	igdeIcon::Ref pIconEditLockAxisY;
+	igdeIcon::Ref pIconEditLockAxisZ;
+	igdeIcon::Ref pIconEditLockLocal;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
 	igdeActionUndoReference pActionEditUndo;
 	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
-	igdeActionReference pActionEditBoneMode;
-	igdeActionReference pActionEditShapeMode;
-	igdeActionReference pActionEditConstraintMode;
-	igdeActionReference pActionEditPushMode;
-	igdeActionReference pActionEditSelectMode;
-	igdeActionReference pActionEditMoveMode;
-	igdeActionReference pActionEditScaleMode;
-	igdeActionReference pActionEditRotateMode;
-// 	igdeActionReference pActionEdit3DCursorMode;
-	igdeActionReference pActionEditSelectAll;
-	igdeActionReference pActionEditSelectAllWithShapes;
-	igdeActionReference pActionEditSelectNone;
-	igdeActionReference pActionEditDelete;
-	igdeActionReference pActionEditLockAxisX;
-	igdeActionReference pActionEditLockAxisY;
-	igdeActionReference pActionEditLockAxisZ;
-	igdeActionReference pActionEditLockLocal;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
+	igdeAction::Ref pActionEditBoneMode;
+	igdeAction::Ref pActionEditShapeMode;
+	igdeAction::Ref pActionEditConstraintMode;
+	igdeAction::Ref pActionEditPushMode;
+	igdeAction::Ref pActionEditSelectMode;
+	igdeAction::Ref pActionEditMoveMode;
+	igdeAction::Ref pActionEditScaleMode;
+	igdeAction::Ref pActionEditRotateMode;
+// 	igdeAction::Ref pActionEdit3DCursorMode;
+	igdeAction::Ref pActionEditSelectAll;
+	igdeAction::Ref pActionEditSelectAllWithShapes;
+	igdeAction::Ref pActionEditSelectNone;
+	igdeAction::Ref pActionEditDelete;
+	igdeAction::Ref pActionEditLockAxisX;
+	igdeAction::Ref pActionEditLockAxisY;
+	igdeAction::Ref pActionEditLockAxisZ;
+	igdeAction::Ref pActionEditLockLocal;
 	
-	igdeActionReference pActionRigAddSphere;
-	igdeActionReference pActionRigAddBox;
-	igdeActionReference pActionRigAddCylinder;
-	igdeActionReference pActionRigAddCapsule;
-	igdeActionReference pActionRigAddConstraint;
-	igdeActionReference pActionRigAddPush;
-	igdeActionReference pActionRigShowShapes;
-	igdeActionReference pActionRigShowConstraints;
-	igdeActionReference pActionRigShowPushes;
+	igdeAction::Ref pActionRigAddSphere;
+	igdeAction::Ref pActionRigAddBox;
+	igdeAction::Ref pActionRigAddCylinder;
+	igdeAction::Ref pActionRigAddCapsule;
+	igdeAction::Ref pActionRigAddConstraint;
+	igdeAction::Ref pActionRigAddPush;
+	igdeAction::Ref pActionRigShowShapes;
+	igdeAction::Ref pActionRigShowConstraints;
+	igdeAction::Ref pActionRigShowPushes;
 	
-	igdeActionReference pActionBoneAdd;
-	igdeActionReference pActionBoneAddSphere;
-	igdeActionReference pActionBoneAddBox;
-	igdeActionReference pActionBoneAddCylinder;
-	igdeActionReference pActionBoneAddCapsule;
-	igdeActionReference pActionBoneAddConstraint;
-	igdeActionReference pActionBoneShowBones;
-	igdeActionReference pActionBoneShowAllShapes;
-	igdeActionReference pActionBoneShowAllConstraints;
-	igdeActionReference pActionBoneMirror;
-	igdeActionReference pActionBoneImport;
-	igdeActionReference pActionBoneScaleMass;
-	igdeActionReference pActionBoneMassFromVolume;
+	igdeAction::Ref pActionBoneAdd;
+	igdeAction::Ref pActionBoneAddSphere;
+	igdeAction::Ref pActionBoneAddBox;
+	igdeAction::Ref pActionBoneAddCylinder;
+	igdeAction::Ref pActionBoneAddCapsule;
+	igdeAction::Ref pActionBoneAddConstraint;
+	igdeAction::Ref pActionBoneShowBones;
+	igdeAction::Ref pActionBoneShowAllShapes;
+	igdeAction::Ref pActionBoneShowAllConstraints;
+	igdeAction::Ref pActionBoneMirror;
+	igdeAction::Ref pActionBoneImport;
+	igdeAction::Ref pActionBoneScaleMass;
+	igdeAction::Ref pActionBoneMassFromVolume;
 	
-	igdeActionReference pActionViewShapeXRay;
+	igdeAction::Ref pActionViewShapeXRay;
 	
-	igdeActionReference pActionSimulationRun;
+	igdeAction::Ref pActionSimulationRun;
 	
 	igdeToolBarReference pTBFile;
 	igdeToolBarReference pTBEdit;

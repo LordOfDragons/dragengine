@@ -31,7 +31,7 @@
 #include "igdeGDCategory.h"
 #include "igdeTagManager.h"
 #include "class/igdeGDClass.h"
-#include "class/igdeGDClassReference.h"
+#include "class/igdeGDClass::Ref.h"
 #include "class/igdeGDClassInherit.h"
 #include "class/igdeGDClassManager.h"
 #include "class/igdeGDCamera.h"
@@ -267,7 +267,7 @@ void igdeXMLGameDefinition::pParseGameDefinition( const decXmlElementTag &root, 
 void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameDefinition &gamedef ){
 	decStringDictionary propertyValues;
 	igdeGDProperty *property = NULL;
-	igdeGDClassReference gdClass;
+	igdeGDClass::Ref gdClass;
 	const char *scaleMode;
 	int i;
 	

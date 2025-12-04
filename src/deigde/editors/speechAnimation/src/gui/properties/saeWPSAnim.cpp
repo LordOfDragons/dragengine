@@ -64,14 +64,14 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -102,7 +102,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, sanimation ) );
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
@@ -132,7 +132,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( sanimation ) );
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
@@ -155,7 +155,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnTextChanged( comboBox, sanimation ) );
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
@@ -178,7 +178,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editPath->GetPath(), sanimation ) );
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );

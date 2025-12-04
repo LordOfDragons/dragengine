@@ -28,11 +28,11 @@
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionUndoReference.h>
 #include <deigde/gui/event/igdeActionRedoReference.h>
 #include <deigde/gui/resources/igdeFont.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 class lpeLangPackEntry;
 class lpeWindowMainListener;
@@ -52,22 +52,22 @@ class lpeWindowMain : public igdeEditorWindow{
 private:
 	lpeWindowMainListener *pListener;
 	
-	//igdeIconReference pIconLangPackNew;
+	//igdeIcon::Ref pIconLangPackNew;
 	
-	igdeActionReference pActionLangPackNew;
-	igdeActionReference pActionLangPackOpen;
-	igdeActionReference pActionLangPackSave;
-	igdeActionReference pActionLangPackSaveAs;
-	igdeActionReference pActionLangPackOpenRef;
-	igdeActionReference pActionEntryAdd;
-	igdeActionReference pActionEntryRemove;
-	igdeActionReference pActionEntryNextMissing;
+	igdeAction::Ref pActionLangPackNew;
+	igdeAction::Ref pActionLangPackOpen;
+	igdeAction::Ref pActionLangPackSave;
+	igdeAction::Ref pActionLangPackSaveAs;
+	igdeAction::Ref pActionLangPackOpenRef;
+	igdeAction::Ref pActionEntryAdd;
+	igdeAction::Ref pActionEntryRemove;
+	igdeAction::Ref pActionEntryNextMissing;
 	
 	igdeActionUndoReference pActionEditUndo;
 	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
 	igdeToolBarReference pTBFile;
 	igdeToolBarReference pTBEdit;

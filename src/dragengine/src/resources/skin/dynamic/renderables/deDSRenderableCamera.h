@@ -26,7 +26,7 @@
 #define _DEDSRENDERABLECAMERA_H_
 
 #include "deDSRenderable.h"
-#include "../../../camera/deCameraReference.h"
+#include "../../../camera/deCamera::Ref.h"
 
 
 /**
@@ -38,7 +38,7 @@
  */
 class DE_DLL_EXPORT deDSRenderableCamera : public deDSRenderable{
 private:
-	deCameraReference pCamera;
+	deCamera::Ref pCamera;
 	
 	
 	

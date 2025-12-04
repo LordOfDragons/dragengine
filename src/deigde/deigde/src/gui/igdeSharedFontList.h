@@ -26,7 +26,7 @@
 #define _IGDESHAREDFONTSLIST_H_
 
 #include <deigde/gui/resources/igdeFont.h>
-#include <deigde/gui/resources/igdeFontReference.h>
+#include <deigde/gui/resources/igdeFont::Ref.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -43,7 +43,7 @@ private:
 	class cFont : public deObject{
 	private:
 		igdeFont::sConfiguration pConfig;
-		igdeFontReference pFont;
+		igdeFont::Ref pFont;
 		
 	public:
 		cFont( const igdeFont::sConfiguration &config, igdeFont *font );

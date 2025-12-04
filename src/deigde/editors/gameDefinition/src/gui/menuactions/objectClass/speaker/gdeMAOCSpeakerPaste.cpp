@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 #include "../../../../undosys/objectClass/speaker/gdeUOCAddSpeaker.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Speaker",
 ///////////////
 
 igdeUndo *gdeMAOCSpeakerPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCSpeaker::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;

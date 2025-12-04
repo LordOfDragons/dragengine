@@ -41,7 +41,7 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-#include "../../../common/file/decBaseFileReaderReference.h"
+#include "../../../common/file/decBaseFileReader::Ref.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../logger/deLogger.h"
@@ -255,7 +255,7 @@ void deRLTaskReadSkinInternal::pPrepare(){
 	const decPath path( decPath::CreatePathUnix( GetPath() ) );
 	
 	try{
-		decBaseFileReaderReference reader;
+		decBaseFileReader::Ref reader;
 		reader.TakeOver( GetVFS()->OpenFileForReading( path ) );
 		
 		pSkin.TakeOver( new deSkin( GetEngine().GetSkinManager(), GetVFS(), GetPath(),

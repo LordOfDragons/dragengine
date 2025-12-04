@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXTOOLBAR_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont::Ref.h"
 
 class igdeToolBar;
 class igdeEnvironment;

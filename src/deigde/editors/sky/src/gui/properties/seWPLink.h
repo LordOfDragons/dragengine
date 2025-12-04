@@ -31,7 +31,7 @@
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 
 class seSky;
 class seLink;
@@ -51,8 +51,8 @@ private:
 	
 	seSky *pSky;
 	
-	igdeActionReference pActionLinkAdd;
-	igdeActionReference pActionLinkRemove;
+	igdeAction::Ref pActionLinkAdd;
+	igdeAction::Ref pActionLinkRemove;
 	
 	igdeListBoxReference pListLinks;
 	

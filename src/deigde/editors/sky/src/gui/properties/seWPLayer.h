@@ -37,7 +37,7 @@
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/composed/igdeEditVector2Reference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 
 class seSky;
 class seLayer;
@@ -57,18 +57,18 @@ private:
 	
 	seSky *pSky;
 	
-	igdeActionReference pActionLayerAdd;
-	igdeActionReference pActionLayerRemove;
-	igdeActionReference pActionLayerUp;
-	igdeActionReference pActionLayerDown;
+	igdeAction::Ref pActionLayerAdd;
+	igdeAction::Ref pActionLayerRemove;
+	igdeAction::Ref pActionLayerUp;
+	igdeAction::Ref pActionLayerDown;
 	
-	igdeActionReference pActionBodyAdd;
-	igdeActionReference pActionBodyRemove;
-	igdeActionReference pActionBodyUp;
-	igdeActionReference pActionBodyDown;
+	igdeAction::Ref pActionBodyAdd;
+	igdeAction::Ref pActionBodyRemove;
+	igdeAction::Ref pActionBodyUp;
+	igdeAction::Ref pActionBodyDown;
 	
-	igdeActionReference pActionLinkAdd;
-	igdeActionReference pActionLinkRemove;
+	igdeAction::Ref pActionLinkAdd;
+	igdeAction::Ref pActionLinkRemove;
 	
 	igdeListBoxReference pListLayer;
 	

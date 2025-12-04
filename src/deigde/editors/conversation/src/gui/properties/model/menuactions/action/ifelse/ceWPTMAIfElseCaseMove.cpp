@@ -41,7 +41,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -73,7 +73,7 @@ pIndex( index )
 ///////////////
 
 void ceWPTMAIfElseCaseMove::OnAction(){
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new ceUCAIfElseCaseMove( pTopic, pIfElse, pIfCase, pIndex ) );
 	pConversation->GetUndoSystem()->Add( undo );
 }

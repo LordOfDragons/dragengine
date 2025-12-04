@@ -36,7 +36,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -58,7 +58,7 @@ pConversation( &conversation ){
 ///////////////
 
 void ceWPTMARemoveAllActions::OnAction(){
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( CreateUndo() );
 	pConversation->GetUndoSystem()->Add( undo );
 }

@@ -53,7 +53,7 @@
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/gui/theme/propertyNames.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -121,7 +121,7 @@ public:
 		deObjectReference strip;
 		strip.TakeOver( dialog.CreateStrip() );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pLane.UndoStripAdd( ( ceStrip* )( deObject* )strip, decMath::max( pIndex, 0 ) ) );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -145,7 +145,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pLane.UndoStripRemove( pStrip ) );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -168,7 +168,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pLane.UndoStripRemoveAll() );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -192,7 +192,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex - 1 ) );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -216,7 +216,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex + 1 ) );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -262,9 +262,9 @@ class cMouseListener : public igdeMouseDragListener {
 	int pScaleCount;
 	float pScaleAnchor;
 	float pScaleLength;
-	igdeUndoReference pUndoDuration;
-	igdeUndoReference pUndoPause;
-	igdeUndoReference pUndoScale;
+	igdeUndo::Ref pUndoDuration;
+	igdeUndo::Ref pUndoPause;
+	igdeUndo::Ref pUndoScale;
 	
 public:
 	cMouseListener( ceWDSLane &lane ) : pLane( lane ), pDragMode( edmNone ){ }
@@ -899,7 +899,7 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( UndoStripReplace( strip, ( ceStrip* )( deObject* )newStrip ) );
 	pWindow.GetConversation()->GetUndoSystem()->Add( undo );
 }

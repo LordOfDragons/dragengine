@@ -40,13 +40,13 @@
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/sky/deSky.h>
 #include <dragengine/resources/sky/deSkyManager.h>
 #include <dragengine/resources/sky/deSkyController.h>
-#include <dragengine/resources/sky/deSkyReference.h>
+#include <dragengine/resources/sky/deSky::Ref.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 #include <dragengine/resources/sky/deSkyInstance.h>
 #include <dragengine/resources/sky/deSkyInstanceManager.h>
@@ -257,8 +257,8 @@ void igdeWSky::pLoadSky( const char *path ){
 	}
 	
 	igdeLoadSky loadsky( pEnvironment, pEnvironment.GetLogger(), "igdeWSky" );
-	decBaseFileReaderReference reader;
-	deSkyReference sky;
+	decBaseFileReader::Ref reader;
+	deSky::Ref sky;
 	
 	try{
 		sky.TakeOver( engine.GetSkyManager()->CreateSky() );

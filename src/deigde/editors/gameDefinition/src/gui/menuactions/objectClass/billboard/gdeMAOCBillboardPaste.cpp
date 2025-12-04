@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 #include "../../../../undosys/objectClass/billboard/gdeUOCAddBillboard.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Billboard",
 ///////////////
 
 igdeUndo *gdeMAOCBillboardPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCBillboard::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;

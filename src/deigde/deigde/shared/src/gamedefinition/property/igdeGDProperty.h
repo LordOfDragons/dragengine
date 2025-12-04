@@ -43,6 +43,12 @@ class igdeFilePatternList;
  */
 class DE_DLL_EXPORT igdeGDProperty : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDProperty> Ref;
+	
+	
+	
+
 	/** \brief Property type. */
 	enum ePropertyTypes{
 		/** \brief String value. */

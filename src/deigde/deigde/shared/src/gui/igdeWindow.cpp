@@ -30,7 +30,7 @@
 #include "igdeCommonDialogs.h"
 #include "igdeContainerReference.h"
 #include "igdeWidget.h"
-#include "igdeWidgetReference.h"
+#include "igdeWidget::Ref.h"
 #include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "theme/igdeGuiTheme.h"

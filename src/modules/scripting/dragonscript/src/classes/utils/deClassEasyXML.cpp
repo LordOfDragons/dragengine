@@ -39,9 +39,9 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/visitors/decXmlVisitorWriter.h>
@@ -129,7 +129,7 @@ void deClassEasyXML::nfNewFile::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dedsXmlParser parser( ds.GetGameEngine()->GetLogger() );
 	
 	try{
-		decBaseFileReaderReference reader;
+		decBaseFileReader::Ref reader;
 		reader.TakeOver( vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 		
 		nd.document = new dedsXmlDocument( filename );
@@ -189,7 +189,7 @@ void deClassEasyXML::nfNewFile2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dedsXmlParser parser( ds.GetGameEngine()->GetLogger() );
 	
 	try{
-		decBaseFileReaderReference reader;
+		decBaseFileReader::Ref reader;
 		reader.TakeOver( vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 		
 		nd.document = new dedsXmlDocument( filename );

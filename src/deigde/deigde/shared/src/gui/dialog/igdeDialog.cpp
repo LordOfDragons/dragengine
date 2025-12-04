@@ -32,8 +32,8 @@
 #include "../igdeSeparator.h"
 #include "../igdeButton.h"
 #include "../igdeWidget.h"
-#include "../igdeWidgetReference.h"
-#include "../event/igdeActionReference.h"
+#include "../igdeWidget::Ref.h"
+#include "../event/igdeAction::Ref.h"
 #include "../layout/igdeContainerBorder.h"
 #include "../layout/igdeContainerBorderReference.h"
 #include "../layout/igdeContainerFlow.h"
@@ -187,7 +187,7 @@ igdeAction **actions, int actionCount ){
 	
 	buttonBar.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX, spacing ) );
 	
-	igdeWidgetReference button;
+	igdeWidget::Ref button;
 	for( i=0; i<actionCount; i++ ){
 		button.TakeOver( new igdeButton( env, actions[ i ] ) );
 		buttonBar->AddChild( button );
@@ -195,17 +195,17 @@ igdeAction **actions, int actionCount ){
 }
 
 void igdeDialog::CreateButtonBar( igdeContainerReference &buttonBar, const char *text ){
-	igdeActionReference action;
+	igdeAction::Ref action;
 	action.TakeOver( new CancelDialog( *this, text ) );
 	CreateButtonBar( buttonBar, action );
 }
 
 void igdeDialog::CreateButtonBar( igdeContainerReference &buttonBar,
 const char *textAccept, const char *textCancel ){
-	igdeActionReference actionAccept;
+	igdeAction::Ref actionAccept;
 	actionAccept.TakeOver( new AcceptDialog( *this, textAccept ) );
 	
-	igdeActionReference actionCancel;
+	igdeAction::Ref actionCancel;
 	actionCancel.TakeOver( new CancelDialog( *this, textCancel ) );
 	
 	CreateButtonBar( buttonBar, actionAccept, actionCancel );
@@ -330,7 +330,7 @@ igdeWidget *rightPanel, igdeWidget *buttonBar ){
 		igdeContainerFlow::esNone, spacing ) );
 	border->AddChild( bottom, igdeContainerBorder::eaBottom );
 	
-	igdeWidgetReference separator;
+	igdeWidget::Ref separator;
 	separator.TakeOver( new igdeSeparator( env, igdeSeparator::eoHorizontal ) );
 	bottom->AddChild( separator );
 	bottom->AddChild( buttonBar );

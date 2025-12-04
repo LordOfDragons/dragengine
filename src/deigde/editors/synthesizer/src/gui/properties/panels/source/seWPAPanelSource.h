@@ -30,7 +30,7 @@
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceVisitorIdentify.h>
@@ -53,8 +53,8 @@ private:
 	seWPSource &pWPSource;
 	deSynthesizerSourceVisitorIdentify::eSourceTypes pRequiredType;
 	
-	igdeActionReference pActionLinkAdd;
-	igdeActionReference pActionLinkRemove;
+	igdeAction::Ref pActionLinkAdd;
+	igdeAction::Ref pActionLinkRemove;
 	
 	igdeTextFieldReference pEditName;
 	igdeComboBoxReference pCBMixMode;

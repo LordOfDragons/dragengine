@@ -75,7 +75,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/deEngine.h>
 #include <dragengine/deObjectReference.h>
@@ -865,8 +865,8 @@ void gdeViewActiveObject::pInitParticleEmitter(){
 	
 	deVirtualFileSystem * const vfs = pGameDefinition->GetPreviewVFS();
 	deEngine &engine = *pGameDefinition->GetEngine();
-	deParticleEmitterReference engEmitter;
-	decBaseFileReaderReference reader;
+	deParticleEmitter::Ref engEmitter;
+	decBaseFileReader::Ref reader;
 	
 	igdeLoadParticleEmitter loader( *pGameDefinition->GetEnvironment(),
 		pGameDefinition->GetEnvironment()->GetLogger(), "gdeGDEditActiveObject" );

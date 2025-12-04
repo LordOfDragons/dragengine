@@ -50,7 +50,7 @@
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezierListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -64,7 +64,7 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -90,7 +90,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, sky, link ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -114,7 +114,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, sky, link ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -147,7 +147,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( sky ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -300,7 +300,7 @@ public:
 class cEditCurve : public igdeViewCurveBezierListener{
 protected:
 	seWPLink &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	cEditCurve( seWPLink &panel ) : pPanel( panel ){ }

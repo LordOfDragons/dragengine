@@ -27,7 +27,7 @@
 
 #include "foxtoolkit.h"
 #include "../../event/igdeAction.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont::Ref.h"
 
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>
@@ -75,7 +75,7 @@ public:
 	
 private:
 	igdeViewCurveBezier *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 	decVector2 pGridMin;
 	decVector2 pGridMax;

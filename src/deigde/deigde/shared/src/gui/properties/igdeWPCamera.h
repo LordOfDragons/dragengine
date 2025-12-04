@@ -33,7 +33,7 @@
 #include "../composed/igdeEditVectorReference.h"
 #include "../composed/igdeEditSliderTextReference.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../filedialog/igdeFilePatternList.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../curveedit/igdeViewCurveBezierReference.h"
@@ -81,7 +81,7 @@ private:
 	igdeEditSliderTextReference pSldBloomBlend;
 	igdeViewCurveBezierReference pEditToneMapCurve;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

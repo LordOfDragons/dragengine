@@ -37,7 +37,7 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-#include "../../../common/file/decBaseFileReaderReference.h"
+#include "../../../common/file/decBaseFileReader::Ref.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../parallel/deParallelProcessing.h"
@@ -99,7 +99,7 @@ void deRLTaskReadFontInternal::Run(){
 	
 	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
 	
 	pFont->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );

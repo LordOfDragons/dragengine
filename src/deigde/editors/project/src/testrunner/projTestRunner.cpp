@@ -184,7 +184,7 @@ void projTestRunner::LoadEngineConfiguration(){
 	
 	// engine file
 	pathConfigUser.AddComponent( "launcher.xml" );
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	
 	try{
 		reader.TakeOver( new decDiskFileReader( pathConfigUser.GetPathNative() ) );
@@ -713,7 +713,7 @@ decString projTestRunner::GetLastLogContent(){
 	path.SetFromNative( project.GetDirectoryPath() );
 	path.AddUnixPath( "testRun.log" );
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	try{
 		reader.TakeOver( new decDiskFileReader( path.GetPathNative() ) );
 		

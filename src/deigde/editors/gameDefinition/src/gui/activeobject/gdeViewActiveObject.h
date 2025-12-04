@@ -30,12 +30,12 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/component/deComponent::Ref.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
 #include <dragengine/resources/model/deModelReference.h>
-#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance::Ref.h>
 #include <dragengine/resources/skin/deSkinReference.h>
-#include <dragengine/resources/sky/deSkyInstanceReference.h>
+#include <dragengine/resources/sky/deSkyInstance::Ref.h>
 
 class gdeWindowMain;
 class gdeViewActiveObjectListener;
@@ -77,11 +77,11 @@ private:
 	
 	gdeObjectClass *pObjectClass;
 	
-	deComponentReference pPreviewComponent;
+	deComponent::Ref pPreviewComponent;
 	deModelReference pPreviewModelBox;
 	deSkinReference pPreviewSkin;
-	deSkyInstanceReference pPreviewSky;
-	deParticleEmitterInstanceReference pPreviewParticleEmitter;
+	deSkyInstance::Ref pPreviewSky;
+	deParticleEmitterInstance::Ref pPreviewParticleEmitter;
 	
 	decObjectList pOCBillboards;
 	decObjectList pOCCameras;
@@ -96,7 +96,7 @@ private:
 	decObjectList pOCSpeakers;
 	decObjectList pOCWorlds;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	
 	bool pShowEnvMapProbes;
 	bool pShowNavBlockers;

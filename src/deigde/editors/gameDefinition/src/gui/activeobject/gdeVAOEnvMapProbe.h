@@ -26,8 +26,8 @@
 #define _GDEVAOENVMAPPROBE_H_
 
 #include "gdeVAOSubObject.h"
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/probe/deEnvMapProbeReference.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
+#include <dragengine/resources/probe/deEnvMapProbe::Ref.h>
 
 class gdeOCEnvMapProbe;
 class igdeWDebugDrawerShape;
@@ -41,9 +41,9 @@ class gdeVAOEnvMapProbe : public gdeVAOSubObject{
 private:
 	gdeOCEnvMapProbe *pOCEnvMapProbe;
 	
-	deEnvMapProbeReference pEnvMapProbe;
+	deEnvMapProbe::Ref pEnvMapProbe;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWDebugDrawerShape *pDDSReflection;
 	igdeWDebugDrawerShape *pDDSInfluence;

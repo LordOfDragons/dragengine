@@ -53,23 +53,23 @@
 #include "../../undosys/rule/group/aeURuleGroupPasteRule.h"
 #include "../../undosys/rule/group/aeURuleGroupRemoveRule.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/igdeSwitcher.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeTreeListListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeTreeItem.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
 #include <dragengine/common/exceptions.h>
@@ -97,7 +97,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( animator, rule ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -132,7 +132,7 @@ public:
 		"Copy rule to clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new aeClipboardDataRule( rule ) );
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
 		return NULL;
@@ -146,7 +146,7 @@ public:
 		"Cut rule into clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator, aeRule *rule ){
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new aeClipboardDataRule( rule ) );
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
 		
@@ -373,7 +373,7 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	content->AddChild( pSwitcher );
 	
-	igdeWidgetReference panel;
+	igdeWidget::Ref panel;
 	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 	pSwitcher->AddChild( panel );
 	
@@ -492,7 +492,7 @@ void aeWPRule::UpdateRuleTree(){
 			aeRule * const rule = list.GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItemReference newItem;
+				igdeTreeItem::Ref newItem;
 				newItem.TakeOver( new igdeTreeItem( "" ) );
 				pTreeRule->AppendItem( NULL, newItem );
 				nextItem = newItem;
@@ -555,7 +555,7 @@ void aeWPRule::UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule ){
 			aeRule * const rule2 = list.GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItemReference newItem;
+				igdeTreeItem::Ref newItem;
 				newItem.TakeOver( new igdeTreeItem( "" ) );
 				pTreeRule->AppendItem( item, newItem );
 				nextItem = newItem;

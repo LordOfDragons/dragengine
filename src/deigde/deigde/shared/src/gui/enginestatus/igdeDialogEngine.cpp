@@ -31,7 +31,7 @@
 #include "../igdeContainerReference.h"
 #include "../igdeMainWindow.h"
 #include "../igdeTabBook.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget::Ref.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -48,7 +48,7 @@ igdeDialog( mainWindow.GetEnvironment(), "Engine Control Center" ),
 pMainWindow( mainWindow )
 {
 	igdeEnvironment &environment = mainWindow.GetEnvironment();
-	igdeWidgetReference panel;
+	igdeWidget::Ref panel;
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	

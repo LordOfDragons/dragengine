@@ -33,7 +33,7 @@
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../loadsave/gdeLoadSaveSystem.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>

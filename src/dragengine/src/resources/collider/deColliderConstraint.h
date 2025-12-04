@@ -25,7 +25,7 @@
 #ifndef _DECOLLIDERCONSTRAINT_H_
 #define _DECOLLIDERCONSTRAINT_H_
 
-#include "deColliderReference.h"
+#include "deCollider::Ref.h"
 #include "deColliderConstraintDof.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
@@ -99,7 +99,7 @@ public:
 	
 	
 private:
-	deColliderReference pTargetCollider;
+	deCollider::Ref pTargetCollider;
 	decString pTargetBone;
 	
 	decVector pPosition1;

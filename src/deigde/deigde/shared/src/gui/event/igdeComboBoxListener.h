@@ -36,6 +36,13 @@ class igdeComboBox;
  * \brief IGDE UI ComboBox Listener.
  */
 class DE_DLL_EXPORT igdeComboBoxListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeComboBoxListener> Ref;
+	
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

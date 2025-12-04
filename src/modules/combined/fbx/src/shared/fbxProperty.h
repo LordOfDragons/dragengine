@@ -28,7 +28,7 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -163,7 +163,7 @@ public:
 	
 	
 protected:
-	void pGetValueReader( decBaseFileReader &reader, decBaseFileReaderReference &valueReader );
+	void pGetValueReader( decBaseFileReader &reader, decBaseFileReader::Ref &valueReader );
 };
 
 #endif

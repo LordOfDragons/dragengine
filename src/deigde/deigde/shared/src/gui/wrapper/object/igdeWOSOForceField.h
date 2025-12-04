@@ -26,10 +26,10 @@
 #define _IGDEWOSOFORCEFIELD_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../triggersystem/igdeTriggerExpressionReference.h"
+#include "../../../triggersystem/igdeTriggerExpression::Ref.h"
 
-#include <dragengine/resources/collider/deColliderReference.h>
-#include <dragengine/resources/forcefield/deForceFieldReference.h>
+#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/forcefield/deForceField::Ref.h>
 
 
 class deColliderAttachment;
@@ -42,11 +42,11 @@ class igdeGDCForceField;
 class DE_DLL_EXPORT igdeWOSOForceField : public igdeWOSubObject{
 private:
 	const igdeGDCForceField &pGDForceField;
-	deForceFieldReference pForceField;
+	deForceField::Ref pForceField;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	igdeTriggerExpressionReference pTriggerEnabled;
+	igdeTriggerExpression::Ref pTriggerEnabled;
 	
 	
 	

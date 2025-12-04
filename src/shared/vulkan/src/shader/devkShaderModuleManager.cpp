@@ -33,7 +33,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
@@ -113,7 +113,7 @@ void devkShaderModuleManager::Load( const char *directory ){
 	deBaseModule &baseModule = pDevice.GetInstance().GetVulkan().GetModule();
 	deVirtualFileSystem &vfs = baseModule.GetVFS();
 	const int oldSourceCount = pSources.GetCount();
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	devkShaderModule::Ref module;
 	
 	const decPath basePath( decPath::CreatePathUnix( directory ) );

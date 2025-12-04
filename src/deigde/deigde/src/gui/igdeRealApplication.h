@@ -28,7 +28,7 @@
 #include "../environment/igdeEnvironmentIGDE.h"
 
 #include <deigde/gui/igdeApplication.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 
 
 /**

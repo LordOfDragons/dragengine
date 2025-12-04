@@ -27,7 +27,7 @@
 
 #include "meViewEditorNavigation.h"
 
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deCollider::Ref.h>
 
 class meCLSelect;
 
@@ -38,7 +38,7 @@ class meCLSelect;
  */
 class meViewEditorNavSpaceEdit : public meViewEditorNavigation{
 private:
-	deColliderReference pColVol;
+	deCollider::Ref pColVol;
 	meCLSelect *pCLSelect;
 	float pSelectDistance;
 	

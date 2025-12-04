@@ -25,7 +25,7 @@
 #ifndef _DECOLLIDERATTACHEMENT_H_
 #define _DECOLLIDERATTACHEMENT_H_
 
-#include "../deResourceReference.h"
+#include "../deResource::Ref.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
 
@@ -127,7 +127,7 @@ public:
 	
 private:
 	eAttachType pAttachType;
-	deResourceReference pResource;
+	deResource::Ref pResource;
 	decVector pPosition;
 	decQuaternion pOrientation;
 	decVector pScaling;

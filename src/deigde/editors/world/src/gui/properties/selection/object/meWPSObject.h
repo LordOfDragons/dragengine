@@ -34,16 +34,16 @@
 #include <deigde/gui/igdeSpinTextFieldReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditSliderTextReference.h>
 #include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 
 class meObject;
@@ -66,28 +66,28 @@ private:
 	
 	
 	igdeActionContextMenuReference pActionMenuClass;
-	igdeActionReference pActionClassBrowse;
-	igdeActionReference pActionClassEdit;
+	igdeAction::Ref pActionClassBrowse;
+	igdeAction::Ref pActionClassEdit;
 	
 	igdeActionContextMenuReference pActionIdClass;
-	igdeActionReference pActionIdFind;
+	igdeAction::Ref pActionIdFind;
 	
 	igdeActionContextMenuReference pActionMenuPosition;
 	igdeActionContextMenuReference pActionMenuRotation;
 	igdeActionContextMenuReference pActionMenuScale;
 	
 	igdeActionContextMenuReference pActionMenuTexture;
-	igdeActionReference pActionTextureAddCustom;
-	igdeActionReference pActionTextureAddAllModel;
-	igdeActionReference pActionTextureRemove;
-	igdeActionReference pActionTextureRemoveAll;
-	igdeActionReference pActionTextureRemoveAllNotModel;
-	igdeActionReference pActionTextureCopyToSelected;
-	igdeActionReference pActionTextureCloneToSelected;
+	igdeAction::Ref pActionTextureAddCustom;
+	igdeAction::Ref pActionTextureAddAllModel;
+	igdeAction::Ref pActionTextureRemove;
+	igdeAction::Ref pActionTextureRemoveAll;
+	igdeAction::Ref pActionTextureRemoveAllNotModel;
+	igdeAction::Ref pActionTextureCopyToSelected;
+	igdeAction::Ref pActionTextureCloneToSelected;
 	
-	igdeActionReference pActionPropCopyToSel;
-	igdeActionReference pActionPropRemoveFromSel;
-	igdeActionReference pActionPropCloneToSel;
+	igdeAction::Ref pActionPropCopyToSel;
+	igdeAction::Ref pActionPropRemoveFromSel;
+	igdeAction::Ref pActionPropCloneToSel;
 	
 	
 	igdeSpinTextFieldReference pSpinActive;
@@ -114,7 +114,7 @@ private:
 	igdeTextFieldReference pEditTexTCRotation;
 	igdeColorBoxReference pClrTexTint;
 	igdeCheckBoxReference pChkShowMissingTextures;
-	igdeWidgetReference pEditTexProperties;
+	igdeWidget::Ref pEditTexProperties;
 	
 	igdeEditSliderTextReference pSldLigInt;
 	igdeColorBoxReference pClrLight;
@@ -123,12 +123,12 @@ private:
 	igdeEditSliderTextReference pSldLigDist;
 	igdeTextFieldReference pEditLigDistInt;
 	
-	igdeWidgetReference pEditProperties;
+	igdeWidget::Ref pEditProperties;
 	
 	igdeListBoxReference pListAttachBehaviors;
 	
-	igdeUndoReference pUndoAddProperty;
-	igdeUndoReference pUndoSetProperty;
+	igdeUndo::Ref pUndoAddProperty;
+	igdeUndo::Ref pUndoSetProperty;
 	
 	bool pPreventUpdate;
 	

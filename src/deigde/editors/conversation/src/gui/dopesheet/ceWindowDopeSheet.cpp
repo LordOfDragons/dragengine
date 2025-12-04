@@ -235,7 +235,7 @@ public:
 
 class cMouseKeyListener : public igdeMouseKeyListener{
 	ceWindowDopeSheet &pWindow;
-	igdeMouseKeyListenerReference pDragListener;
+	igdeMouseKeyListener::Ref pDragListener;
 	
 public:
 	cMouseKeyListener( ceWindowDopeSheet &window ) : pWindow( window ){}
@@ -405,7 +405,7 @@ pVAPreview( NULL )
 	panel2->AddChild( panel3 );
 	
 	pDopeSheet.TakeOver( new cDopeSheet( *this ) );
-	igdeMouseKeyListenerReference mklistener;
+	igdeMouseKeyListener::Ref mklistener;
 	mklistener.TakeOver( new cMouseKeyListener( *this ) );
 	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).AddListener( mklistener );
 	panel2->AddChild( pDopeSheet );

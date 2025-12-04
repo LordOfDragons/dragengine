@@ -83,7 +83,7 @@
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
 #include <deigde/triggersystem/igdeTriggerTarget.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -109,7 +109,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( conversation ) );
 		if( undo ){
 			conversation->GetUndoSystem()->Add( undo );
@@ -180,7 +180,7 @@ public:
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( OnChanged( *comboBox, conversation ) );
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
@@ -201,7 +201,7 @@ public:
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( OnChanged( *textField, conversation ) );
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
@@ -222,7 +222,7 @@ public:
 	virtual void OnVectorChanged( igdeEditVector *editVector ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( OnChanged( *editVector, conversation ) );
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
@@ -243,7 +243,7 @@ public:
 	virtual void OnValueChanged( igdeSpinTextField *textField ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( OnChanged( *textField, conversation ) );
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
@@ -264,7 +264,7 @@ public:
 	virtual void OnEditPathChanged( igdeEditPath *editPath ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( OnChanged( *editPath, conversation ) );
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );

@@ -64,9 +64,9 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem::Ref.h>
 #include <deigde/gui/model/igdeTreeItemSorter.h>
-#include <deigde/gui/model/igdeTreeItemSorterReference.h>
+#include <deigde/gui/model/igdeTreeItemSorter::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -122,12 +122,12 @@ pIgnoreSelectionChange( false )
 		gameDefinition->AddReference();
 		
 		// set sorter
-		igdeTreeItemSorterReference sorter;
+		igdeTreeItemSorter::Ref sorter;
 		sorter.TakeOver( new cSorter );
 		treeList.SetSorter( sorter );
 		
 		// add items
-		igdeTreeItemReference item;
+		igdeTreeItem::Ref item;
 		
 		item.TakeOver( new gdeWPSTIMCategories( *this ) );
 		treeList.AppendItem( NULL, item );

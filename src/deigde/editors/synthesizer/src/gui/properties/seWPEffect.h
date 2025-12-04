@@ -27,7 +27,7 @@
 
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 class seEffect;
@@ -56,10 +56,10 @@ private:
 	seWPAPanelEffectStretch *pPanelStretch;
 	seWPAPanelEffect *pActivePanel;
 	
-	igdeActionReference pActionEffectCut;
-	igdeActionReference pActionEffectCopy;
-	igdeActionReference pActionEffectPasteAdd;
-	igdeActionReference pActionEffectPasteInsert;
+	igdeAction::Ref pActionEffectCut;
+	igdeAction::Ref pActionEffectCopy;
+	igdeAction::Ref pActionEffectPasteAdd;
+	igdeAction::Ref pActionEffectPasteInsert;
 	
 	
 	

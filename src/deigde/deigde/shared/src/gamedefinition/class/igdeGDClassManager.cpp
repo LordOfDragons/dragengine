@@ -28,7 +28,7 @@
 
 #include "igdeGDClass.h"
 #include "igdeGDClassInherit.h"
-#include "igdeGDClassReference.h"
+#include "igdeGDClass::Ref.h"
 #include "igdeGDClassManager.h"
 #include "component/igdeGDCComponent.h"
 #include "component/igdeGDCCTexture.h"
@@ -195,7 +195,7 @@ void igdeGDClassManager::VisitMatchingFilter( igdeGDVisitor &visitor, const decS
 
 void igdeGDClassManager::UpdateWith( const igdeGDClassManager &classManager ){
 	const int count = classManager.GetCount();
-	igdeGDClassReference gdClass;
+	igdeGDClass::Ref gdClass;
 	int i;
 	
 	for( i=0; i<count; i++ ){

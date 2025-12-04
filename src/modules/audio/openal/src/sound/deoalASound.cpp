@@ -37,14 +37,14 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader::Ref.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
 #include <dragengine/filesystem/deCacheHelper.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
-#include <dragengine/resources/sound/deSoundDecoderReference.h>
+#include <dragengine/resources/sound/deSoundDecoder::Ref.h>
 #include <dragengine/resources/sound/deSoundManager.h>
 
 
@@ -234,7 +234,7 @@ void deoalASound::pLoadFromCache(){
 	deoalCaches &caches = pAudioThread.GetCaches();
 	deoalATLogger &logger = pAudioThread.GetLogger();
 	deCacheHelper &cacheSound = caches.GetSound();
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	
 	const decPath path( decPath::CreatePathUnix( pFilename ) );
 	if( ! vfs.CanReadFile( path ) ){
@@ -349,7 +349,7 @@ void deoalASound::pWriteToCache(){
 	deoalCaches &caches = pAudioThread.GetCaches();
 	deoalATLogger &logger = pAudioThread.GetLogger();
 	deCacheHelper &cacheSound = caches.GetSound();
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	
 	const decPath path( decPath::CreatePathUnix( pFilename ) );
 	if( ! vfs.CanReadFile( path ) ){
@@ -485,7 +485,7 @@ void deoalASound::pLoadEntireSound( deSound &sound ){
 		return;
 	}
 	
-	deSoundDecoderReference decoder;
+	deSoundDecoder::Ref decoder;
 	decoder.TakeOver( pAudioThread.GetOal().GetGameEngine()->GetSoundManager()->CreateDecoder( &sound ) );
 	
 	pStreamData = new char[ bufferSize ];

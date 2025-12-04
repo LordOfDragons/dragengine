@@ -28,7 +28,7 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont::Ref.h"
 
 
 class igdeListItem;
@@ -55,7 +55,7 @@ public:
 	
 private:
 	igdeIconListBox *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXIconList *pListBox;
 	igdeNativeFoxResizer *pResizer;
 	decPoint pDefaultSize;

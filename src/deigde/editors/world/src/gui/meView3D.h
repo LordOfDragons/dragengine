@@ -26,7 +26,7 @@
 #define _MEVIEW3D_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener::Ref.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasTextReference.h>
@@ -51,7 +51,7 @@ private:
 	
 	meWorld *pWorld;
 	
-	igdeMouseKeyListenerReference pListenerEditor;
+	igdeMouseKeyListener::Ref pListenerEditor;
 	meViewEditor *pEditor;
 	
 	int pFPSHistory[ 30 ];

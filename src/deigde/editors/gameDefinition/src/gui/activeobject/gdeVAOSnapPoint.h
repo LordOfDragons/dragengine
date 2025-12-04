@@ -27,7 +27,7 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
 
 class gdeOCSnapPoint;
 class igdeWDebugDrawerShape;
@@ -42,7 +42,7 @@ class gdeVAOSnapPoint : public gdeVAOSubObject{
 private:
 	gdeOCSnapPoint *pOCSnapPoint;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	igdeWDebugDrawerShape *pDDSSnapDistance;

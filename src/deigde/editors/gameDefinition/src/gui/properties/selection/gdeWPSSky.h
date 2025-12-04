@@ -32,7 +32,7 @@
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
@@ -56,8 +56,8 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeActionReference pActionControllerAdd;
-	igdeActionReference pActionControllerRemove;
+	igdeAction::Ref pActionControllerAdd;
+	igdeAction::Ref pActionControllerRemove;
 	igdeActionContextMenuReference pActionControllerMenu;
 	
 	igdeEditPathReference pEditPath;

@@ -33,8 +33,8 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/filesystem/deVFSContainer::Ref.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
@@ -176,7 +176,7 @@ void projTestRunLauncher::LocatePath(){
 }
 
 void projTestRunLauncher::CreateVFS(){
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	decPath pathRootDir, pathDiskDir;
 	
 	pVFS.TakeOver( new deVirtualFileSystem );

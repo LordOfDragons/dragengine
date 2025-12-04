@@ -25,7 +25,7 @@
 #ifndef _DECANVAS_H_
 #define _DECANVAS_H_
 
-#include "deCanvasReference.h"
+#include "deCanvas::Ref.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 
@@ -89,7 +89,7 @@ private:
 	float pOrder;
 	float pTransparency;
 	eBlendModes pBlendMode;
-	deCanvasReference pMask;
+	deCanvas::Ref pMask;
 	
 	deBaseGraphicCanvas *pPeerGraphic;
 	

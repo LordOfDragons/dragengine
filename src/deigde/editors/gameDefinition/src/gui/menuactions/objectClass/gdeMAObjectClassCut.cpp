@@ -33,7 +33,7 @@
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../undosys/objectClass/gdeURemoveObjectClass.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -73,7 +73,7 @@ igdeUndo *gdeMAObjectClassCut::OnAction( gdeGameDefinition &gameDefinition ){
 	deObjectReference clipObjectClass;
 	clipObjectClass.TakeOver( new gdeObjectClass( *objectClass ) );
 	
-	igdeClipboardDataReference clipData;
+	igdeClipboardData::Ref clipData;
 	clipData.TakeOver( new gdeClipboardDataObjectClass( ( gdeObjectClass* )( deObject* )clipObjectClass ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );

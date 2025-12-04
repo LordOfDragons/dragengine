@@ -53,7 +53,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
@@ -85,7 +85,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( animator, rule ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -125,7 +125,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeUSetRuleAnimMoveName( rule, comboBox->GetText() ) );
 		pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 	}
@@ -144,7 +144,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeUSetRuleAnimMoveTime( rule, value ) );
 		pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 	}

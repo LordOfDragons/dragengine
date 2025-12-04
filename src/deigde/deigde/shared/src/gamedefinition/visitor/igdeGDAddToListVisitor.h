@@ -31,7 +31,7 @@
 
 class deImage;
 class igdeEnvironment;
-class igdeListItemReference;
+class igdeListItem::Ref;
 
 
 
@@ -64,7 +64,7 @@ public:
 	void AddItemToList( const char *caption, deImage &image, void *userPointer );
 	
 	/** \brief Add item to list. */
-	void AddItemToList( igdeListItemReference &item, const char *caption, deImage &image, void *userPointer );
+	void AddItemToList( igdeListItem::Ref &item, const char *caption, deImage &image, void *userPointer );
 	/*@}*/
 	
 	

@@ -32,7 +32,7 @@
 #include "image/feFontImage.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/gui/resources/igdeFontReference.h>
+#include <deigde/gui/resources/igdeFont::Ref.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/math/decMath.h>

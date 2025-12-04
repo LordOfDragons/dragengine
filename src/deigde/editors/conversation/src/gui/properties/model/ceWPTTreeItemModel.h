@@ -25,7 +25,7 @@
 #ifndef _CEWPTTREEITEMMODEL_H_
 #define _CEWPTTREEITEMMODEL_H_
 
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon::Ref.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -102,7 +102,7 @@ private:
 	const eTypes pType;
 	
 	decString pText, pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	decObjectOrderedSet pChildren;
 	bool pExpanded;
 	

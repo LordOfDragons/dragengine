@@ -299,7 +299,7 @@ int igdeWOSubObject::GetIntProperty( const decString &name, int defaultValue ) c
 
 
 
-void igdeWOSubObject::pInitTrigger( igdeTriggerExpressionReference &trigger, const decString &propertyName ){
+void igdeWOSubObject::pInitTrigger( igdeTriggerExpression::Ref &trigger, const decString &propertyName ){
 	if( trigger ){
 		trigger->UnlinkTriggerTargets();
 		trigger = NULL;
@@ -322,7 +322,7 @@ void igdeWOSubObject::pInitTrigger( igdeTriggerExpressionReference &trigger, con
 	}
 }
 
-void igdeWOSubObject::pClearTrigger( igdeTriggerExpressionReference &trigger ){
+void igdeWOSubObject::pClearTrigger( igdeTriggerExpression::Ref &trigger ){
 	if( trigger ){
 		trigger->UnlinkTriggerTargets();
 		trigger = NULL;

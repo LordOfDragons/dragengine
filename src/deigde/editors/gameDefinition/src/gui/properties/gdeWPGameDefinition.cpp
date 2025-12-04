@@ -93,7 +93,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -122,7 +122,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *textField, gameDefinition ) );
 		if( undo ){
 			gameDefinition->GetUndoSystem()->Add( undo );
@@ -148,7 +148,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnActionGameDefinition( gameDefinition ) );
 		if( undo ){
 			gameDefinition->GetUndoSystem()->Add( undo );
@@ -187,7 +187,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUGDSetDescription( gameDefinition, textArea->GetText() ) );
 		gameDefinition->GetUndoSystem()->Add( undo );
 	}

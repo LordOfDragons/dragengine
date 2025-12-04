@@ -27,8 +27,8 @@
 #define _DEBNVISITORVALUETYPE_H_
 
 // includes
-#include <dragengine/common/file/decBaseFileWriterReference.h>
-#include <dragengine/resources/network/deNetworkMessageReference.h>
+#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/resources/network/deNetworkMessage::Ref.h>
 #include <dragengine/resources/network/value/deNetworkValueVisitor.h>
 
 // predefinitions
@@ -45,8 +45,8 @@ class debnVisitorValueType : public deNetworkValueVisitor{
 private:
 	int pType;
 	
-	deNetworkMessageReference pMessage;
-	decBaseFileWriterReference pWriter;
+	deNetworkMessage::Ref pMessage;
+	decBaseFileWriter::Ref pWriter;
 	
 public:
 	/** @name Constructors and Destructors */

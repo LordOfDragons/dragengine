@@ -92,7 +92,7 @@ class igdeTreeListListener;
 class igdeTreeListReference;
 class igdeViewCurveBezierListener;
 class igdeViewCurveBezierReference;
-class igdeWidgetReference;
+class igdeWidget::Ref;
 class igdeWPCameraReference;
 class igdeWPSkyReference;
 class igdeWPTriggerTableReference;

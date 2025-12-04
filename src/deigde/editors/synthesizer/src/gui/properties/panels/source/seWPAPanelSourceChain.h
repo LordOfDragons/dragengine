@@ -42,10 +42,10 @@ private:
 	igdeTextFieldReference pEditMaxSpeed;
 	igdeTextFieldReference pLabSoundInfo;
 	
-	igdeActionReference pActionSoundUp;
-	igdeActionReference pActionSoundDown;
-	igdeActionReference pActionSoundAdd;
-	igdeActionReference pActionSoundRemove;
+	igdeAction::Ref pActionSoundUp;
+	igdeAction::Ref pActionSoundDown;
+	igdeAction::Ref pActionSoundAdd;
+	igdeAction::Ref pActionSoundRemove;
 	
 	
 public:

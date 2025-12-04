@@ -30,9 +30,9 @@
 #include "../igdeListBoxReference.h"
 #include "../igdeTextFieldReference.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../layout/igdeContainerFlow.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon::Ref.h"
 
 
 class igdeTriggerTargetList;
@@ -47,21 +47,21 @@ class DE_DLL_EXPORT igdeWPTriggerTable : public igdeContainerFlow, igdeActionLis
 private:
 	igdeTriggerTargetList *pTriggerTargetList;
 	
-	igdeIconReference pIconFired;
-	igdeIconReference pIconNotFired;
+	igdeIcon::Ref pIconFired;
+	igdeIcon::Ref pIconNotFired;
 	
-	igdeActionReference pActionToggle;
-	igdeActionReference pActionClear;
-	igdeActionReference pActionAdd;
-	igdeActionReference pActionRemove;
-	igdeActionReference pActionFire;
-	igdeActionReference pActionReset;
-	igdeActionReference pActionFullReset;
+	igdeAction::Ref pActionToggle;
+	igdeAction::Ref pActionClear;
+	igdeAction::Ref pActionAdd;
+	igdeAction::Ref pActionRemove;
+	igdeAction::Ref pActionFire;
+	igdeAction::Ref pActionReset;
+	igdeAction::Ref pActionFullReset;
 	
 	igdeListBoxReference pListTriggerTable;
 	igdeTextFieldReference pEditTriggerTableFilter;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

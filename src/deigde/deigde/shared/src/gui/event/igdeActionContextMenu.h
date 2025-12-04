@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeAction.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget::Ref.h"
 
 
 class igdeMenuCascade;
@@ -49,7 +49,7 @@ public:
 	
 	
 private:
-	igdeWidgetReference pWidget;
+	igdeWidget::Ref pWidget;
 	
 	
 	

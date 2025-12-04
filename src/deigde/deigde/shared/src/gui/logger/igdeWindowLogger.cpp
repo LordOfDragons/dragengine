@@ -31,9 +31,9 @@
 #include "../igdeCommonDialogs.h"
 #include "../igdeTextArea.h"
 #include "../event/igdeAction.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction::Ref.h"
 #include "../resources/igdeTextStyle.h"
-#include "../resources/igdeTextStyleReference.h"
+#include "../resources/igdeTextStyle::Ref.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../logger/igdeLoggerHistory.h"
 #include "../../logger/igdeLoggerHistoryEntry.h"
@@ -85,7 +85,7 @@ pPendingClearLogs( false )
 	
 	pEditLogs.TakeOver( new igdeTextArea( environment, 60, 10, false ) );
 	
-	igdeTextStyleReference style;
+	igdeTextStyle::Ref style;
 	style.TakeOver( new igdeTextStyle( styleWarning ) );
 	style->SetColor( decColor( 0.0f, 0.0f, 0.0f ) );
 	style->SetBgColor( decColor( 1.0f, 0.815f, 0.0f ) );
@@ -267,7 +267,7 @@ void igdeWindowLogger::pAddLog( const igdeLoggerHistoryEntry &entry ){
 	text.Format( "%s[%s] %s\n", typeMarker, entry.GetSource().GetString(), entry.GetMessage().GetString() );
 	
 	if( style ){
-		igdeActionReference action;
+		igdeAction::Ref action;
 // 		action.TakeOver( new igdeWindowLogger_ActionTest( *this ) );
 		pEditLogs->AppendText( text, style, action );
 		

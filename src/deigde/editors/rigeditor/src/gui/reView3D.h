@@ -28,7 +28,7 @@
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseDragListenerReference.h>
 #include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/common/math/decMath.h>
 

@@ -26,7 +26,7 @@
 #define _IGDESLIDER_H_
 
 #include "igdeWidget.h"
-#include "event/igdeActionReference.h"
+#include "event/igdeAction::Ref.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 

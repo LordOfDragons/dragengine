@@ -27,8 +27,8 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
+#include <dragengine/resources/light/deLight::Ref.h>
 
 class gdeOCLight;
 class igdeWDebugDrawerShape;
@@ -47,9 +47,9 @@ class gdeVAOLight : public gdeVAOSubObject{
 private:
 	gdeOCLight *pOCLight;
 	
-	deLightReference pLight;
+	deLight::Ref pLight;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

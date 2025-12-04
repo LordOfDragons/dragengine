@@ -25,12 +25,12 @@
 #ifndef _GDEWPGAMEDEFINITION_H_
 #define _GDEWPGAMEDEFINITION_H_
 
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction::Ref.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -51,7 +51,7 @@ private:
 	gdeGameDefinition *pGameDefinition;
 	gdeWPGameDefinitionListener *pListener;
 	
-	igdeActionReference pActionBasePath;
+	igdeAction::Ref pActionBasePath;
 	
 	igdeTextFieldReference pEditID;
 	igdeTextAreaReference pEditDescription;
@@ -61,14 +61,14 @@ private:
 	igdeTextFieldReference pEditUseBasePath;
 	igdeCheckBoxReference pChkIsProjectGameDef;
 	
-// 	igdeWidgetReference pEditBaseGameDefIDs;
+// 	igdeWidget::Ref pEditBaseGameDefIDs;
 	
-	igdeWidgetReference pEditWorldProperties;
-	igdeWidgetReference pEditDecalProperties;
+	igdeWidget::Ref pEditWorldProperties;
+	igdeWidget::Ref pEditDecalProperties;
 	
-	igdeWidgetReference pEditAutoFindPathObjectClasses;
-	igdeWidgetReference pEditAutoFindPathSkins;
-	igdeWidgetReference pEditAutoFindPathSkies;
+	igdeWidget::Ref pEditAutoFindPathObjectClasses;
+	igdeWidget::Ref pEditAutoFindPathSkins;
+	igdeWidget::Ref pEditAutoFindPathSkies;
 	
 	
 	

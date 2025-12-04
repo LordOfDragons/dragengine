@@ -52,14 +52,14 @@
 #include "../undosys/source/group/seUSourceGroupMoveSourceDown.h"
 #include "../undosys/source/group/seUSourceGroupRemoveSource.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData::Ref.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget::Ref.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
@@ -72,7 +72,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo::Ref.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -213,7 +213,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group )
 	seSource * const activeSource = pSynthesizer->GetActiveSource();
 	int index = pSynthesizer->GetSources().GetCount();
 	seSourceGroup *parentGroup = NULL;
-	igdeUndoReference undoGroup, undo;
+	igdeUndo::Ref undoGroup, undo;
 	deObjectReference refSource;
 	
 	if( activeSource ){
@@ -279,7 +279,7 @@ void seWindowMain::CreateEffect( deSynthesizerEffectVisitorIdentify::eEffectType
 	int index = activeSource->GetEffects().GetCount();
 	seEffect *effectSelect = NULL;
 	deObjectReference refEffect;
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	
 	if( insert && activeEffect ){
 		index = activeSource->GetEffects().IndexOf( activeEffect );
@@ -437,7 +437,7 @@ public:
 		if( ! pWindow.GetSynthesizer() ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetSynthesizer() ) );
 		if( undo ){
 			pWindow.GetSynthesizer()->GetUndoSystem()->Add( undo );
