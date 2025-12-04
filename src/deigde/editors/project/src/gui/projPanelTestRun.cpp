@@ -146,23 +146,23 @@ public:
 	
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		projProject * const project = pPanel.GetProject();
-		if( ! project ){
+		if(!project || pPanel.preventUpdateLaunchProfile){
 			return;
 		}
 		
 		const igdeListItem * const selection = comboBox->GetSelectedItem();
-		if( ! selection ){
-			project->SetActiveLaunchProfile( "" );
+		if(!selection){
+			project->SetActiveLaunchProfile("");
 			return;
 		}
 		
 		const projTRProfile * const profile = ( const projTRProfile* )selection->GetData();
-		if( ! profile ){
-			project->SetActiveLaunchProfile( "" );
+		if(!profile){
+			project->SetActiveLaunchProfile("");
 			return;
 		}
 		
-		project->SetActiveLaunchProfile( profile->GetName() );
+		project->SetActiveLaunchProfile(profile->GetName());
 	}
 };
 
@@ -246,6 +246,8 @@ const char *projPanelTestRun::styleError = "error";
 projPanelTestRun::projPanelTestRun( projWindowMain &windowMain ) :
 igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espLeft,
 	igdeApplication::app().DisplayScaled(250)),
+
+preventUpdateLaunchProfile(false),
 
 pWindowMain( windowMain ),
 
@@ -361,17 +363,17 @@ projPanelTestRun::~projPanelTestRun(){
 ///////////////
 
 void projPanelTestRun::SetProject( projProject *project ){
-	if( project == pProject ){
+	if(project == pProject){
 		return;
 	}
 	
 	pTestRunner->Kill();
 	ClearLogs();
 	pIsRunning = false;
-	pSelectedProfile = NULL;
+	pSelectedProfile = nullptr;
 	
-	if( pProject ){
-		pProject->RemoveListener( pListener );
+	if(pProject){
+		pProject->RemoveListener(pListener);
 		pProject->FreeReference();
 	}
 	
@@ -379,9 +381,9 @@ void projPanelTestRun::SetProject( projProject *project ){
 	
 	pProject = project;
 	
-	if( project ){
+	if(project){
 		project->AddReference();
-		project->AddListener( pListener );
+		project->AddListener(pListener);
 	}
 	
 	UpdateWidgetEnabled();
@@ -389,13 +391,13 @@ void projPanelTestRun::SetProject( projProject *project ){
 	UpdateProfiles();
 	pUpdateLaunchProfiles();
 	
-	if( project && project->GetActiveLaunchProfile().IsEmpty() ){
-		project->SetActiveLaunchProfile( pTestRunner->GetDefaultLauncherProfileName() );
+	if(project && project->GetActiveLaunchProfile().IsEmpty()){
+		project->SetActiveLaunchProfile(pTestRunner->GetDefaultLauncherProfileName());
 	}
 	
 	SelectLauncherProfile();
 	
-	UpdateLogs( true );
+	UpdateLogs(true);
 	MoveToBottomLine();
 }
 
@@ -648,16 +650,16 @@ void projPanelTestRun::SelectProfile( projProfile *profile ){
 
 
 void projPanelTestRun::SelectLauncherProfile(){
-	if( ! pProject ){
+	if(!pProject){
 		return;
 	}
 	
-	if( ! pProject->GetActiveLaunchProfile().IsEmpty() ){
-		pCBLaunchProfile->SetSelectionWithData( pTestRunner->GetLauncherProfiles()
-			.GetNamed( pProject->GetActiveLaunchProfile() ) );
+	if(!pProject->GetActiveLaunchProfile().IsEmpty()){
+		pCBLaunchProfile->SetSelectionWithData(pTestRunner->GetLauncherProfiles()
+			.GetNamed(pProject->GetActiveLaunchProfile()));
 		
 	}else{
-		pCBLaunchProfile->SetSelectionWithData( NULL );
+		pCBLaunchProfile->SetSelectionWithData(nullptr);
 	}
 }
 
@@ -751,8 +753,10 @@ projPanelRemoteClient::Ref projPanelTestRun::GetRemoteClientPanel(projRemoteClie
 //////////////////////
 
 void projPanelTestRun::pUpdateLaunchProfiles(){
+	preventUpdateLaunchProfile = true;
+	
 	pCBLaunchProfile->RemoveAllItems();
-	pCBLaunchProfile->AddItem( "< IGDE Default >", NULL, NULL );
+	pCBLaunchProfile->AddItem("< IGDE Default >", nullptr, nullptr);
 	
 	pTestRunner->LoadEngineConfiguration();
 	
@@ -760,12 +764,13 @@ void projPanelTestRun::pUpdateLaunchProfiles(){
 	const int count = list.GetCount();
 	int i;
 	
-	for( i=0; i<count; i++ ){
-		projTRProfile * const profile = list.GetAt( i );
-		pCBLaunchProfile->AddItem( profile->GetName(), NULL, profile );
+	for(i=0; i<count; i++){
+		projTRProfile * const profile = list.GetAt(i);
+		pCBLaunchProfile->AddItem(profile->GetName(), nullptr, profile);
 	}
 	
 	SelectLauncherProfile();
+	preventUpdateLaunchProfile = false;
 }
 
 void projPanelTestRun::pRemoveOldLines(){

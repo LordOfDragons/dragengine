@@ -56,6 +56,7 @@ public:
 	static const char *styleWarning;
 	static const char *styleError;
 	
+	bool preventUpdateLaunchProfile;
 	
 	
 private:
