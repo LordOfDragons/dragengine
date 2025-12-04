@@ -649,6 +649,27 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsPForceDpiAware.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsPLogLevel.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameter.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterBool.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterFloat.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterInt.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterList.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="module_version.h" />
@@ -1301,6 +1322,27 @@
       <Filter>Sources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\deScriptSource.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsPForceDpiAware.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsPLogLevel.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameter.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterBool.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterFloat.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterInt.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterList.h">
       <Filter>Sources</Filter>
     </ClInclude>
   </ItemGroup>

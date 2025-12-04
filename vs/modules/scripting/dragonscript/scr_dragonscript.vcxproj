@@ -273,6 +273,13 @@
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceObject.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceListener.h" />
     <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsService.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsPForceDpiAware.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsPLogLevel.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameter.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterBool.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterFloat.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterInt.h" />
+    <ClInclude Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterList.h" />
     <ClInclude Include="module_version.h" />
   </ItemGroup>
   <ItemGroup>
@@ -492,6 +499,13 @@
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceObject.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\classes\service\deClassServiceListener.cpp" />
     <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\peers\dedsService.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsPForceDpiAware.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsPLogLevel.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameter.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterBool.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterFloat.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterInt.cpp" />
+    <ClCompile Include="..\..\..\..\src\modules\scripting\dragonscript\src\parameters\dedsParameterList.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\scripting\dragonscript\src\module.xml" />
