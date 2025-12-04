@@ -26,6 +26,7 @@
 #include <stdlib.h>
 
 #include "igdeTriggerExpressionEditor.h"
+#include "../igdeApplication.h"
 #include "../igdeUIHelper.h"
 #include "../igdeButton.h"
 #include "../igdeListBox.h"
@@ -700,7 +701,8 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	
 	// content
 	igdeContainerSplittedReference panelContent;
-	panelContent.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espRight, 200 ) );
+	panelContent.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espRight,
+		igdeApplication::app().DisplayScaled(200)));
 	AddChild( panelContent );
 	
 	// expression tree

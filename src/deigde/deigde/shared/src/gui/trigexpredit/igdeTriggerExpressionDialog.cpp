@@ -26,7 +26,9 @@
 
 #include "igdeTriggerExpressionDialog.h"
 #include "igdeTriggerExpressionEditor.h"
+#include "../igdeApplication.h"
 #include "../igdeContainerReference.h"
+#include "../../environment/igdeEnvironment.h"
 #include "../../triggersystem/igdeTriggerTargetList.h"
 #include "../../triggersystem/igdeTriggerExpressionParser.h"
 
@@ -44,7 +46,7 @@ igdeTriggerExpressionDialog::igdeTriggerExpressionDialog( igdeEnvironment &envir
 const igdeTriggerTargetList &targetList, igdeTriggerExpressionParser &parser, const char *title ) :
 igdeDialog( environment, title )
 {
-	SetSize(decPoint(800, 500));
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 500)));
 	
 	pEditor.TakeOver( new igdeTriggerExpressionEditor( environment ) );
 	igdeTriggerExpressionEditor &editor = ( igdeTriggerExpressionEditor& )( igdeWidget& )pEditor;

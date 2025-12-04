@@ -39,6 +39,7 @@
 #include "../undosys/entry/lpeULangPackEntryAdd.h"
 
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCommonDialogs.h>
@@ -107,7 +108,8 @@ pLangPack( NULL )
 	pCreateToolBarEdit();
 	
 	igdeContainerSplittedReference splitted;
-	splitted.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espLeft, 320 ) );
+	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(320)));
 	AddChild( splitted );
 	
 	pWindowProperties = new lpeWindowProperties( *this );

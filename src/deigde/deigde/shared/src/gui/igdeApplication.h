@@ -97,6 +97,29 @@ public:
 	
 	/** \brief For internal use only. */
 	inline void *GetNativeApplication() const{ return pNativeApplication; }
+	
+	
+	/**
+	 * \brief Global display scaling factor for display.
+	 * 
+	 * Value of 100 represents scaling of 100%. Value step size is 25.
+	 */
+	int GetDisplayScaleFactor();
+	
+	/** \brief Display scaling factor for display as scale factor. */
+	float GetDisplayScaleFactorFloat();
+	
+	/** \brief Scalar scaled display scaling factor. */
+	float DisplayScaled(float scalar);
+	
+	/** \brief Scalar scaled display scaling factor. */
+	int DisplayScaled(int value);
+	
+	/** \brief Point scaled display scaling factor. */
+	decPoint DisplayScaled(const decPoint &point);
+	
+	/** \brief Vector scaled display scaling factor. */
+	decVector2 DisplayScaled(const decVector2 &vector);
 	/*@}*/
 	
 	

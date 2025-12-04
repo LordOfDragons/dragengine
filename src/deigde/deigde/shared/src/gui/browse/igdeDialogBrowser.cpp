@@ -24,6 +24,7 @@
 
 #include "igdeDialogBrowser.h"
 #include "igdeBrowseItemGDPreviewListener.h"
+#include "../igdeApplication.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeUIHelper.h"
 #include "../igdeButton.h"
@@ -190,7 +191,7 @@ pViewMode( evmPreview )
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	SetSize(decPoint(1000, 600));
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(1000, 600)));
 	
 	pActionPISizeSmall.TakeOver( new igdeDialogBrowser_ActionPreviewSize( *this, epsSmall,
 		"Small Preview Image", NULL, "Small Preview Image" ) );
@@ -206,7 +207,8 @@ pViewMode( evmPreview )
 	
 	
 	igdeContainerSplittedReference content;
-	content.TakeOver( new igdeContainerSplitted( environment, igdeContainerSplitted::espLeft, 250 ) );
+	content.TakeOver(new igdeContainerSplitted(environment, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(250)));
 	
 	// left side: category list with filter
 	igdeContainerReference panelCategory;
@@ -228,10 +230,11 @@ pViewMode( evmPreview )
 	panelItems.TakeOver( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 3 ) );
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
-		igdeUIHelper::sColumnHeader( "Name", NULL, 200 )
+		igdeUIHelper::sColumnHeader("Name", nullptr, igdeApplication::app().DisplayScaled(200))
 	};
-	helper.IconListBox( panelItems, pListItems, decPoint( 100, 200 ), headers, 1, "Items",
-		new igdeDialogBrowser_ListItems( *this ) );
+	helper.IconListBox(panelItems, pListItems,
+		igdeApplication::app().DisplayScaled(decPoint(100, 200)),
+		headers, 1, "Items", new igdeDialogBrowser_ListItems( *this ) );
 	pListItems->SetDefaultSorter();
 	pListItems->SetViewMode( igdeIconListBox::evmIconVertical );
 	

@@ -38,6 +38,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
@@ -243,7 +244,8 @@ const char *projPanelTestRun::styleError = "error";
 ////////////////////////////
 
 projPanelTestRun::projPanelTestRun( projWindowMain &windowMain ) :
-igdeContainerSplitted( windowMain.GetEnvironment(), igdeContainerSplitted::espLeft, 250 ),
+igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espLeft,
+	igdeApplication::app().DisplayScaled(250)),
 
 pWindowMain( windowMain ),
 

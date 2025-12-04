@@ -43,6 +43,7 @@
 #include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
 #include <deigde/engine/textureProperties/igdeXMLLoadTexturePropertyList.h>
 #include <deigde/logger/igdeLoggerHistory.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeStepableTask.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
@@ -491,7 +492,7 @@ pTaskSyncGameDefinition( NULL )
 {
 	pEnvironmentIGDE.SetWindowMain( this );
 	
-	SetSize(decPoint(1600, 900));
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(1600, 900)));
 	
 	try{
 		pConfiguration.LocatePath();

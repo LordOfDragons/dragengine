@@ -29,6 +29,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
@@ -286,6 +287,8 @@ pBaseGameDefsChanged( false )
 	
 	pCBScriptModule->SetText( project.GetScriptModule() );
 	pEditScriptModuleVersion->SetText( project.GetScriptModuleVersion() );
+	
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 500)));
 }
 
 igdeDialogProjectSettings::~igdeDialogProjectSettings(){

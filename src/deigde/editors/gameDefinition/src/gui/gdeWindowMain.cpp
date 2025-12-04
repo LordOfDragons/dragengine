@@ -119,6 +119,7 @@
 #include "../loadsave/gdeLoadSaveSystem.h"
 
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeToolBar.h>
@@ -189,7 +190,8 @@ pActiveGameDefinition( NULL )
 	pCreateToolBarEdit();
 	
 	igdeContainerSplittedReference splitted;
-	splitted.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espLeft, 350 ) );
+	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(350)));
 	AddChild( splitted );
 	
 	pWindowProperties = new gdeWindowProperties( *this );

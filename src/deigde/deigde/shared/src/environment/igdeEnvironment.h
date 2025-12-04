@@ -339,7 +339,6 @@ public:
 	virtual igdeUIHelper &GetUIHelperProperties() = 0;
 	
 	
-	
 	/** \brief Named GuiTheme or default if not found. */
 	virtual igdeGuiTheme *GetGuiThemeNamed( const char *name ) = 0;
 	

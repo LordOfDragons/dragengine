@@ -39,6 +39,7 @@
 #include <dragengine/logger/deLogger.h>
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
@@ -179,7 +180,8 @@ const char *projPanelRemoteClient::styleError = "error";
 
 projPanelRemoteClient::projPanelRemoteClient(projPanelTestRun &panelTestRun,
 	const projRemoteClient::Ref &client) :
-igdeContainerSplitted(panelTestRun.GetEnvironment(), igdeContainerSplitted::espLeft, 200),
+igdeContainerSplitted(panelTestRun.GetEnvironment(), igdeContainerSplitted::espLeft,
+	igdeApplication::app().DisplayScaled(200)),
 preventUpdate(true),
 pPanelTestRun(panelTestRun),
 pClient(client),

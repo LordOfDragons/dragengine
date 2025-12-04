@@ -27,6 +27,7 @@
 #include "igdeDEModuleStatus.h"
 #include "igdeDEParameters.h"
 #include "igdeDEConsole.h"
+#include "../igdeApplication.h"
 #include "../igdeContainerReference.h"
 #include "../igdeMainWindow.h"
 #include "../igdeTabBook.h"
@@ -49,7 +50,7 @@ pMainWindow( mainWindow )
 	igdeEnvironment &environment = mainWindow.GetEnvironment();
 	igdeWidgetReference panel;
 	
-	SetSize(decPoint(800, 600));
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
 	pTabPanels.TakeOver( new igdeTabBook( environment ) );
 	

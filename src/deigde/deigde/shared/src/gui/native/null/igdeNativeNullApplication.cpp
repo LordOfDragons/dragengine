@@ -161,4 +161,8 @@ void igdeNativeNullApplication::RunModalWhileShown( igdeWindow &window ){
 	}
 }
 
+int igdeNativeNullApplication::GetDisplayScaleFactor(){
+	return 100;
+}
+
 #endif

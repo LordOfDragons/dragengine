@@ -23,6 +23,7 @@
  */
 
 #include "igdeDialogTexturePropertyList.h"
+#include "../igdeApplication.h"
 #include "../igdeUIHelper.h"
 #include "../igdeListBox.h"
 #include "../igdeTextArea.h"
@@ -67,10 +68,11 @@ igdeDialogTexturePropertyList::igdeDialogTexturePropertyList( igdeEnvironment &e
 igdeDialog( environment, "Texture Property List" ){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	SetSize(decPoint(1000, 500));
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(1000, 500)));
 	
 	igdeContainerSplittedReference content;
-	content.TakeOver( new igdeContainerSplitted( environment, igdeContainerSplitted::espLeft, 300 ) );
+	content.TakeOver(new igdeContainerSplitted(environment, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(300)));
 	
 	helper.ListBox( 15, "Textue Property", pListProperties, new igdeDialogTexturePropertyList_ListBox( *this ) );
 	pListProperties->SetDefaultSorter();

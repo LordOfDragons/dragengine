@@ -34,6 +34,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
@@ -117,12 +118,13 @@ pWorld( NULL )
 	
 	pListener = new meWindowChangelogListener( *this );
 	
-	igdeUIHelper::sColumnHeader headers[ 3 ] = {
-		igdeUIHelper::sColumnHeader( "Sector", NULL, 50 ),
-		igdeUIHelper::sColumnHeader( "What", NULL, 150 ),
-		igdeUIHelper::sColumnHeader( "Filename", NULL, 380 ) };
-	helper.IconListBox( decPoint( 100, 150 ), headers, 3, "Changes", pListChanges,
-		new cListChangelog( *this ) );
+	igdeUIHelper::sColumnHeader headers[3] = {
+		igdeUIHelper::sColumnHeader("Sector", nullptr, igdeApplication::app().DisplayScaled(50)),
+		igdeUIHelper::sColumnHeader("What", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("Filename", nullptr, igdeApplication::app().DisplayScaled(380)) };
+	helper.IconListBox(
+		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
+		headers, 3, "Changes", pListChanges, new cListChangelog( *this ) );
 	AddChild( pListChanges, igdeContainerBorder::eaCenter );
 	
 	igdeListItemSorterReference sorter;

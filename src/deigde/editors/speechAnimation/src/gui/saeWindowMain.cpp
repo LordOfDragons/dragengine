@@ -44,6 +44,7 @@
 #include "../undosys/dictionary/word/saeUWordAddList.h"
 
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeToolBar.h>
@@ -110,7 +111,8 @@ pSAnimation( NULL )
 	pCreateToolBarEdit();
 	
 	igdeContainerSplittedReference splitted;
-	splitted.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espLeft, 300 ) );
+	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(300)));
 	AddChild( splitted );
 	
 	pWindowProperties = new saeWindowProperties( *this );

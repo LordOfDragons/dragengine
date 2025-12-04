@@ -33,6 +33,7 @@
 #include "../module/igdeEditorModuleManager.h"
 
 #include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
@@ -137,7 +138,7 @@ pWindowMain( windowMain )
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	SetSize(decPoint(600, 0));
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 0)));
 	
 	igdeLabelReference label;
 	label.TakeOver( new igdeLabel( env, "Recently used Game Projects" ) );

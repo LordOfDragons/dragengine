@@ -60,6 +60,7 @@
 #include <deigde/gamedefinition/sky/igdeGDSkyManager.h>
 #include <deigde/gamedefinition/preview/igdeGDPreviewManager.h>
 #include <deigde/gamedefinition/visitor/igdeGDAddToListVisitor.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
@@ -619,7 +620,8 @@ pViewMode( evmPreview )
 	pActionPIRebuild.TakeOver( new cActionPIRebuild( *this ) );
 	
 	
-	content.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espTop, 400 ) );
+	content.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espTop,
+		igdeApplication::app().DisplayScaled(400)));
 	AddChild( content );
 	
 	
@@ -671,10 +673,11 @@ pViewMode( evmPreview )
 	frameLine->AddChild( groupBox );
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
-		igdeUIHelper::sColumnHeader( "Name", NULL, 200 )
+		igdeUIHelper::sColumnHeader("Name", nullptr, igdeApplication::app().DisplayScaled(200))
 	};
-	helper.IconListBox( groupBox, pListItems, decPoint( 100, 150 ), headers, 1, "Items",
-		new cListItems( *this ) );
+	helper.IconListBox(groupBox, pListItems,
+		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
+		headers, 1, "Items", new cListItems( *this ) );
 	pListItems->SetDefaultSorter();
 	pListItems->SetViewMode( igdeIconListBox::evmIconVertical );
 	

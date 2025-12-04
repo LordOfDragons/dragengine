@@ -34,6 +34,7 @@
 #include "../../undosys/link/seULinkSetCurve.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
@@ -122,7 +123,8 @@ public:
 ////////////////////////////
 
 seWindowCurves::seWindowCurves( seWindowMain &windowMain ) :
-igdeContainerSplitted( windowMain.GetEnvironment(), igdeContainerSplitted::espRight, 200 ),
+igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espRight,
+	igdeApplication::app().DisplayScaled(200)),
 pWindowMain( windowMain ),
 pListener( NULL ),
 pSky( NULL )

@@ -35,7 +35,7 @@ class deFont;
  * FOX Native font.
  */
 class igdeNativeFoxFont : public FXFont{
-	FXDECLARE( igdeNativeFoxFont )
+	FXDECLARE(igdeNativeFoxFont)
 	
 protected:
 	igdeNativeFoxFont();
@@ -47,13 +47,13 @@ public:
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create native font. */
-	igdeNativeFoxFont( igdeFont &owner );
+	igdeNativeFoxFont(igdeFont &owner);
 	
 	/** \brief Clean up native font. */
-	virtual ~igdeNativeFoxFont();
+	~igdeNativeFoxFont() override;
 	
 	/** \brief Create native font. */
-	static igdeNativeFoxFont* CreateNativeFont( igdeFont &owner );
+	static igdeNativeFoxFont* CreateNativeFont(igdeFont &owner);
 	
 	/** \brief Destroy native font. */
 	virtual void DestroyNativeFont();
@@ -66,7 +66,7 @@ public:
 	virtual deFont *CreateEngineFont();
 	
 	/** \brief Text size. */
-	virtual decPoint TextSize( const char *text ) const;
+	virtual decPoint TextSize(const char *text) const;
 	/*@}*/
 };
 

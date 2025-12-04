@@ -51,6 +51,7 @@
 #include "../undosys/profile/projUProfileSetWebsite.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
@@ -664,7 +665,8 @@ public:
 ////////////////////////////
 
 projPanelProfiles::projPanelProfiles( projWindowMain &windowMain ) :
-igdeContainerSplitted( windowMain.GetEnvironment(), igdeContainerSplitted::espLeft, 250 ),
+igdeContainerSplitted(windowMain.GetEnvironment(), igdeContainerSplitted::espLeft,
+	igdeApplication::app().DisplayScaled(250)),
 
 pWindowMain( windowMain ),
 

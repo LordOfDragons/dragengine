@@ -58,18 +58,15 @@ igdeApplication *igdeApplication::pApp = NULL;
 igdeApplication::igdeApplication() :
 pNativeApplication( NULL )
 {
-	if( pApp ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NULL(pApp)
 	
 	pApp = this;
-	
 	pNativeApplication = igdeNativeApplication::CreateNativeApplication( *this );
 }
 
 igdeApplication::~igdeApplication(){
 	if( pNativeApplication ){
-		( ( igdeNativeApplication* )pNativeApplication )->DestroyNativeApplication();
+		((igdeNativeApplication*)pNativeApplication)->DestroyNativeApplication();
 	}
 	
 	if( pApp == this ){
@@ -117,33 +114,50 @@ void igdeApplication::Run(){
 #endif
 
 decColor igdeApplication::GetSystemColor( igdeEnvironment::eSystemColors color ) const{
-	if( ! pNativeApplication ){
-		DETHROW( deeInvalidParam );
-	}
-	return ( ( igdeNativeApplication* )pNativeApplication )->GetSystemColor( color );
+	DEASSERT_NOTNULL(pNativeApplication)
+	return ((igdeNativeApplication*)pNativeApplication)->GetSystemColor( color );
 }
 
 void igdeApplication::GetAppFontConfig( igdeFont::sConfiguration &config ){
-	if( ! pNativeApplication ){
-		DETHROW( deeInvalidParam );
-	}
-	( ( igdeNativeApplication* )pNativeApplication )->GetAppFontConfig( config );
+	DEASSERT_NOTNULL(pNativeApplication)
+	((igdeNativeApplication*)pNativeApplication)->GetAppFontConfig( config );
 }
 
 igdeApplication &igdeApplication::app(){
-	if( ! pApp ){
-		DETHROW( deeInvalidParam );
-	}
+	DEASSERT_NOTNULL(pApp)
 	return *pApp;
 }
 
 void igdeApplication::RunModalWhileShown( igdeWindow &window ){
-	if( ! pNativeApplication ){
-		DETHROW( deeInvalidParam );
-	}
-	( ( igdeNativeApplication* )pNativeApplication )->RunModalWhileShown( window );
+	DEASSERT_NOTNULL(pNativeApplication)
+	((igdeNativeApplication*)pNativeApplication)->RunModalWhileShown( window );
 }
 
+
+int igdeApplication::GetDisplayScaleFactor(){
+	DEASSERT_NOTNULL(pNativeApplication)
+	return ((igdeNativeApplication*)pNativeApplication)->GetDisplayScaleFactor();
+}
+
+float igdeApplication::GetDisplayScaleFactorFloat(){
+	return (float)GetDisplayScaleFactor() / 100.0f;
+}
+
+float igdeApplication::DisplayScaled(float scalar){
+	return scalar * GetDisplayScaleFactorFloat();
+}
+
+int igdeApplication::DisplayScaled(int value){
+	return (int)(DisplayScaled((float)value) + 0.5f);
+}
+
+decPoint igdeApplication::DisplayScaled(const decPoint &point){
+	return DisplayScaled(decVector2(point)).Round();
+}
+
+decVector2 igdeApplication::DisplayScaled(const decVector2 &point){
+	return point * GetDisplayScaleFactorFloat();
+}
 
 
 // Protected Functions
@@ -168,14 +182,14 @@ void igdeApplication::CleanUp(){
 
 void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
 	try{
-		( ( igdeNativeApplication* )pNativeApplication )->Initialize( arguments );
+		((igdeNativeApplication*)pNativeApplication)->Initialize( arguments );
 		
 		if( Initialize( arguments ) ){
-			( ( igdeNativeApplication* )pNativeApplication )->Run();
+			((igdeNativeApplication*)pNativeApplication)->Run();
 		}
 		
 	}catch( const deException &e ){
-		( ( igdeNativeApplication* )pNativeApplication )->ShowError( e );
+		((igdeNativeApplication*)pNativeApplication)->ShowError( e );
 		
 		try{
 			CleanUp();
@@ -183,15 +197,15 @@ void igdeApplication::pSharedRun( decUnicodeStringList &arguments ){
 			
 		}catch( const deException &e2 ){
 			e2.PrintError();
-			( ( igdeNativeApplication* )pNativeApplication )->ShowError( e2 );
+			((igdeNativeApplication*)pNativeApplication)->ShowError( e2 );
 		}
 		
-		( ( igdeNativeApplication* )pNativeApplication )->Quit();
+		((igdeNativeApplication*)pNativeApplication)->Quit();
 		throw;
 	}
 	
 	CleanUp();
 	pMainWindow = NULL;
 	
-	( ( igdeNativeApplication* )pNativeApplication )->Quit();
+	((igdeNativeApplication*)pNativeApplication)->Quit();
 }

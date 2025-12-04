@@ -30,6 +30,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeContainerReference.h>
@@ -598,9 +599,13 @@ pEnabled( true )
 	pCBKeys->SetDefaultSorter();
 	helper.Button( frameLine, pBtnKeyAdd, pActionPropertyAdd );
 	
-	const igdeUIHelper::sColumnHeader headers[] = { { "Key", NULL, 200 }, { "Value", NULL, 200 } };
-	helper.IconListBox( *this, pListProperties, decPoint( 100, 150 ), headers, 2, "Properties",
-		new cListProperties( *this ) );
+	const igdeUIHelper::sColumnHeader headers[] = {
+		{"Key", nullptr, igdeApplication::app().DisplayScaled(200)},
+		{"Value", nullptr, igdeApplication::app().DisplayScaled(200)}
+	};
+	helper.IconListBox(*this, pListProperties,
+		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
+		headers, 2, "Properties", new cListProperties( *this ) );
 	pListProperties->SetDefaultSorter();
 	
 	helper.EditPropertyValue( *this, pEditPropertyValue, new cEditPropertyValue( *this ) );

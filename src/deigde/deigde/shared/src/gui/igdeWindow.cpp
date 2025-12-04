@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "igdeApplication.h"
 #include "igdeWindow.h"
 #include "igdeCommonDialogs.h"
 #include "igdeContainerReference.h"
@@ -51,8 +52,8 @@ igdeContainer( environment ),
 pTitle( title ),
 pIcon( icon ),
 pCanResize( canResize ),
-pPosition( 10, 50 ),
-pSize( 400, 300 ),
+pPosition(igdeApplication::app().DisplayScaled(decPoint(10, 50))),
+pSize(igdeApplication::app().DisplayScaled(decPoint(400, 300))),
 pEnabled( true )
 {
 	SetVisible( false );

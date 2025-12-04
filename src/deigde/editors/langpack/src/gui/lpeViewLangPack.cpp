@@ -38,6 +38,7 @@
 #include "../undosys/entry/lpeULangPackEntryAdd.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTextArea.h>
@@ -260,7 +261,8 @@ preventUpdate( false )
 	
 	// content split between list and bottom line
 	igdeContainerSplittedReference splitted;
-	splitted.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espBottom, 100 ) );
+	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espBottom,
+		igdeApplication::app().DisplayScaled(100)));
 	AddChild( splitted, igdeContainerBorder::eaCenter );
 	
 	igdeContainerReference sidePanel;
@@ -274,12 +276,14 @@ preventUpdate( false )
 	pEditRefText->SetEditable( false );
 	splitted->AddChild( sidePanel, igdeContainerSplitted::eaSide );
 	
-	const igdeUIHelper::sColumnHeader listHeaders[ 3 ] = {
-		{ "Identifier", nullptr, 250 },
-		{ "Text", nullptr, 650 },
-		{ "Reference", nullptr, 400 }
+	const igdeUIHelper::sColumnHeader listHeaders[3] = {
+		{"Identifier", nullptr, igdeApplication::app().DisplayScaled(250)},
+		{"Text", nullptr, igdeApplication::app().DisplayScaled(650)},
+		{"Reference", nullptr, igdeApplication::app().DisplayScaled(400)}
 	};
-	helper.IconListBox( decPoint( 100, 150 ), listHeaders, 3, "Entries", pListEntries, nullptr );
+	helper.IconListBox(
+		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
+		listHeaders, 3, "Entries", pListEntries, nullptr);
 	pListEntries->SetSelectionMode( igdeIconListBox::esmMultiple );
 	cListEntries::AddToListBox( *this, pListEntries );
 	splitted->AddChild( pListEntries, igdeContainerSplitted::eaCenter );

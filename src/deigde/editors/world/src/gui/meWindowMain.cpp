@@ -80,6 +80,7 @@
 
 #include <deigde/clipboard/igdeClipboardDataReference.h>
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTabBook.h>
@@ -168,7 +169,8 @@ pLoadTask( NULL )
 	pCreateToolBarDecal();
 	
 	igdeContainerSplittedReference splitted;
-	splitted.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espLeft, 400 ) );
+	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
 	
 	pWindowProperties = new meWindowProperties( *this );

@@ -88,6 +88,13 @@ public:
 	
 	/** Show window modal while keeping engine properly updating. */
 	void RunModalWhileShown( igdeWindow &window );
+	
+	/**
+	 * \brief Global display scaling factor for display.
+	 * 
+	 * Value of 100 represents scaling of 100%. Value step size is 25.
+	 */
+	int GetDisplayScaleFactor();
 	/*@}*/
 	
 	

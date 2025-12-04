@@ -104,6 +104,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeContainerReference.h>
@@ -1243,11 +1244,12 @@ pGameDefinition( NULL )
 	helper.Button( frameLine, pBtnPropertyValueSet, pActionPropertyValueSet );
 	groupBox->AddChild( frameLine );
 	
-	const igdeUIHelper::sColumnHeader headersPropertyValues[ 2 ] = {
-		igdeUIHelper::sColumnHeader( "Key", NULL, 150 ),
-		igdeUIHelper::sColumnHeader( "Value", NULL, 200 )
+	const igdeUIHelper::sColumnHeader headersPropertyValues[2] = {
+		igdeUIHelper::sColumnHeader("Key", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("Value", nullptr, igdeApplication::app().DisplayScaled(200))
 	};
-	helper.IconListBox( groupBox, pListPropertyValues, decPoint( 100, 120 ),
+	helper.IconListBox(groupBox, pListPropertyValues,
+		igdeApplication::app().DisplayScaled(decPoint(100, 120)),
 		headersPropertyValues, 2, "Property values", new cListPropertyValues( *this ) );
 	pListPropertyValues->SetDefaultSorter();
 	

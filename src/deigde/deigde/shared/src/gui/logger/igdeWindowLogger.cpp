@@ -27,6 +27,7 @@
 
 #include "igdeWindowLogger.h"
 #include "igdeWindowLoggerListener.h"
+#include "../igdeApplication.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeTextArea.h"
 #include "../event/igdeAction.h"
@@ -80,7 +81,7 @@ pPendingClearLogs( false )
 	pListener = new igdeWindowLoggerListener( *this );
 	
 	SetPosition( decPoint( 10, 50 ) );
-	SetSize( decPoint( 800, 600 ) );
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
 	pEditLogs.TakeOver( new igdeTextArea( environment, 60, 10, false ) );
 	

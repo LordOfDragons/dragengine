@@ -25,6 +25,7 @@
 #include "igdeDEStatus.h"
 #include "igdeDialogEngine.h"
 
+#include "../igdeApplication.h"
 #include "../igdeUIHelper.h"
 #include "../igdeTextArea.h"
 #include "../igdeButton.h"
@@ -116,12 +117,14 @@ pDialogEngine( dialogEngine )
 	
 	
 	helper.GroupBoxStaticFlow( *this, groupBox, "System Status:", true );
-	const igdeUIHelper::sColumnHeader columns[ 3 ] = {
-		igdeUIHelper::sColumnHeader( "System Name", NULL, 150 ),
-		igdeUIHelper::sColumnHeader( "Active Module", NULL, 200 ),
-		igdeUIHelper::sColumnHeader( "Status", NULL, 150 )
+	const igdeUIHelper::sColumnHeader columns[3] = {
+		igdeUIHelper::sColumnHeader("System Name", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("Active Module", nullptr, igdeApplication::app().DisplayScaled(200)),
+		igdeUIHelper::sColumnHeader("Status", nullptr, igdeApplication::app().DisplayScaled(150))
 	};
-	helper.IconListBox( groupBox, pListSystems, decPoint( 100, 150 ), columns, 3, "System Status", NULL );
+	helper.IconListBox(groupBox, pListSystems,
+		igdeApplication::app().DisplayScaled(decPoint(100, 150)),
+		columns, 3, "System Status", nullptr);
 	
 	pAddSystem( GetEngine()->GetGraphicSystem() );
 	pAddSystem( GetEngine()->GetAudioSystem() );

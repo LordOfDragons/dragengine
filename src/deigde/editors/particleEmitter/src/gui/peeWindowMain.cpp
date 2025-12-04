@@ -38,6 +38,7 @@
 #include "../emitter/peeEmitter.h"
 
 #include <deigde/engine/igdeEngineController.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeToolBar.h>
@@ -105,14 +106,16 @@ pEmitter( NULL )
 	pCreateToolBarEdit();
 	
 	igdeContainerSplittedReference splitted;
-	splitted.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espLeft, 360 ) );
+	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(360)));
 	AddChild( splitted );
 	
 	pWindowProperties = new peeWindowProperties( *this );
 	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
 	
 	igdeContainerSplittedReference splitted2;
-	splitted2.TakeOver( new igdeContainerSplitted( env, igdeContainerSplitted::espBottom, 260 ) );
+	splitted2.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espBottom,
+		igdeApplication::app().DisplayScaled(260)));
 	splitted->AddChild( splitted2, igdeContainerSplitted::eaCenter );
 	
 	pWindowCurves = new peeWindowCurves( *this );

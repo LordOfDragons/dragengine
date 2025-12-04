@@ -50,7 +50,7 @@ public:
 	igdeEnvironmentIGDE();
 	
 	/** \brief Clean up environment. */
-	virtual ~igdeEnvironmentIGDE() override;
+	~igdeEnvironmentIGDE() override;
 	/*@}*/
 	
 	
@@ -69,16 +69,16 @@ public:
 	 * 
 	 * Each module has to add one and only one editor window.
 	 */
-	virtual igdeContainer *GetUIContainer() override;
+	igdeContainer *GetUIContainer() override;
 	
 	/** \brief Retrieves a stock icon. */
-	virtual igdeIcon *GetStockIcon( eStockIcons icon ) override;
+	igdeIcon *GetStockIcon( eStockIcons icon ) override;
 	
 	/** \brief Stock rig. */
-	virtual deRig::Ref GetStockRig( eStockRigs rig ) override;
+	deRig::Ref GetStockRig( eStockRigs rig ) override;
 	
 	/** \brief Stock model. */
-	virtual deModel::Ref GetStockModel( eStockModels model ) override;
+	deModel::Ref GetStockModel( eStockModels model ) override;
 	
 	/**
 	 * \brief Stock skin.
@@ -86,37 +86,37 @@ public:
 	 * Stock skins are only available after the engine controller has been started for the
 	 * first time. If not available nullptr is returned.
 	 */
-	virtual deSkin::Ref GetStockSkin( eStockSkins skin ) override;
+	deSkin::Ref GetStockSkin( eStockSkins skin ) override;
 	
 	/** \brief Retrieves the engine controller. */
-	virtual igdeEngineController *GetEngineController() override;
+	igdeEngineController *GetEngineController() override;
 	
 	/** \brief Retrieves the IGDE game definition. */
-	virtual igdeGameDefinition *GetGameDefinition() override;
+	igdeGameDefinition *GetGameDefinition() override;
 	
 	/** \brief Shared game definition with identifier or NULL if not found. */
-	virtual igdeGameDefinition *GetSharedGameDefinition( const char *id ) override;
+	igdeGameDefinition *GetSharedGameDefinition( const char *id ) override;
 	
 	/** \brief Retrieves the game definition preview manager. */
-	virtual igdeGDPreviewManager *GetGDPreviewManager() override;
+	igdeGDPreviewManager *GetGDPreviewManager() override;
 	
 	/** \brief Retrieves the texture property list. */
-	virtual const igdeTexturePropertyList *GetTexturePropertyList() override;
+	const igdeTexturePropertyList *GetTexturePropertyList() override;
 	
 	/** \brief The active game project. */
-	virtual igdeGameProject *GetGameProject() override;
+	igdeGameProject *GetGameProject() override;
 	
 	/** \brief Retrieves the logger. */
-	virtual deLogger *GetLogger() override;
+	deLogger *GetLogger() override;
 	
-	/** \brief Retrieves the game project virtual file system. */
-	virtual deVirtualFileSystem *GetFileSystemGame() override;
+	/** \brief Retrieves the game project file system. */
+	deVirtualFileSystem *GetFileSystemGame() override;
 	
-	/** \brief Retrieves the igde virtual file system. */
-	virtual deVirtualFileSystem *GetFileSystemIGDE() override;
+	/** \brief Retrieves the igde file system. */
+	deVirtualFileSystem *GetFileSystemIGDE() override;
 	
 	/** \brief Default application font configuration from host platform. */
-	virtual void GetApplicationFont( igdeFont::sConfiguration &config ) override;
+	void GetApplicationFont( igdeFont::sConfiguration &config ) override;
 	
 	/**
 	 * \brief Shared font with configuration.
@@ -126,52 +126,52 @@ public:
 	 * of being shared by different parties. Shared fonts stay in memory until the IGDE
 	 * is shut down.
 	 */
-	virtual igdeFont *GetSharedFont( const igdeFont::sConfiguration &configuration ) override;
+	igdeFont *GetSharedFont( const igdeFont::sConfiguration &configuration ) override;
 	
 	/** \brief System color. */
-	virtual decColor GetSystemColor( eSystemColors color ) override;
+	decColor GetSystemColor( eSystemColors color ) override;
 	
 	/** \brief Shared model collision rig. */
-	virtual deRig *GetSharedModelCollisionRig() override;
+	deRig *GetSharedModelCollisionRig() override;
 	
 	/** \brief Request asynchronous loading of resource calling listener once finished. */
-	virtual void AsyncLoadResource( const char *filename,
+	void AsyncLoadResource( const char *filename,
 		deResourceLoader::eResourceType resourceType,
 		igdeResourceLoaderListener *listener ) override;
 	
 	/** \brief UI Helper. */
-	virtual igdeUIHelper &GetUIHelper() override;
+	igdeUIHelper &GetUIHelper() override;
 	
 	/** \brief UI Helper for properties panels. */
-	virtual igdeUIHelper &GetUIHelperProperties() override;
+	igdeUIHelper &GetUIHelperProperties() override;
 	
 	
 	
 	/** \brief Named GuiTheme or default if not found. */
-	virtual igdeGuiTheme *GetGuiThemeNamed( const char *name ) override;
+	igdeGuiTheme *GetGuiThemeNamed( const char *name ) override;
 	
 	/** \brief Default GuiTheme. */
-	virtual igdeGuiTheme *GetDefaultGuiTheme() override;
+	igdeGuiTheme *GetDefaultGuiTheme() override;
 	
 	
 	
 	/** \brief Sets the visibility of the progress bar in the status bar. */
-	virtual void SetProgressVisible( bool visible ) override;
+	void SetProgressVisible( bool visible ) override;
 	/** \brief Sets the progress bar progress. */
-	virtual void SetProgress( float progress ) override;
+	void SetProgress( float progress ) override;
 	/** \brief Sets the progress text. */
-	virtual void SetProgressText( const char *text ) override;
+	void SetProgressText( const char *text ) override;
 	
 	
 	
 	/** \brief Active module shared menus changed. */
-	virtual void ActiveModuleSharedMenusChanged() override;
+	void ActiveModuleSharedMenusChanged() override;
 	
 	/** \brief Active module shared toolbars changed. */
-	virtual void ActiveModuleSharedToolBarsChanged() override;
+	void ActiveModuleSharedToolBarsChanged() override;
 	
 	/** \brief Activate editor and bring it to the front. */
-	virtual void ActivateEditor( igdeEditorModule *editor ) override;
+	void ActivateEditor( igdeEditorModule *editor ) override;
 	
 	
 	
@@ -180,14 +180,14 @@ public:
 	 *        for opening files of a given resource type.
 	 * \details The pattern list is build from the available engine modules.
 	 */
-	virtual const igdeFilePatternList *GetOpenFilePatternList( eFilePatternListTypes type ) override;
+	const igdeFilePatternList *GetOpenFilePatternList( eFilePatternListTypes type ) override;
 	
 	/**
 	 * \brief Retrieves a list of file patterns suitable to be used in a file dialog
 	 *        for saving files of a given resource type.
 	 * \details The pattern list is build from the available engine modules.
 	 */
-	virtual const igdeFilePatternList *GetSaveFilePatternList( eFilePatternListTypes type ) override;
+	const igdeFilePatternList *GetSaveFilePatternList( eFilePatternListTypes type ) override;
 	
 	
 	/**
@@ -196,13 +196,13 @@ public:
 	 * Events generated by the game engine for collider will be send to the delegee.
 	 * Set to \em NULL to stop receiving events.
 	 */
-	virtual void SetColliderDelegee( deCollider *collider, deBaseScriptingCollider *delegee ) override;
+	void SetColliderDelegee( deCollider *collider, deBaseScriptingCollider *delegee ) override;
 	
 	/** \brief Get collider user pointer. */
-	virtual void *GetColliderUserPointer( deCollider *collider ) override;
+	void *GetColliderUserPointer( deCollider *collider ) override;
 	
 	/** \brief Set user pointer for collider. */
-	virtual void SetColliderUserPointer( deCollider *collider, void *userPointer ) override;
+	void SetColliderUserPointer( deCollider *collider, void *userPointer ) override;
 	
 	/**
 	 * \brief Set delegee for touch sensor.
@@ -210,7 +210,7 @@ public:
 	 * Events generated by the game engine for touch sensor will be send to delegee.
 	 * Set to \em NULL to stop receiving events.
 	 */
-	virtual void SetTouchSensorDelegee( deTouchSensor *touchSensor,
+	void SetTouchSensorDelegee( deTouchSensor *touchSensor,
 		deBaseScriptingTouchSensor *delegee ) override;
 	
 	/**
@@ -219,14 +219,14 @@ public:
 	 * Events generated by the game engine for prop field will be send to delegee.
 	 * Set to \em NULL to stop receiving events.
 	 */
-	virtual void SetPropFieldDelegee( dePropField *propField, deBaseScriptingPropField *delegee ) override;
+	void SetPropFieldDelegee( dePropField *propField, deBaseScriptingPropField *delegee ) override;
 	
 	
 	
 	/**
 	 * \brief Show window modal while keeping engine properly updating.
 	 */
-	virtual void RunModalWhileShown( igdeWindow &window ) override;
+	void RunModalWhileShown( igdeWindow &window ) override;
 	
 	
 	
@@ -238,7 +238,7 @@ public:
 	 * processing the changes. This method returns after starting the update process but
 	 * before doing any actual work for the first time.
 	 */
-	virtual void ProjecGameDefinitionChanged() override;
+	void ProjecGameDefinitionChanged() override;
 	
 	/**
 	 * \brief Reload XML Element Classes.
@@ -249,7 +249,7 @@ public:
 	 * not done automatically since this can be an expensive operation. Editors have to trigger
 	 * this if they know XML Element Classes are likely to have changed.
 	 */
-	virtual void ReloadXMLElementClasses() override;
+	void ReloadXMLElementClasses() override;
 	
 	/**
 	 * \brief Request opening file in editor.
@@ -257,10 +257,10 @@ public:
 	 * Asks all editors if they can open the request file. If multiple editors can open
 	 * the file the most suitable one.
 	 * 
-	 * \param[in] filename Filename in game data virtual file system.
+	 * \param[in] filename Filename in game data file system.
 	 * \returns \em true if the object has been opened or \em false otherwise.
 	 */
-	virtual bool OpenFileInEditor( const char *filename ) override;
+	bool OpenFileInEditor( const char *filename ) override;
 	
 	/**
 	 * \brief Request saving unsaved documents.
@@ -273,20 +273,20 @@ public:
 	 *                    Message is optional and can be \em NULL.
 	 * \returns \em true if user wants to continue the action or \em false to abort.
 	 */
-	virtual bool RequestSaveDocuments( const char *title, const char* message ) override;
+	bool RequestSaveDocuments( const char *title, const char* message ) override;
 	
 	/**
 	 * \brief List of recently opened editor files.
 	 */
-	virtual const decStringList &GetRecentEditorFiles() override;
+	const decStringList &GetRecentEditorFiles() override;
 	
 	/**
 	 * \brief Add a file to the recent editor files list.
 	 */
-	virtual void AddRecentEditorFile( const char *filename ) override;
+	void AddRecentEditorFile( const char *filename ) override;
 	
 	/** \brief Close application. */
-	virtual void CloseApplication() override;
+	void CloseApplication() override;
 	/*@}*/
 };
 

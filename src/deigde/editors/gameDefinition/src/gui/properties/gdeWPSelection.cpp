@@ -50,6 +50,7 @@
 #include "selection/gdeWPSSky.h"
 #include "../../gamedef/gdeGameDefinition.h"
 
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeTreeList.h>
@@ -140,7 +141,8 @@ public:
 ////////////////////////////
 
 gdeWPSelection::gdeWPSelection( gdeWindowProperties &windowProperties ) :
-igdeContainerSplitted( windowProperties.GetEnvironment(), igdeContainerSplitted::espBottom, 600 ),
+igdeContainerSplitted(windowProperties.GetEnvironment(), igdeContainerSplitted::espBottom,
+	igdeApplication::app().DisplayScaled(600)),
 pWindowProperties( windowProperties ),
 pListener( NULL ),
 pGameDefinition( NULL ),

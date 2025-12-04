@@ -32,6 +32,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gameproject/igdeGameProject.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
@@ -363,6 +364,8 @@ pProjectGameDefPathChanged( false )
 	
 	pProjectPathChanged = false;
 	pProjectGameDefPathChanged = false;
+	
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 }
 
 igdeDialogNewGameProject::~igdeDialogNewGameProject(){

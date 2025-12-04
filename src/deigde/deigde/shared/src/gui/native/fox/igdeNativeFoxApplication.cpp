@@ -39,7 +39,10 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
 
-#ifdef OS_W32
+#ifdef OS_UNIX
+#include <dragengine/app/deOSUnix.h>
+#elif defined OS_W32
+#include <dragengine/app/deOSWindows.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #endif
 
@@ -67,7 +70,8 @@ pOwner( &powner ),
 pToolTip( NULL ),
 pDisableModalUpdating( false ),
 pFoxArgs( NULL ),
-pFoxArgCount( 0 ){
+pFoxArgCount( 0 ),
+pDisplayScaleFactor(100){
 }
 
 igdeNativeFoxApplication::~igdeNativeFoxApplication(){
@@ -177,6 +181,26 @@ void igdeNativeFoxApplication::Initialize( decUnicodeStringList &arguments ){
 	//setTooltipPause( num_milliseconds );
 	
 	create();
+	
+	// we have to fix the normal font for dpi awareness. at this point in time we do not yet
+	// have safe access to igdeEnvironment. thus we have to do a bit of trickery here.
+	#ifdef OS_UNIX
+	pDisplayScaleFactor = deOSUnix().GetDisplayCurrentScaleFactor(0);
+	#elif defined OS_W32
+	pDisplayScaleFactor = deOSWindows().GetDisplayCurrentScaleFactor(0);
+	#endif
+	
+	const FXFont &fontNormal = *getNormalFont();
+	pAppFontConfig.name = fontNormal.getName().text();
+	pAppFontConfig.size = (float)fontNormal.getSize() * 0.1f; // fox fonts are in 1/10pt
+	pAppFontConfig.bold = fontNormal.getActualWeight() > FXFont::Normal;
+	pAppFontConfig.italic = fontNormal.getActualSlant() == FXFont::Italic;
+	pAppFontConfig.underline = false;
+	pAppFontConfig.strikeThrough = false;
+	
+	FXFontDesc fontDesc(fontNormal.getFontDesc());
+	fontDesc.size = (FXuint)((int)fontDesc.size * pDisplayScaleFactor / 100);
+	setNormalFont(new FXFont(this, fontDesc));
 }
 
 void igdeNativeFoxApplication::Run(){
@@ -248,14 +272,8 @@ decColor igdeNativeFoxApplication::GetSystemColor( igdeEnvironment::eSystemColor
 	}
 }
 
-void igdeNativeFoxApplication::GetAppFontConfig( igdeFont::sConfiguration &config ) const{
-	const FXFont &font = *getNormalFont();
-	config.name = font.getName().text();
-	config.size = ( float )font.getSize() * 0.1f; // fox fonts are in 1/10pt
-	config.bold = font.getActualWeight() > FXFont::Normal;
-	config.italic = font.getActualSlant() == FXFont::Italic;
-	config.underline = false;
-	config.strikeThrough = false;
+void igdeNativeFoxApplication::GetAppFontConfig(igdeFont::sConfiguration &config) const{
+	config = pAppFontConfig;
 }
 
 void igdeNativeFoxApplication::ShowError( const deException &exception ) const{
@@ -280,6 +298,10 @@ void igdeNativeFoxApplication::RunModalWhileShown( igdeWindow &window ){
 		}
 		native->handle( native, FXSEL( SEL_IGDE_FRAME_UPDATE, 0 ), 0 );
 	}
+}
+
+int igdeNativeFoxApplication::GetDisplayScaleFactor(){
+	return pDisplayScaleFactor;
 }
 
 #endif

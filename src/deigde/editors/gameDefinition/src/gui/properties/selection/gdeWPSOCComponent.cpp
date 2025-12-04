@@ -72,6 +72,7 @@
 #include "../../../undosys/objectClass/component/texture/gdeUOCCTextureSetScale.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeButton.h>
@@ -1096,11 +1097,12 @@ pDirtyEngModelTexNames( true )
 	helper.Button( frameLine, pTextureBtnPropertyValueSet, pActionTexturePropertyValueSet );
 	groupBox->AddChild( frameLine );
 	
-	const igdeUIHelper::sColumnHeader headersPropertyValues[ 2 ] = {
-		igdeUIHelper::sColumnHeader( "Key", NULL, 150 ),
-		igdeUIHelper::sColumnHeader( "Value", NULL, 200 )
+	const igdeUIHelper::sColumnHeader headersPropertyValues[2] = {
+		igdeUIHelper::sColumnHeader("Key", nullptr, igdeApplication::app().DisplayScaled(150)),
+		igdeUIHelper::sColumnHeader("Value", nullptr, igdeApplication::app().DisplayScaled(200))
 	};
-	helper.IconListBox( groupBox, pTextureListProperties, decPoint( 100, 120 ),
+	helper.IconListBox(groupBox, pTextureListProperties,
+		igdeApplication::app().DisplayScaled(decPoint(100, 120)),
 		headersPropertyValues, 2, "Property values", new cListTexturePropertyValues( *this ) );
 	pTextureListProperties->SetDefaultSorter();
 }
