@@ -34,7 +34,7 @@
 #include "../../../../ceWindowMain.h"
 #include "../../../../../clipboard/ceClipboardDataCondition.h"
 #include "../../../../../conversation/ceConversation.h"
-#include "../../../../../conversation/condition/ceConversationConditionReference.h"
+#include "../../../../../conversation/condition/ceConversationCondition.h"
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
@@ -77,7 +77,7 @@ void ceWPTMAPasteCondition::OnAction(){
 		return;
 	}
 	
-	ceConversationConditionReference condition;
+	ceConversationCondition::Ref condition;
 	condition.TakeOver( cdata->GetConditions().GetAt( 0 )->CreateCopy() );
 	
 	ceConversationConditionList conditions;

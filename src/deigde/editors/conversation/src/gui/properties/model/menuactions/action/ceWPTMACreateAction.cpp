@@ -33,7 +33,7 @@
 #include "../../../ceWindowProperties.h"
 #include "../../../../ceWindowMain.h"
 #include "../../../../../conversation/ceConversation.h"
-#include "../../../../../conversation/action/ceConversationActionReference.h"
+#include "../../../../../conversation/action/ceConversationAction.h"
 #include "../../../../../conversation/action/ceCAActorAdd.h"
 #include "../../../../../conversation/action/ceCAActorCommand.h"
 #include "../../../../../conversation/action/ceCAActorRemove.h"
@@ -82,7 +82,7 @@ pActionType( actionType ){
 ///////////////
 
 void ceWPTMACreateAction::OnAction(){
-	ceConversationActionReference action;
+	ceConversationAction::Ref action;
 	action.TakeOver( CreateAction() );
 	
 	igdeUndo::Ref undo;

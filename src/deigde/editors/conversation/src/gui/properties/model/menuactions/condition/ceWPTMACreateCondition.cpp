@@ -68,7 +68,7 @@ pConditionType( conditionType ){
 ///////////////
 
 void ceWPTMACreateCondition::OnAction(){
-	ceConversationConditionReference condition;
+	ceConversationCondition::Ref condition;
 	condition.TakeOver( CreateCondition() );
 	
 	igdeUndo::Ref undo;

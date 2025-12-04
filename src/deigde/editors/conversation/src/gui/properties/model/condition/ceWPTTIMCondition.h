@@ -27,7 +27,7 @@
 
 #include "../ceWPTTreeItemModel.h"
 #include "../../../../conversation/condition/ceConversationCondition.h"
-#include "../../../../conversation/condition/ceConversationConditionReference.h"
+#include "../../../../conversation/condition/ceConversationCondition.h"
 
 class ceConversationAction;
 
@@ -38,7 +38,7 @@ class ceConversationAction;
 class ceWPTTIMCondition : public ceWPTTreeItemModel{
 private:
 	ceConversationAction *pAction;
-	ceConversationConditionReference pCondition;
+	ceConversationCondition::Ref pCondition;
 	
 public:
 	static const ceConversationCondition::eConditionTypes ListAddMenuConditions[ 8 ];

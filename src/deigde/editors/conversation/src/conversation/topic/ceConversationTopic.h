@@ -29,8 +29,8 @@
 #include <dragengine/common/string/decString.h>
 
 #include "../action/ceConversationActionList.h"
-#include "../action/ceConversationActionReference.h"
-#include "../condition/ceConversationConditionReference.h"
+#include "../action/ceConversationAction.h"
+#include "../condition/ceConversationCondition.h"
 
 class decStringSet;
 class ceConversationFile;
@@ -51,8 +51,8 @@ private:
 	
 	decString pID;
 	ceConversationActionList pActions;
-	ceConversationActionReference pActiveAction;
-	ceConversationConditionReference pActiveCondition;
+	ceConversationAction::Ref pActiveAction;
+	ceConversationCondition::Ref pActiveCondition;
 	
 	
 	
