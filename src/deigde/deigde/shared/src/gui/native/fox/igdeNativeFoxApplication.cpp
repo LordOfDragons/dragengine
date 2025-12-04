@@ -175,13 +175,6 @@ void igdeNativeFoxApplication::Initialize( decUnicodeStringList &arguments ){
 	// call init. this method is VERY picky that the first argument is present
 	init( pFoxArgCount, pFoxArgs );
 	
-	// create tool tip and application
-	pToolTip = new FXToolTip( this, TOOLTIP_PERMANENT ); // TOOLTIP_PERMANENT, TOOLTIP_VARIABLE
-	//setTooltipTime( num_milliseconds );
-	//setTooltipPause( num_milliseconds );
-	
-	create();
-	
 	// we have to fix the normal font for dpi awareness. at this point in time we do not yet
 	// have safe access to igdeEnvironment. thus we have to do a bit of trickery here.
 	#ifdef OS_UNIX
@@ -201,6 +194,13 @@ void igdeNativeFoxApplication::Initialize( decUnicodeStringList &arguments ){
 	FXFontDesc fontDesc(fontNormal.getFontDesc());
 	fontDesc.size = (FXuint)((int)fontDesc.size * pDisplayScaleFactor / 100);
 	setNormalFont(new FXFont(this, fontDesc));
+	
+	// create tool tip and application
+	pToolTip = new FXToolTip( this, TOOLTIP_PERMANENT ); // TOOLTIP_PERMANENT, TOOLTIP_VARIABLE
+	//setTooltipTime( num_milliseconds );
+	//setTooltipPause( num_milliseconds );
+	
+	create();
 }
 
 void igdeNativeFoxApplication::Run(){
