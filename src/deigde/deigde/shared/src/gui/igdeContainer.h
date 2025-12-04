@@ -35,6 +35,13 @@
  * \brief IGDE UI Container Widget grouping widgets.
  */
 class DE_DLL_EXPORT igdeContainer : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeContainer> Ref;
+	
+	
+	
 private:
 	decObjectOrderedSet pChildren;
 	

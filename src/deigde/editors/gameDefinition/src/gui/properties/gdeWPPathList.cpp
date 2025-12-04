@@ -35,7 +35,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
@@ -56,11 +56,11 @@ namespace{
 
 class cActionAppend : public igdeAction {
 	gdeWPPathList &pPanel;
-	igdeEditPathReference &pEditPath;
-	igdeListBoxReference &pListBox;
+	igdeEditPath::Ref &pEditPath;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionAppend( gdeWPPathList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
+	cActionAppend( gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox ) : 
 	igdeAction( "Append", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Append path" ),
 	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
 	
@@ -83,11 +83,11 @@ public:
 
 class cActionInsert : public igdeAction {
 	gdeWPPathList &pPanel;
-	igdeEditPathReference &pEditPath;
-	igdeListBoxReference &pListBox;
+	igdeEditPath::Ref &pEditPath;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionInsert( gdeWPPathList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
+	cActionInsert( gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox ) : 
 	igdeAction( "Insert", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Insert path" ),
 	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
 	
@@ -121,10 +121,10 @@ public:
 
 class cActionRemove : public igdeAction {
 	gdeWPPathList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionRemove( gdeWPPathList &panel, igdeListBoxReference &listBox ) :
+	cActionRemove( gdeWPPathList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Remove", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
 		"Remove path" ), pPanel( panel ), pListBox( listBox ){ }
 	
@@ -151,10 +151,10 @@ public:
 
 class cActionClear : public igdeAction {
 	gdeWPPathList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClear( gdeWPPathList &panel, igdeListBoxReference &listBox ) :
+	cActionClear( gdeWPPathList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Clear", NULL, "Clear path" ), pPanel( panel ), pListBox( listBox ){ }
 	
 	virtual void OnAction(){

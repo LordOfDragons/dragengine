@@ -25,9 +25,9 @@
 #ifndef _IGDEDECONSOLE_H_
 #define _IGDEDECONSOLE_H_
 
-#include "../igdeComboBoxReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../igdeTextAreaReference.h"
+#include "../igdeComboBox.h"
+#include "../igdeTextField.h"
+#include "../igdeTextArea.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/string/unicode/decUnicodeLineBuffer.h>
@@ -44,9 +44,9 @@ private:
 	igdeDialogEngine &pDialogEngine;
 	decUnicodeLineBuffer pLog;
 	
-	igdeComboBoxReference pCBModule;
-	igdeTextFieldReference pEditCommand;
-	igdeTextAreaReference pEditLogs;
+	igdeComboBox::Ref pCBModule;
+	igdeTextField::Ref pEditCommand;
+	igdeTextArea::Ref pEditLogs;
 	
 	
 	

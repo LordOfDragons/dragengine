@@ -60,9 +60,9 @@
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -1058,7 +1058,7 @@ void seWindowMain::pCreateToolBarEdit(){
 
 void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "File", deInputEvent::ekcF ) );
 	pCreateMenuSynthesizer( cascade );
@@ -1115,7 +1115,7 @@ void seWindowMain::pCreateMenuController( igdeMenuCascade &menu ){
 void seWindowMain::pCreateMenuSource( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascadeReference submenu;
+	igdeMenuCascade::Ref submenu;
 	submenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) );
 	helper.MenuCommand( submenu, pActionSourceAddWave );
 	helper.MenuCommand( submenu, pActionSourceAddSound );
@@ -1148,7 +1148,7 @@ void seWindowMain::pCreateMenuSource( igdeMenuCascade &menu ){
 void seWindowMain::pCreateMenuEffect( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascadeReference submenu;
+	igdeMenuCascade::Ref submenu;
 	submenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) );
 	helper.MenuCommand( submenu, pActionEffectAddStretch );
 	menu.AddChild( submenu );

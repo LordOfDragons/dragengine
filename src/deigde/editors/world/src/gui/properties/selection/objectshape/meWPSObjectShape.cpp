@@ -46,7 +46,7 @@
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeSwitcher.h>
@@ -172,7 +172,7 @@ pPreventUpdate( false )
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, form, formLine;
+	igdeContainer::Ref content, form, formLine;
 	
 	pListener = new meWPSObjectShapeListener( *this );
 	
@@ -576,7 +576,7 @@ void meWPSObjectShape::OnShapeChanged(){
 void meWPSObjectShape::pCreateShapePanels(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	
 	
 	pSwitcherShapeType.TakeOver( new igdeSwitcher( env ) );

@@ -30,7 +30,7 @@
 #include "igdeEditDirectoryListener.h"
 #include "../igdeButton.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeUIHelper.h"
 #include "../browse/igdeDialogBrowserSkin.h"
 #include "../event/igdeAction.h"

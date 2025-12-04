@@ -25,10 +25,10 @@
 #ifndef _CEWPCVARIABLE_H_
 #define _CEWPCVARIABLE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "ceWPCondition.h"
 
@@ -42,10 +42,10 @@ class ceWPTopic;
  */
 class ceWPCVariable : public ceWPCondition{
 private:
-	igdeComboBoxReference pCBOperator;
-	igdeTextFieldReference pEditVariable;
-	igdeTextFieldReference pEditTestValue;
-	igdeTextFieldReference pEditTestVariable;
+	igdeComboBox::Ref pCBOperator;
+	igdeTextField::Ref pEditVariable;
+	igdeTextField::Ref pEditTestValue;
+	igdeTextField::Ref pEditTestVariable;
 	
 	
 	

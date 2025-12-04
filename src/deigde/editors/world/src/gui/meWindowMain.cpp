@@ -88,11 +88,11 @@
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
+#include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -168,7 +168,7 @@ pLoadTask( NULL )
 	pCreateToolBarObject();
 	pCreateToolBarDecal();
 	
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
@@ -2115,7 +2115,7 @@ void meWindowMain::pCreateToolBarDecal(){
 
 void meWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "File", deInputEvent::ekcF ) );
 	pCreateMenuFile( cascade );
@@ -2221,13 +2221,13 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 	helper.MenuCommand( menu, pActionObjectSubclassAsEclass );
 	
 	helper.MenuSeparator( menu );
-	igdeMenuCascadeReference active;
+	igdeMenuCascade::Ref active;
 	active.TakeOver( new igdeMenuCascade( GetEnvironment(), "Active Object",
 		NULL, "Active object", deInputEvent::ekcA ) );
 		
 		menu.AddChild( active );
 		
-		igdeMenuCascadeReference activeRotate;
+		igdeMenuCascade::Ref activeRotate;
 		activeRotate.TakeOver( new igdeMenuCascade( GetEnvironment(), "Rotate",
 			NULL, "Rotate active object", deInputEvent::ekcR ) );
 			
@@ -2239,7 +2239,7 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeRotate, pActionObjectRotate180 );
 			helper.MenuCommand( activeRotate, pActionObjectRotateRandom );
 		
-		igdeMenuCascadeReference activeCopySelected;
+		igdeMenuCascade::Ref activeCopySelected;
 		activeCopySelected.TakeOver( new igdeMenuCascade( GetEnvironment(),
 			"Copy To Selected", nullptr, "Copy To Selected" ) );
 			
@@ -2262,14 +2262,14 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleZ );
 			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleXYZ );
 			
-		igdeMenuCascadeReference activeLight;
+		igdeMenuCascade::Ref activeLight;
 		activeLight.TakeOver( new igdeMenuCascade( GetEnvironment(), "Light",
 			NULL, "Active object light", deInputEvent::ekcL ) );
 			
 			active->AddChild( activeLight );
 			helper.MenuCommand( activeLight, pActionObjectLightToggle );
 			
-		igdeMenuCascadeReference activeShapes;
+		igdeMenuCascade::Ref activeShapes;
 		activeShapes.TakeOver( new igdeMenuCascade( GetEnvironment(), "Property Shapes",
 			NULL, "Active object property shapes", deInputEvent::ekcS ) );
 			

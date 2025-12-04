@@ -43,7 +43,7 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
@@ -95,7 +95,7 @@ public:
 
 ceWPCLogic::ceWPCLogic( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	helper.ComboBox( *this, "Operator:", "Logic to apply to the conditions",
 		pCBOperator, new cComboOperator( *this ) );

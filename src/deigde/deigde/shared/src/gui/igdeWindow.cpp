@@ -28,7 +28,7 @@
 #include "igdeApplication.h"
 #include "igdeWindow.h"
 #include "igdeCommonDialogs.h"
-#include "igdeContainerReference.h"
+#include "igdeContainer.h"
 #include "igdeWidget.h"
 #include "igdeWidget.h"
 #include "native/toolkit.h"

@@ -48,7 +48,7 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -243,7 +243,7 @@ pRequiredType( requiredType )
 {
 	igdeEnvironment &env = wpEffect.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox, form, formLine;
+	igdeContainer::Ref groupBox, form, formLine;
 	
 	
 	pActionLinkAdd.TakeOver( new cActionLinkAdd( *this ) );

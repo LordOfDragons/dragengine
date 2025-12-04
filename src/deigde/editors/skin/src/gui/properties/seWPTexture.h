@@ -27,18 +27,18 @@
 
 #include "../../skin/property/seProperty.h"
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditPointReference.h>
-#include <deigde/gui/composed/igdeEditPoint3Reference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditPoint.h>
+#include <deigde/gui/composed/igdeEditPoint3.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class seSkin;
@@ -60,40 +60,40 @@ private:
 	bool pRequiresUpdate;
 	bool pPreventUpdateMappedTarget;
 	
-	igdeListBoxReference pListTexture;
-	igdeTextFieldReference pEditTexName;
+	igdeListBox::Ref pListTexture;
+	igdeTextField::Ref pEditTexName;
 	
-	igdeListBoxReference pListProperty;
-	igdeTextFieldReference pEditPropName;
-	igdeTextFieldReference pEditPropRenderable;
-	igdeTextFieldReference pEditPropBone;
+	igdeListBox::Ref pListProperty;
+	igdeTextField::Ref pEditPropName;
+	igdeTextField::Ref pEditPropRenderable;
+	igdeTextField::Ref pEditPropBone;
 	
-	igdeComboBoxReference pCBPropertyType;
-	igdeSwitcherReference pSwitcher;
+	igdeComboBox::Ref pCBPropertyType;
+	igdeSwitcher::Ref pSwitcher;
 	
-	igdeTextFieldReference pEditPvtValue;
+	igdeTextField::Ref pEditPvtValue;
 	
-	igdeColorBoxReference pClrPvtColor;
+	igdeColorBox::Ref pClrPvtColor;
 	
-	igdeEditPathReference pEditPvtImagePath;
-	igdeTextFieldReference pLabPvtImageInfo;
+	igdeEditPath::Ref pEditPvtImagePath;
+	igdeTextField::Ref pLabPvtImageInfo;
 	
-	igdeEditPathReference pEditPvtVideoPath;
-	igdeTextFieldReference pLabPvtVideoInfo;
-	igdeCheckBoxReference pChkPvtVideoSharedTime;
+	igdeEditPath::Ref pEditPvtVideoPath;
+	igdeTextField::Ref pLabPvtVideoInfo;
+	igdeCheckBox::Ref pChkPvtVideoSharedTime;
 	
-	igdeSpinTextFieldReference pSpinPvtMappedComponent;
-	igdeComboBoxReference pCBPvtMappedTarget;
+	igdeSpinTextField::Ref pSpinPvtMappedComponent;
+	igdeComboBox::Ref pCBPvtMappedTarget;
 	
-	igdeColorBoxReference pConstructedClrColor;
-	igdeEditPoint3Reference pConstructedEditSize;
-	igdeCheckBoxReference pConstructedChkTileX;
-	igdeCheckBoxReference pConstructedChkTileY;
-	igdeComboBoxReference pConstructedCBBitCount;
+	igdeColorBox::Ref pConstructedClrColor;
+	igdeEditPoint3::Ref pConstructedEditSize;
+	igdeCheckBox::Ref pConstructedChkTileX;
+	igdeCheckBox::Ref pConstructedChkTileY;
+	igdeComboBox::Ref pConstructedCBBitCount;
 	
-	igdeEditPointReference pPreviewEditTCOffset;
-	igdeEditPointReference pPreviewEditTCScaling;
-	igdeTextFieldReference pPreviewEditTCRotation;
+	igdeEditPoint::Ref pPreviewEditTCOffset;
+	igdeEditPoint::Ref pPreviewEditTCScaling;
+	igdeTextField::Ref pPreviewEditTCRotation;
 	
 	
 	

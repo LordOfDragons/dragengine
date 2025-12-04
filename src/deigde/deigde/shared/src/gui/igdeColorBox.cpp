@@ -33,7 +33,7 @@
 #include "igdeUIHelper.h"
 #include "event/igdeColorBoxListener.h"
 #include "menu/igdeMenuCascade.h"
-#include "menu/igdeMenuCascadeReference.h"
+#include "menu/igdeMenuCascade.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../codec/igdeCodecPropertyString.h"
@@ -277,7 +277,7 @@ void igdeColorBox::ShowContextMenu( const decPoint &position ){
 		return;
 	}
 	
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( GetEnvironment() ) );
 	
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();

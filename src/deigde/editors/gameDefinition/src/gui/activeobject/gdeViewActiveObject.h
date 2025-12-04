@@ -26,7 +26,7 @@
 #define _GDEVIEWACTIVEOBJECT_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
@@ -101,7 +101,7 @@ private:
 	bool pShowEnvMapProbes;
 	bool pShowNavBlockers;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
 	

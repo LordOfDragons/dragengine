@@ -27,12 +27,12 @@
 
 #include "../project/remote/projRemoteClient.h"
 
-#include <deigde/gui/igdeLabelReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeTabBookReference.h>
+#include <deigde/gui/igdeLabel.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
@@ -60,18 +60,18 @@ private:
 	
 	int pMaxLines;
 	
-	igdeTextFieldReference pEditName, pEditAddress;
-	igdeButtonReference pBtnDisconnect;
+	igdeTextField::Ref pEditName, pEditAddress;
+	igdeButton::Ref pBtnDisconnect;
 	
-	igdeButtonReference pBtnSynchronize;
-	igdeTextFieldReference pEditSyncState;
+	igdeButton::Ref pBtnSynchronize;
+	igdeTextField::Ref pEditSyncState;
 	
-	igdeComboBoxReference pCBLaunchProfile;
-	igdeButtonReference pBtnStart, pBtnStop, pBtnKill;
+	igdeComboBox::Ref pCBLaunchProfile;
+	igdeButton::Ref pBtnStart, pBtnStop, pBtnKill;
 	
-	igdeTabBookReference pTabContent;
+	igdeTabBook::Ref pTabContent;
 	
-	igdeTextAreaReference pEditLogs;
+	igdeTextArea::Ref pEditLogs;
 	
 	
 public:

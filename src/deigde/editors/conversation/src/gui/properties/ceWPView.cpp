@@ -58,7 +58,7 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeListBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/browse/igdeDialogBrowserObjectClass.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
@@ -390,10 +390,10 @@ public:
 };
 
 class cActionPropClass : public cBaseAction{
-	igdeTextFieldReference &pTextField;
+	igdeTextField::Ref &pTextField;
 	
 public:
-	cActionPropClass( ceWPView &panel, igdeTextFieldReference &textField ) : cBaseAction( panel, "",
+	cActionPropClass( ceWPView &panel, igdeTextField::Ref &textField ) : cBaseAction( panel, "",
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
 		"Brings up a dialog to select the prop class" ), pTextField( textField ){ }
 	
@@ -898,10 +898,10 @@ public:
 };
 
 class cComboActorPoseControllerUpdateType : public cBaseComboBoxListener{
-	igdeComboBoxReference &pCBController;
+	igdeComboBox::Ref &pCBController;
 	
 public:
-	cComboActorPoseControllerUpdateType( ceWPView &panel, igdeComboBoxReference &cbController ) :
+	cComboActorPoseControllerUpdateType( ceWPView &panel, igdeComboBox::Ref &cbController ) :
 	cBaseComboBoxListener( panel ), pCBController( cbController ){ }
 	
 	virtual igdeUndo *OnChanged( igdeComboBox &comboBox, ceConversation* ){
@@ -916,10 +916,10 @@ public:
 };
 
 class cTextActorPoseControllerValue : public cBaseTextFieldListener{
-	igdeComboBoxReference &pCBController;
+	igdeComboBox::Ref &pCBController;
 	
 public:
-	cTextActorPoseControllerValue( ceWPView &panel, igdeComboBoxReference &cbController ) :
+	cTextActorPoseControllerValue( ceWPView &panel, igdeComboBox::Ref &cbController ) :
 	cBaseTextFieldListener( panel ), pCBController( cbController ){ }
 	
 	virtual igdeUndo *OnChanged( igdeTextField &textField, ceConversation* ){
@@ -934,10 +934,10 @@ public:
 };
 
 class cTextActorPoseControllerVector : public cBaseEditVectorListener{
-	igdeComboBoxReference &pCBController;
+	igdeComboBox::Ref &pCBController;
 	
 public:
-	cTextActorPoseControllerVector( ceWPView &panel, igdeComboBoxReference &cbController ) :
+	cTextActorPoseControllerVector( ceWPView &panel, igdeComboBox::Ref &cbController ) :
 	cBaseEditVectorListener( panel ), pCBController( cbController ){ }
 	
 	virtual igdeUndo *OnChanged( igdeEditVector &editVector, ceConversation* ){
@@ -1756,7 +1756,7 @@ pConversation( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, groupBox2, form, formLine;
+	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
 	igdeActionContextMenu *actionContextMenu;
 	
 	pListener = new ceWPViewListener( *this );

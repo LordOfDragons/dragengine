@@ -27,8 +27,8 @@
 
 #include "../../animator/rule/aeRuleMirror.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 
@@ -37,9 +37,9 @@
  */
 class aeDialogMirrorMatchName : public igdeDialog{
 private:
-	igdeComboBoxReference pCBType;
-	igdeTextFieldReference pEditFirst;
-	igdeTextFieldReference pEditSecond;
+	igdeComboBox::Ref pCBType;
+	igdeTextField::Ref pEditFirst;
+	igdeTextField::Ref pEditSecond;
 	
 	
 	

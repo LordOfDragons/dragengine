@@ -27,9 +27,9 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 class meHTVRuleMapping;
 
@@ -42,11 +42,11 @@ class meWVNodeMapping : public meWVNode{
 private:
 	meHTVRuleMapping *pRuleMapping;
 	
-	igdeContainerReference pFraParameters;
-	igdeTextFieldReference pEditLower;
-	igdeTextFieldReference pEditUpper;
-	igdeTextFieldReference pEditValue;
-	igdeCheckBoxReference pChkInversed;
+	igdeContainer::Ref pFraParameters;
+	igdeTextField::Ref pEditLower;
+	igdeTextField::Ref pEditUpper;
+	igdeTextField::Ref pEditValue;
+	igdeCheckBox::Ref pChkInversed;
 	
 	
 	

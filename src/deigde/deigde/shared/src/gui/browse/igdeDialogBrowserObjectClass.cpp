@@ -24,7 +24,7 @@
 
 #include "igdeDialogBrowserObjectClass.h"
 #include "igdeBrowseItemGDPreviewListener.h"
-#include "../dialog/igdeDialogReference.h"
+#include "../dialog/igdeDialog.h"
 #include "../model/igdeListItem.h"
 #include "../../gamedefinition/igdeGDCategory.h"
 #include "../../gamedefinition/igdeGameDefinition.h"
@@ -79,7 +79,7 @@ void igdeDialogBrowserObjectClass::SetSelectedObjectClass( igdeGDClass *gdClass 
 
 
 bool igdeDialogBrowserObjectClass::SelectObjectClass( igdeWidget *owner, igdeGDClass* &objectClass, const char *title ){
-	igdeDialogReference refDialog;
+	igdeDialog::Ref refDialog;
 	refDialog.TakeOver( new igdeDialogBrowserObjectClass( owner->GetEnvironment(), title ) );
 	igdeDialogBrowserObjectClass &dialog = ( igdeDialogBrowserObjectClass& )( igdeDialog& )refDialog;
 	if( objectClass ){

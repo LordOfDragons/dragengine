@@ -34,10 +34,10 @@
  */
 class seWPAPanelEffectStretch : public seWPAPanelEffect{
 private:
-	igdeTextFieldReference pEditMinTime;
-	igdeTextFieldReference pEditMaxTime;
-	igdeTextFieldReference pEditMinPitch;
-	igdeTextFieldReference pEditMaxPitch;
+	igdeTextField::Ref pEditMinTime;
+	igdeTextField::Ref pEditMaxTime;
+	igdeTextField::Ref pEditMinPitch;
+	igdeTextField::Ref pEditMaxPitch;
 	
 	
 	

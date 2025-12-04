@@ -25,12 +25,12 @@
 #ifndef _SEWPLINK_H_
 #define _SEWPLINK_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/event/igdeAction.h>
 
 class seSky;
@@ -54,12 +54,12 @@ private:
 	igdeAction::Ref pActionLinkAdd;
 	igdeAction::Ref pActionLinkRemove;
 	
-	igdeListBoxReference pListLinks;
+	igdeListBox::Ref pListLinks;
 	
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBController;
-	igdeViewCurveBezierReference pEditCurve;
-	igdeTextFieldReference pEditRepeat;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBController;
+	igdeViewCurveBezier::Ref pEditCurve;
+	igdeTextField::Ref pEditRepeat;
 	
 	
 	

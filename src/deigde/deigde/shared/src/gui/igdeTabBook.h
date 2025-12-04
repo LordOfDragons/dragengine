@@ -37,6 +37,13 @@
  * \brief IGDE UI Tab book.
  */
 class DE_DLL_EXPORT igdeTabBook : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTabBook> Ref;
+	
+	
+	
 private:
 	decObjectList pHeaders;
 	int pActivePanel;

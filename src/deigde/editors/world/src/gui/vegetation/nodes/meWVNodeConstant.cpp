@@ -40,7 +40,7 @@
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
+#include <deigde/gui/nodeview/igdeNVSlot.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
@@ -89,12 +89,12 @@ pRuleConstant( rule )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	SetTitle( "Constant" );
 	
 	// slots
-	igdeNVSlotReference slot;
+	igdeNVSlot::Ref slot;
 	slot.TakeOver( new meWVNodeSlot( env, "Vector", "Vector value",
 		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector ) );
 	AddSlot( slot );

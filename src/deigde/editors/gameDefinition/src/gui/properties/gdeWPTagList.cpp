@@ -35,7 +35,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
@@ -57,11 +57,11 @@ namespace{
 
 class cActionAppend : public igdeAction {
 	gdeWPTagList &pPanel;
-	igdeComboBoxFilterReference &pComboBox;
-	igdeListBoxReference &pListBox;
+	igdeComboBoxFilter::Ref &pComboBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionAppend ( gdeWPTagList &panel, igdeComboBoxFilterReference &comboBox, igdeListBoxReference &listBox ) : 
+	cActionAppend ( gdeWPTagList &panel, igdeComboBoxFilter::Ref &comboBox, igdeListBox::Ref &listBox ) : 
 	igdeAction( "Add...", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add tag" ),
 	pPanel( panel ), pComboBox( comboBox ), pListBox( listBox ){ }
 	
@@ -80,10 +80,10 @@ public:
 
 class cActionRemove : public igdeAction {
 	gdeWPTagList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionRemove( gdeWPTagList &panel, igdeListBoxReference &listBox ) :
+	cActionRemove( gdeWPTagList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Remove", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
 		"Remove tag" ), pPanel( panel ), pListBox( listBox ){ }
 	
@@ -107,10 +107,10 @@ public:
 
 class cActionClear : public igdeAction {
 	gdeWPTagList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClear( gdeWPTagList &panel, igdeListBoxReference &listBox ) :
+	cActionClear( gdeWPTagList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Clear", NULL, "Clear tag" ), pPanel( panel ), pListBox( listBox ){ }
 	
 	virtual void OnAction(){
@@ -160,7 +160,7 @@ pUndoSystem( NULL )
 	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
 	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
 	
-	igdeContainerReference comboLine;
+	igdeContainer::Ref comboLine;
 	comboLine.TakeOver( new igdeContainerFlow( GetEnvironment(),
 		igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
 	helper.ComboBoxFilter( comboLine, true, description, pComboBox, NULL );

@@ -64,7 +64,7 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeIconListBox.h>
@@ -82,9 +82,9 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
+#include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/model/igdeTreeItem.h>
@@ -359,7 +359,7 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionPIRebuild() );
 		
 		// view
-		igdeMenuCascadeReference menuView;
+		igdeMenuCascade::Ref menuView;
 		menuView.TakeOver( new igdeMenuCascade( helper.GetEnvironment(), "View" ) );
 		
 		helper.MenuOption( menuView, pPanel.GetActionPISizeSmall() );
@@ -593,8 +593,8 @@ pViewMode( evmPreview )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerSplittedReference content;
-	igdeContainerReference groupBox, form, frameLine;
+	igdeContainerSplitted::Ref content;
+	igdeContainer::Ref groupBox, form, frameLine;
 	
 	
 	pListener = new meWPBrowserListener( *this );

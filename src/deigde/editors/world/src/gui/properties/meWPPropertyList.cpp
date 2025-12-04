@@ -33,7 +33,7 @@
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeIconListBox.h>
@@ -574,7 +574,7 @@ pEnabled( true )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference frameLine;
+	igdeContainer::Ref frameLine;
 	
 	
 	pIconUnknownKey = env.GetStockIcon( igdeEnvironment::esiSmallWarning );

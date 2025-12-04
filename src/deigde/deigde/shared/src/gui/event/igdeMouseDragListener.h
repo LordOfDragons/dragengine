@@ -35,6 +35,12 @@
  */
 class DE_DLL_EXPORT igdeMouseDragListener : public igdeMouseKeyListener{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeMouseDragListener> Ref;
+	
+	
+	
+
 	/** \brief Drag state. */
 	enum eDragState{
 		/** \brief No dragging in progress. */

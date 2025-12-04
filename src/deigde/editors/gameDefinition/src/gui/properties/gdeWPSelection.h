@@ -27,8 +27,8 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 
-#include <deigde/gui/igdeTreeListReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
+#include <deigde/gui/igdeTreeList.h>
+#include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
@@ -50,8 +50,8 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeSwitcherReference pSwitcher;
-	igdeTreeListReference pTreeObjects;
+	igdeSwitcher::Ref pSwitcher;
+	igdeTreeList::Ref pTreeObjects;
 	gdeWPSTreeModel *pModelTreeObjects;
 	
 	igdeWidget::Ref pPanelCategory;

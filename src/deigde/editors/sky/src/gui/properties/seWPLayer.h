@@ -25,17 +25,17 @@
 #ifndef _SEWPLAYER_H_
 #define _SEWPLAYER_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/event/igdeAction.h>
 
@@ -70,36 +70,36 @@ private:
 	igdeAction::Ref pActionLinkAdd;
 	igdeAction::Ref pActionLinkRemove;
 	
-	igdeListBoxReference pListLayer;
+	igdeListBox::Ref pListLayer;
 	
-	igdeTextFieldReference pEditName;
+	igdeTextField::Ref pEditName;
 	
-	igdeEditPathReference pEditSkin;
-	igdeEditVectorReference pEditOffset;
-	igdeEditVectorReference pEditOrientation;
-	igdeColorBoxReference pClrLayer;
-	igdeTextFieldReference pEditIntensity;
-	igdeEditSliderTextReference pSldTransparency;
-	igdeCheckBoxReference pChkMulBySkyLight;
-	igdeCheckBoxReference pChkMulBySkyColor;
+	igdeEditPath::Ref pEditSkin;
+	igdeEditVector::Ref pEditOffset;
+	igdeEditVector::Ref pEditOrientation;
+	igdeColorBox::Ref pClrLayer;
+	igdeTextField::Ref pEditIntensity;
+	igdeEditSliderText::Ref pSldTransparency;
+	igdeCheckBox::Ref pChkMulBySkyLight;
+	igdeCheckBox::Ref pChkMulBySkyColor;
 	
-	igdeColorBoxReference pClrLight;
-	igdeTextFieldReference pEditLightIntensity;
-	igdeTextFieldReference pEditAmbientIntensity;
-	igdeEditVectorReference pEditLightOrientation;
+	igdeColorBox::Ref pClrLight;
+	igdeTextField::Ref pEditLightIntensity;
+	igdeTextField::Ref pEditAmbientIntensity;
+	igdeEditVector::Ref pEditLightOrientation;
 	
-	igdeSpinTextFieldReference pSpinBody;
-	igdeButtonReference pBtnBody;
+	igdeSpinTextField::Ref pSpinBody;
+	igdeButton::Ref pBtnBody;
 	
-	igdeEditPathReference pEditBodySkin;
-	igdeEditVectorReference pEditBodyOrienation;
-	igdeEditVector2Reference pEditBodySize;
-	igdeColorBoxReference pClrBody;
+	igdeEditPath::Ref pEditBodySkin;
+	igdeEditVector::Ref pEditBodyOrienation;
+	igdeEditVector2::Ref pEditBodySize;
+	igdeColorBox::Ref pClrBody;
 	
-	igdeComboBoxReference pCBTarget;
-	igdeComboBoxReference pCBLinks;
-	igdeListBoxReference pListLinks;
-	igdeButtonReference pBtnLinkAdd;
+	igdeComboBox::Ref pCBTarget;
+	igdeComboBox::Ref pCBLinks;
+	igdeListBox::Ref pListLinks;
+	igdeButton::Ref pBtnLinkAdd;
 	
 	
 	

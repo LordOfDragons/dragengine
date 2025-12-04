@@ -28,11 +28,11 @@
 #include "projPanelRemoteClient.h"
 #include "../project/remote/projRemoteClient.h"
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeTabBookReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
@@ -75,22 +75,22 @@ private:
 	igdeAction::Ref pActionQuit;
 	igdeAction::Ref pActionKill;
 	
-	igdeTabBookReference pTabContent;
+	igdeTabBook::Ref pTabContent;
 	
-	igdeTextAreaReference pEditLogs;
+	igdeTextArea::Ref pEditLogs;
 	
 	decObjectOrderedSet pRemoteClients;
 	
-	igdeComboBoxReference pCBProfile;
-	igdeComboBoxReference pCBLaunchProfile;
-	igdeButtonReference pBtnStart;
-	igdeButtonReference pBtnQuit;
-	igdeButtonReference pBtnKill;
+	igdeComboBox::Ref pCBProfile;
+	igdeComboBox::Ref pCBLaunchProfile;
+	igdeButton::Ref pBtnStart;
+	igdeButton::Ref pBtnQuit;
+	igdeButton::Ref pBtnKill;
 	
-	igdeTextFieldReference pEditRemoteAddress;
-	igdeButtonReference pBtnRemoteStartListen;
-	igdeButtonReference pBtnRemoteStopListen;
-	igdeButtonReference pBtnRemoteSynchronizeAll;
+	igdeTextField::Ref pEditRemoteAddress;
+	igdeButton::Ref pBtnRemoteStartListen;
+	igdeButton::Ref pBtnRemoteStopListen;
+	igdeButton::Ref pBtnRemoteSynchronizeAll;
 	
 	projRemoteClient::Set pPendingAddRemoteClient;
 	projRemoteClient::Set pPendingRemoveRemoteClient;

@@ -34,7 +34,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
@@ -222,7 +222,7 @@ pBaseGameDefsChanged( false )
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference content, panel;
+	igdeContainer::Ref content, panel;
 	
 	content.TakeOver( new igdeContainerForm( env ) );
 	
@@ -261,7 +261,7 @@ pBaseGameDefsChanged( false )
 	helper.EditString( content, "Version:", "Scripting module version to use.", 6, pEditScriptModuleVersion, NULL );
 	
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Discard" );
 	
 	AddContent( content, buttonBar );

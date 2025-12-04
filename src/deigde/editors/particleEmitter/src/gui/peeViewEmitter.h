@@ -26,8 +26,8 @@
 #define _PEEVIEWEMITTER_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseDragListenerReference.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
+#include <deigde/gui/event/igdeMouseDragListener.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 class peeWindowMain;
 class peeEmitter;
@@ -43,7 +43,7 @@ private:
 	
 	peeEmitter *pEmitter;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
 	

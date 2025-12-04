@@ -27,7 +27,7 @@
 
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class saeWindowMain;
 class saeSAnimation;
@@ -43,7 +43,7 @@ private:
 	
 	igdeWidget::Ref pPanelSAnimation;
 	igdeWidget::Ref pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

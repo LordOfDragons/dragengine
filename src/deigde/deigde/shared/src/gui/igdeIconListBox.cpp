@@ -32,7 +32,7 @@
 #include "igdeCommonDialogs.h"
 #include "event/igdeIconListBoxListener.h"
 #include "menu/igdeMenuCascade.h"
-#include "menu/igdeMenuCascadeReference.h"
+#include "menu/igdeMenuCascade.h"
 #include "model/igdeListHeader.h"
 #include "model/igdeListItem.h"
 #include "model/igdeListItem.h"
@@ -593,7 +593,7 @@ void igdeIconListBox::ShowContextMenu( const decPoint &position ){
 		return;
 	}
 	
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( GetEnvironment() ) );
 	
 	const int count = pListeners.GetCount();

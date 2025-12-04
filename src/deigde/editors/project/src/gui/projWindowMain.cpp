@@ -48,10 +48,10 @@
 #include <deigde/gui/igdeToolBarSeparator.h>
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -741,7 +741,7 @@ public:
 			return;
 		}
 		
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new projDialogDistribute( pWindow, project->GetActiveProfile() ) );
 		dialog->Run( &pWindow );
 	}
@@ -859,7 +859,7 @@ void projWindowMain::pCreateToolBarEdit(){
 
 void projWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "Project", deInputEvent::ekcD ) );
 	pCreateMenuDistribute( cascade );

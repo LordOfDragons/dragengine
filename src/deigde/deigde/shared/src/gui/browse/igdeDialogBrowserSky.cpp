@@ -24,7 +24,7 @@
 
 #include "igdeDialogBrowserSky.h"
 #include "igdeBrowseItemGDPreviewListener.h"
-#include "../dialog/igdeDialogReference.h"
+#include "../dialog/igdeDialog.h"
 #include "../model/igdeListItem.h"
 #include "../../gamedefinition/igdeGDCategory.h"
 #include "../../gamedefinition/igdeGameDefinition.h"
@@ -79,7 +79,7 @@ void igdeDialogBrowserSky::SetSelectedSky( igdeGDSky *gdSky ){
 
 
 bool igdeDialogBrowserSky::SelectSky( igdeWidget *owner, igdeGDSky* &sky, const char *title ){
-	igdeDialogReference refDialog;
+	igdeDialog::Ref refDialog;
 	refDialog.TakeOver( new igdeDialogBrowserSky( owner->GetEnvironment(), title ) );
 	igdeDialogBrowserSky &dialog = ( igdeDialogBrowserSky& )( igdeDialog& )refDialog;
 	if( sky ){

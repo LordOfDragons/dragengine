@@ -27,7 +27,7 @@
 
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class seSkin;
 class seWindowMain;
@@ -46,7 +46,7 @@ private:
 	igdeWidget::Ref pPanelNode;
 	igdeWidget::Ref pPanelDynamicSkin;
 	igdeWidget::Ref pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

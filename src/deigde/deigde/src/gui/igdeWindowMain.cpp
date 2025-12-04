@@ -47,12 +47,12 @@
 #include <deigde/gui/igdeStepableTask.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeTimer.h>
 #include <deigde/gui/igdeToggleButton.h>
-#include <deigde/gui/igdeToggleButtonReference.h>
+#include <deigde/gui/igdeToggleButton.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeStatusBar.h>
@@ -60,19 +60,19 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/dialog/igdeDialogTexturePropertyList.h>
 #include <deigde/gui/enginestatus/igdeDialogEngine.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorderReference.h>
+#include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/logger/igdeWindowLogger.h>
 #include <deigde/gui/menu/igdeMenuBar.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuOption.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
@@ -286,7 +286,7 @@ public:
 		"Settings...", NULL, "Game project settings", deInputEvent::ekcT ){}
 	
 	virtual void OnAction(){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new igdeDialogProjectSettings( pWindow ) );
 		if( dialog->Run( &pWindow )
 		&& ( ( igdeDialogProjectSettings& )( igdeDialog& )dialog ).GetBaseGameDefsChanged() ){
@@ -338,7 +338,7 @@ public:
 		"Shows the engine control system window", deInputEvent::ekcE ){}
 	
 	virtual void OnAction(){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new igdeDialogEngine( pWindow ) );
 		dialog->Run( &pWindow );
 	}
@@ -364,7 +364,7 @@ public:
 		"Shows the list of texture properties", deInputEvent::ekcT ){}
 	
 	virtual void OnAction(){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new igdeDialogTexturePropertyList( pWindow.GetEnvironment() ) );
 		dialog->Run( &pWindow );
 	}
@@ -581,13 +581,13 @@ pTaskSyncGameDefinition( NULL )
 		
 		
 		// create window content
-		igdeContainerBorderReference content;
+		igdeContainerBorder::Ref content;
 		content.TakeOver( new igdeContainerBorder( pEnvironmentIGDE ) );
 		AddChild( content );
 		
 		
 		// top side
-		igdeContainerReference panel;
+		igdeContainer::Ref panel;
 		panel.TakeOver( new igdeContainerFlow( pEnvironmentIGDE, igdeContainerFlow::eaY ) );
 		content->AddChild( panel, igdeContainerBorder::eaTop );
 		
@@ -635,7 +635,7 @@ pTaskSyncGameDefinition( NULL )
 		// center
 		pSwiContent.TakeOver( new igdeSwitcher( pEnvironmentIGDE ) );
 		
-		igdeContainerBorderReference emptyContainer;
+		igdeContainerBorder::Ref emptyContainer;
 		emptyContainer.TakeOver( new igdeContainerBorder( pEnvironmentIGDE ) );
 		pSwiContent->AddChild( emptyContainer );
 		
@@ -706,7 +706,7 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
 		#endif
 		
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new igdeDialogStartUp( *this ) );
 		return dialog->Run( this );
 	}
@@ -784,7 +784,7 @@ void igdeWindowMain::SetGameProject( igdeGameProject *project ){
 }
 
 bool igdeWindowMain::CreateNewGameProject(){
-	igdeDialogReference dialog;
+	igdeDialog::Ref dialog;
 	dialog.TakeOver( new igdeDialogNewGameProject( *this ) );
 	if( dialog->Run( this ) ){
 		SetGameProject( ( ( igdeDialogNewGameProject& )( igdeDialog& )dialog ).GetNewProject() );
@@ -2207,7 +2207,7 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 	moduleIDs.SortAscending();
 	
 	const int count = moduleIDs.GetCount();
-	igdeToggleButtonReference button;
+	igdeToggleButton::Ref button;
 	igdeAction::Ref action;
 	
 	for( i=0; i<count; i++ ){

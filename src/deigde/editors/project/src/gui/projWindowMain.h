@@ -29,11 +29,11 @@
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/igdeTabBookReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIcon.h>
@@ -60,8 +60,8 @@ private:
 	
 	igdeAction::Ref pActionDistSave;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
 	igdeAction::Ref pActionEditCut;
 	igdeAction::Ref pActionEditCopy;
 	igdeAction::Ref pActionEditPaste;
@@ -84,8 +84,8 @@ private:
 	igdeIcon::Ref pIconKill;
 	igdeIcon::Ref pIconDelga;
 	
-	igdeToolBarReference pTBDistribute;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBDistribute;
+	igdeToolBar::Ref pTBEdit;
 	
 	projConfiguration *pConfiguration;
 	igdeClipboard pClipboard;
@@ -97,7 +97,7 @@ private:
 	projPanelTestRun *pPanelTestRun;
 	projPanelUndoHistory *pPanelUndoHistory;
 	
-	igdeTabBookReference pTabPanels;
+	igdeTabBook::Ref pTabPanels;
 	
 	
 	

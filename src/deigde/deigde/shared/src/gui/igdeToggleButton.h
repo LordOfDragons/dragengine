@@ -32,6 +32,13 @@
  * \brief IGDE UI Toggle button with text and icon.
  */
 class DE_DLL_EXPORT igdeToggleButton : public igdeButton{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeToggleButton> Ref;
+	
+	
+	
 private:
 	bool pToggled;
 	

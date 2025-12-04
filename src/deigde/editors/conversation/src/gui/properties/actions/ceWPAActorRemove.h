@@ -25,7 +25,7 @@
 #ifndef _CEWPAACTORREMOVE_H_
 #define _CEWPAACTORREMOVE_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPAction.h"
 
@@ -38,7 +38,7 @@ class ceCAActorRemove;
  */
 class ceWPAActorRemove : public ceWPAction{
 private:
-	igdeComboBoxReference pCBActorID;
+	igdeComboBox::Ref pCBActorID;
 	
 	
 	

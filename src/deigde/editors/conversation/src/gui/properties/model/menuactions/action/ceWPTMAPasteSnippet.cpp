@@ -38,7 +38,7 @@
 #include "../../../../../undosys/action/ceUCActionPaste.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>
 
@@ -67,7 +67,7 @@ void ceWPTMAPasteSnippet::OnAction(){
 		return;
 	}
 	
-	igdeDialogReference refDialog;
+	igdeDialog::Ref refDialog;
 	refDialog.TakeOver( new ceDialogPasteSnippet( GetWindowMain().GetEnvironment(), pConversation ) );
 	ceDialogPasteSnippet &dialog = ( ceDialogPasteSnippet& )( igdeDialog& )refDialog;
 	

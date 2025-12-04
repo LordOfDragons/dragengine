@@ -41,7 +41,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
@@ -156,7 +156,7 @@ pShape( NULL )
 	igdeEnvironment &env = wpShape.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerForm( env ) );
 	AddChild( content );
 	

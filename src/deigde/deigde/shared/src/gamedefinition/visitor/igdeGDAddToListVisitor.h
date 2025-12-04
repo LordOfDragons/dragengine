@@ -26,7 +26,7 @@
 #define _IGDEGDADDTOLISTVISITOR_H_
 
 #include "igdeGDVisitor.h"
-#include "../../gui/igdeIconListBoxReference.h"
+#include "../../gui/igdeIconListBox.h"
 
 
 class deImage;
@@ -41,7 +41,7 @@ class igdeListItem::Ref;
 class DE_DLL_EXPORT igdeGDAddToListVisitor : public igdeGDVisitor{
 private:
 	igdeEnvironment &pEnvironment;
-	igdeIconListBoxReference pIconListBox;
+	igdeIconListBox::Ref pIconListBox;
 	int pSize;
 	
 	

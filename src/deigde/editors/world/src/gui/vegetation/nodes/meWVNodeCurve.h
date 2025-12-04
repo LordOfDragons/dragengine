@@ -27,8 +27,8 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 
 class meHTVRuleCurve;
 
@@ -41,8 +41,8 @@ class meWVNodeCurve : public meWVNode{
 private:
 	meHTVRuleCurve *pRuleCurve;
 	
-	igdeContainerReference pFraParameters;
-	igdeViewCurveBezierReference pCurve;
+	igdeContainer::Ref pFraParameters;
+	igdeViewCurveBezier::Ref pCurve;
 	
 	
 	

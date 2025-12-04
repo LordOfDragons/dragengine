@@ -107,7 +107,7 @@
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/igdeListBox.h>
@@ -1130,7 +1130,7 @@ pGameDefinition( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, form, frameLine;
+	igdeContainer::Ref content, groupBox, form, frameLine;
 	
 	pListener = new gdeWPSObjectClassListener( *this );
 	

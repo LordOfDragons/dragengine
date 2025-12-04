@@ -48,7 +48,7 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
@@ -247,7 +247,7 @@ public:
 };
 
 class cActionSetCurve : public cBaseAction{
-	igdeViewCurveBezierReference pEditCurve;
+	igdeViewCurveBezier::Ref pEditCurve;
 	
 public:
 	cActionSetCurve( seWPController &panel, igdeViewCurveBezier *editCurve,
@@ -273,7 +273,7 @@ public:
 };
 
 class cActionCurveSetConstValue : public cActionSetCurve{
-	igdeTextFieldReference pEditConstValue;
+	igdeTextField::Ref pEditConstValue;
 	
 public:
 	cActionCurveSetConstValue( seWPController &panel, igdeViewCurveBezier *editCurve, igdeTextField *editConstValue ) :
@@ -385,7 +385,7 @@ pSynthesizer( NULL )
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new seWPControllerListener( *this );
 	

@@ -25,9 +25,9 @@
 #ifndef _GDEWPSOCCAMERA_H_
 #define _GDEWPSOCCAMERA_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -48,9 +48,9 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeTextFieldReference pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
-	igdeEditVectorReference pEditPosition, pEditRotation;
-	igdeComboBoxReference pCBPropertyName, pCBPropertyPosition, pCBPropertyRotation;
+	igdeTextField::Ref pEditFov, pEditFovRatio, pEditImageDistance, pEditViewDistance;
+	igdeEditVector::Ref pEditPosition, pEditRotation;
+	igdeComboBox::Ref pCBPropertyName, pCBPropertyPosition, pCBPropertyRotation;
 	
 	
 	

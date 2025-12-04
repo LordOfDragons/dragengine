@@ -27,11 +27,11 @@
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/igdeTabBookReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
@@ -98,8 +98,8 @@ private:
 	igdeAction::Ref pActionFileSave;
 	igdeAction::Ref pActionFileSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
 	
 	igdeAction::Ref pActionEditCut;
 	igdeAction::Ref pActionEditCopy;
@@ -180,10 +180,10 @@ private:
 	igdeAction::Ref pActionNavTestLoad;
 	igdeAction::Ref pActionNavTestSave;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
-	igdeToolBarReference pTBObject;
-	igdeToolBarReference pTBDecal;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
+	igdeToolBar::Ref pTBObject;
+	igdeToolBar::Ref pTBDecal;
 	
 	meConfiguration *pConfiguration;
 	igdeClipboard pClipboard;
@@ -191,7 +191,7 @@ private:
 	meSaveSupport *pSaveSupport;
 	
 	meWindowProperties *pWindowProperties;
-	igdeTabBookReference pTabContent;
+	igdeTabBook::Ref pTabContent;
 	meView3D *pView3D;
 	meWindowVegetation *pViewVegetation;
 	meWindowChangelog *pViewChangelog;

@@ -28,7 +28,7 @@
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
-#include <deigde/gui/event/igdeMouseDragListenerReference.h>
+#include <deigde/gui/event/igdeMouseDragListener.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasImageReference.h>
@@ -53,7 +53,7 @@ private:
 	seViewConstructedViewListener *pListener;
 	
 	igdeMouseKeyListener::Ref pKeyHandling;
-	igdeMouseDragListenerReference pDragNode;
+	igdeMouseDragListener::Ref pDragNode;
 	
 	seSkin *pSkin;
 	

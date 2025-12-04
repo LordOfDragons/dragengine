@@ -25,8 +25,8 @@
 #ifndef _PEEWINDOWCURVES_H_
 #define _PEEWINDOWCURVES_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/resources/igdeIcon.h>
@@ -64,8 +64,8 @@ private:
 	igdeIcon::Ref pIconCurveEmpty;
 	igdeIcon::Ref pIconCurveUsed;
 	
-	igdeListBoxReference pListCurves;
-	igdeViewCurveBezierReference pEditCurve;
+	igdeListBox::Ref pListCurves;
+	igdeViewCurveBezier::Ref pEditCurve;
 	
 	igdeUndo::Ref pUndoSetCurve;
 	

@@ -39,6 +39,12 @@ class igdeSliderListener;
  */
 class DE_DLL_EXPORT igdeSlider : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeSlider> Ref;
+	
+	
+	
+
 	/** \brief Orientation. */
 	enum eOrientation{
 		/** \brief Horizontal. */

@@ -40,7 +40,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/composed/igdeEditVector.h>
@@ -161,7 +161,7 @@ reWPPanelShapeHull::reWPPanelShapeHull( reWPShape &wpShapes ) :
 reWPPanelShape( wpShapes, reRigShape::estHull )
 {
 	igdeEnvironment &env = wpShapes.GetEnvironment();
-	igdeContainerReference groupHull, formline;
+	igdeContainer::Ref groupHull, formline;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	

@@ -40,6 +40,13 @@ class igdeTextField;
  * Select file using directory dialog. Requires a target igdeTextField to obtain/store the file path.
  */
 class DE_DLL_EXPORT igdeActionSelectDirectory : public igdeAction{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeActionSelectDirectory> Ref;
+	
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	bool pUseGameVFS;

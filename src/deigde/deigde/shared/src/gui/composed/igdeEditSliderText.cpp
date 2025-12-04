@@ -30,7 +30,7 @@
 #include "igdeEditSliderTextListener.h"
 #include "../igdeSlider.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeUIHelper.h"
 #include "../event/igdeSliderListener.h"
 #include "../event/igdeTextFieldListener.h"

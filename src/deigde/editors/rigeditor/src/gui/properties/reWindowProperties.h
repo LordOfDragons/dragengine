@@ -27,7 +27,7 @@
 
 #include <deigde/gui/igdeTabBook.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class reWindowMain;
 
@@ -49,7 +49,7 @@ private:
 	igdeWidget::Ref pPanelConstraint;
 	igdeWidget::Ref pPanelPush;
 	igdeWidget::Ref pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

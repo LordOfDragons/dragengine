@@ -25,9 +25,9 @@
 #ifndef _CEWINDOWDOPESHEET_H_
 #define _CEWINDOWDOPESHEET_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeScrollBarReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
@@ -99,13 +99,13 @@ private:
 	igdeAction::Ref pActionPause;
 	igdeAction::Ref pActionSelectCurAction;
 	
-	igdeButtonReference pBtnPlayAction;
-	igdeButtonReference pBtnPlayFromHere;
-	igdeButtonReference pBtnPlayPause;
-	igdeButtonReference pBtnPlaySelectCurAction;
+	igdeButton::Ref pBtnPlayAction;
+	igdeButton::Ref pBtnPlayFromHere;
+	igdeButton::Ref pBtnPlayPause;
+	igdeButton::Ref pBtnPlaySelectCurAction;
 	
-	igdeScrollBarReference pSBTime;
-	igdeComboBoxReference pCBTimeScale;
+	igdeScrollBar::Ref pSBTime;
+	igdeComboBox::Ref pCBTimeScale;
 	igdeWidget::Ref pDopeSheet;
 	
 	decObjectList pTimeLineLabels;

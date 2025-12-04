@@ -28,14 +28,14 @@
 #include "igdeDialog.h"
 #include "../native/toolkit.h"
 #include "../igdeCommonDialogs.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeSeparator.h"
 #include "../igdeButton.h"
 #include "../igdeWidget.h"
 #include "../igdeWidget.h"
 #include "../event/igdeAction.h"
 #include "../layout/igdeContainerBorder.h"
-#include "../layout/igdeContainerBorderReference.h"
+#include "../layout/igdeContainerBorder.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../layout/igdeContainerBox.h"
 #include "../resources/igdeIcon.h"
@@ -152,24 +152,24 @@ igdeWidget *rightPanel, igdeWidget *buttonBar ){
 	pAddContent( content, header, leftPanel, rightPanel, buttonBar );
 }
 
-void igdeDialog::CreateButtonBar( igdeContainerReference &buttonBar, igdeAction *action ){
+void igdeDialog::CreateButtonBar( igdeContainer::Ref &buttonBar, igdeAction *action ){
 	igdeAction *actions[ 1 ] = { action };
 	CreateButtonBar( buttonBar, &actions[ 0 ], 1 );
 }
 
-void igdeDialog::CreateButtonBar( igdeContainerReference &buttonBar,
+void igdeDialog::CreateButtonBar( igdeContainer::Ref &buttonBar,
 igdeAction *action1, igdeAction *action2 ){
 	igdeAction *actions[ 2 ] = { action1, action2 };
 	CreateButtonBar( buttonBar, &actions[ 0 ], 2 );
 }
 
-void igdeDialog::CreateButtonBar( igdeContainerReference &buttonBar,
+void igdeDialog::CreateButtonBar( igdeContainer::Ref &buttonBar,
 igdeAction *action1, igdeAction *action2, igdeAction *action3 ){
 	igdeAction *actions[ 3 ] = { action1, action2, action3 };
 	CreateButtonBar( buttonBar, &actions[ 0 ], 3 );
 }
 
-void igdeDialog::CreateButtonBar( igdeContainerReference &buttonBar,
+void igdeDialog::CreateButtonBar( igdeContainer::Ref &buttonBar,
 igdeAction **actions, int actionCount ){
 	if( ! actions || actionCount < 0 ){
 		DETHROW( deeInvalidParam );
@@ -194,13 +194,13 @@ igdeAction **actions, int actionCount ){
 	}
 }
 
-void igdeDialog::CreateButtonBar( igdeContainerReference &buttonBar, const char *text ){
+void igdeDialog::CreateButtonBar( igdeContainer::Ref &buttonBar, const char *text ){
 	igdeAction::Ref action;
 	action.TakeOver( new CancelDialog( *this, text ) );
 	CreateButtonBar( buttonBar, action );
 }
 
-void igdeDialog::CreateButtonBar( igdeContainerReference &buttonBar,
+void igdeDialog::CreateButtonBar( igdeContainer::Ref &buttonBar,
 const char *textAccept, const char *textCancel ){
 	igdeAction::Ref actionAccept;
 	actionAccept.TakeOver( new AcceptDialog( *this, textAccept ) );
@@ -309,7 +309,7 @@ igdeWidget *rightPanel, igdeWidget *buttonBar ){
 	igdeEnvironment &env = GetEnvironment();
 	const int spacing = igdeNativeDialog::DialogPadContent( *GetGuiTheme() );
 	
-	igdeContainerBorderReference border;
+	igdeContainerBorder::Ref border;
 	border.TakeOver( new igdeContainerBorder( env, spacing ) );
 	AddChild( border );
 	
@@ -325,7 +325,7 @@ igdeWidget *rightPanel, igdeWidget *buttonBar ){
 	
 	border->AddChild( content, igdeContainerBorder::eaCenter );
 	
-	igdeContainerReference bottom;
+	igdeContainer::Ref bottom;
 	bottom.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY,
 		igdeContainerFlow::esNone, spacing ) );
 	border->AddChild( bottom, igdeContainerBorder::eaBottom );

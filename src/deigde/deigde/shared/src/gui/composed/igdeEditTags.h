@@ -25,8 +25,8 @@
 #ifndef _IGDEEDITTAGS_H_
 #define _IGDEEDITTAGS_H_
 
-#include "../igdeListBoxReference.h"
-#include "../igdeComboBoxFilterReference.h"
+#include "../igdeListBox.h"
+#include "../igdeComboBoxFilter.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionListener.h"
@@ -77,8 +77,8 @@ protected:
 	
 	
 private:
-	igdeComboBoxFilterReference pComboBox;
-	igdeListBoxReference pListBox;
+	igdeComboBoxFilter::Ref pComboBox;
+	igdeListBox::Ref pListBox;
 	
 	decStringSet pTags;
 	

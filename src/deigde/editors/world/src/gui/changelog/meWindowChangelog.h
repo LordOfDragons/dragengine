@@ -26,7 +26,7 @@
 #define _MEWINDOWCHANGELOG_H_
 
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/igdeIconListBoxReference.h>
+#include <deigde/gui/igdeIconListBox.h>
 
 class meWindowMain;
 class meWindowChangelogListener;
@@ -45,7 +45,7 @@ private:
 	
 	meWorld *pWorld;
 	
-	igdeIconListBoxReference pListChanges;
+	igdeIconListBox::Ref pListChanges;
 	
 	
 	

@@ -27,11 +27,11 @@
 
 #include "../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -52,19 +52,19 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeEditPathReference pEditPath;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
-	igdeTextFieldReference pEditLayer;
-	igdeTextFieldReference pEditSnapDistance;
-	igdeComboBoxReference pCBType;
-	igdeTextFieldReference pEditSnapAngle;
-	igdeTextFieldReference pEditBlockingPriority;
-	igdeTextFieldReference pEditBlockerShape;
+	igdeEditPath::Ref pEditPath;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
+	igdeTextField::Ref pEditLayer;
+	igdeTextField::Ref pEditSnapDistance;
+	igdeComboBox::Ref pCBType;
+	igdeTextField::Ref pEditSnapAngle;
+	igdeTextField::Ref pEditBlockingPriority;
+	igdeTextField::Ref pEditBlockerShape;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
 	
 	

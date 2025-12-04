@@ -27,10 +27,10 @@
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
+#include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
@@ -63,14 +63,14 @@ private:
 	igdeAction::Ref pActionEntryRemove;
 	igdeAction::Ref pActionEntryNextMissing;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
 	igdeAction::Ref pActionEditCut;
 	igdeAction::Ref pActionEditCopy;
 	igdeAction::Ref pActionEditPaste;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	lpeConfiguration *pConfiguration;
 	igdeClipboard pClipboard;

@@ -38,7 +38,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -137,7 +137,7 @@ public:
 		}
 		
 		/*
-		igdeMenuCascadeReference contextMenu;
+		igdeMenuCascade::Ref contextMenu;
 		contextMenu.TakeOver( new igdeMenuCascade( pVAPreview.GetWindow().GetEnvironment() ) );
 		
 		// TODO

@@ -27,12 +27,12 @@
 
 #include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -52,26 +52,26 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
-	igdeTextFieldReference pEditInfluenceArea;
-	igdeTextFieldReference pEditRadius;
-	igdeTextFieldReference pEditExponent;
-	igdeComboBoxReference pCBFieldType;
-	igdeComboBoxReference pCBApplicationType;
-	igdeEditVectorReference pEditDirection;
-	igdeTextFieldReference pEditForce;
-	igdeTextFieldReference pEditFluctuationDirection;
-	igdeTextFieldReference pEditFluctuationForce;
-	igdeTextFieldReference pEditShape;
-	igdeCheckBoxReference pChkEnabled;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
+	igdeTextField::Ref pEditInfluenceArea;
+	igdeTextField::Ref pEditRadius;
+	igdeTextField::Ref pEditExponent;
+	igdeComboBox::Ref pCBFieldType;
+	igdeComboBox::Ref pCBApplicationType;
+	igdeEditVector::Ref pEditDirection;
+	igdeTextField::Ref pEditForce;
+	igdeTextField::Ref pEditFluctuationDirection;
+	igdeTextField::Ref pEditFluctuationForce;
+	igdeTextField::Ref pEditShape;
+	igdeCheckBox::Ref pChkEnabled;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
-	igdeComboBoxReference pCBTriggerNames;
-	igdeComboBoxFilterReference pCBTriggerNameTarget;
+	igdeComboBox::Ref pCBTriggerNames;
+	igdeComboBoxFilter::Ref pCBTriggerNameTarget;
 	
 	
 	

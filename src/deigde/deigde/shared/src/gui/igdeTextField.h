@@ -40,6 +40,13 @@ class igdeTextFieldListener;
  * \brief IGDE UI TextField.
  */
 class DE_DLL_EXPORT igdeTextField : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTextField> Ref;
+	
+	
+	
 private:
 	bool pEnabled;
 	decString pText;

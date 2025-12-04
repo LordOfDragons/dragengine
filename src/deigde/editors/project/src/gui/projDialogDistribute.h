@@ -25,11 +25,11 @@
 #ifndef _PROJDIALOGDISTRIBUTE_H_
 #define _PROJDIALOGDISTRIBUTE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
-#include <deigde/gui/event/igdeActionExternOpenReference.h>
+#include <deigde/gui/event/igdeActionExternOpen.h>
 
 #include <dragengine/common/string/decString.h>
 
@@ -53,14 +53,14 @@ private:
 	projWindowMain &pWindowMain;
 	projProfile *pProfile;
 	
-	igdeActionExternOpenReference pActionShowInFSManager;
+	igdeActionExternOpen::Ref pActionShowInFSManager;
 	
-	igdeTextFieldReference pEditDelgaPath;
-	igdeTextFieldReference pEditDelgaSize;
-	igdeTextFieldReference pEditDelgaFileCount;
-	igdeTextFieldReference pEditDelgaDirCount;
-	igdeTextAreaReference pEditLogs;
-	igdeButtonReference pBtnShowInFSMgr;
+	igdeTextField::Ref pEditDelgaPath;
+	igdeTextField::Ref pEditDelgaSize;
+	igdeTextField::Ref pEditDelgaFileCount;
+	igdeTextField::Ref pEditDelgaDirCount;
+	igdeTextArea::Ref pEditLogs;
+	igdeButton::Ref pBtnShowInFSMgr;
 	
 	projTaskDistribute *pTaskDistribute;
 	decString pLastTaskMessage;

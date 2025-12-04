@@ -26,7 +26,7 @@
 #define _SAEVIEWSANIMATION_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/font/deFontReference.h>
@@ -46,7 +46,7 @@ private:
 	
 	saeSAnimation *pSAnimation;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
 	

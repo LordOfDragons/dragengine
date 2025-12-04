@@ -25,17 +25,17 @@
 #ifndef _REWPVIEW_H_
 #define _REWPVIEW_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeSliderReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeSlider.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
-#include <deigde/gui/properties/igdeWPWObjectReference.h>
+#include <deigde/gui/properties/igdeWPSky.h>
+#include <deigde/gui/properties/igdeWPWObject.h>
 
 class igdeWPWObject;
 class reRig;
@@ -57,44 +57,44 @@ private:
 	reWPViewListener *pListener;
 	reRig *pRig;
 	
-	igdeEditPathReference pEditModelPath;
-	igdeEditPathReference pEditSkinPath;
-	igdeEditPathReference pEditAnimPath;
-	igdeComboBoxReference pCBAnimMoves;
-	igdeEditSliderTextReference pSldMoveTime;
-	igdeCheckBoxReference pChkUseRestPose;
-	igdeCheckBoxReference pChkPlaybackMove;
+	igdeEditPath::Ref pEditModelPath;
+	igdeEditPath::Ref pEditSkinPath;
+	igdeEditPath::Ref pEditAnimPath;
+	igdeComboBox::Ref pCBAnimMoves;
+	igdeEditSliderText::Ref pSldMoveTime;
+	igdeCheckBox::Ref pChkUseRestPose;
+	igdeCheckBox::Ref pChkPlaybackMove;
 	
-	igdeComboBoxReference pCBTexture;
-	igdeEditPathReference pEditTexSkin;
+	igdeComboBox::Ref pCBTexture;
+	igdeEditPath::Ref pEditTexSkin;
 	
-	igdeEditVectorReference pEditGravity;
-	igdeEditVectorReference pEditLocalGravity;
-	igdeEditSliderTextReference pSldSlowmotion;
+	igdeEditVector::Ref pEditGravity;
+	igdeEditVector::Ref pEditLocalGravity;
+	igdeEditSliderText::Ref pSldSlowmotion;
 	
-	igdeWPSkyReference pWPSky;
-	igdeWPWObjectReference pWPEnvObject;
+	igdeWPSky::Ref pWPSky;
+	igdeWPWObject::Ref pWPEnvObject;
 	
-	igdeCheckBoxReference pChkSnapToGrid;
-	igdeTextFieldReference pEditGridSize;
-	igdeTextFieldReference pEditSensitivity;
+	igdeCheckBox::Ref pChkSnapToGrid;
+	igdeTextField::Ref pEditGridSize;
+	igdeTextField::Ref pEditSensitivity;
 	
-	igdeEditDVectorReference pEditCamPosition;
-	igdeEditVectorReference pEditCamRotation;
-	igdeEditVectorReference pEditCamViewDir;
-	igdeTextFieldReference pEditCamFov;
-	igdeTextFieldReference pEditCamFovRatio;
-	igdeTextFieldReference pEditCamImageDist;
-	igdeTextFieldReference pEditCamViewDist;
-	igdeTextFieldReference pEditCamExposure;
-	igdeTextFieldReference pEditCamLowInt;
-	igdeTextFieldReference pEditCamHiInt;
-	igdeTextFieldReference pEditCamAdaptTime;
+	igdeEditDVector::Ref pEditCamPosition;
+	igdeEditVector::Ref pEditCamRotation;
+	igdeEditVector::Ref pEditCamViewDir;
+	igdeTextField::Ref pEditCamFov;
+	igdeTextField::Ref pEditCamFovRatio;
+	igdeTextField::Ref pEditCamImageDist;
+	igdeTextField::Ref pEditCamViewDist;
+	igdeTextField::Ref pEditCamExposure;
+	igdeTextField::Ref pEditCamLowInt;
+	igdeTextField::Ref pEditCamHiInt;
+	igdeTextField::Ref pEditCamAdaptTime;
 	
-	igdeCheckBoxReference pChkCamAttach;
-	igdeComboBoxReference pCBCamBone;
-	igdeEditVectorReference pEditCamRelPosition;
-	igdeEditVectorReference pEditCamRelRotation;
+	igdeCheckBox::Ref pChkCamAttach;
+	igdeComboBox::Ref pCBCamBone;
+	igdeEditVector::Ref pEditCamRelPosition;
+	igdeEditVector::Ref pEditCamRelRotation;
 	
 	
 	

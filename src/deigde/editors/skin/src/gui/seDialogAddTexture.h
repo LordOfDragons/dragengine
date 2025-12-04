@@ -25,8 +25,8 @@
 #ifndef _SEDIALOGADDTEXTURE_H_
 #define _SEDIALOGADDTEXTURE_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 class seWindowMain;
@@ -39,8 +39,8 @@ class seWindowMain;
 class seDialogAddTexture : public igdeDialog{
 private:
 	seWindowMain &pWindowMain;
-	igdeListBoxReference pListModelTextureNames;
-	igdeTextFieldReference pEditTextureName;
+	igdeListBox::Ref pListModelTextureNames;
+	igdeTextField::Ref pEditTextureName;
 	
 	
 	

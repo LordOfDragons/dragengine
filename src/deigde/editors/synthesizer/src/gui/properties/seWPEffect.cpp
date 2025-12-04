@@ -45,7 +45,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeWidget.h>
@@ -53,7 +53,7 @@
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
@@ -105,7 +105,7 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionEffectPasteInsert() );
 		
 		const seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascadeReference submenu;
+		igdeMenuCascade::Ref submenu;
 		submenu.TakeOver( new igdeMenuCascade( menu.GetEnvironment(), "Add" ) );
 		helper.MenuCommand( submenu, windowMain.GetActionEffectAddStretch() );
 		menu.AddChild( submenu );
@@ -253,7 +253,7 @@ pActivePanel( NULL )
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	
 	pListener = new seWPEffectListener( *this );
 	

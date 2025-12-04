@@ -25,7 +25,7 @@
 #ifndef _IGDEEDITVECTOR_H_
 #define _IGDEEDITVECTOR_H_
 
-#include "../igdeTextFieldReference.h"
+#include "../igdeTextField.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerBoxAlternate.h"
 
@@ -43,14 +43,21 @@ class igdeUIHelper;
  * Composed widget to edit decVector.
  */
 class DE_DLL_EXPORT igdeEditVector : public igdeContainerBoxAlternate{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditVector> Ref;
+	
+	
+	
 protected:
 	/** \brief Text field listener. */
 	class DE_DLL_EXPORT cListener : public igdeTextFieldListener{
 	protected:
 		igdeEditVector &pEditVector;
-		igdeTextFieldReference pTextX;
-		igdeTextFieldReference pTextY;
-		igdeTextFieldReference pTextZ;
+		igdeTextField::Ref pTextX;
+		igdeTextField::Ref pTextY;
+		igdeTextField::Ref pTextZ;
 		
 	public:
 		cListener( igdeEditVector &editVector, igdeTextField *textX,
@@ -70,9 +77,9 @@ private:
 	int pColumns;
 	int pPrecision;
 	
-	igdeTextFieldReference pTextX;
-	igdeTextFieldReference pTextY;
-	igdeTextFieldReference pTextZ;
+	igdeTextField::Ref pTextX;
+	igdeTextField::Ref pTextY;
+	igdeTextField::Ref pTextZ;
 	bool pPreventUpdate;
 	
 	decObjectOrderedSet pListeners;

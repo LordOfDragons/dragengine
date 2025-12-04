@@ -28,7 +28,7 @@
 #include "igdeWPTriggerTable.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeTextField.h"
 #include "../igdeListBox.h"
 #include "../event/igdeAction.h"
@@ -426,7 +426,7 @@ void igdeWPTriggerTable::pCreateContent(){
 	helper.ListBox( *this, 8, "List of targets in the table", pListTriggerTable, new cListTable( *this ) );
 	pListTriggerTable->SetDefaultSorter();
 	
-	igdeContainerReference frameLine;
+	igdeContainer::Ref frameLine;
 	frameLine.TakeOver( new igdeContainerFlow( env, eaX, esLast ) );
 	helper.Label( frameLine, "Filter:" );
 	helper.EditString( frameLine, "Filter targets in the list case insensitive",

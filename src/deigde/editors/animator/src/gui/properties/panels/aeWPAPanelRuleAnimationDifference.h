@@ -34,16 +34,16 @@
  */
 class aeWPAPanelRuleAnimationDifference : public aeWPAPanelRule{
 private:
-	igdeComboBoxFilterReference pCBLMoveName;
-	igdeTextFieldReference pEditLMoveTime;
+	igdeComboBoxFilter::Ref pCBLMoveName;
+	igdeTextField::Ref pEditLMoveTime;
 	
-	igdeComboBoxFilterReference pCBRMoveName;
-	igdeTextFieldReference pEditRMoveTime;
+	igdeComboBoxFilter::Ref pCBRMoveName;
+	igdeTextField::Ref pEditRMoveTime;
 	
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	

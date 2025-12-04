@@ -25,7 +25,7 @@
 #ifndef _IGDEEDITPOINT_H_
 #define _IGDEEDITPOINT_H_
 
-#include "../igdeTextFieldReference.h"
+#include "../igdeTextField.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerBoxAlternate.h"
 
@@ -43,13 +43,20 @@ class igdeUIHelper;
  * Composed widget to edit decPoint.
  */
 class DE_DLL_EXPORT igdeEditPoint : public igdeContainerBoxAlternate{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditPoint> Ref;
+	
+	
+	
 protected:
 	/** \brief Text field listener. */
 	class DE_DLL_EXPORT cListener : public igdeTextFieldListener{
 	protected:
 		igdeEditPoint &pEditPoint;
-		igdeTextFieldReference pTextX;
-		igdeTextFieldReference pTextY;
+		igdeTextField::Ref pTextX;
+		igdeTextField::Ref pTextY;
 		
 	public:
 		cListener( igdeEditPoint &editPoint, igdeTextField *textX, igdeTextField *textY );
@@ -67,8 +74,8 @@ private:
 	bool pEditable;
 	decString pDescription;
 	
-	igdeTextFieldReference pTextX;
-	igdeTextFieldReference pTextY;
+	igdeTextField::Ref pTextX;
+	igdeTextField::Ref pTextY;
 	bool pPreventUpdate;
 	
 	decObjectOrderedSet pListeners;

@@ -26,7 +26,7 @@
 #define _IGDEDIALOGMULTILINEVALUE_H_
 
 #include "igdeDialog.h"
-#include "../igdeTextAreaReference.h"
+#include "../igdeTextArea.h"
 
 
 
@@ -34,8 +34,15 @@
  * \brief IGDE dialog supporting input of multiline values.
  */
 class DE_DLL_EXPORT igdeDialogMultilineValue : public igdeDialog{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogMultilineValue> Ref;
+	
+	
+	
 private:
-	igdeTextAreaReference pEditValue;
+	igdeTextArea::Ref pEditValue;
 	
 	
 	

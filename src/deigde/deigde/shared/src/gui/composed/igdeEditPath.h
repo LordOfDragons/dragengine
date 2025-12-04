@@ -25,11 +25,11 @@
 #ifndef _IGDEEDITEDITPATH_H_
 #define _IGDEEDITEDITPATH_H_
 
-#include "../igdeButtonReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeButton.h"
+#include "../igdeTextField.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
-#include "../event/igdeActionContextMenuReference.h"
+#include "../event/igdeActionContextMenu.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionSelectFile.h"
 #include "../filedialog/igdeFilePatternList.h"
@@ -55,6 +55,13 @@ class igdeUIHelper;
  * allow the user to select the source to use to locate the path.
  */
 class DE_DLL_EXPORT igdeEditPath : public igdeContainerFlow{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditPath> Ref;
+	
+	
+	
 protected:
 	/** \brief Text field listener. */
 	class DE_DLL_EXPORT cListenerTextField : public igdeTextFieldListener{
@@ -165,11 +172,11 @@ private:
 	decString pBasePath;
 	
 	igdeAction::Ref pActionButton;
-	igdeActionContextMenuReference pActionButtonMenu;
+	igdeActionContextMenu::Ref pActionButtonMenu;
 	
-	igdeTextFieldReference pText;
-	igdeButtonReference pButton;
-	igdeButtonReference pButtonMenu;
+	igdeTextField::Ref pText;
+	igdeButton::Ref pButton;
+	igdeButton::Ref pButtonMenu;
 	
 	decObjectOrderedSet pListeners;
 	

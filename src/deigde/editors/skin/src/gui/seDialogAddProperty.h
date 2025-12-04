@@ -25,8 +25,8 @@
 #ifndef _SEDIALOGADDPROPERTY_H_
 #define _SEDIALOGADDPROPERTY_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 #include <dragengine/common/string/decStringSet.h>
@@ -41,8 +41,8 @@ class seWindowMain;
 class seDialogAddProperty : public igdeDialog{
 private:
 	seWindowMain &pWindowMain;
-	igdeListBoxReference pListProperties;
-	igdeTextFieldReference pEditCustomPropertyName;
+	igdeListBox::Ref pListProperties;
+	igdeTextField::Ref pEditCustomPropertyName;
 	
 	
 	

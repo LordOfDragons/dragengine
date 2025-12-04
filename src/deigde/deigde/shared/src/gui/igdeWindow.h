@@ -32,7 +32,7 @@
 
 #include <dragengine/common/string/decString.h>
 
-class igdeContainerReference;
+class igdeContainer::Ref;
 class igdeWidget;
 
 

@@ -25,7 +25,7 @@
 #ifndef _CEWPACAMERASHOT_H_
 #define _CEWPACAMERASHOT_H_
 
-#include <deigde/gui/igdeComboBoxFilterReference.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
 
 #include "ceWPAction.h"
 
@@ -38,10 +38,10 @@ class ceCACameraShot;
  */
 class ceWPACameraShot : public ceWPAction{
 private:
-	igdeComboBoxFilterReference pCBName;
-	igdeTextFieldReference pEditDuration;
-	igdeComboBoxFilterReference pCBCameraTarget;
-	igdeComboBoxFilterReference pCBLookAtTarget;
+	igdeComboBoxFilter::Ref pCBName;
+	igdeTextField::Ref pEditDuration;
+	igdeComboBoxFilter::Ref pCBCameraTarget;
+	igdeComboBoxFilter::Ref pCBLookAtTarget;
 	
 	
 	

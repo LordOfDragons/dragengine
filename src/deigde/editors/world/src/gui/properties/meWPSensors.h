@@ -25,11 +25,11 @@
 #ifndef _MEWPSENSORS_H_
 #define _MEWPSENSORS_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 
@@ -44,14 +44,14 @@ class meWPSensors : public igdeContainerScroll{
 private:
 	meWindowProperties &pWindowProperties;
 	
-	igdeCheckBoxReference pChkLMTrackCam;
-	igdeEditDVectorReference pEditLMPos;
-	igdeEditVectorReference pEditLMDir;
-	igdeTextFieldReference pEditLMConeIA;
-	igdeTextFieldReference pEditLMConeOA;
-	igdeTextFieldReference pEditLMConeExp;
-	igdeTextFieldReference pEditLMLumi;
-	igdeColorBoxReference pEditLMColor;
+	igdeCheckBox::Ref pChkLMTrackCam;
+	igdeEditDVector::Ref pEditLMPos;
+	igdeEditVector::Ref pEditLMDir;
+	igdeTextField::Ref pEditLMConeIA;
+	igdeTextField::Ref pEditLMConeOA;
+	igdeTextField::Ref pEditLMConeExp;
+	igdeTextField::Ref pEditLMLumi;
+	igdeColorBox::Ref pEditLMColor;
 	
 	
 	

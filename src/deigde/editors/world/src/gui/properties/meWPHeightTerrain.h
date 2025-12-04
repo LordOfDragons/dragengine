@@ -26,20 +26,20 @@
 #define _MEWPHEIGHTTERRAIN_H_
 
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeToggleButtonReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeToggleButton.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/undo/igdeUndo.h>
 
@@ -70,91 +70,91 @@ private:
 	meHTVVariation *pVVariation;
 	
 	
-	igdeActionContextMenuReference pActionMenuTexture;
+	igdeActionContextMenu::Ref pActionMenuTexture;
 	igdeAction::Ref pActionTextureAdd;
 	igdeAction::Ref pActionTextureRemove;
 	
-	igdeActionContextMenuReference pActionMenuNavSpace;
+	igdeActionContextMenu::Ref pActionMenuNavSpace;
 	igdeAction::Ref pActionNavSpaceAdd;
 	igdeAction::Ref pActionNavSpaceRemove;
 	
-	igdeActionContextMenuReference pActionMenuNavSpaceType;
+	igdeActionContextMenu::Ref pActionMenuNavSpaceType;
 	igdeAction::Ref pActionNavSpaceTypeAdd;
 	igdeAction::Ref pActionNavSpaceTypeRemove;
 	
 	igdeAction::Ref pActionNavSpaceFaceAdd;
 	igdeAction::Ref pActionNavSpaceFaceRemove;
 	
-	igdeActionContextMenuReference pActionMenuVLayer;
+	igdeActionContextMenu::Ref pActionMenuVLayer;
 	igdeAction::Ref pActionVLayerAdd;
 	igdeAction::Ref pActionVLayerRemove;
 	igdeAction::Ref pActionVLayerUp;
 	igdeAction::Ref pActionVLayerDown;
 	
-	igdeActionContextMenuReference pActionMenuVVariation;
+	igdeActionContextMenu::Ref pActionMenuVVariation;
 	igdeAction::Ref pActionVVariationAdd;
 	igdeAction::Ref pActionVVariationRemove;
 	
 	
-	igdeEditPathReference pEditPathHTerrain;
-	igdeTextFieldReference pEditSectorSize;
-	igdeTextFieldReference pEditSectorResolution;
-	igdeTextFieldReference pEditBaseHeight;
-	igdeTextFieldReference pEditHeightScale;
+	igdeEditPath::Ref pEditPathHTerrain;
+	igdeTextField::Ref pEditSectorSize;
+	igdeTextField::Ref pEditSectorResolution;
+	igdeTextField::Ref pEditBaseHeight;
+	igdeTextField::Ref pEditHeightScale;
 	
-	igdeEditPathReference pEditPathHeightImage;
-	igdeEditPathReference pEditPathVisImage;
+	igdeEditPath::Ref pEditPathHeightImage;
+	igdeEditPath::Ref pEditPathVisImage;
 	
-	igdeComboBoxReference pCBTexture;
-	igdeButtonReference pBtnTexture;
-	igdeTextFieldReference pEditTexTypeNum;
-	igdeEditPathReference pEditTexSkin;
-	igdeEditPathReference pEditTexMask;
-	igdeEditVector2Reference pEditTexUVOffset;
-	igdeEditVector2Reference pEditTexUVScale;
-	igdeTextFieldReference pEditTexUVRot;
+	igdeComboBox::Ref pCBTexture;
+	igdeButton::Ref pBtnTexture;
+	igdeTextField::Ref pEditTexTypeNum;
+	igdeEditPath::Ref pEditTexSkin;
+	igdeEditPath::Ref pEditTexMask;
+	igdeEditVector2::Ref pEditTexUVOffset;
+	igdeEditVector2::Ref pEditTexUVScale;
+	igdeTextField::Ref pEditTexUVRot;
 	
-	igdeComboBoxReference pCBNavSpace;
-	igdeButtonReference pBtnNavSpace;
-	igdeTextFieldReference pEditNavSpaceLayer;
-	igdeTextFieldReference pEditNavSpaceSnapDist;
-	igdeTextFieldReference pEditNavSpaceSnapAngle;
+	igdeComboBox::Ref pCBNavSpace;
+	igdeButton::Ref pBtnNavSpace;
+	igdeTextField::Ref pEditNavSpaceLayer;
+	igdeTextField::Ref pEditNavSpaceSnapDist;
+	igdeTextField::Ref pEditNavSpaceSnapAngle;
 	
-	igdeComboBoxReference pCBNavSpaceType;
-	igdeButtonReference pBtnNavSpaceType;
-	igdeTextFieldReference pEditNavSpaceTypeName;
-	igdeColorBoxReference pEditNavSpaceTypeColor;
-	igdeTextFieldReference pEditNavSpaceTypeType;
-	igdeButtonReference pBtnNavSpaceFaceAdd;
-	igdeButtonReference pBtnNavSpaceFaceRemove;
+	igdeComboBox::Ref pCBNavSpaceType;
+	igdeButton::Ref pBtnNavSpaceType;
+	igdeTextField::Ref pEditNavSpaceTypeName;
+	igdeColorBox::Ref pEditNavSpaceTypeColor;
+	igdeTextField::Ref pEditNavSpaceTypeType;
+	igdeButton::Ref pBtnNavSpaceFaceAdd;
+	igdeButton::Ref pBtnNavSpaceFaceRemove;
 	
-	igdeToggleButtonReference pBtnHPModeRaise;
-	igdeToggleButtonReference pBtnHPModeLower;
-	igdeToggleButtonReference pBtnHPModeLevel;
-	igdeToggleButtonReference pBtnHPModeSmooth;
-	igdeEditSliderTextReference pSldHPRadius;
-	igdeEditSliderTextReference pSldHPStrength;
+	igdeToggleButton::Ref pBtnHPModeRaise;
+	igdeToggleButton::Ref pBtnHPModeLower;
+	igdeToggleButton::Ref pBtnHPModeLevel;
+	igdeToggleButton::Ref pBtnHPModeSmooth;
+	igdeEditSliderText::Ref pSldHPRadius;
+	igdeEditSliderText::Ref pSldHPStrength;
 	
-	igdeToggleButtonReference pBtnMPModeDraw;
-	igdeToggleButtonReference pBtnMPModeErase;
-	igdeEditSliderTextReference pSldMPRadius;
+	igdeToggleButton::Ref pBtnMPModeDraw;
+	igdeToggleButton::Ref pBtnMPModeErase;
+	igdeEditSliderText::Ref pSldMPRadius;
 	
-	igdeToggleButtonReference pBtnVPModeVisible;
-	igdeToggleButtonReference pBtnVPModeInvisible;
-	igdeEditSliderTextReference pSldVPRadius;
+	igdeToggleButton::Ref pBtnVPModeVisible;
+	igdeToggleButton::Ref pBtnVPModeInvisible;
+	igdeEditSliderText::Ref pSldVPRadius;
 	
-	igdeButtonReference pBtnUpdateVegetation;
-	igdeButtonReference pBtnUpdateVegetationAll;
-	igdeButtonReference pBtnClearVegetation;
-	igdeEditPathReference pEditPathPFCache;
-	igdeComboBoxReference pCBVLayer;
-	igdeButtonReference pBtnMenuVLayer;
-	igdeComboBoxReference pCBVVariation;
-	igdeButtonReference pBtnMenuVVariation;
-	igdeEditPathReference pEditVVModel;
-	igdeEditPathReference pEditVVSkin;
-	igdeTextFieldReference pEditVVRotPerForce;
-	igdeTextFieldReference pEditVVRestitution;
+	igdeButton::Ref pBtnUpdateVegetation;
+	igdeButton::Ref pBtnUpdateVegetationAll;
+	igdeButton::Ref pBtnClearVegetation;
+	igdeEditPath::Ref pEditPathPFCache;
+	igdeComboBox::Ref pCBVLayer;
+	igdeButton::Ref pBtnMenuVLayer;
+	igdeComboBox::Ref pCBVVariation;
+	igdeButton::Ref pBtnMenuVVariation;
+	igdeEditPath::Ref pEditVVModel;
+	igdeEditPath::Ref pEditVVSkin;
+	igdeTextField::Ref pEditVVRotPerForce;
+	igdeTextField::Ref pEditVVRestitution;
 	
 	
 	

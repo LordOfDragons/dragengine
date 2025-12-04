@@ -28,7 +28,7 @@
 #include "igdeDEParameters.h"
 #include "igdeDEConsole.h"
 #include "../igdeApplication.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeMainWindow.h"
 #include "../igdeTabBook.h"
 #include "../igdeWidget.h"
@@ -67,7 +67,7 @@ pMainWindow( mainWindow )
 	pTabPanels->AddChild( panel, "Console" );
 	
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Close" );
 	
 	AddContent( pTabPanels, buttonBar );

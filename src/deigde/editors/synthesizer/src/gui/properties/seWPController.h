@@ -25,11 +25,11 @@
 #ifndef _SEWPCONTROLLER_H_
 #define _SEWPCONTROLLER_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class seSynthesizer;
@@ -49,19 +49,19 @@ private:
 	
 	seSynthesizer *pSynthesizer;
 	
-	igdeListBoxReference pListController;
-	igdeTextFieldReference pEditName;
-	igdeTextFieldReference pEditMin;
-	igdeTextFieldReference pEditMax;
-	igdeViewCurveBezierReference pEditCurve;
-	igdeCheckBoxReference pChkClamp;
+	igdeListBox::Ref pListController;
+	igdeTextField::Ref pEditName;
+	igdeTextField::Ref pEditMin;
+	igdeTextField::Ref pEditMax;
+	igdeViewCurveBezier::Ref pEditCurve;
+	igdeCheckBox::Ref pChkClamp;
 	
-	igdeTextFieldReference pEditCurveSetConstValue;
-	igdeButtonReference pBtnCurveSetConstant;
-	igdeButtonReference pBtnCurveSetLinear;
-	igdeButtonReference pBtnCurveSetLinearInverse;
-	igdeButtonReference pBtnCurveSetBezier;
-	igdeButtonReference pBtnCurveSetBezierInverse;
+	igdeTextField::Ref pEditCurveSetConstValue;
+	igdeButton::Ref pBtnCurveSetConstant;
+	igdeButton::Ref pBtnCurveSetLinear;
+	igdeButton::Ref pBtnCurveSetLinearInverse;
+	igdeButton::Ref pBtnCurveSetBezier;
+	igdeButton::Ref pBtnCurveSetBezierInverse;
 	
 	
 	

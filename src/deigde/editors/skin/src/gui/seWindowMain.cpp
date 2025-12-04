@@ -61,13 +61,13 @@
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
+#include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -134,7 +134,7 @@ pSkin( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
@@ -788,7 +788,7 @@ public:
 		"Add texture", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnAction( seSkin *skin ){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new seDialogAddTexture( pWindow ) );
 		if( ! dialog->Run( &pWindow ) ){
 			return NULL;
@@ -999,7 +999,7 @@ public:
 		"Add property", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnActionTexture( seSkin*, seTexture *texture ){
-		igdeDialogReference refDialog;
+		igdeDialog::Ref refDialog;
 		refDialog.TakeOver( new seDialogAddProperty( pWindow ) );
 		if( ! refDialog->Run( &pWindow ) ){
 			return NULL;
@@ -1156,7 +1156,7 @@ void seWindowMain::pCreateToolBarEdit(){
 
 void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "Skin", deInputEvent::ekcS ) );
 	pCreateMenuSkin( cascade );

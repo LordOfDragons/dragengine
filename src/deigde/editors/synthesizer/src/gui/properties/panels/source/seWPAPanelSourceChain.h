@@ -27,7 +27,7 @@
 
 #include "seWPAPanelSource.h"
 
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 
 
 /**
@@ -35,12 +35,12 @@
  */
 class seWPAPanelSourceChain : public seWPAPanelSource{
 private:
-	igdeListBoxReference pListSounds;
+	igdeListBox::Ref pListSounds;
 	
-	igdeEditPathReference pEditPathSound;
-	igdeTextFieldReference pEditMinSpeed;
-	igdeTextFieldReference pEditMaxSpeed;
-	igdeTextFieldReference pLabSoundInfo;
+	igdeEditPath::Ref pEditPathSound;
+	igdeTextField::Ref pEditMinSpeed;
+	igdeTextField::Ref pEditMaxSpeed;
+	igdeTextField::Ref pLabSoundInfo;
 	
 	igdeAction::Ref pActionSoundUp;
 	igdeAction::Ref pActionSoundDown;

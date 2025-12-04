@@ -27,7 +27,7 @@
 
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -97,7 +97,7 @@ pAutoResetDuration( true )
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
 	
 	helper.ComboBoxFilter( content, textLabel, 25, true, "", pCBID, new cComboIdentifier( *this ) );
@@ -105,13 +105,13 @@ pAutoResetDuration( true )
 	
 	helper.EditFloat( content, "Pause:", "Time in seconds to wait before strip is activated", pEditPause, NULL );
 	
-	igdeContainerReference line;
+	igdeContainer::Ref line;
 	const char *tooltip = "Duration in seconds of strip";
 	helper.FormLineStretchFirst( content, "Duration:", tooltip, line );
 	helper.EditFloat( line, tooltip, pEditDuration, nullptr );
 	helper.Button( line, pBtnResetDuration, new cActionResetDuration( *this ), true );
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Cancel" );
 	
 	AddContent( content, buttonBar );

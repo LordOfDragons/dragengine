@@ -32,6 +32,13 @@
  * \brief IGDE UI Container Widget scrolling one widget.
  */
 class DE_DLL_EXPORT igdeContainerScroll : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeContainerScroll> Ref;
+	
+	
+	
 private:
 	bool pCanScrollX;
 	bool pCanScrollY;

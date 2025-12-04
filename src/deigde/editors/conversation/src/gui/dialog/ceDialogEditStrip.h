@@ -25,9 +25,9 @@
 #ifndef _CEDIALOGEDITSTRIP_H_
 #define _CEDIALOGEDITSTRIP_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 class ceStrip;
@@ -52,10 +52,10 @@ public:
 	};
 	
 private:
-	igdeComboBoxFilterReference pCBID;
-	igdeTextFieldReference pEditPause;
-	igdeTextFieldReference pEditDuration;
-	igdeButtonReference pBtnResetDuration;
+	igdeComboBoxFilter::Ref pCBID;
+	igdeTextField::Ref pEditPause;
+	igdeTextField::Ref pEditDuration;
+	igdeButton::Ref pBtnResetDuration;
 	Listener::Ref pListener;
 	bool pAutoResetDuration;
 	

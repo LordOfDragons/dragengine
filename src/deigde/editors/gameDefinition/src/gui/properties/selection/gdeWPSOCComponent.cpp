@@ -74,7 +74,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -92,7 +92,7 @@
 #include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
@@ -729,7 +729,7 @@ public:
 		helper.MenuCommand( contextMenu, pPanel.GetActionTextureAdd() );
 		
 		if( actionsAddFromModel.GetCount() > 0 ){
-			igdeMenuCascadeReference subMenu;
+			igdeMenuCascade::Ref subMenu;
 			subMenu.TakeOver( new igdeMenuCascade( env, "Add Texture From Model",
 				env.GetStockIcon( igdeEnvironment::esiPlus ), "Add Texture From Model" ) );
 			
@@ -980,7 +980,7 @@ pDirtyEngModelTexNames( true )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	
 	pListener = new gdeWPSOCComponentListener( *this );
 	

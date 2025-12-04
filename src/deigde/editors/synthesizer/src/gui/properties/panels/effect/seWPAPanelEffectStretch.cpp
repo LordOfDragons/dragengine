@@ -39,7 +39,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -138,7 +138,7 @@ seWPAPanelEffect( wpEffect, deSynthesizerEffectVisitorIdentify::eetStretch )
 {
 	igdeEnvironment &env = wpEffect.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	
 	
 	helper.GroupBox( *this, groupBox, "Stretch Time/Pitch:" );

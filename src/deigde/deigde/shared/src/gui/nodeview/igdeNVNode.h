@@ -42,6 +42,13 @@ class igdeNVNodeListener;
  * \brief IGDE UI NodeView Node.
  */
 class DE_DLL_EXPORT igdeNVNode : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeNVNode> Ref;
+	
+	
+	
 private:
 	decString pTitle;
 	decString pDescription;

@@ -41,7 +41,7 @@
 #include "igdeEditVector2Listener.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeComboBox.h"
 #include "../igdeComboBoxFilter.h"
 #include "../igdeTextField.h"
@@ -49,7 +49,7 @@
 #include "../igdeColorBox.h"
 #include "../igdeCheckBox.h"
 #include "../igdeSwitcher.h"
-#include "../dialog/igdeDialogReference.h"
+#include "../dialog/igdeDialog.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeColorBoxListener.h"
 #include "../event/igdeComboBoxListener.h"
@@ -261,7 +261,7 @@ public:
 			triggerTargetList = &dummyList;
 		}
 		
-		igdeDialogReference refDialog;
+		igdeDialog::Ref refDialog;
 		refDialog.TakeOver( new igdeTriggerExpressionDialog( pWidget.GetEnvironment(),
 			*triggerTargetList, pWidget.GetTriggerExpressionParser() ) );
 		igdeTriggerExpressionDialog &dialog = ( igdeTriggerExpressionDialog& )( igdeDialog& )refDialog;
@@ -669,7 +669,7 @@ void igdeEditPropertyValue::EditWidgetValueChanged( bool changing ){
 
 void igdeEditPropertyValue::pCreateContent( igdeUIHelper &helper ){
 	igdeEnvironment &env = helper.GetEnvironment();
-	igdeContainerReference frameLine;
+	igdeContainer::Ref frameLine;
 	
 	pActionEditRawValue.TakeOver( new igdeEditPropertyValue_ActionEditRawValue( *this ) );
 	pActionBooleanValue.TakeOver( new igdeEditPropertyValue_ActionBoolean( *this ) );

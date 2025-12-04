@@ -41,6 +41,12 @@ class igdeColorBoxListener;
  */
 class DE_DLL_EXPORT igdeColorBox : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeColorBox> Ref;
+	
+	
+	
+
 	class DE_DLL_EXPORT cActionCopy : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:

@@ -27,8 +27,8 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeTextField.h>
 
 class meHTVRuleResult;
 
@@ -41,9 +41,9 @@ class meWVNodeResult : public meWVNode{
 private:
 	meHTVRuleResult *pRuleResult;
 	
-	igdeContainerReference pFraParameters;
-	igdeTextFieldReference pEditProbability;
-	igdeTextFieldReference pEditVariation;
+	igdeContainer::Ref pFraParameters;
+	igdeTextField::Ref pEditProbability;
+	igdeTextField::Ref pEditVariation;
 	
 	
 	

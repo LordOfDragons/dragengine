@@ -48,6 +48,12 @@ class igdeListItem::Ref;
  */
 class DE_DLL_EXPORT igdeIconListBox : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeIconListBox> Ref;
+	
+	
+	
+
 	/** \brief Selection mode. */
 	enum eSelectionMode{
 		/** \brief Single select. */

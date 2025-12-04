@@ -34,7 +34,7 @@
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
+#include <deigde/gui/nodeview/igdeNVSlot.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
@@ -64,12 +64,12 @@ pRuleRandom( rule )
 {
 	igdeEnvironment &env = GetEnvironment();
 // 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	SetTitle( "Random" );
 	
 	// slots
-	igdeNVSlotReference slot;
+	igdeNVSlot::Ref slot;
 	slot.TakeOver( new meWVNodeSlot( env, "Random", "Random value",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom ) );
 	AddSlot( slot );

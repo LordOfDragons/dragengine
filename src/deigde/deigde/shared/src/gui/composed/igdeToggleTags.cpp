@@ -30,7 +30,7 @@
 #include "../igdeCommonDialogs.h"
 #include "../igdeListBox.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeListBoxListener.h"
 #include "../event/igdeListBoxListener.h"

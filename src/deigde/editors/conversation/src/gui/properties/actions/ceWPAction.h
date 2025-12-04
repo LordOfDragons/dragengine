@@ -25,9 +25,9 @@
 #ifndef _CEWPACTION_H_
 #define _CEWPACTION_H_
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 
 class igdeComboBox;
@@ -44,9 +44,9 @@ class ceWPAction : public igdeContainerForm{
 protected:
 	ceWPTopic &pParentPanel;
 	
-	igdeCheckBoxReference pChkWaitForActor, pChkWaitSpeakOnly;
-	igdeComboBoxReference pCBWaitForActorID;
-	igdeTextFieldReference pEditDelay;
+	igdeCheckBox::Ref pChkWaitForActor, pChkWaitSpeakOnly;
+	igdeComboBox::Ref pCBWaitForActorID;
+	igdeTextField::Ref pEditDelay;
 	
 	
 	

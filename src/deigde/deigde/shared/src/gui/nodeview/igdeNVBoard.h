@@ -44,6 +44,13 @@ class igdeNVBoardListener;
  * \brief IGDE UI NodeView Board.
  */
 class DE_DLL_EXPORT igdeNVBoard : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeNVBoard> Ref;
+	
+	
+	
 private:
 	decColor pBgColor;
 	bool pEnabled;

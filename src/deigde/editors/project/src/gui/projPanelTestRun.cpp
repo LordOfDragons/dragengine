@@ -46,14 +46,14 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/layout/igdeContainerScrollReference.h>
+#include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeTextStyle.h>
@@ -272,14 +272,14 @@ pMaxLines( 500 )
 	
 	
 	// side panel
-	igdeContainerScrollReference scroll;
-	igdeContainerReference sidePanel;
+	igdeContainerScroll::Ref scroll;
+	igdeContainer::Ref sidePanel;
 	helper.SidePanel( scroll, sidePanel, false, 5 );
 	sidePanel->SetWidgetGuiThemeName( "" );
 	AddChild( scroll, eaSide );
 	
 	
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	groupBox.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 	helper.Label( groupBox, "Profile:" );
 	helper.ComboBox( groupBox, "Distribution profile to run.",
@@ -302,7 +302,7 @@ pMaxLines( 500 )
 	// remote launching
 	helper.GroupBoxFlow(sidePanel, groupBox, "Remote Launching:");
 	
-	igdeContainerReference form;
+	igdeContainer::Ref form;
 	form.TakeOver(new igdeContainerForm(env));
 	helper.EditString(form, "Address:", "IP address to listen for remote client connections",
 		pEditRemoteAddress, new cEditRemoteAddress(*this));

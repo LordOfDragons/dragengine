@@ -27,8 +27,8 @@
 
 #include <dragengine/common/math/decMath.h>
 
-#include "../igdeListBoxReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeListBox.h"
+#include "../igdeTextField.h"
 #include "../event/igdeActionListener.h"
 #include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
@@ -58,8 +58,8 @@ private:
 	igdeAction::Ref pActionReset;
 	igdeAction::Ref pActionFullReset;
 	
-	igdeListBoxReference pListTriggerTable;
-	igdeTextFieldReference pEditTriggerTableFilter;
+	igdeListBox::Ref pListTriggerTable;
+	igdeTextField::Ref pEditTriggerTableFilter;
 	
 	igdeAction::Ref pAction;
 	

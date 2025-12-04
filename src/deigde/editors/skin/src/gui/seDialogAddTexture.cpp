@@ -33,10 +33,10 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeLabel.h>
-#include <deigde/gui/igdeLabelReference.h>
+#include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
@@ -102,10 +102,10 @@ pWindowMain( windowMain )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference content, formLine;
+	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabelReference header;
+	igdeLabel::Ref header;
 	header.TakeOver( new igdeLabel( env, "Enter texture name or choose from model textures." ) );
 	
 	
@@ -121,7 +121,7 @@ pWindowMain( windowMain )
 	content->AddChild( formLine );
 	
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Create Texture", "Cancel" );
 	
 	

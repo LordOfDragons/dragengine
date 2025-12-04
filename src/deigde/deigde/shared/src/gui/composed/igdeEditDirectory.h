@@ -25,12 +25,12 @@
 #ifndef _IGDEEDITEDITDIRECTORY_H_
 #define _IGDEEDITEDITDIRECTORY_H_
 
-#include "../igdeButtonReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeButton.h"
+#include "../igdeTextField.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionSelectDirectory.h"
-#include "../event/igdeActionSelectDirectoryReference.h"
+#include "../event/igdeActionSelectDirectory.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
@@ -48,6 +48,13 @@ class igdeUIHelper;
  * widget. The button is used to bring up directory dialogs to select directory.
  */
 class DE_DLL_EXPORT igdeEditDirectory : public igdeContainerFlow{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditDirectory> Ref;
+	
+	
+	
 protected:
 	/** \brief Text field listener. */
 	class DE_DLL_EXPORT cListenerTextField : public igdeTextFieldListener{
@@ -79,10 +86,10 @@ private:
 	bool pAutoValidateDirectory;
 	bool pUseGameVFS;
 	
-	igdeActionSelectDirectoryReference pActionButton;
+	igdeActionSelectDirectory::Ref pActionButton;
 	
-	igdeTextFieldReference pText;
-	igdeButtonReference pButton;
+	igdeTextField::Ref pText;
+	igdeButton::Ref pButton;
 	
 	decObjectOrderedSet pListeners;
 	

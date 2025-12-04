@@ -40,6 +40,13 @@ class igdeSpinTextFieldListener;
  * \brief IGDE UI SpinTextField.
  */
 class DE_DLL_EXPORT igdeSpinTextField : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeSpinTextField> Ref;
+	
+	
+	
 private:
 	bool pEnabled;
 	int pColumns;

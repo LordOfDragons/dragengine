@@ -25,8 +25,8 @@
 #ifndef _GDEWPTAGLIST_H_
 #define _GDEWPTAGLIST_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
 
@@ -44,8 +44,8 @@ class decStringList;
  */
 class gdeWPPathList : public igdeContainerFlow{
 private:
-	igdeEditPathReference pEditPath;
-	igdeListBoxReference pListBox;
+	igdeEditPath::Ref pEditPath;
+	igdeListBox::Ref pListBox;
 	
 	const decStringList *pPathList;
 	igdeUndoSystem *pUndoSystem;

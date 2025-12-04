@@ -29,9 +29,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 class reWindowMain;
@@ -44,12 +44,12 @@ class reDialogImportBone : public igdeDialog{
 private:
 	reWindowMain &pWindowMain;
 	
-	igdeTextFieldReference pEditPath;
-	igdeButtonReference pBtnPath;
-	igdeTextFieldReference pEditScaling;
-	igdeCheckBoxReference pChkImportBoneProperties;
-	igdeCheckBoxReference pChkImportShapes;
-	igdeCheckBoxReference pChkImportConstraints;
+	igdeTextField::Ref pEditPath;
+	igdeButton::Ref pBtnPath;
+	igdeTextField::Ref pEditScaling;
+	igdeCheckBox::Ref pChkImportBoneProperties;
+	igdeCheckBox::Ref pChkImportShapes;
+	igdeCheckBox::Ref pChkImportConstraints;
 	
 	
 	

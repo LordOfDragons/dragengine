@@ -40,6 +40,13 @@ class igdeEnvironment;
  * Clear all undo actions. Set Undo System to use or NULL if not available.
  */
 class DE_DLL_EXPORT igdeActionClearUndo : public igdeAction{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeActionClearUndo> Ref;
+	
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	igdeUndoSystem *pUndoSystem;

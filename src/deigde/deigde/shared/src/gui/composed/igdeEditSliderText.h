@@ -25,8 +25,8 @@
 #ifndef _IGDEEDITSLIDERTEXT_H_
 #define _IGDEEDITSLIDERTEXT_H_
 
-#include "../igdeSliderReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeSlider.h"
+#include "../igdeTextField.h"
 #include "../event/igdeSliderListener.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
@@ -45,6 +45,13 @@ class igdeUIHelper;
  * widget. The text field is synchronized to the slider.
  */
 class DE_DLL_EXPORT igdeEditSliderText : public igdeContainerFlow{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditSliderText> Ref;
+	
+	
+	
 protected:
 	/** \brief Slider listener. */
 	class DE_DLL_EXPORT cListenerSlider : public igdeSliderListener{
@@ -73,8 +80,8 @@ protected:
 	
 	
 private:
-	igdeSliderReference pSlider;
-	igdeTextFieldReference pText;
+	igdeSlider::Ref pSlider;
+	igdeTextField::Ref pText;
 	
 	float pValue;
 	bool pPreventNotify;

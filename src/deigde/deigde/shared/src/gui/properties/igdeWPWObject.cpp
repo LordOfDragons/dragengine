@@ -449,7 +449,7 @@ void igdeWPWObject::OnDestroyed( igdeAction *action ){
 void igdeWPWObject::pCreateContent(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference form, frameLine;
+	igdeContainer::Ref form, frameLine;
 	
 	form.TakeOver( new igdeContainerForm( env ) );
 	AddChild( form );

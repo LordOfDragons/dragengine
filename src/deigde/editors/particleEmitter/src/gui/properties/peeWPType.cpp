@@ -64,7 +64,7 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeListBox.h>
@@ -76,9 +76,9 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorderReference.h>
+#include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -259,9 +259,9 @@ public:
 
 class cActionType : public igdeAction{
 	peeWPType &pPanel;
-	igdeButtonReference &pButton;
+	igdeButton::Ref &pButton;
 public:
-	cActionType( peeWPType &panel, igdeButtonReference &button ) :
+	cActionType( peeWPType &panel, igdeButton::Ref &button ) :
 	igdeAction( "", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ),
 		"Edit type menu" ),
 	pPanel( panel ), pButton( button ){ }
@@ -273,7 +273,7 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		igdeMenuCascadeReference menu;
+		igdeMenuCascade::Ref menu;
 		menu.TakeOver( new igdeMenuCascade( pPanel.GetEnvironment() ) );
 		helper.MenuCommand( menu, pPanel.GetActionTypeAdd() );
 		helper.MenuCommand( menu, pPanel.GetActionTypeRemove() );
@@ -781,7 +781,7 @@ pEmitter( NULL ),
 pPreventUpdate( false )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, form, frameLine;
+	igdeContainer::Ref content, groupBox, form, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener = new peeWPTypeListener( *this );

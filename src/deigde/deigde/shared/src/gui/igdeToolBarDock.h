@@ -35,6 +35,12 @@
  */
 class DE_DLL_EXPORT igdeToolBarDock : public igdeContainer{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeToolBarDock> Ref;
+	
+	
+	
+
 	/** \brief Dock side. */
 	enum eSide{
 		/** \brief Top. */

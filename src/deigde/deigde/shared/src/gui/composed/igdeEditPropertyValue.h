@@ -25,18 +25,18 @@
 #ifndef _IGDEEDITPROPERTYVALUE_H_
 #define _IGDEEDITPROPERTYVALUE_H_
 
-#include "../igdeSwitcherReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../igdeComboBoxReference.h"
-#include "../igdeComboBoxFilterReference.h"
-#include "../igdeColorBoxReference.h"
-#include "../igdeCheckBoxReference.h"
-#include "../composed/igdeEditSliderTextReference.h"
-#include "../composed/igdeEditPointReference.h"
-#include "../composed/igdeEditPoint3Reference.h"
-#include "../composed/igdeEditVectorReference.h"
-#include "../composed/igdeEditVector2Reference.h"
-#include "../composed/igdeEditPathReference.h"
+#include "../igdeSwitcher.h"
+#include "../igdeTextField.h"
+#include "../igdeComboBox.h"
+#include "../igdeComboBoxFilter.h"
+#include "../igdeColorBox.h"
+#include "../igdeCheckBox.h"
+#include "../composed/igdeEditSliderText.h"
+#include "../composed/igdeEditPoint.h"
+#include "../composed/igdeEditPoint3.h"
+#include "../composed/igdeEditVector.h"
+#include "../composed/igdeEditVector2.h"
+#include "../composed/igdeEditPath.h"
 #include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../../codec/igdeCodecPropertyString.h"
@@ -57,32 +57,39 @@ class igdeEditPropertyValueListener;
  * setting the value and is kept until a new value is set.
  */
 class DE_DLL_EXPORT igdeEditPropertyValue : public igdeContainerFlow{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditPropertyValue> Ref;
+	
+	
+	
 private:
 	decString pValue;
 	const igdeGDProperty *pGDProperty;
 	bool pEnabled;
 	bool pPreventEditing;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	
-	igdeTextFieldReference pString;
-	igdeTextFieldReference pInteger;
-	igdeEditPointReference pPoint;
-	igdeEditPoint3Reference pPoint3;
-	igdeTextFieldReference pFloat;
-	igdeEditVectorReference pVector;
-	igdeEditVector2Reference pVector2;
-	igdeColorBoxReference pColor;
-	igdeCheckBoxReference pBoolean;
-	igdeEditPathReference pPath;
-	igdeEditSliderTextReference pRange;
-	igdeComboBoxReference pSelect;
-	igdeTextFieldReference pList;
-	igdeTextFieldReference pTriggerExpression;
-	igdeComboBoxFilterReference pTriggerTarget;
-	igdeTextFieldReference pShape;
-	igdeTextFieldReference pShapeList;
-	igdeComboBoxFilterReference pIdentifier;
+	igdeTextField::Ref pString;
+	igdeTextField::Ref pInteger;
+	igdeEditPoint::Ref pPoint;
+	igdeEditPoint3::Ref pPoint3;
+	igdeTextField::Ref pFloat;
+	igdeEditVector::Ref pVector;
+	igdeEditVector2::Ref pVector2;
+	igdeColorBox::Ref pColor;
+	igdeCheckBox::Ref pBoolean;
+	igdeEditPath::Ref pPath;
+	igdeEditSliderText::Ref pRange;
+	igdeComboBox::Ref pSelect;
+	igdeTextField::Ref pList;
+	igdeTextField::Ref pTriggerExpression;
+	igdeComboBoxFilter::Ref pTriggerTarget;
+	igdeTextField::Ref pShape;
+	igdeTextField::Ref pShapeList;
+	igdeComboBoxFilter::Ref pIdentifier;
 	
 	decObjectOrderedSet pListeners;
 	

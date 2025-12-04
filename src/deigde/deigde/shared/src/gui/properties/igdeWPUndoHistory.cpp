@@ -31,13 +31,13 @@
 #include "../igdeButton.h"
 #include "../igdeListBox.h"
 #include "../igdeGroupBox.h"
-#include "../igdeGroupBoxReference.h"
-#include "../igdeContainerReference.h"
+#include "../igdeGroupBox.h"
+#include "../igdeContainer.h"
 #include "../event/igdeActionUndo.h"
 #include "../event/igdeActionRedo.h"
 #include "../event/igdeActionClearUndo.h"
 #include "../layout/igdeContainerBorder.h"
-#include "../layout/igdeContainerBorderReference.h"
+#include "../layout/igdeContainerBorder.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../undo/igdeUndo.h"
 #include "../../undo/igdeUndoSystem.h"
@@ -60,22 +60,22 @@ pUndoSystem( NULL )
 	igdeUIHelper &helper = environment.GetUIHelperProperties();
 	
 	// group box
-	igdeGroupBoxReference groupBoxFrame;
+	igdeGroupBox::Ref groupBoxFrame;
 	groupBoxFrame.TakeOver( new igdeGroupBox( environment, "Undo History:" ) );
 	groupBoxFrame->SetStretchLast( true );
 	AddChild( groupBoxFrame );
 	
-	igdeContainerBorderReference groupBox;
+	igdeContainerBorder::Ref groupBox;
 	groupBox.TakeOver( new igdeContainerBorder( environment ) );
 	groupBoxFrame->AddChild( groupBox );
 	
 	// buttons
-	igdeContainerReference buttons;
+	igdeContainer::Ref buttons;
 	buttons.TakeOver( new igdeContainerBox( environment, igdeContainerBox::eaY ) );
 	groupBox->AddChild( buttons, igdeContainerBorder::eaTop );
 	
 	// button row 1
-	igdeContainerReference buttonLine;
+	igdeContainer::Ref buttonLine;
 	buttonLine.TakeOver( new igdeContainerBox( environment, igdeContainerBox::eaX ) );
 	buttons->AddChild( buttonLine );
 	

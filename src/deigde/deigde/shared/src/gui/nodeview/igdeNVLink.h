@@ -25,7 +25,7 @@
 #ifndef _IGDENVLINK_H_
 #define _IGDENVLINK_H_
 
-#include "igdeNVSlotReference.h"
+#include "igdeNVSlot.h"
 
 #include <dragengine/deObject.h>
 
@@ -45,8 +45,8 @@ public:
 	
 	
 private:
-	igdeNVSlotReference pSource;
-	igdeNVSlotReference pTarget;
+	igdeNVSlot::Ref pSource;
+	igdeNVSlot::Ref pTarget;
 	
 	igdeNVBoard *pOwnerBoard;
 	

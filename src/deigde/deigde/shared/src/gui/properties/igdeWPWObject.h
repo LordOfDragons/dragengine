@@ -27,11 +27,11 @@
 
 #include <dragengine/common/math/decMath.h>
 
-#include "../igdeButtonReference.h"
-#include "../igdeCheckBoxReference.h"
-#include "../igdeContainerReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../composed/igdeEditVectorReference.h"
+#include "../igdeButton.h"
+#include "../igdeCheckBox.h"
+#include "../igdeContainer.h"
+#include "../igdeTextField.h"
+#include "../composed/igdeEditVector.h"
 #include "../event/igdeActionListener.h"
 #include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
@@ -107,15 +107,15 @@ public:
 private:
 	igdeWObject::Ref pObject;
 	
-	igdeTextFieldReference pEditClass;
-	igdeButtonReference pBtnClass;
+	igdeTextField::Ref pEditClass;
+	igdeButton::Ref pBtnClass;
 	
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditOrientation;
-	igdeEditVectorReference pEditScaling;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditOrientation;
+	igdeEditVector::Ref pEditScaling;
 	
-	igdeCheckBoxReference pChkVisible;
-	igdeCheckBoxReference pChkDynamicCollider;
+	igdeCheckBox::Ref pChkVisible;
+	igdeCheckBox::Ref pChkDynamicCollider;
 	
 	igdeAction::Ref pAction;
 	igdeUndoSystem *pUndoSystem;

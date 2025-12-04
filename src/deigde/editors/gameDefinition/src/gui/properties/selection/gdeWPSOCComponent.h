@@ -30,20 +30,20 @@
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decStringList.h>
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeIconListBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -69,7 +69,7 @@ private:
 	decString pEngModelPath;
 	bool pDirtyEngModelTexNames;
 	
-	igdeActionContextMenuReference pActionTexturesMenu;
+	igdeActionContextMenu::Ref pActionTexturesMenu;
 	igdeAction::Ref pActionTextureAdd;
 	igdeAction::Ref pActionTextureRemove;
 	decObjectList pActionsTextureAddFromModel;
@@ -77,42 +77,42 @@ private:
 	igdeAction::Ref pActionTexturePropertyValueRemove;
 	igdeAction::Ref pActionTexturePropertyValueClear;
 	
-	igdeEditPathReference pEditPathModel;
-	igdeEditPathReference pEditPathSkin;
-	igdeEditPathReference pEditPathRig;
-	igdeEditPathReference pEditPathAnimator;
-	igdeEditPathReference pEditPathAnimation;
-	igdeTextFieldReference pEditMove;
-	igdeEditPathReference pEditPathOcclusionMesh;
-	igdeEditPathReference pEditPathAudioModel;
-	igdeTextFieldReference pEditPlaybackController;
-	igdeCheckBoxReference pChkDoNotScale;
-	igdeCheckBoxReference pChkStatic;
-	igdeCheckBoxReference pChkRenderEnvMap;
-	igdeCheckBoxReference pChkAffectsAudio;
-	igdeCheckBoxReference pChkPartialHide;
-	igdeCheckBoxReference pChkAttachTarget;
-	igdeCheckBoxReference pChkLightShadowIgnore;
-	igdeComboBoxReference pCBCollisionResponseType;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
+	igdeEditPath::Ref pEditPathModel;
+	igdeEditPath::Ref pEditPathSkin;
+	igdeEditPath::Ref pEditPathRig;
+	igdeEditPath::Ref pEditPathAnimator;
+	igdeEditPath::Ref pEditPathAnimation;
+	igdeTextField::Ref pEditMove;
+	igdeEditPath::Ref pEditPathOcclusionMesh;
+	igdeEditPath::Ref pEditPathAudioModel;
+	igdeTextField::Ref pEditPlaybackController;
+	igdeCheckBox::Ref pChkDoNotScale;
+	igdeCheckBox::Ref pChkStatic;
+	igdeCheckBox::Ref pChkRenderEnvMap;
+	igdeCheckBox::Ref pChkAffectsAudio;
+	igdeCheckBox::Ref pChkPartialHide;
+	igdeCheckBox::Ref pChkAttachTarget;
+	igdeCheckBox::Ref pChkLightShadowIgnore;
+	igdeComboBox::Ref pCBCollisionResponseType;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
-	igdeComboBoxReference pCBTextures;
-	igdeButtonReference pBtnTextures;
-	igdeTextFieldReference pTextureEditName;
-	igdeEditPathReference pTextureEditPathSkin;
-	igdeEditVector2Reference pTextureEditOffset;
-	igdeTextFieldReference pTextureEditRotation;
-	igdeEditVector2Reference pTextureEditScale;
-	igdeColorBoxReference pTextureClrTint;
+	igdeComboBox::Ref pCBTextures;
+	igdeButton::Ref pBtnTextures;
+	igdeTextField::Ref pTextureEditName;
+	igdeEditPath::Ref pTextureEditPathSkin;
+	igdeEditVector2::Ref pTextureEditOffset;
+	igdeTextField::Ref pTextureEditRotation;
+	igdeEditVector2::Ref pTextureEditScale;
+	igdeColorBox::Ref pTextureClrTint;
 	
-	igdeComboBoxReference pTextureCBPropertyKeys;
-	igdeButtonReference pTextureBtnPropertyValueSet;
-	igdeIconListBoxReference pTextureListProperties;
+	igdeComboBox::Ref pTextureCBPropertyKeys;
+	igdeButton::Ref pTextureBtnPropertyValueSet;
+	igdeIconListBox::Ref pTextureListProperties;
 	
 	
 	

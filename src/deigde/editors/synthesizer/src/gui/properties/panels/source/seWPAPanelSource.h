@@ -25,11 +25,11 @@
 #ifndef _SEWPAPANELSOURCE_H_
 #define _SEWPAPANELSOURCE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
@@ -56,19 +56,19 @@ private:
 	igdeAction::Ref pActionLinkAdd;
 	igdeAction::Ref pActionLinkRemove;
 	
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBMixMode;
-	igdeTextFieldReference pEditBlendFactor;
-	igdeTextFieldReference pEditMinVolume;
-	igdeTextFieldReference pEditMaxVolume;
-	igdeTextFieldReference pEditMinPanning;
-	igdeTextFieldReference pEditMaxPanning;
-	igdeCheckBoxReference pChkEnabled;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBMixMode;
+	igdeTextField::Ref pEditBlendFactor;
+	igdeTextField::Ref pEditMinVolume;
+	igdeTextField::Ref pEditMaxVolume;
+	igdeTextField::Ref pEditMinPanning;
+	igdeTextField::Ref pEditMaxPanning;
+	igdeCheckBox::Ref pChkEnabled;
 	
-	igdeComboBoxReference pCBTarget;
-	igdeListBoxReference pListLinks;
-	igdeComboBoxReference pCBLinks;
-	igdeButtonReference pBtnLinkAdd;
+	igdeComboBox::Ref pCBTarget;
+	igdeListBox::Ref pListLinks;
+	igdeComboBox::Ref pCBLinks;
+	igdeButton::Ref pBtnLinkAdd;
 	
 	seWPEffect *pWPEffect;
 	

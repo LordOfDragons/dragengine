@@ -32,7 +32,7 @@
 
 
 class gdeProperty;
-class igdeEditPropertyValueReference;
+class igdeEditPropertyValue::Ref;
 
 
 /**
@@ -64,10 +64,10 @@ public:
 	/*@{*/
 	/** \brief Create and add. */
 	static void CreateAndAdd( igdeContainer &parent, igdeUIHelper &helper,
-		igdeEditPropertyValueReference &widget, igdeEditPropertyValueListener *listener );
+		igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener );
 	
 	static void CreateAndAdd( igdeContainer &form, igdeUIHelper &helper, const char *label,
-		const char *description, igdeEditPropertyValueReference &widget,
+		const char *description, igdeEditPropertyValue::Ref &widget,
 		igdeEditPropertyValueListener *listener );
 	
 	/** \brief Set value. */

@@ -31,7 +31,7 @@
 #include "igdeCommonDialogs.h"
 #include "event/igdeTreeListListener.h"
 #include "menu/igdeMenuCascade.h"
-#include "menu/igdeMenuCascadeReference.h"
+#include "menu/igdeMenuCascade.h"
 #include "model/igdeTreeItem.h"
 #include "model/igdeTreeItem.h"
 #include "model/igdeTreeItemSorter.h"
@@ -483,7 +483,7 @@ void igdeTreeList::ShowContextMenu( const decPoint &position ){
 		return;
 	}
 	
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( GetEnvironment() ) );
 	
 	const int count = pListeners.GetCount();

@@ -31,17 +31,17 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/gui/igdeMainWindow.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeProgressBarReference.h>
-#include <deigde/gui/igdeStatusBarReference.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/igdeProgressBar.h>
+#include <deigde/gui/igdeStatusBar.h>
 #include <deigde/gui/igdeTimer.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/igdeToolBarDockReference.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/igdeToolBarDock.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/logger/igdeWindowLoggerReference.h>
-#include <deigde/gui/menu/igdeMenuBarReference.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/logger/igdeWindowLogger.h>
+#include <deigde/gui/menu/igdeMenuBar.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
@@ -90,7 +90,7 @@ private:
 	igdeGDPreviewManager *pGDPreviewManager;
 	igdeTexturePropertyList *pTexturePropertyList;
 	igdeLoggerHistory::Ref pLoggerHistory;
-	igdeWindowLoggerReference pWindowLogger;
+	igdeWindowLogger::Ref pWindowLogger;
 	deVirtualFileSystem::Ref pVFS;
 	igdeTemplateList *pTemplates;
 	igdeGameDefinitionList *pSharedGameDefinitions;
@@ -144,23 +144,23 @@ private:
 	igdeAction::Ref pActionSettingsTexPropList;
 	igdeAction::Ref pActionSettingsLogging;
 	
-	igdeMenuCascadeReference pMenuGame;
-	igdeMenuCascadeReference pMenuRecentProjects;
-	igdeMenuCascadeReference pMenuSettings;
-	igdeMenuCascadeReference pMenuWindow;
+	igdeMenuCascade::Ref pMenuGame;
+	igdeMenuCascade::Ref pMenuRecentProjects;
+	igdeMenuCascade::Ref pMenuSettings;
+	igdeMenuCascade::Ref pMenuWindow;
 	
-	igdeMenuBarReference pMenuBar;
+	igdeMenuBar::Ref pMenuBar;
 	
-	igdeToolBarDockReference pToolBarDockLeft;
-	igdeToolBarDockReference pToolBarDockTop;
-	igdeToolBarDockReference pToolBarDockRight;
-	igdeToolBarDockReference pToolBarDockBottom;
-	igdeStatusBarReference pStatusBar;
-	igdeProgressBarReference pSBProgress;
-	igdeSwitcherReference pSwiContent;
+	igdeToolBarDock::Ref pToolBarDockLeft;
+	igdeToolBarDock::Ref pToolBarDockTop;
+	igdeToolBarDock::Ref pToolBarDockRight;
+	igdeToolBarDock::Ref pToolBarDockBottom;
+	igdeStatusBar::Ref pStatusBar;
+	igdeProgressBar::Ref pSBProgress;
+	igdeSwitcher::Ref pSwiContent;
 	
-	igdeToolBarReference pTBGame;
-	igdeContainerReference pFraEditors;
+	igdeToolBar::Ref pTBGame;
+	igdeContainer::Ref pFraEditors;
 	
 	float pElapsedTime;
 	float pMinUpdateTime;

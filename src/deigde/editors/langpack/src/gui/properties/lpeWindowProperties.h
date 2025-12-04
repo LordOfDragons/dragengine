@@ -26,7 +26,7 @@
 #define _LPEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class lpeLangPack;
 class lpeWindowMain;
@@ -42,7 +42,7 @@ private:
 	lpeWindowMain &pWindowMain;
 	
 	lpeWPLangPack *pPanelLangPack;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

@@ -26,16 +26,16 @@
 #define _MEWPSDECAL_H_
 
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
@@ -55,8 +55,8 @@ private:
 	meWPSDecalListener *pListener;
 	meWorld *pWorld;
 	
-	igdeSpinTextFieldReference pSpinActive;
-	igdeTextFieldReference pEditSelCount;
+	igdeSpinTextField::Ref pSpinActive;
+	igdeTextField::Ref pEditSelCount;
 	
 	
 	igdeAction::Ref pActionPropCopyToSel;
@@ -64,18 +64,18 @@ private:
 	igdeAction::Ref pActionPropCloneToSel;
 	
 	
-	igdeTextFieldReference pEditID;
-	igdeEditDVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeEditVectorReference pEditSize;
-	igdeCheckBoxReference pChkVisible;
-	igdeTextFieldReference pEditOrder;
+	igdeTextField::Ref pEditID;
+	igdeEditDVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeEditVector::Ref pEditSize;
+	igdeCheckBox::Ref pChkVisible;
+	igdeTextField::Ref pEditOrder;
 	
-	igdeEditPathReference pEditSkin;
-	igdeEditVector2Reference pEditTexCoordOffset;
-	igdeEditVector2Reference pEditTexCoordScaling;
-	igdeTextFieldReference pEditTexCoordRotation;
-	igdeColorBoxReference pClrColorTint;
+	igdeEditPath::Ref pEditSkin;
+	igdeEditVector2::Ref pEditTexCoordOffset;
+	igdeEditVector2::Ref pEditTexCoordScaling;
+	igdeTextField::Ref pEditTexCoordRotation;
+	igdeColorBox::Ref pClrColorTint;
 	
 	igdeWidget::Ref pEditProperties;
 	

@@ -45,6 +45,13 @@ class igdeTreeItem::Ref;
  * \brief IGDE UI TreeList.
  */
 class DE_DLL_EXPORT igdeTreeList : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTreeList> Ref;
+	
+	
+	
 private:
 	bool pEnabled;
 	igdeTreeItem::Ref pFirstChild;

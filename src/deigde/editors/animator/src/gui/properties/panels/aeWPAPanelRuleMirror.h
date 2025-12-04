@@ -28,7 +28,7 @@
 #include "aeWPAPanelRule.h"
 #include "../../../animator/rule/aeRuleMirror.h"
 
-#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/igdeListBox.h>
 
 
 
@@ -37,13 +37,13 @@
  */
 class aeWPAPanelRuleMirror : public aeWPAPanelRule{
 private:
-	igdeComboBoxReference pCBMirrorAxis;
-	igdeComboBoxFilterReference pCBMirrorBone;
-	igdeListBoxReference pListMatchName;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeComboBox::Ref pCBMirrorAxis;
+	igdeComboBoxFilter::Ref pCBMirrorBone;
+	igdeListBox::Ref pListMatchName;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	

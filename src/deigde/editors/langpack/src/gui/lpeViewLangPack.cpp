@@ -45,11 +45,11 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
+#include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
@@ -253,19 +253,19 @@ preventUpdate( false )
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	// filter line on top
-	igdeContainerReference topLine;
+	igdeContainer::Ref topLine;
 	topLine.TakeOver( new igdeContainerForm( env ) );
 	helper.EditString( topLine, "Filter:", "Filter entries by identifier.",
 		pEditFilter, new cTextFilter( *this ) );
 	AddChild( topLine, igdeContainerBorder::eaTop );
 	
 	// content split between list and bottom line
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espBottom,
 		igdeApplication::app().DisplayScaled(100)));
 	AddChild( splitted, igdeContainerBorder::eaCenter );
 	
-	igdeContainerReference sidePanel;
+	igdeContainer::Ref sidePanel;
 	sidePanel.TakeOver( new igdeContainerForm( env, igdeContainerForm::esLast ) );
 	helper.EditString( sidePanel, "Identifier:", "Unique identifier name of the entry.",
 		pEditEntryName, new cTextName( *this ) );

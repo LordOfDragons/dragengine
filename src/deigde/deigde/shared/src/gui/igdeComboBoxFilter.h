@@ -44,6 +44,13 @@
  * exists no filtering is done.
  */
 class DE_DLL_EXPORT igdeComboBoxFilter : public igdeComboBox{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeComboBoxFilter> Ref;
+	
+	
+	
 private:
 	decObjectList pFilterItems;
 	bool pFilterCaseInsensitive;

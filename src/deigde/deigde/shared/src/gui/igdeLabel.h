@@ -36,6 +36,12 @@
  */
 class DE_DLL_EXPORT igdeLabel : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeLabel> Ref;
+	
+	
+	
+
 	/** \brief Alignment. */
 	enum eAlignment{
 		/** \brief Center alignment. */

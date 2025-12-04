@@ -39,7 +39,7 @@
 #include "../resources/igdeFont.h"
 #include "../theme/igdeGuiTheme.h"
 #include "../menu/igdeMenuCascade.h"
-#include "../menu/igdeMenuCascadeReference.h"
+#include "../menu/igdeMenuCascade.h"
 #include "../../environment/igdeEnvironment.h"
 
 #include <dragengine/common/exceptions.h>
@@ -246,7 +246,7 @@ void igdeNVNode::ShowContextMenu( const decPoint &position ){
 	}
 	
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( helper.GetEnvironment() ) );
 	
 	const int count = pListeners.GetCount();

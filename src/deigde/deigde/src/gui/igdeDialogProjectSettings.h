@@ -25,11 +25,11 @@
 #ifndef _IGDEDIALOGPROJECTSETTINGS_H_
 #define _IGDEDIALOGPROJECTSETTINGS_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 
@@ -45,21 +45,21 @@ class igdeDialogProjectSettings : public igdeDialog{
 private:
 	igdeWindowMain &pWindowMain;
 	
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeTextFieldReference pEditPathData;
-	igdeTextFieldReference pEditPathCache;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeTextField::Ref pEditPathData;
+	igdeTextField::Ref pEditPathCache;
 	
-	igdeComboBoxReference pCBSharedGameDefs;
-	igdeTextAreaReference pEditSharedGameDefInfo;
-	igdeListBoxReference pListPathGameDefBase;
-	igdeButtonReference pBtnPathGameDefBaseAdd;
-	igdeButtonReference pBtnPathGameDefBaseRemove;
-	igdeButtonReference pBtnPathGameDefBaseUp;
-	igdeButtonReference pBtnPathGameDefBaseDown;
+	igdeComboBox::Ref pCBSharedGameDefs;
+	igdeTextArea::Ref pEditSharedGameDefInfo;
+	igdeListBox::Ref pListPathGameDefBase;
+	igdeButton::Ref pBtnPathGameDefBaseAdd;
+	igdeButton::Ref pBtnPathGameDefBaseRemove;
+	igdeButton::Ref pBtnPathGameDefBaseUp;
+	igdeButton::Ref pBtnPathGameDefBaseDown;
 	
-	igdeComboBoxReference pCBScriptModule;
-	igdeTextFieldReference pEditScriptModuleVersion;
+	igdeComboBox::Ref pCBScriptModule;
+	igdeTextField::Ref pEditScriptModuleVersion;
 	
 	bool pBaseGameDefsChanged;
 	

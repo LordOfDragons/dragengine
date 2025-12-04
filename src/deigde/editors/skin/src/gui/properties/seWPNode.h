@@ -25,18 +25,18 @@
 #ifndef _SEWPNODE_H_
 #define _SEWPNODE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeTreeListReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditPointReference.h>
-#include <deigde/gui/composed/igdeEditPoint3Reference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeTreeList.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditPoint.h>
+#include <deigde/gui/composed/igdeEditPoint3.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 #include "../../skin/property/node/sePropertyNode.h"
@@ -60,40 +60,40 @@ private:
 	seSkin *pSkin;
 	bool pPreventUpdate;
 	
-	igdeTreeListReference pTreeOutline;
-	igdeTextFieldReference pLabSelection;
+	igdeTreeList::Ref pTreeOutline;
+	igdeTextField::Ref pLabSelection;
 	
-	igdeEditPoint3Reference pEditPosition;
-	igdeEditPoint3Reference pEditSize;
-	igdeTextFieldReference pEditRotation;
-	igdeTextFieldReference pEditShear;
-	igdeTextFieldReference pEditBrightness;
-	igdeTextFieldReference pEditContrast;
-	igdeTextFieldReference pEditGamma;
-	igdeColorBoxReference pClrColorize;
-	igdeEditSliderTextReference pSldTransparency;
-	igdeTextFieldReference pLabMask;
-	igdeComboBoxReference pCBCombineMode;
+	igdeEditPoint3::Ref pEditPosition;
+	igdeEditPoint3::Ref pEditSize;
+	igdeTextField::Ref pEditRotation;
+	igdeTextField::Ref pEditShear;
+	igdeTextField::Ref pEditBrightness;
+	igdeTextField::Ref pEditContrast;
+	igdeTextField::Ref pEditGamma;
+	igdeColorBox::Ref pClrColorize;
+	igdeEditSliderText::Ref pSldTransparency;
+	igdeTextField::Ref pLabMask;
+	igdeComboBox::Ref pCBCombineMode;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	
-	igdeEditPathReference pImageEditImage;
-	igdeEditPointReference pImageEditRepeat;
-	igdeTextFieldReference pImageLabImageInfo;
+	igdeEditPath::Ref pImageEditImage;
+	igdeEditPoint::Ref pImageEditRepeat;
+	igdeTextField::Ref pImageLabImageInfo;
 	
-	igdeComboBoxReference pShapeCBType;
-	igdeColorBoxReference pShapeClrFill;
-	igdeColorBoxReference pShapeClrLine;
-	igdeTextFieldReference pShapeEditThickness;
+	igdeComboBox::Ref pShapeCBType;
+	igdeColorBox::Ref pShapeClrFill;
+	igdeColorBox::Ref pShapeClrLine;
+	igdeTextField::Ref pShapeEditThickness;
 	
-	igdeEditPathReference pTextEditFont;
-	igdeTextFieldReference pTextLabFontInfo;
-	igdeTextFieldReference pTextEditFontSize;
-	igdeTextFieldReference pTextEditText;
-	igdeColorBoxReference pTextClrColor;
+	igdeEditPath::Ref pTextEditFont;
+	igdeTextField::Ref pTextLabFontInfo;
+	igdeTextField::Ref pTextEditFontSize;
+	igdeTextField::Ref pTextEditText;
+	igdeColorBox::Ref pTextClrColor;
 	
-	igdeComboBoxReference pCBMappedType;
-	igdeComboBoxReference pCBMappedTarget;
+	igdeComboBox::Ref pCBMappedType;
+	igdeComboBox::Ref pCBMappedTarget;
 	
 	
 	

@@ -47,7 +47,7 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
@@ -147,7 +147,7 @@ public:
 
 ceWPCGameCommand::ceWPCGameCommand( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	helper.FormLineStretchFirst( *this, "Command:", "Command to send", formLine );
 	helper.EditString( formLine, "Command to send", pEditCommand, new cTextCommand( *this ) );

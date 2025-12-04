@@ -25,14 +25,14 @@
 #ifndef _CEWPCONVERSATION_H_
 #define _CEWPCONVERSATION_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class ceWindowProperties;
@@ -55,56 +55,56 @@ private:
 	ceWPConversationListener *pListener;
 	ceConversation *pConversation;
 	
-	igdeEditPathReference pPathImportConvo;
-	igdeButtonReference pBtnImportConvoAdd;
-	igdeListBoxReference pListImportConvoPath;
+	igdeEditPath::Ref pPathImportConvo;
+	igdeButton::Ref pBtnImportConvoAdd;
+	igdeListBox::Ref pListImportConvoPath;
 	
-	igdeComboBoxFilterReference pCBGesture;
-	igdeButtonReference pBtnGesture;
-	igdeTextFieldReference pEditGestureAnimator;
-	igdeCheckBoxReference pChkGestureHold;
-	igdeTextFieldReference pEditGestureDuration;
+	igdeComboBoxFilter::Ref pCBGesture;
+	igdeButton::Ref pBtnGesture;
+	igdeTextField::Ref pEditGestureAnimator;
+	igdeCheckBox::Ref pChkGestureHold;
+	igdeTextField::Ref pEditGestureDuration;
 	
-	igdeComboBoxFilterReference pCBFacePose;
-	igdeButtonReference pBtnFacePose;
-	igdeComboBoxReference pCBFPController;
-	igdeTextFieldReference pEditFPControllerValue;
-	igdeButtonReference pBtnFPController;
+	igdeComboBoxFilter::Ref pCBFacePose;
+	igdeButton::Ref pBtnFacePose;
+	igdeComboBox::Ref pCBFPController;
+	igdeTextField::Ref pEditFPControllerValue;
+	igdeButton::Ref pBtnFPController;
 	
-	igdeComboBoxFilterReference pCBTarget;
-	igdeButtonReference pBtnTarget;
-	igdeComboBoxFilterReference pCBTargetActorID;
-	igdeTextFieldReference pEditTargetEntityID;
-	igdeTextFieldReference pEditTargetBone;
-	igdeEditVectorReference pEditTargetPosition;
-	igdeEditVectorReference pEditTargetOrientation;
+	igdeComboBoxFilter::Ref pCBTarget;
+	igdeButton::Ref pBtnTarget;
+	igdeComboBoxFilter::Ref pCBTargetActorID;
+	igdeTextField::Ref pEditTargetEntityID;
+	igdeTextField::Ref pEditTargetBone;
+	igdeEditVector::Ref pEditTargetPosition;
+	igdeEditVector::Ref pEditTargetOrientation;
 	
-	igdeComboBoxFilterReference pCBCameraShot;
-	igdeButtonReference pBtnCameraShot;
-	igdeTextFieldReference pEditCShotActorCount;
-	igdeComboBoxFilterReference pCBCameraShotCameraTarget;
-	igdeEditVectorReference pEditCShotOffCamFrom;
-	igdeEditVectorReference pEditCShotOffCamTo;
-	igdeComboBoxFilterReference pCBCameraShotLookAtTarget;
-	igdeEditVectorReference pEditCShotOffLookAtFrom;
-	igdeEditVectorReference pEditCShotOffLookAtTo;
-	igdeEditVectorReference pEditCShotCamOrbitFrom;
-	igdeEditVectorReference pEditCShotCamOrbitTo;
-	igdeTextFieldReference pEditCShotCamDistFrom;
-	igdeTextFieldReference pEditCShotCamDistTo;
-	igdeEditVectorReference pEditCShotPosFrom;
-	igdeEditVectorReference pEditCShotPosTo;
-	igdeEditVectorReference pEditCShotRotFrom;
-	igdeEditVectorReference pEditCShotRotTo;
-	igdeTextFieldReference pEditCShotTiltFrom;
-	igdeTextFieldReference pEditCShotTiltTo;
-	igdeTextFieldReference pEditCShotFovFrom;
-	igdeTextFieldReference pEditCShotFovTo;
-	igdeCheckBoxReference pChkCShotLockUpAxis;
-	igdeCheckBoxReference pChkCShotAlignTargets;
-	igdeCheckBoxReference pChkCShotRelativeToLookAt;
-	igdeCheckBoxReference pChkCShotLockCameraTarget;
-	igdeCheckBoxReference pChkCShotLockLookAtTarget;
+	igdeComboBoxFilter::Ref pCBCameraShot;
+	igdeButton::Ref pBtnCameraShot;
+	igdeTextField::Ref pEditCShotActorCount;
+	igdeComboBoxFilter::Ref pCBCameraShotCameraTarget;
+	igdeEditVector::Ref pEditCShotOffCamFrom;
+	igdeEditVector::Ref pEditCShotOffCamTo;
+	igdeComboBoxFilter::Ref pCBCameraShotLookAtTarget;
+	igdeEditVector::Ref pEditCShotOffLookAtFrom;
+	igdeEditVector::Ref pEditCShotOffLookAtTo;
+	igdeEditVector::Ref pEditCShotCamOrbitFrom;
+	igdeEditVector::Ref pEditCShotCamOrbitTo;
+	igdeTextField::Ref pEditCShotCamDistFrom;
+	igdeTextField::Ref pEditCShotCamDistTo;
+	igdeEditVector::Ref pEditCShotPosFrom;
+	igdeEditVector::Ref pEditCShotPosTo;
+	igdeEditVector::Ref pEditCShotRotFrom;
+	igdeEditVector::Ref pEditCShotRotTo;
+	igdeTextField::Ref pEditCShotTiltFrom;
+	igdeTextField::Ref pEditCShotTiltTo;
+	igdeTextField::Ref pEditCShotFovFrom;
+	igdeTextField::Ref pEditCShotFovTo;
+	igdeCheckBox::Ref pChkCShotLockUpAxis;
+	igdeCheckBox::Ref pChkCShotAlignTargets;
+	igdeCheckBox::Ref pChkCShotRelativeToLookAt;
+	igdeCheckBox::Ref pChkCShotLockCameraTarget;
+	igdeCheckBox::Ref pChkCShotLockLookAtTarget;
 	
 	
 	

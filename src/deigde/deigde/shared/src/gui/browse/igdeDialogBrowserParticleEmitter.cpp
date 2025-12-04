@@ -24,7 +24,7 @@
 
 #include "igdeDialogBrowserParticleEmitter.h"
 #include "igdeBrowseItemGDPreviewListener.h"
-#include "../dialog/igdeDialogReference.h"
+#include "../dialog/igdeDialog.h"
 #include "../model/igdeListItem.h"
 #include "../../gamedefinition/igdeGDCategory.h"
 #include "../../gamedefinition/igdeGameDefinition.h"
@@ -80,7 +80,7 @@ void igdeDialogBrowserParticleEmitter::SetSelectedParticleEmitter( igdeGDParticl
 
 bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter( igdeWidget *owner,
 igdeGDParticleEmitter* &particleEmitter, const char *title ){
-	igdeDialogReference refDialog;
+	igdeDialog::Ref refDialog;
 	refDialog.TakeOver( new igdeDialogBrowserParticleEmitter( owner->GetEnvironment(), title ) );
 	igdeDialogBrowserParticleEmitter &dialog = ( igdeDialogBrowserParticleEmitter& )( igdeDialog& )refDialog;
 	if( particleEmitter ){

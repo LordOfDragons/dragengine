@@ -33,12 +33,12 @@
  */
 class aeWPAPanelRuleAnimation : public aeWPAPanelRule{
 private:
-	igdeComboBoxFilterReference pCBMoveName;
-	igdeTextFieldReference pEditMoveTime;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeComboBoxFilter::Ref pCBMoveName;
+	igdeTextField::Ref pEditMoveTime;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	

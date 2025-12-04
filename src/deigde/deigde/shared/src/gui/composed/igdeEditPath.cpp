@@ -30,16 +30,16 @@
 #include "igdeEditPathListener.h"
 #include "../igdeButton.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeUIHelper.h"
 #include "../browse/igdeDialogBrowserSkin.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionExternOpen.h"
-#include "../event/igdeActionExternOpenReference.h"
+#include "../event/igdeActionExternOpen.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../menu/igdeMenuCascade.h"
-#include "../menu/igdeMenuCascadeReference.h"
+#include "../menu/igdeMenuCascade.h"
 #include "../menu/igdeMenuCommand.h"
 #include "../../gameproject/igdeGameProject.h"
 
@@ -674,7 +674,7 @@ void igdeEditPath::BrowsePath(){
 	
 	path.RemoveLastComponent();
 	
-	igdeActionExternOpenReference action;
+	igdeActionExternOpen::Ref action;
 	action.TakeOver( new igdeActionExternOpen( GetEnvironment(), "", nullptr, "", path.GetPathNative() ) );
 	action->OnAction();
 }

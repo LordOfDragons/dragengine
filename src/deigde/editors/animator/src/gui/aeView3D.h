@@ -29,7 +29,7 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseKeyListener.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/undo/igdeUndo.h>
 
 
@@ -47,7 +47,7 @@ private:
 	
 	aeAnimator *pAnimator;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	igdeMouseKeyListener::Ref pLocomotionInteraction;
 	igdeMouseKeyListener::Ref pWakeboardInteraction;
 	igdeMouseKeyListener::Ref pEditorInteraction;

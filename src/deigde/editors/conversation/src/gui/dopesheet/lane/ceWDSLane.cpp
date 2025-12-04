@@ -46,11 +46,11 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/gui/theme/propertyNames.h>
 #include <deigde/undo/igdeUndo.h>
@@ -100,7 +100,7 @@ public:
 			return;
 		}
 		
-		igdeDialogReference refDialog;
+		igdeDialog::Ref refDialog;
 		decString title, text;
 		title.Format( "Add %s", pLane.GetLabel().GetString() );
 		text.Format( "%s: ", pLane.GetLabel().GetString() );
@@ -471,7 +471,7 @@ public:
 			return;
 		}
 		
-		igdeMenuCascadeReference contextMenu;
+		igdeMenuCascade::Ref contextMenu;
 		contextMenu.TakeOver( new igdeMenuCascade( pLane.GetWindow().GetEnvironment() ) );
 		
 		pLane.OnContextMenu( contextMenu, position );
@@ -874,7 +874,7 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeDialogReference refDialog;
+	igdeDialog::Ref refDialog;
 	decString title, text;
 	title.Format( "Edit %s", pLabel.GetString() );
 	text.Format( "%s: ", pLabel.GetString() );

@@ -25,12 +25,12 @@
 #ifndef _SAEWPSANIM_H_
 #define _SAEWPSANIM_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
@@ -54,26 +54,26 @@ private:
 	
 	igdeAction::Ref pActionWordAddIpa;
 	
-	igdeEditPathReference pEditRigPath;
-	igdeEditPathReference pEditAnimPath;
-	igdeComboBoxFilterReference pCBNeutralMove;
+	igdeEditPath::Ref pEditRigPath;
+	igdeEditPath::Ref pEditAnimPath;
+	igdeComboBoxFilter::Ref pCBNeutralMove;
 	
-	igdeListBoxReference pListNeutralVertexPositionSets;
-	igdeComboBoxFilterReference pCBNeutralVertexPositionSets;
-	igdeButtonReference pBtnNeutralVertexPositionSetAdd;
-	igdeButtonReference pBtnNeutralVertexPositionSetDel;
+	igdeListBox::Ref pListNeutralVertexPositionSets;
+	igdeComboBoxFilter::Ref pCBNeutralVertexPositionSets;
+	igdeButton::Ref pBtnNeutralVertexPositionSetAdd;
+	igdeButton::Ref pBtnNeutralVertexPositionSetDel;
 	
-	igdeComboBoxReference pCBPhoneme;
-	igdeTextFieldReference pEditPhonemeIPA;
-	igdeTextFieldReference pEditPhonemeSampleText;
-	igdeTextFieldReference pEditPhonemeLength;
-	igdeComboBoxFilterReference pCBPhonemeMove;
-	igdeComboBoxFilterReference pCBPhonemeVertexPositionSet;
+	igdeComboBox::Ref pCBPhoneme;
+	igdeTextField::Ref pEditPhonemeIPA;
+	igdeTextField::Ref pEditPhonemeSampleText;
+	igdeTextField::Ref pEditPhonemeLength;
+	igdeComboBoxFilter::Ref pCBPhonemeMove;
+	igdeComboBoxFilter::Ref pCBPhonemeVertexPositionSet;
 	
-	igdeComboBoxFilterReference pCBWord;
-	igdeTextFieldReference pEditWordName;
-	igdeTextFieldReference pEditWordPhonetics;
-	igdeButtonReference pBtnWordAddIPA;
+	igdeComboBoxFilter::Ref pCBWord;
+	igdeTextField::Ref pEditWordName;
+	igdeTextField::Ref pEditWordPhonetics;
+	igdeButton::Ref pBtnWordAddIPA;
 	
 	
 	

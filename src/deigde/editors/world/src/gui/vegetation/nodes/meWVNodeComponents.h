@@ -25,8 +25,8 @@
 #ifndef _MEWVNODECOMPONENTS_H_
 #define _MEWVNODECOMPONENTS_H_
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 #include "meWVNode.h"
 
@@ -41,8 +41,8 @@ class meWVNodeComponents : public meWVNode{
 private:
 	meHTVRuleComponents *pRuleComponents;
 	
-	igdeContainerReference pFraParameters;
-	igdeEditVectorReference pEditVector;
+	igdeContainer::Ref pFraParameters;
+	igdeEditVector::Ref pEditVector;
 	
 	
 	

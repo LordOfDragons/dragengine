@@ -25,7 +25,7 @@
 #ifndef _CEWPAPLAYERCHOICE_H_
 #define _CEWPAPLAYERCHOICE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
+#include <deigde/gui/igdeButton.h>
 
 #include "ceWPAction.h"
 
@@ -39,9 +39,9 @@ class ceCAPlayerChoiceOption;
  */
 class ceWPAPlayerChoice : public ceWPAction{
 private:
-	igdeTextFieldReference pEditVarName;
-	igdeTextFieldReference pEditOptionText;
-	igdeButtonReference pBtnOptionText;
+	igdeTextField::Ref pEditVarName;
+	igdeTextField::Ref pEditOptionText;
+	igdeButton::Ref pBtnOptionText;
 	
 	
 	

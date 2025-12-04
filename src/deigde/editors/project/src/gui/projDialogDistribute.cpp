@@ -35,7 +35,7 @@
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
@@ -74,11 +74,11 @@ pSuccess( true )
 		env.GetStockIcon( igdeEnvironment::esiOpen ), "Show DELGA file in File Manager" ) );
 	
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) );
 	
 	// build information
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	helper.GroupBoxStatic( content, groupBox, "DELGA:" );
 	
 	helper.EditString( groupBox, "DELGA File:", "DELGA file being build.", pEditDelgaPath, NULL );
@@ -94,7 +94,7 @@ pSuccess( true )
 	pEditDelgaDirCount->SetEditable( false );
 	
 	// logs and info line
-	igdeContainerReference containerLogs;
+	igdeContainer::Ref containerLogs;
 	containerLogs.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) );
 	
 	helper.GroupBoxStaticFlow( containerLogs, groupBox, "Logs:", true );
@@ -111,7 +111,7 @@ pSuccess( true )
 	content->AddChild( containerLogs );
 	
 	// button line
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Close" );
 	
 	AddContent( content, buttonBar );

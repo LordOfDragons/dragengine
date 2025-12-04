@@ -59,7 +59,7 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeListBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/composed/igdeEditPoint.h>
 #include <deigde/gui/composed/igdeEditPointListener.h>
@@ -76,7 +76,7 @@
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/layout/igdeContainerScrollReference.h>
+#include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
@@ -681,8 +681,8 @@ pListener( NULL )
 	
 	
 	// side panel
-	igdeContainerScrollReference scroll;
-	igdeContainerReference sidePanel;
+	igdeContainerScroll::Ref scroll;
+	igdeContainer::Ref sidePanel;
 	helper.SidePanel( scroll, sidePanel, false, 5 );
 	sidePanel->SetWidgetGuiThemeName( "" );
 	AddChild( scroll, eaSide );
@@ -692,7 +692,7 @@ pListener( NULL )
 	helper.Button( sidePanel, windowMain.GetActionProfileRemove() );
 	helper.Button( sidePanel, windowMain.GetActionProfileDuplicate() );
 	
-	igdeContainerReference groupBox, formLine;
+	igdeContainer::Ref groupBox, formLine;
 	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Content:" );
 	helper.Button( groupBox, windowMain.GetActionShowContent() );
 	
@@ -710,7 +710,7 @@ pListener( NULL )
 	sidePanel->SetWidgetGuiThemeName( "" );
 	AddChild( scroll, eaCenter );
 	
-	igdeContainerReference frameLine;
+	igdeContainer::Ref frameLine;
 	const char *description;
 	
 	groupBox.TakeOver( new igdeContainerForm( env ) );
@@ -778,7 +778,7 @@ pListener( NULL )
 	groupBox.TakeOver( new igdeGroupBox( env, "Processing Parameters:", false ) );
 	sidePanel->AddChild( groupBox );
 	
-	igdeContainerReference subGroup, subGroup2;
+	igdeContainer::Ref subGroup, subGroup2;
 	subGroup.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX ) );
 	groupBox->AddChild( subGroup );
 	

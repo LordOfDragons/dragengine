@@ -69,7 +69,7 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeColorBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeListBox.h>
@@ -80,7 +80,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorderReference.h>
+#include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
@@ -90,7 +90,7 @@
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -608,14 +608,14 @@ public:
 };
 
 class cActionBody : public cBaseActionLayer{
-	igdeButtonReference &pButton;
+	igdeButton::Ref &pButton;
 public:
-	cActionBody( seWPLayer &panel, igdeButtonReference &button ) :
+	cActionBody( seWPLayer &panel, igdeButton::Ref &button ) :
 	cBaseActionLayer( panel, "...", "Body menu" ), pButton( button ){ }
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer* ){
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		igdeMenuCascadeReference menu;
+		igdeMenuCascade::Ref menu;
 		menu.TakeOver( new igdeMenuCascade( pPanel.GetEnvironment() ) );
 		helper.MenuCommand( menu, pPanel.GetActionBodyAdd() );
 		helper.MenuCommand( menu, pPanel.GetActionBodyRemove() );
@@ -855,7 +855,7 @@ pListener( NULL ),
 pSky( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, frameLine, frameLine2;
+	igdeContainer::Ref content, groupBox, frameLine, frameLine2;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener = new seWPLayerListener( *this );

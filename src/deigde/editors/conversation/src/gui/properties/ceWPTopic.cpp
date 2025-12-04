@@ -127,10 +127,10 @@
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/igdeSwitcher.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorderReference.h>
+#include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -775,7 +775,7 @@ pPanelCTrigger( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox, formLine;
+	igdeContainer::Ref groupBox, formLine;
 	
 	pListener = new ceWPTopicListener( *this );
 	
@@ -799,7 +799,7 @@ pPanelCTrigger( NULL )
 	
 	
 	// actions
-	igdeContainerBorderReference groupActions;
+	igdeContainerBorder::Ref groupActions;
 	igdeWidget::Ref panel;
 	
 	helper.GroupBoxStaticBorder( *this, groupActions, "Actions:", true );

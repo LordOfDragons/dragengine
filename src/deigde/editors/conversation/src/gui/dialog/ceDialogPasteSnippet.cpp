@@ -41,7 +41,7 @@
 
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -67,7 +67,7 @@ pConversation( conversation )
 	
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
 	
 	helper.ComboBoxFilter( content, "Camera Shot 1:", true,
@@ -98,7 +98,7 @@ pConversation( conversation )
 	helper.EditString( content, "Snippet:", "Conversation snippet to generate actions from",
 		pEditSnippet, 80, 20, NULL );
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Generate Actions", "Cancel" );
 	
 	AddContent( content, buttonBar );

@@ -49,7 +49,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -115,7 +115,7 @@ void ceWPTTIMAWaitActions::OnContextMenu( igdeMenuCascade &contextMenu ){
 	const int indexAppend = wait.GetActions().GetCount();
 	int i;
 	
-	igdeMenuCascadeReference subMenu;
+	igdeMenuCascade::Ref subMenu;
 	subMenu.TakeOver( new igdeMenuCascade( environment, "Add Action",
 		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
 	contextMenu.AddChild( subMenu );
@@ -184,7 +184,7 @@ igdeMenuCascade &contextMenu, ceConversationAction *action ){
 		windowMain, conversation, *topic, wait, action ), true );
 	helper.MenuSeparator( contextMenu );
 	
-	igdeMenuCascadeReference subMenu;
+	igdeMenuCascade::Ref subMenu;
 	subMenu.TakeOver( new igdeMenuCascade( environment, "Insert Action Before",
 		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
 	contextMenu.AddChild( subMenu );

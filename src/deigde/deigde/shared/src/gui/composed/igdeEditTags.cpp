@@ -31,7 +31,7 @@
 #include "../igdeCommonDialogs.h"
 #include "../igdeListBox.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeListBoxListener.h"
 #include "../event/igdeListBoxListener.h"
@@ -256,7 +256,7 @@ void igdeEditTags::pCreateContent( igdeUIHelper &helper, int rows ){
 	pActionRemove.TakeOver( new cActionRemove( *this ) );
 	pActionClear.TakeOver( new cActionClear( *this ) );
 	
-	igdeContainerReference comboLine;
+	igdeContainer::Ref comboLine;
 	comboLine.TakeOver( new igdeContainerFlow( GetEnvironment(),
 		igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
 	helper.ComboBoxFilter( comboLine, true, "", pComboBox, NULL );

@@ -26,22 +26,22 @@
 #define _MEWPSOBJECT_H_
 
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/undo/igdeUndo.h>
 
@@ -65,18 +65,18 @@ private:
 	meWorld *pWorld;
 	
 	
-	igdeActionContextMenuReference pActionMenuClass;
+	igdeActionContextMenu::Ref pActionMenuClass;
 	igdeAction::Ref pActionClassBrowse;
 	igdeAction::Ref pActionClassEdit;
 	
-	igdeActionContextMenuReference pActionIdClass;
+	igdeActionContextMenu::Ref pActionIdClass;
 	igdeAction::Ref pActionIdFind;
 	
-	igdeActionContextMenuReference pActionMenuPosition;
-	igdeActionContextMenuReference pActionMenuRotation;
-	igdeActionContextMenuReference pActionMenuScale;
+	igdeActionContextMenu::Ref pActionMenuPosition;
+	igdeActionContextMenu::Ref pActionMenuRotation;
+	igdeActionContextMenu::Ref pActionMenuScale;
 	
-	igdeActionContextMenuReference pActionMenuTexture;
+	igdeActionContextMenu::Ref pActionMenuTexture;
 	igdeAction::Ref pActionTextureAddCustom;
 	igdeAction::Ref pActionTextureAddAllModel;
 	igdeAction::Ref pActionTextureRemove;
@@ -90,42 +90,42 @@ private:
 	igdeAction::Ref pActionPropCloneToSel;
 	
 	
-	igdeSpinTextFieldReference pSpinActive;
-	igdeTextFieldReference pEditSelCount;
+	igdeSpinTextField::Ref pSpinActive;
+	igdeTextField::Ref pEditSelCount;
 	
-	igdeTextFieldReference pEditID;
-	igdeButtonReference pBtnIdMenu;
-	igdeTextFieldReference pEditAttach;
-	igdeComboBoxFilterReference pCBClass;
-	igdeButtonReference pBtnClassMenu;
-	igdeEditDVectorReference pEditPosition;
-	igdeButtonReference pBtnPositionMenu;
-	igdeEditVectorReference pEditRotation;
-	igdeButtonReference pBtnRotationMenu;
-	igdeEditVectorReference pEditSize;
-	igdeEditVectorReference pEditScaling;
-	igdeButtonReference pBtnScaleMenu;
+	igdeTextField::Ref pEditID;
+	igdeButton::Ref pBtnIdMenu;
+	igdeTextField::Ref pEditAttach;
+	igdeComboBoxFilter::Ref pCBClass;
+	igdeButton::Ref pBtnClassMenu;
+	igdeEditDVector::Ref pEditPosition;
+	igdeButton::Ref pBtnPositionMenu;
+	igdeEditVector::Ref pEditRotation;
+	igdeButton::Ref pBtnRotationMenu;
+	igdeEditVector::Ref pEditSize;
+	igdeEditVector::Ref pEditScaling;
+	igdeButton::Ref pBtnScaleMenu;
 	
-	igdeComboBoxReference pCBTexture;
-	igdeButtonReference pBtnTextureMenu;
-	igdeEditPathReference pEditTexSkin;
-	igdeEditVector2Reference pEditTexTCOffset;
-	igdeEditVector2Reference pEditTexTCScaling;
-	igdeTextFieldReference pEditTexTCRotation;
-	igdeColorBoxReference pClrTexTint;
-	igdeCheckBoxReference pChkShowMissingTextures;
+	igdeComboBox::Ref pCBTexture;
+	igdeButton::Ref pBtnTextureMenu;
+	igdeEditPath::Ref pEditTexSkin;
+	igdeEditVector2::Ref pEditTexTCOffset;
+	igdeEditVector2::Ref pEditTexTCScaling;
+	igdeTextField::Ref pEditTexTCRotation;
+	igdeColorBox::Ref pClrTexTint;
+	igdeCheckBox::Ref pChkShowMissingTextures;
 	igdeWidget::Ref pEditTexProperties;
 	
-	igdeEditSliderTextReference pSldLigInt;
-	igdeColorBoxReference pClrLight;
-	igdeEditSliderTextReference pSldLigRange;
-	igdeEditSliderTextReference pSldLigHID;
-	igdeEditSliderTextReference pSldLigDist;
-	igdeTextFieldReference pEditLigDistInt;
+	igdeEditSliderText::Ref pSldLigInt;
+	igdeColorBox::Ref pClrLight;
+	igdeEditSliderText::Ref pSldLigRange;
+	igdeEditSliderText::Ref pSldLigHID;
+	igdeEditSliderText::Ref pSldLigDist;
+	igdeTextField::Ref pEditLigDistInt;
 	
 	igdeWidget::Ref pEditProperties;
 	
-	igdeListBoxReference pListAttachBehaviors;
+	igdeListBox::Ref pListAttachBehaviors;
 	
 	igdeUndo::Ref pUndoAddProperty;
 	igdeUndo::Ref pUndoSetProperty;

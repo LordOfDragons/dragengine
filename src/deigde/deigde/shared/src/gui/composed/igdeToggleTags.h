@@ -25,7 +25,7 @@
 #ifndef _IGDEETOGGLETAGS_H_
 #define _IGDEETOGGLETAGS_H_
 
-#include "../igdeListBoxReference.h"
+#include "../igdeListBox.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionListener.h"
@@ -73,7 +73,7 @@ private:
 	igdeIcon::Ref pIconEnabled;
 	igdeIcon::Ref pIconDisabled;
 	
-	igdeListBoxReference pListBox;
+	igdeListBox::Ref pListBox;
 	
 	igdeAction::Ref pActionEnableAll;
 	igdeAction::Ref pActionDisableAll;

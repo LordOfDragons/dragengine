@@ -41,7 +41,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
@@ -272,7 +272,7 @@ seWPAPanelSource( wpSource, deSynthesizerSourceVisitorIdentify::estChain )
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox, form;
+	igdeContainer::Ref groupBox, form;
 	
 	
 	pActionSoundAdd.TakeOver( new cActionSoundAdd( *this ) );

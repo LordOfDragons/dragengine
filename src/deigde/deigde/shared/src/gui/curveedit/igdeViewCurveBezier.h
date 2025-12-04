@@ -42,6 +42,12 @@ class igdeViewCurveBezierListener;
  */
 class DE_DLL_EXPORT igdeViewCurveBezier : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeViewCurveBezier> Ref;
+	
+	
+	
+
 	class DE_DLL_EXPORT cActionResetView : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:

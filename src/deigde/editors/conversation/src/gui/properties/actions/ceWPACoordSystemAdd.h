@@ -25,7 +25,7 @@
 #ifndef _CEWPACOORDSYSTEMRADD_H_
 #define _CEWPACOORDSYSTEMRADD_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPAction.h"
 
@@ -38,8 +38,8 @@ class ceCACoordSystemAdd;
  */
 class ceWPACoordSystemAdd : public ceWPAction{
 private:
-	igdeComboBoxReference pCBCoordSystemID;
-	igdeComboBoxReference pCBAliasID;
+	igdeComboBox::Ref pCBCoordSystemID;
+	igdeComboBox::Ref pCBAliasID;
 	
 	
 	

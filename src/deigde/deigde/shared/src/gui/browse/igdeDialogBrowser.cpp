@@ -28,7 +28,7 @@
 #include "../igdeCommonDialogs.h"
 #include "../igdeUIHelper.h"
 #include "../igdeButton.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeComboBox.h"
 #include "../igdeGroupBox.h"
 #include "../igdeIconListBox.h"
@@ -45,7 +45,7 @@
 #include "../layout/igdeContainerForm.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../layout/igdeContainerSplitted.h"
-#include "../layout/igdeContainerSplittedReference.h"
+#include "../layout/igdeContainerSplitted.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../model/igdeListItem.h"
 #include "../model/igdeTreeItem.h"
@@ -206,15 +206,15 @@ pViewMode( evmPreview )
 		"Preview Mode", NULL, "Preview Mode" ) );
 	
 	
-	igdeContainerSplittedReference content;
+	igdeContainerSplitted::Ref content;
 	content.TakeOver(new igdeContainerSplitted(environment, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(250)));
 	
 	// left side: category list with filter
-	igdeContainerReference panelCategory;
+	igdeContainer::Ref panelCategory;
 	panelCategory.TakeOver( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 3 ) );
 	
-	igdeContainerReference filterLine;
+	igdeContainer::Ref filterLine;
 	filterLine.TakeOver( new igdeContainerForm( environment ) );
 	helper.EditString( filterLine, "Filter:", "Show items containing filter case insensitive",
 		pEditFilter, new igdeDialogBrowser_TextFilter( *this ) );
@@ -226,7 +226,7 @@ pViewMode( evmPreview )
 	content->AddChild( panelCategory, igdeContainerSplitted::eaSide );
 	
 	// right side: item list with information
-	igdeContainerReference panelItems;
+	igdeContainer::Ref panelItems;
 	panelItems.TakeOver( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 3 ) );
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
@@ -245,7 +245,7 @@ pViewMode( evmPreview )
 	
 	
 	// buttons at bottom
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Discard" );
 	
 	AddContent( content, buttonBar );

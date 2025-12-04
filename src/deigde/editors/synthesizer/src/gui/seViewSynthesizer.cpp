@@ -36,7 +36,7 @@
 #include "../configuration/seConfiguration.h"
 
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 
@@ -67,7 +67,7 @@ pWPSynthesizer( NULL )
 	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
 	
 	// content
-	igdeContainerReference panels;
+	igdeContainer::Ref panels;
 	panels.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX, 10 ) );
 	AddChild( panels, eaCenter );
 	

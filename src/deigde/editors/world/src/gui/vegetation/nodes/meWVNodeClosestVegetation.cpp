@@ -35,7 +35,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
+#include <deigde/gui/nodeview/igdeNVSlot.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -102,12 +102,12 @@ pRuleCV( rule )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	SetTitle( "Closest Vegetation" );
 	
 	// slots
-	igdeNVSlotReference slot;
+	igdeNVSlot::Ref slot;
 	slot.TakeOver( new meWVNodeSlot( env, "Distance", "Distance in meters from closest vegetation",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestVegetation::eosDistance ) );
 	AddSlot( slot );

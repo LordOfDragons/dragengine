@@ -25,9 +25,9 @@
 #ifndef _REWPPUSH_H_
 #define _REWPPUSH_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reWindowProperties;
@@ -47,12 +47,12 @@ private:
 	reRigPush *pPush;
 	reWPPushListener *pListener;
 	
-	igdeComboBoxReference pCBType;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditImpuls;
-	igdeTextFieldReference pEditRayCount;
-	igdeTextFieldReference pEditConeAngle;
+	igdeComboBox::Ref pCBType;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditImpuls;
+	igdeTextField::Ref pEditRayCount;
+	igdeTextField::Ref pEditConeAngle;
 	
 	
 	
