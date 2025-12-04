@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
-#include "model/igdeListItemSorter::Ref.h"
+#include "model/igdeListItemSorter.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>

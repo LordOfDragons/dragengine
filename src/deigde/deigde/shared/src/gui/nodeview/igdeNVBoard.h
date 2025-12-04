@@ -26,7 +26,7 @@
 #define _IGDENVBOARD_H_
 
 #include "../igdeContainer.h"
-#include "../igdeWidget::Ref.h"
+#include "../igdeWidget.h"
 
 #include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>

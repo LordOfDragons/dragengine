@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 #include "../../../../undosys/objectClass/component/gdeUOCAddComponent.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 

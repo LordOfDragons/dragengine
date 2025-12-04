@@ -27,7 +27,7 @@
 
 
 #include "../environment/igdeEnvironment.h"
-#include "igdeWidget::Ref.h"
+#include "igdeWidget.h"
 
 #include <dragengine/dragengine_configuration.h>
 #include <dragengine/common/string/decString.h>

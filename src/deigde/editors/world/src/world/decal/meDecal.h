@@ -27,7 +27,7 @@
 
 #include "../meColliderOwner.h"
 
-#include <deigde/gui/igdeTimer::Ref.h>
+#include <deigde/gui/igdeTimer.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>

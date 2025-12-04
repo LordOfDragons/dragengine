@@ -30,7 +30,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/video/deVideoReference.h>
-#include <dragengine/resources/video/deVideoPlayer::Ref.h>
+#include <dragengine/resources/video/deVideoPlayer.h>
 
 class seDynamicSkin;
 

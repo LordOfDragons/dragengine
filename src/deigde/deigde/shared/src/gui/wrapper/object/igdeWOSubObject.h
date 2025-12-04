@@ -25,7 +25,7 @@
 #ifndef _IGDEWOSUBOBJECT_H_
 #define _IGDEWOSUBOBJECT_H_
 
-#include "../../../triggersystem/igdeTriggerExpression::Ref.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>

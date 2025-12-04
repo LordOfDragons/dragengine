@@ -26,8 +26,8 @@
 #define _SEVIEWCONSTRUCTEDVIEW_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
-#include <deigde/gui/event/igdeMouseKeyListener::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
 #include <deigde/gui/event/igdeMouseDragListenerReference.h>
 
 #include <dragengine/common/math/decMath.h>

@@ -39,11 +39,11 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decMemoryFile.h>
-#include <dragengine/common/file/decMemoryFile::Ref.h>
+#include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/file/decMemoryFileWriter.h>
 #include <dragengine/common/utils/decDateTime.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
@@ -51,7 +51,7 @@
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainer::Ref.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deCollectDirectorySearchVisitor.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>

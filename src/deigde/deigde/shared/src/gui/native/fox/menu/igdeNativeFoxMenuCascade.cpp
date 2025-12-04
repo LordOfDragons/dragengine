@@ -26,7 +26,7 @@
 
 #include "igdeNativeFoxMenuCascade.h"
 #include "../../../igdeContainer.h"
-#include "../../../igdeWidget::Ref.h"
+#include "../../../igdeWidget.h"
 #include "../../../igdeWindow.h"
 #include "../../../menu/igdeMenuCascade.h"
 #include "../../../resources/igdeIcon.h"

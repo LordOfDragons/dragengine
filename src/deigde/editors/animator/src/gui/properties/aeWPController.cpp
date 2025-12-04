@@ -49,7 +49,7 @@
 #include "../../undosys/controller/aeUControllerSetDefaultValue.h"
 #include "../../undosys/controller/aeUControllerSetDefaultVector.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -73,7 +73,7 @@
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animation/deAnimation.h>

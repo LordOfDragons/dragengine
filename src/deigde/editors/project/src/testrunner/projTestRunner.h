@@ -31,7 +31,7 @@
 #include <dragengine/app/include_windows.h>
 #endif
 #include <dragengine/common/string/decString.h>
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 
 #include "profile/projTRProfileList.h"
 

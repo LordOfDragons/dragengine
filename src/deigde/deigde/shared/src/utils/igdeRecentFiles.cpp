@@ -31,7 +31,7 @@
 #include "../gui/igdeEditorWindow.h"
 #include "../gui/igdeUIHelper.h"
 #include "../gui/event/igdeAction.h"
-#include "../gui/event/igdeAction::Ref.h"
+#include "../gui/event/igdeAction.h"
 #include "../gui/menu/igdeMenuCascade.h"
 
 #include <dragengine/logger/deLogger.h>

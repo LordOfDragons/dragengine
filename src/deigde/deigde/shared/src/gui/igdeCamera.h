@@ -25,8 +25,8 @@
 #ifndef _IGDECAMERA_H_
 #define _IGDECAMERA_H_
 
-#include <dragengine/resources/camera/deCamera::Ref.h>
-#include <dragengine/resources/world/deWorld::Ref.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/world/deWorld.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>

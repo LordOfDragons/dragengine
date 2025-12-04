@@ -42,7 +42,7 @@
 #include "../../../../../conversation/condition/ceCConditionGameCommand.h"
 #include "../../../../../conversation/condition/ceCConditionTrigger.h"
 
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>

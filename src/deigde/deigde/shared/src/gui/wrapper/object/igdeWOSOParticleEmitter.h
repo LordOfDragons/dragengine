@@ -26,11 +26,11 @@
 #define _IGDEWOSOPARTICLEEMITTER_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListener::Ref.h"
-#include "../../../triggersystem/igdeTriggerExpression::Ref.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
-#include <dragengine/resources/particle/deParticleEmitterInstance::Ref.h>
-#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;

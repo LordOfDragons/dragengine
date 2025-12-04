@@ -47,7 +47,7 @@
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidget::Ref.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/dialog/igdeDialogReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
@@ -61,17 +61,17 @@
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decDiskFileReader.h>
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
-#include <dragengine/filesystem/deVFSContainer::Ref.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/logger/deLogger.h>
 

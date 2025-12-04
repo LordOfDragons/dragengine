@@ -41,7 +41,7 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/nodeview/igdeNVNodeListener.h>
-#include <deigde/gui/nodeview/igdeNVNodeListener::Ref.h>
+#include <deigde/gui/nodeview/igdeNVNodeListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>

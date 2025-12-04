@@ -33,10 +33,10 @@
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/resources/animator/deAnimator::Ref.h>
-#include <dragengine/resources/animator/deAnimatorInstance::Ref.h>
-#include <dragengine/resources/component/deComponent::Ref.h>
-#include <dragengine/resources/world/deWorld::Ref.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeWSky;
 class igdeCamera;

@@ -26,7 +26,7 @@
 #define _IGDETABBOOK_H_
 
 #include "igdeContainer.h"
-#include "resources/igdeIcon::Ref.h"
+#include "resources/igdeIcon.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>

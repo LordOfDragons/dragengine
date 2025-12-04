@@ -30,10 +30,10 @@
 #include "igdeEditVector2Listener.h"
 #include "../igdeLabel.h"
 #include "../igdeTextField.h"
-#include "../igdeWidget::Ref.h"
+#include "../igdeWidget.h"
 #include "../igdeContainerReference.h"
 #include "../igdeUIHelper.h"
-#include "../event/igdeTextFieldListener::Ref.h"
+#include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/exceptions.h>

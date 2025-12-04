@@ -25,7 +25,7 @@
 #ifndef _DESKYINSTANCE_H_
 #define _DESKYINSTANCE_H_
 
-#include "deSky::Ref.h"
+#include "deSky.h"
 #include "../deResource.h"
 #include "../../common/utils/decLayerMask.h"
 

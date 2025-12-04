@@ -28,7 +28,7 @@
 #include "../igdeButtonReference.h"
 #include "../igdeTextFieldReference.h"
 #include "../event/igdeAction.h"
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 #include "../event/igdeActionSelectDirectory.h"
 #include "../event/igdeActionSelectDirectoryReference.h"
 #include "../event/igdeTextFieldListener.h"

@@ -26,10 +26,10 @@
 #define _IGDEWOSOBILLBOARD_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListener::Ref.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
 
-#include <dragengine/resources/billboard/deBillboard::Ref.h>
-#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/billboard/deBillboard.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;

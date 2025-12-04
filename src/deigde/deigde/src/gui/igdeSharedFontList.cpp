@@ -24,7 +24,7 @@
 
 #include "igdeSharedFontList.h"
 
-#include <deigde/gui/resources/igdeFont::Ref.h>
+#include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/common/exceptions.h>
 

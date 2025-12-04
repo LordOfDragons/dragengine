@@ -26,7 +26,7 @@
 #define _MEWPSELECTION_H_
 
 #include <deigde/gui/igdeSwitcher.h>
-#include <deigde/gui/igdeWidget::Ref.h>
+#include <deigde/gui/igdeWidget.h>
 
 class meWPSelectionListener;
 class meWindowProperties;

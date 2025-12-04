@@ -76,7 +76,7 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeWidget::Ref.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
@@ -99,9 +99,9 @@
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
-#include <deigde/gui/event/igdeSpinTextFieldListener::Ref.h>
+#include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>

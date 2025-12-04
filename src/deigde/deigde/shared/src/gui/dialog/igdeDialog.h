@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "../igdeWindow.h"
-#include "../igdeWidget::Ref.h"
+#include "../igdeWidget.h"
 #include "../event/igdeAction.h"
 
 #include <dragengine/common/string/decString.h>

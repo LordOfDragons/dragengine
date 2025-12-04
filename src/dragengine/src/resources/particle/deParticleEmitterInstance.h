@@ -25,7 +25,7 @@
 #ifndef _DEPARTICLEEMITTERINSTANCE_H_
 #define _DEPARTICLEEMITTERINSTANCE_H_
 
-#include "deParticleEmitter::Ref.h"
+#include "deParticleEmitter.h"
 #include "../deResource.h"
 #include "../../common/collection/decObjectSet.h"
 #include "../../common/math/decMath.h"

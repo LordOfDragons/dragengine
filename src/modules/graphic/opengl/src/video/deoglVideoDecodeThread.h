@@ -28,7 +28,7 @@
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/resources/video/deVideoReference.h>
-#include <dragengine/resources/video/deVideoDecoder::Ref.h>
+#include <dragengine/resources/video/deVideoDecoder.h>
 #include <dragengine/threading/deThread.h>
 #include <dragengine/threading/deSemaphore.h>
 

@@ -59,7 +59,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainer::Ref.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 

@@ -25,12 +25,12 @@
 #ifndef _IGDEWSKY_H_
 #define _IGDEWSKY_H_
 
-#include "../../gamedefinition/sky/igdeGDSky::Ref.h"
+#include "../../gamedefinition/sky/igdeGDSky.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/sky/deSkyInstance::Ref.h>
-#include <dragengine/resources/world/deWorld::Ref.h>
+#include <dragengine/resources/sky/deSkyInstance.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeEnvironment;
 

@@ -29,12 +29,12 @@
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidget::Ref.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/composed/igdeEditDVectorReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 

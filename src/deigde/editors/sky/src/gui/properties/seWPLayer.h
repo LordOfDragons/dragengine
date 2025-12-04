@@ -37,7 +37,7 @@
 #include <deigde/gui/composed/igdeEditVectorReference.h>
 #include <deigde/gui/composed/igdeEditVector2Reference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 
 class seSky;
 class seLayer;

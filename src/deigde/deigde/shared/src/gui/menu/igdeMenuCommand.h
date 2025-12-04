@@ -27,9 +27,9 @@
 
 #include "../igdeWidget.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 #include "../resources/igdeHotKey.h"
-#include "../resources/igdeIcon::Ref.h"
+#include "../resources/igdeIcon.h"
 
 
 /**

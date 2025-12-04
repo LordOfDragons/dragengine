@@ -27,7 +27,7 @@
 
 #include "foxtoolkit.h"
 #include "../../event/igdeAction.h"
-#include "../../resources/igdeFont::Ref.h"
+#include "../../resources/igdeFont.h"
 
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/curve/decCurveBezierPoint.h>

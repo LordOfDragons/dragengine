@@ -30,9 +30,9 @@
 #include "../igdeListBoxReference.h"
 #include "../igdeTextFieldReference.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
-#include "../resources/igdeIcon::Ref.h"
+#include "../resources/igdeIcon.h"
 
 
 class igdeTriggerTargetList;

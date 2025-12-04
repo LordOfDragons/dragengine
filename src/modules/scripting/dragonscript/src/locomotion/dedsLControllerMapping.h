@@ -25,7 +25,7 @@
 #ifndef _DEDSLCONTROLLERMAPPING_H_
 #define _DEDSLCONTROLLERMAPPING_H_
 
-#include <dragengine/resources/animator/deAnimatorInstance::Ref.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 
 class dedsLocomotion;

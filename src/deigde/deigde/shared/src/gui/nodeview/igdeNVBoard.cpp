@@ -31,7 +31,7 @@
 #include "igdeNVNode.h"
 #include "igdeNVSlot.h"
 #include "igdeNVLink.h"
-#include "igdeNVLink::Ref.h"
+#include "igdeNVLink.h"
 #include "../native/toolkit.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeContainer.h"
@@ -41,7 +41,7 @@
 #include "../menu/igdeMenuCascadeReference.h"
 #include "../resources/igdeIcon.h"
 #include "../resources/igdeFont.h"
-#include "../resources/igdeFont::Ref.h"
+#include "../resources/igdeFont.h"
 #include "../theme/igdeGuiTheme.h"
 #include "../../environment/igdeEnvironment.h"
 

@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXNVSLOT_H_
 
 #include "../foxtoolkit.h"
-#include "../../../resources/igdeFont::Ref.h"
+#include "../../../resources/igdeFont.h"
 
 
 class igdeNVSlot;

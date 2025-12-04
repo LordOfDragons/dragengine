@@ -25,7 +25,7 @@
 #ifndef _DENETWORKMESSAGEWRITER_H_
 #define _DENETWORKMESSAGEWRITER_H_
 
-#include "deNetworkMessage::Ref.h"
+#include "deNetworkMessage.h"
 #include "../../common/file/decBaseFileWriter.h"
 
 class deNetworkMessage;

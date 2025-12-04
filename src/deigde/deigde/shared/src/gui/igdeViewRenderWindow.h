@@ -29,8 +29,8 @@
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/input/deInputEvent.h>
-#include <dragengine/resources/canvas/deCanvas::Ref.h>
-#include <dragengine/resources/rendering/deRenderWindow::Ref.h>
+#include <dragengine/resources/canvas/deCanvas.h>
+#include <dragengine/resources/rendering/deRenderWindow.h>
 
 class deCanvas;
 class deCamera;

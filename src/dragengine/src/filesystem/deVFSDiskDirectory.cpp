@@ -50,7 +50,7 @@
 #include "deVFSDiskDirectory.h"
 #include "../common/file/decDiskFileReader.h"
 #include "../common/file/decDiskFileWriter.h"
-#include "../common/file/decBaseFileWriter::Ref.h"
+#include "../common/file/decBaseFileWriter.h"
 #include "../common/exceptions.h"
 #include "../common/string/decStringList.h"
 #include "../common/string/unicode/decUnicodeString.h"

@@ -33,7 +33,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
@@ -48,7 +48,7 @@
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/model/deModelReference.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
-#include <dragengine/resources/particle/deParticleEmitter::Ref.h>
+#include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterManager.h>
 #include <dragengine/resources/particle/deParticleEmitterController.h>
 #include <dragengine/resources/particle/deParticleEmitterParameter.h>

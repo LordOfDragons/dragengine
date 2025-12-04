@@ -52,7 +52,7 @@
 #include <dragengine/resources/animator/deAnimatorInstanceManager.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
-#include <dragengine/resources/animator/rule/deAnimatorRule::Ref.h>
+#include <dragengine/resources/animator/rule/deAnimatorRule.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleAnimation.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleStateManipulator.h>
 #include <dragengine/resources/component/deComponent.h>

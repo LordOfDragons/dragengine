@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/light/gdeOCLight.h"
 #include "../../../../undosys/objectClass/light/gdeUOCAddLight.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 

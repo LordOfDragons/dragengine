@@ -30,7 +30,7 @@
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 #include <dragengine/resources/synthesizer/effect/deSynthesizerEffectVisitorIdentify.h>

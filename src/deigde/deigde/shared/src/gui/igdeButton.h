@@ -27,8 +27,8 @@
 
 #include "igdeWidget.h"
 #include "event/igdeActionListener.h"
-#include "event/igdeAction::Ref.h"
-#include "resources/igdeIcon::Ref.h"
+#include "event/igdeAction.h"
+#include "resources/igdeIcon.h"
 
 #include <dragengine/common/string/decString.h>
 

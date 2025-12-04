@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/camera/gdeOCCamera.h"
 #include "../../../../undosys/objectClass/camera/gdeUOCRemoveCamera.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>

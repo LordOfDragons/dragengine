@@ -27,9 +27,9 @@
 
 #include "meViewEditorNavigation.h"
 
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class meCLAddDecal;
 class meCLClosestElement;

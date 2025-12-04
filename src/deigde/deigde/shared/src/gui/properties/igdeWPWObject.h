@@ -33,7 +33,7 @@
 #include "../igdeTextFieldReference.h"
 #include "../composed/igdeEditVectorReference.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../wrapper/igdeWObject.h"
 #include "../../gamedefinition/class/igdeGDClass.h"

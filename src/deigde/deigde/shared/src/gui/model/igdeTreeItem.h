@@ -25,8 +25,8 @@
 #ifndef _IGDETREEITEM_H_
 #define _IGDETREEITEM_H_
 
-#include "igdeTreeItem::Ref.h"
-#include "../resources/igdeIcon::Ref.h"
+#include "igdeTreeItem.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>

@@ -32,7 +32,7 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/composed/igdeToggleTagsReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/properties/igdeWPSkyReference.h>
 #include <deigde/gui/properties/igdeWPWObjectReference.h>
 #include <deigde/gui/properties/igdeWPCameraReference.h>

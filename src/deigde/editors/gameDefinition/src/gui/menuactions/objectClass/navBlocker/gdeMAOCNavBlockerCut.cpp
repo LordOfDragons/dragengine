@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 #include "../../../../undosys/objectClass/navblocker/gdeUOCRemoveNavBlocker.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>

@@ -25,7 +25,7 @@
 #ifndef _MEATTACHEDDECAL_H_
 #define _MEATTACHEDDECAL_H_
 
-#include <dragengine/resources/decal/deDecal::Ref.h>
+#include <dragengine/resources/decal/deDecal.h>
 
 class meDecal;
 class meObject;

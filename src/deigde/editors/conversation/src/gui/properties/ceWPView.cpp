@@ -83,7 +83,7 @@
 #include <deigde/gamedefinition/class/igdeGDClassManager.h>
 #include <deigde/triggersystem/igdeTriggerTarget.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>

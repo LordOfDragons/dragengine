@@ -27,8 +27,8 @@
 
 #include "deSoundReference.h"
 #include "../deResource.h"
-#include "../synthesizer/deSynthesizerInstance::Ref.h"
-#include "../video/deVideoPlayer::Ref.h"
+#include "../synthesizer/deSynthesizerInstance.h"
+#include "../video/deVideoPlayer.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/shape/decShapeList.h"

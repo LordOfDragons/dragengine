@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 #include "../../../../undosys/objectClass/particleemitter/gdeUOCRemoveParticleEmitter.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>

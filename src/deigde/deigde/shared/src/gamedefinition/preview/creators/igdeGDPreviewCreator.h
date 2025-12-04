@@ -30,7 +30,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/canvas/capture/deCaptureCanvas::Ref.h>
+#include <dragengine/resources/canvas/capture/deCaptureCanvas.h>
 #include <dragengine/resources/image/deImageReference.h>
 
 class igdeGDPreviewListener;

@@ -48,7 +48,7 @@
 #include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
-#include <dragengine/resources/sound/deSoundDecoder::Ref.h>
+#include <dragengine/resources/sound/deSoundDecoder.h>
 #include <dragengine/resources/sound/deSoundManager.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/resources/video/deVideo.h>

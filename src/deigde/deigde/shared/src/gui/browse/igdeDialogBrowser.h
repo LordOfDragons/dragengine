@@ -34,7 +34,7 @@
 #include "../igdeIconListBoxReference.h"
 #include "../igdeTextFieldReference.h"
 #include "../igdeTextAreaReference.h"
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 
 class decPath;
 class igdeGDCategory;

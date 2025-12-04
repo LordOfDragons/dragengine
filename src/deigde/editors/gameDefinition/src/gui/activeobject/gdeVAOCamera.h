@@ -26,7 +26,7 @@
 #define _GDEVAOCAMERA_H_
 
 #include "gdeVAOSubObject.h"
-#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class gdeOCCamera;
 class igdeWDebugDrawerShape;

@@ -30,7 +30,7 @@
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
 #include "../event/igdeActionContextMenuReference.h"
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 #include "../event/igdeActionSelectFile.h"
 #include "../filedialog/igdeFilePatternList.h"
 #include "../event/igdeTextFieldListener.h"

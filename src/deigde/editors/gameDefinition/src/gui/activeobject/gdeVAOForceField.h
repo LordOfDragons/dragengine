@@ -27,8 +27,8 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
-#include <dragengine/resources/forcefield/deForceField::Ref.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/forcefield/deForceField.h>
 
 class gdeOCForceField;
 class igdeWDebugDrawerShape;

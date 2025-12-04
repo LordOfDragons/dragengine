@@ -43,7 +43,7 @@
 #include "deBaseSystem.h"
 #include "../common/math/decMath.h"
 #include "../resources/canvas/deCanvasViewReference.h"
-#include "../resources/rendering/deRenderWindow::Ref.h"
+#include "../resources/rendering/deRenderWindow.h"
 
 class deBaseGraphicModule;
 class deBillboard;

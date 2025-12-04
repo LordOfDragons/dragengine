@@ -28,17 +28,17 @@
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeComboBoxReference.h>
 #include <deigde/gui/igdeScrollBarReference.h>
-#include <deigde/gui/igdeWidget::Ref.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
-#include <deigde/gui/resources/igdeFont::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/resources/canvas/deCanvasPaintReference.h>
 #include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/sound/deSpeaker::Ref.h>
+#include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSoundReference.h>
 
 

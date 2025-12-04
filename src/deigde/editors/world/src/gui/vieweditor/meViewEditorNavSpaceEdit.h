@@ -27,7 +27,7 @@
 
 #include "meViewEditorNavigation.h"
 
-#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class meCLSelect;
 

@@ -25,7 +25,7 @@
 #ifndef _DECOLLIDERCONSTRAINT_H_
 #define _DECOLLIDERCONSTRAINT_H_
 
-#include "deCollider::Ref.h"
+#include "deCollider.h"
 #include "deColliderConstraintDof.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"

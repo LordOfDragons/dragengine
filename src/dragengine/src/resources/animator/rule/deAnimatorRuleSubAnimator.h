@@ -26,7 +26,7 @@
 #define _DEANIMATORRULESUBANIMATOR_H_
 
 #include "deAnimatorRule.h"
-#include "../deAnimator::Ref.h"
+#include "../deAnimator.h"
 
 
 /**

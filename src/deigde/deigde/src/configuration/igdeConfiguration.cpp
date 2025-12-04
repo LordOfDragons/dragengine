@@ -48,8 +48,8 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
-#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>

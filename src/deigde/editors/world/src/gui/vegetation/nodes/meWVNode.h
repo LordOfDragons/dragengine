@@ -26,7 +26,7 @@
 #define _MEWVNODE_H_
 
 #include <deigde/gui/nodeview/igdeNVNode.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 
 class meWVNodeSlot;
 class meHTVRule;

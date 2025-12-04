@@ -27,7 +27,7 @@
 
 #include "../../../conversation/strip/ceStripList.h"
 
-#include <deigde/gui/event/igdeMouseKeyListener::Ref.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>

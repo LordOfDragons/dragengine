@@ -36,9 +36,9 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
 

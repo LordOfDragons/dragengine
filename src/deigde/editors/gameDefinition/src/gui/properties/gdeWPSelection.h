@@ -29,7 +29,7 @@
 
 #include <deigde/gui/igdeTreeListReference.h>
 #include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeWidget::Ref.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 class gdeWPSelectionListener;

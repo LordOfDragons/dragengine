@@ -33,8 +33,8 @@
 #include "../igdeContainerReference.h"
 #include "../igdeUIHelper.h"
 #include "../browse/igdeDialogBrowserSkin.h"
-#include "../event/igdeAction::Ref.h"
-#include "../event/igdeTextFieldListener::Ref.h"
+#include "../event/igdeAction.h"
+#include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/exceptions.h>

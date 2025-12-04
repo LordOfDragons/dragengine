@@ -27,8 +27,8 @@
 
 #include "igdeWOSubObject.h"
 
-#include <dragengine/resources/navigation/blocker/deNavigationBlocker::Ref.h>
-#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/navigation/blocker/deNavigationBlocker.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;

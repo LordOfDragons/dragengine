@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 #include "../../../../undosys/objectClass/snappoint/gdeUOCAddSnapPoint.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 

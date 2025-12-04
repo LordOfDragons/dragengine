@@ -26,7 +26,7 @@
 #define _SEVCIDRAGNODE_H_
 
 #include <deigde/gui/event/igdeMouseDragListener.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 
 class seViewConstructedView;
 class deCanvas;

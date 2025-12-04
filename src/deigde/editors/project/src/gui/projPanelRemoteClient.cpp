@@ -58,7 +58,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeTextStyle.h>
-#include <deigde/gui/resources/igdeTextStyle::Ref.h>
+#include <deigde/gui/resources/igdeTextStyle.h>
 
 
 

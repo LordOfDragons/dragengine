@@ -25,8 +25,8 @@
 #ifndef _IGDEWOBJECT_H_
 #define _IGDEWOBJECT_H_
 
-#include "../../gamedefinition/class/igdeGDClass::Ref.h"
-#include "../../triggersystem/igdeTriggerListener::Ref.h"
+#include "../../gamedefinition/class/igdeGDClass.h"
+#include "../../triggersystem/igdeTriggerListener.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -34,12 +34,12 @@
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decCollisionFilter.h>
-#include <dragengine/resources/camera/deCamera::Ref.h>
+#include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/collider/deColliderComponent.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/skin/dynamic/deDynamicSkin::Ref.h>
-#include <dragengine/resources/world/deWorld::Ref.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeTriggerTargetList;
 class igdeEnvironment;

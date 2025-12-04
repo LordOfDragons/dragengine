@@ -25,9 +25,9 @@
 #ifndef _DECOLLIDERCOLLISIONTEST_H_
 #define _DECOLLIDERCOLLISIONTEST_H_
 
-#include "deCollider::Ref.h"
-#include "../component/deComponent::Ref.h"
-#include "../sensor/deTouchSensor::Ref.h"
+#include "deCollider.h"
+#include "../component/deComponent.h"
+#include "../sensor/deTouchSensor.h"
 #include "../../deObject.h"
 #include "../../common/collection/decObjectList.h"
 #include "../../common/math/decMath.h"

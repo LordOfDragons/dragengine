@@ -33,8 +33,8 @@
 #include "../../deClassPathes.h"
 #include "../../deScriptingDragonScript.h"
 
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
-#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/resources/network/deNetworkMessageReader.h>
 #include <dragengine/resources/network/deNetworkMessageWriter.h>

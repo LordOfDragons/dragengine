@@ -26,8 +26,8 @@
 #define _DERESOURCELOADERTASK_X_H_
 
 #include "../deResourceLoader.h"
-#include "../../deResource::Ref.h"
-#include "../../../filesystem/deVirtualFileSystem::Ref.h"
+#include "../../deResource.h"
+#include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../parallel/deParallelTask.h"
 #include "../../../common/utils/decTimer.h"
 #include "../../../common/string/decString.h"

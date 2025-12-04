@@ -46,12 +46,12 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterManager.h>
-#include <dragengine/resources/particle/deParticleEmitter::Ref.h>
+#include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceManager.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>

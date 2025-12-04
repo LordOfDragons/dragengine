@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 #include "../../../../undosys/objectClass/speaker/gdeUOCAddSpeaker.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 

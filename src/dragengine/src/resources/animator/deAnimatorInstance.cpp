@@ -28,7 +28,7 @@
 #include <string.h>
 
 #include "deAnimator.h"
-#include "deAnimator::Ref.h"
+#include "deAnimator.h"
 #include "deAnimatorInstance.h"
 #include "deAnimatorInstanceManager.h"
 #include "controller/deAnimatorController.h"

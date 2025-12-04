@@ -26,16 +26,16 @@
 #define _IGDEGDPPCSKIN_H_
 
 #include "igdeGDPreviewCreator.h"
-#include "../../../resourceloader/igdeResourceLoaderListener::Ref.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
 
 #include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/component/deComponent::Ref.h>
+#include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/model/deModelReference.h>
 #include <dragengine/resources/skin/deSkinReference.h>
-#include <dragengine/resources/skin/dynamic/deDynamicSkin::Ref.h>
-#include <dragengine/resources/camera/deCamera::Ref.h>
-#include <dragengine/resources/world/deWorld::Ref.h>
-#include <dragengine/resources/light/deLight::Ref.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
 
 class igdeGDSkin;
 class igdeWSky;

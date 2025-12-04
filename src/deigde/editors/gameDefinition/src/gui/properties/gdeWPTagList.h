@@ -28,7 +28,7 @@
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 
 class igdeUIHelper;
 class igdeUndoSystem;

@@ -27,7 +27,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 
-#include <dragengine/logger/deLogger::Ref.h>
+#include <dragengine/logger/deLogger.h>
 
 
 class igdeWindowMain;

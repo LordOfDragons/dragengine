@@ -33,8 +33,8 @@
 #include <deigde/gui/igdeSpinTextFieldReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
-#include <deigde/gui/resources/igdeIcon::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 class peeEmitter;
 class peeType;

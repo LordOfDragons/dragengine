@@ -35,7 +35,7 @@
 #include "../../../../../conversation/action/ceConversationActionList.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 
 #include <dragengine/common/exceptions.h>
 

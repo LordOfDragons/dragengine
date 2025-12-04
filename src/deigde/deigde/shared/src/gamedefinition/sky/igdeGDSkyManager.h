@@ -26,7 +26,7 @@
 #define _IGDEGDSKYMANAGER_H_
 
 #include "igdeGDSkyList.h"
-#include "../igdeGDCategory::Ref.h"
+#include "../igdeGDCategory.h"
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>

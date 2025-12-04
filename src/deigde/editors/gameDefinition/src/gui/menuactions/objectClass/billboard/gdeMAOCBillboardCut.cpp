@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 #include "../../../../undosys/objectClass/billboard/gdeUOCRemoveBillboard.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>

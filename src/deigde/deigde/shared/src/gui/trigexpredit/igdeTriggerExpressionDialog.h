@@ -25,7 +25,7 @@
 #ifndef _IGDETRIGGEREXPRESSIONDIALOG_H_
 #define _IGDETRIGGEREXPRESSIONDIALOG_H_
 
-#include "../igdeWidget::Ref.h"
+#include "../igdeWidget.h"
 #include "../dialog/igdeDialog.h"
 
 

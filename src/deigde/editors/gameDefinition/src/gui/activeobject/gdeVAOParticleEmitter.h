@@ -27,9 +27,9 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
-#include <dragengine/resources/particle/deParticleEmitter::Ref.h>
-#include <dragengine/resources/particle/deParticleEmitterInstance::Ref.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/particle/deParticleEmitter.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
 
 class gdeOCParticleEmitter;
 class igdeWDebugDrawerShape;

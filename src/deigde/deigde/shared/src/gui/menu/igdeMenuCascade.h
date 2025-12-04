@@ -27,7 +27,7 @@
 
 #include "../igdeContainer.h"
 #include "../resources/igdeHotKey.h"
-#include "../resources/igdeIcon::Ref.h"
+#include "../resources/igdeIcon.h"
 
 
 

@@ -28,7 +28,7 @@
 #include "../deResource.h"
 #include "../canvas/deCanvasViewReference.h"
 #include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkin::Ref.h"
+#include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/collection/decObjectSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/shape/decShapeList.h"

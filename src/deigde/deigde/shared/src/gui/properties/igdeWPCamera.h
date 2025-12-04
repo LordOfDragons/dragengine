@@ -33,7 +33,7 @@
 #include "../composed/igdeEditVectorReference.h"
 #include "../composed/igdeEditSliderTextReference.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 #include "../filedialog/igdeFilePatternList.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../curveedit/igdeViewCurveBezierReference.h"

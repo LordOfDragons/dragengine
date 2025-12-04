@@ -29,7 +29,7 @@
 #include "igdeMenuCommand.h"
 #include "../igdeContainer.h"
 #include "../igdeCommonDialogs.h"
-#include "../igdeWidget::Ref.h"
+#include "../igdeWidget.h"
 #include "../event/igdeAction.h"
 #include "../native/toolkit.h"
 #include "../resources/igdeIcon.h"

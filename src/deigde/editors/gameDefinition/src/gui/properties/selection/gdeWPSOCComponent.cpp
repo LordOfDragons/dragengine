@@ -97,7 +97,7 @@
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>

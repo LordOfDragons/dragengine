@@ -25,12 +25,12 @@
 #ifndef _GDEWPGAMEDEFINITION_H_
 #define _GDEWPGAMEDEFINITION_H_
 
-#include <deigde/gui/igdeWidget::Ref.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/igdeTextFieldReference.h>
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;

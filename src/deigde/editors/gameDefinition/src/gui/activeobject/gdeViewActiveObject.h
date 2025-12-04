@@ -30,12 +30,12 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/component/deComponent::Ref.h>
-#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/model/deModelReference.h>
-#include <dragengine/resources/particle/deParticleEmitterInstance::Ref.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
 #include <dragengine/resources/skin/deSkinReference.h>
-#include <dragengine/resources/sky/deSkyInstance::Ref.h>
+#include <dragengine/resources/sky/deSkyInstance.h>
 
 class gdeWindowMain;
 class gdeViewActiveObjectListener;

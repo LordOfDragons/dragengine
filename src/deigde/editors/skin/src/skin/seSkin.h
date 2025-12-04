@@ -34,7 +34,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectSet.h>
-#include <dragengine/resources/light/deLight::Ref.h>
+#include <dragengine/resources/light/deLight.h>
 
 class seDynamicSkin;
 class seDynamicSkinRenderable;

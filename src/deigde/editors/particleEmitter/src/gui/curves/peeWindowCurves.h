@@ -27,10 +27,10 @@
 
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/resources/igdeIcon::Ref.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/gui/resources/igdeIcon.h>
+#include <deigde/undo/igdeUndo.h>
 
 class peeEmitter;
 class peeParameter;

@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 #include "../../../../undosys/objectClass/forceField/gdeUOCAddForceField.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 

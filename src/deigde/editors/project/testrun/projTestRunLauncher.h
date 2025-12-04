@@ -28,7 +28,7 @@
 #ifdef OS_W32
 #include <dragengine/app/include_windows.h>
 #endif
-#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 
 class projTestRunProcess;
 

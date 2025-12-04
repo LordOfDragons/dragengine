@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeAction.h"
-#include "../igdeWidget::Ref.h"
+#include "../igdeWidget.h"
 
 
 class igdeMenuCascade;

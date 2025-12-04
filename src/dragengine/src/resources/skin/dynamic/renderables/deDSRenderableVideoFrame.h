@@ -26,7 +26,7 @@
 #define _DEDSRENDERABLEVIDEOFRAME_H_
 
 #include "deDSRenderable.h"
-#include "../../../video/deVideoPlayer::Ref.h"
+#include "../../../video/deVideoPlayer.h"
 
 
 /**

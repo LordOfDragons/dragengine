@@ -31,7 +31,7 @@
 #include "../igdeContainerReference.h"
 #include "../igdeMainWindow.h"
 #include "../igdeTabBook.h"
-#include "../igdeWidget::Ref.h"
+#include "../igdeWidget.h"
 
 #include <dragengine/common/exceptions.h>
 

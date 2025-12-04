@@ -25,7 +25,7 @@
 #ifndef _DECOLLIDERATTACHEMENT_H_
 #define _DECOLLIDERATTACHEMENT_H_
 
-#include "../deResource::Ref.h"
+#include "../deResource.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decString.h"
 

@@ -37,7 +37,7 @@
 #include "../composed/igdeEditVectorReference.h"
 #include "../composed/igdeEditVector2Reference.h"
 #include "../composed/igdeEditPathReference.h"
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../../codec/igdeCodecPropertyString.h"
 #include "../../triggersystem/igdeTriggerExpressionParser.h"

@@ -27,7 +27,7 @@
 
 #include "meViewEditorNavigation.h"
 
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 
 class meObjectList;
 

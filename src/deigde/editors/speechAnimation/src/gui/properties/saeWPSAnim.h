@@ -31,7 +31,7 @@
 #include <deigde/gui/igdeComboBoxFilterReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class saeWindowProperties;

@@ -40,7 +40,7 @@
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
-#include <dragengine/resources/rendering/deRenderWindow::Ref.h>
+#include <dragengine/resources/rendering/deRenderWindow.h>
 
 #ifdef OS_W32
 #include <dragengine/app/deOSWindows.h>

@@ -27,7 +27,7 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/gui/event/igdeMouseKeyListener::Ref.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/resources/canvas/deCanvasPaintReference.h>
 

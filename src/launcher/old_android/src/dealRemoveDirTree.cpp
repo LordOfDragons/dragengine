@@ -30,10 +30,10 @@
 #include "filesystem/dePathList.h"
 #include "filesystem/deCollectDirectorySearchVisitor.h"
 #include "filesystem/deVFSDiskDirectory.h"
-#include "filesystem/deVFSContainer::Ref.h"
+#include "filesystem/deVFSContainer.h"
 #include "filesystem/deCollectFileSearchVisitor.h"
 #include "filesystem/deVirtualFileSystem.h"
-#include "filesystem/deVirtualFileSystem::Ref.h"
+#include "filesystem/deVirtualFileSystem.h"
 #include "logger/deLogger.h"
 
 

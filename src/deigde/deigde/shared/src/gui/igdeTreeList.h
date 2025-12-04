@@ -28,8 +28,8 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
-#include "model/igdeTreeItem::Ref.h"
-#include "model/igdeTreeItemSorter::Ref.h"
+#include "model/igdeTreeItem.h"
+#include "model/igdeTreeItemSorter.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>

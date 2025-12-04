@@ -56,7 +56,7 @@
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
-#include <dragengine/resources/sound/deSoundDecoder::Ref.h>
+#include <dragengine/resources/sound/deSoundDecoder.h>
 #include <dragengine/resources/sound/deSoundManager.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSpeakerManager.h>

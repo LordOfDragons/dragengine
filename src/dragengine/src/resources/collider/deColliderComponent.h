@@ -26,7 +26,7 @@
 #define _DECOLLIDERCOMPONENT_H_
 
 #include "deColliderRig.h"
-#include "../component/deComponent::Ref.h"
+#include "../component/deComponent.h"
 
 class deCollisionInfo;
 

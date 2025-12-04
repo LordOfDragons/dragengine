@@ -26,11 +26,11 @@
 #define _IGDEWOSOLIGHT_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListener::Ref.h"
-#include "../../../triggersystem/igdeTriggerExpression::Ref.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
-#include <dragengine/resources/light/deLight::Ref.h>
-#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;

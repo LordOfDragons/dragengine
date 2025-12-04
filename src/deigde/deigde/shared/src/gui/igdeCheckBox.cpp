@@ -33,7 +33,7 @@
 #include "event/igdeAction.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFont::Ref.h"
+#include "resources/igdeFont.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"

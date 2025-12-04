@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXBUTTON_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFont::Ref.h"
+#include "../../resources/igdeFont.h"
 
 class igdeButton;
 class igdeEnvironment;

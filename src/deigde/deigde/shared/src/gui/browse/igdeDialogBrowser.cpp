@@ -50,7 +50,7 @@
 #include "../model/igdeListItem.h"
 #include "../model/igdeTreeItem.h"
 #include "../resources/igdeIcon.h"
-#include "../resources/igdeIcon::Ref.h"
+#include "../resources/igdeIcon.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../gamedefinition/igdeGDCategory.h"
 #include "../../gamedefinition/visitor/igdeGDAddToListVisitor.h"

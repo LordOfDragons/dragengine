@@ -26,8 +26,8 @@
 #define _GDEVAOBILLBOARD_H_
 
 #include "gdeVAOSubObject.h"
-#include <dragengine/resources/billboard/deBillboard::Ref.h>
-#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/billboard/deBillboard.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class gdeOCBillboard;
 

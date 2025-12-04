@@ -55,16 +55,16 @@
 #include "../../undosys/property/node/group/seUPNGroupNodes.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIcon::Ref.h>
+#include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/module/igdeEditorModule.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -72,7 +72,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/canvas/deCanvas::Ref.h>
+#include <dragengine/resources/canvas/deCanvas.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>

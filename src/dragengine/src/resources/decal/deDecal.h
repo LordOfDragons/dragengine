@@ -27,7 +27,7 @@
 
 #include "../deResource.h"
 #include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkin::Ref.h"
+#include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
 
 class deDecalManager;

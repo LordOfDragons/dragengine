@@ -26,7 +26,7 @@
 #define _DEPARTICLEEMITTERTYPE_H_
 
 #include "deParticleEmitterParameter.h"
-#include "deParticleEmitter::Ref.h"
+#include "deParticleEmitter.h"
 #include "../model/deModelReference.h"
 #include "../skin/deSkinReference.h"
 #include "../../common/math/decMath.h"

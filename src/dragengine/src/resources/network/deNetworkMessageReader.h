@@ -25,7 +25,7 @@
 #ifndef _DENETWORKMESSAGEREADER_H_
 #define _DENETWORKMESSAGEREADER_H_
 
-#include "deNetworkMessage::Ref.h"
+#include "deNetworkMessage.h"
 #include "../../common/file/decBaseFileReader.h"
 
 

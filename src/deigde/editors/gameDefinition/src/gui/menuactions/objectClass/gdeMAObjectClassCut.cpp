@@ -33,7 +33,7 @@
 #include "../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../undosys/objectClass/gdeURemoveObjectClass.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>

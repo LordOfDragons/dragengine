@@ -53,7 +53,7 @@
 #include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/gui/theme/propertyNames.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>

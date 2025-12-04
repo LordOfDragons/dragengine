@@ -26,8 +26,8 @@
 #define _IGDENATIVEFOXNVBOARD_H_
 
 #include "../foxtoolkit.h"
-#include "../../../resources/igdeFont::Ref.h"
-#include "../../../nodeview/igdeNVLink::Ref.h"
+#include "../../../resources/igdeFont.h"
+#include "../../../nodeview/igdeNVLink.h"
 
 
 class igdeNVBoard;

@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 
-#include "igdeGDClass::Ref.h"
+#include "igdeGDClass.h"
 
 class igdeGDClassManager;
 

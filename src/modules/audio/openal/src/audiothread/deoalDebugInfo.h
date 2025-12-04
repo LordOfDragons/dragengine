@@ -30,7 +30,7 @@
 #include <dragengine/common/utils/decTimeHistory.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decTimer.h>
-#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class deoalAudioThread;
 

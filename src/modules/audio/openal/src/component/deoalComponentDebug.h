@@ -25,7 +25,7 @@
 #ifndef _DEOALCOMPONENTDEBUG_H_
 #define _DEOALCOMPONENTDEBUG_H_
 
-#include <dragengine/resources/debug/deDebugDrawer::Ref.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class deoalComponent;
 class deoalWorld;

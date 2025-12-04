@@ -26,7 +26,7 @@
 #define _DEOGLVIDEOPLAYER_H_
 
 #include <dragengine/common/collection/decPointerSet.h>
-#include <dragengine/resources/video/deVideoDecoder::Ref.h>
+#include <dragengine/resources/video/deVideoDecoder.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideoPlayer.h>
 
 class deoglVideo;

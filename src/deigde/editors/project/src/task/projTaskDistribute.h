@@ -32,10 +32,10 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/filesystem/dePathList.h>
-#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 
 class projWindowMain;

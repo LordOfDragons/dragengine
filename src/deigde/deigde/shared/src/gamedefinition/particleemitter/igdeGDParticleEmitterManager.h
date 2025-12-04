@@ -26,7 +26,7 @@
 #define _IGDEGDPARTICLEEMITTERMANAGER_H_
 
 #include "igdeGDParticleEmitterList.h"
-#include "../igdeGDCategory::Ref.h"
+#include "../igdeGDCategory.h"
 
 #include <dragengine/common/string/decString.h>
 

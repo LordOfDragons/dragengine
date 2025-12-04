@@ -25,14 +25,14 @@
 #ifndef _CEWDSVAPREVIEW_H_
 #define _CEWDSVAPREVIEW_H_
 
-#include <deigde/gui/event/igdeMouseKeyListener::Ref.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasViewReference.h>
 #include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/image/deImageReference.h>
-#include <dragengine/resources/sound/deSpeaker::Ref.h>
+#include <dragengine/resources/sound/deSpeaker.h>
 
 class ceWindowDopeSheet;
 class deSound;

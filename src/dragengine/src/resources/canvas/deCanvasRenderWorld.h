@@ -26,7 +26,7 @@
 #define _DECANVASRENDERWORLD_H_
 
 #include "deCanvas.h"
-#include "../camera/deCamera::Ref.h"
+#include "../camera/deCamera.h"
 
 
 /**

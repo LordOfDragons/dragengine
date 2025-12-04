@@ -30,7 +30,7 @@
 #include "../../../../gamedef/objectClass/world/gdeOCWorld.h"
 #include "../../../../undosys/objectClass/world/gdeUOCAddWorld.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 

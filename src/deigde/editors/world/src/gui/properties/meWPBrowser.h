@@ -33,7 +33,7 @@
 #include <deigde/gui/igdeTreeListReference.h>
 #include <deigde/gui/igdeSwitcherReference.h>
 #include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 
 class meWorld;

@@ -39,7 +39,7 @@
 #include "../../resourceloader/dedsResourceLoader.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>

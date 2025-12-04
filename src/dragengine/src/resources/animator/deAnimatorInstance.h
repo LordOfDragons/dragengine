@@ -26,10 +26,10 @@
 #define _DEANIMATORINSTANCE_H_
 
 #include "rule/deAnimatorRule.h"
-#include "deAnimator::Ref.h"
+#include "deAnimator.h"
 #include "../deResource.h"
 #include "../animation/deAnimationReference.h"
-#include "../component/deComponent::Ref.h"
+#include "../component/deComponent.h"
 #include "../../common/math/decMath.h"
 
 class deBaseScriptingCollider;

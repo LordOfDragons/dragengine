@@ -27,8 +27,8 @@
 
 #include "igdeWOSubObject.h"
 
-#include <dragengine/resources/probe/deEnvMapProbe::Ref.h>
-#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/probe/deEnvMapProbe.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;

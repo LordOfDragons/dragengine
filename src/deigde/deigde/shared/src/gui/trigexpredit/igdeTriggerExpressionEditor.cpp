@@ -46,7 +46,7 @@
 #include "../event/igdeTreeListListener.h"
 #include "../model/igdeListItem.h"
 #include "../model/igdeTreeItem.h"
-#include "../model/igdeTreeItem::Ref.h"
+#include "../model/igdeTreeItem.h"
 #include "../../triggersystem/igdeTriggerExpression.h"
 #include "../../triggersystem/igdeTriggerExpressionParser.h"
 #include "../../triggersystem/igdeTriggerExpressionComponent.h"

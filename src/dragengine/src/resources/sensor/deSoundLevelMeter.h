@@ -26,7 +26,7 @@
 #define _DESOUNDLEVELMETER_H_
 
 #include "../deResource.h"
-#include "../sound/deSpeaker::Ref.h"
+#include "../sound/deSpeaker.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 

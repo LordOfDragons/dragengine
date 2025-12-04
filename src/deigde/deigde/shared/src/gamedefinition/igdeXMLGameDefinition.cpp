@@ -31,7 +31,7 @@
 #include "igdeGDCategory.h"
 #include "igdeTagManager.h"
 #include "class/igdeGDClass.h"
-#include "class/igdeGDClass::Ref.h"
+#include "class/igdeGDClass.h"
 #include "class/igdeGDClassInherit.h"
 #include "class/igdeGDClassManager.h"
 #include "class/igdeGDCamera.h"

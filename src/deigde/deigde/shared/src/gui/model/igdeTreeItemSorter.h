@@ -25,7 +25,7 @@
 #ifndef _IGDETREEITEMSORTER_H_
 #define _IGDETREEITEMSORTER_H_
 
-#include "../resources/igdeIcon::Ref.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>

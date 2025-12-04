@@ -42,9 +42,9 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainer::Ref.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>

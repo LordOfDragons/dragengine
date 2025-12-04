@@ -26,8 +26,8 @@
 #define _IGDENATIVEFOXTREEITEM_H_
 
 #include "foxtoolkit.h"
-#include "../../model/igdeTreeItem::Ref.h"
-#include "../../resources/igdeFont::Ref.h"
+#include "../../model/igdeTreeItem.h"
+#include "../../resources/igdeFont.h"
 
 
 /**

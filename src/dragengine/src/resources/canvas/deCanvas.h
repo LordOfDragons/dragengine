@@ -25,7 +25,7 @@
 #ifndef _DECANVAS_H_
 #define _DECANVAS_H_
 
-#include "deCanvas::Ref.h"
+#include "deCanvas.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 

@@ -26,7 +26,7 @@
 #define _SAEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidget::Ref.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
 
 class saeWindowMain;

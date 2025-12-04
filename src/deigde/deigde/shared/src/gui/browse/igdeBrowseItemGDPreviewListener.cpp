@@ -30,7 +30,7 @@
 #include "../igdeIconListBox.h"
 #include "../model/igdeListItem.h"
 #include "../resources/igdeIcon.h"
-#include "../resources/igdeIcon::Ref.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/resources/image/deImage.h>
 

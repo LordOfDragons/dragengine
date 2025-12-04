@@ -25,7 +25,7 @@
 #ifndef _IGDETEXTSEGMENT_H_
 #define _IGDETEXTSEGMENT_H_
 
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>

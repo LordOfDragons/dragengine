@@ -27,8 +27,8 @@
 #define _DEBNVISITORVALUETYPE_H_
 
 // includes
-#include <dragengine/common/file/decBaseFileWriter::Ref.h>
-#include <dragengine/resources/network/deNetworkMessage::Ref.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
+#include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/resources/network/value/deNetworkValueVisitor.h>
 
 // predefinitions

@@ -26,7 +26,7 @@
 #define _DECANVASVIDEOPLAYER_H_
 
 #include "deCanvas.h"
-#include "../video/deVideoPlayer::Ref.h"
+#include "../video/deVideoPlayer.h"
 
 
 /**

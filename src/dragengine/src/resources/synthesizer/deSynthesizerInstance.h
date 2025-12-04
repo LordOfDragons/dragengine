@@ -25,7 +25,7 @@
 #ifndef _DESYNTHESIZERINSTANCE_H_
 #define _DESYNTHESIZERINSTANCE_H_
 
-#include "deSynthesizer::Ref.h"
+#include "deSynthesizer.h"
 #include "source/deSynthesizerSource.h"
 #include "../deResource.h"
 #include "../../common/collection/decObjectOrderedSet.h"

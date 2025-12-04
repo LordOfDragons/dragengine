@@ -31,7 +31,7 @@
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
-#include <dragengine/resources/sound/deSoundDecoder::Ref.h>
+#include <dragengine/resources/sound/deSoundDecoder.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 
 class deoalAudioThread;

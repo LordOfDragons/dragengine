@@ -38,9 +38,9 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
-#include <deigde/gui/model/igdeListItem::Ref.h>
+#include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/model/igdeListItemSorter.h>
-#include <deigde/gui/model/igdeListItemSorter::Ref.h>
+#include <deigde/gui/model/igdeListItemSorter.h>
 
 #include <dragengine/common/exceptions.h>
 

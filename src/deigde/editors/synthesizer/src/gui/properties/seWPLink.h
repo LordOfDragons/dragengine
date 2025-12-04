@@ -30,7 +30,7 @@
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/igdeSpinTextFieldReference.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class seSynthesizer;

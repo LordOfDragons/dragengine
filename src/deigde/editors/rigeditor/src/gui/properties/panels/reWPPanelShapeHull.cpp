@@ -48,7 +48,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 

@@ -27,7 +27,7 @@
 
 #include "foxtoolkit.h"
 #include "../../igdeTabBook.h"
-#include "../../resources/igdeFont::Ref.h"
+#include "../../resources/igdeFont.h"
 
 class igdeTabBook;
 class igdeEnvironment;

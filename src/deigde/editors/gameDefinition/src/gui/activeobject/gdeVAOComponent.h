@@ -27,9 +27,9 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/component/deComponent::Ref.h>
-#include <dragengine/resources/collider/deCollider::Ref.h>
-#include <dragengine/resources/animator/deAnimatorInstance::Ref.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 class gdeOCComponent;
 class gdeOCComponentTexture;

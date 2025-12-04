@@ -29,9 +29,9 @@
 #include "configuration/debnConfiguration.h"
 #include "parameters/debnParameterList.h"
 
-#include <dragengine/common/file/decBaseFileWriter::Ref.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/resources/network/deNetworkMessage::Ref.h>
+#include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/network/deBaseNetworkModule.h>
 
 class debnSocket;

@@ -33,7 +33,7 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileWriter.h"
-#include "../../../common/file/decBaseFileWriter::Ref.h"
+#include "../../../common/file/decBaseFileWriter.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"

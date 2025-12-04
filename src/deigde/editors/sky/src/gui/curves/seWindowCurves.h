@@ -28,7 +28,7 @@
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 
 class seWindowMain;
 class seSky;

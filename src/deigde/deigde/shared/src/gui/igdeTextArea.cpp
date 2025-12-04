@@ -36,7 +36,7 @@
 #include "resources/igdeFont.h"
 #include "resources/igdeTextStyle.h"
 #include "resources/igdeTextSegment.h"
-#include "resources/igdeTextSegment::Ref.h"
+#include "resources/igdeTextSegment.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"

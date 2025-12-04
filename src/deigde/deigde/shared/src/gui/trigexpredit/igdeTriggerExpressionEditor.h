@@ -31,7 +31,7 @@
 #include "../igdeListBoxReference.h"
 #include "../igdeTreeListReference.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeAction::Ref.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/string/decString.h>

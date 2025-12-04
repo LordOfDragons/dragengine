@@ -28,7 +28,7 @@
 #include <deigde/gui/igdeButtonReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/dialog/igdeDialog.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 
 
 class igdeWindowMain;

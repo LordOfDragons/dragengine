@@ -26,10 +26,10 @@
 #define _IGDEWOSOCOMPONENT_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListener::Ref.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
 
 #include <dragengine/common/collection/decObjectDictionary.h>
-#include <dragengine/resources/animator/deAnimatorInstance::Ref.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 #include <dragengine/resources/collider/deColliderComponent.h>
 #include <dragengine/resources/component/deComponent.h>
 

@@ -26,7 +26,7 @@
 #define _DECWEAKFILEWRITER_H_
 
 #include "decBaseFileWriter.h"
-#include "decBaseFileWriter::Ref.h"
+#include "decBaseFileWriter.h"
 
 
 /**

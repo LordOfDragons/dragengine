@@ -50,7 +50,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIcon::Ref.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringList.h>

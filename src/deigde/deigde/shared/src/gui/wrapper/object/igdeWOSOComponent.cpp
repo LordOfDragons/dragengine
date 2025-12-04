@@ -45,7 +45,7 @@
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
@@ -88,7 +88,7 @@
 #include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkinManager.h>
-#include <dragengine/resources/skin/dynamic/deDynamicSkin::Ref.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/skin/dynamic/renderables/deDSRenderableColor.h>
 #include <dragengine/resources/world/deWorld.h>
 

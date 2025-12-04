@@ -27,7 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/resources/video/deVideoPlayer.h>
-#include <dragengine/resources/video/deVideoAudioDecoder::Ref.h>
+#include <dragengine/resources/video/deVideoAudioDecoder.h>
 
 class deoalAudioThread;
 class deVideo;

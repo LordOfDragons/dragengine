@@ -25,7 +25,7 @@
 #ifndef _IGDEWIDGET_H_
 #define _IGDEWIDGET_H_
 
-#include "theme/igdeGuiTheme::Ref.h"
+#include "theme/igdeGuiTheme.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>

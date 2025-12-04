@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 #include "../../../../undosys/objectClass/envmapprobe/gdeUOCAddEnvMapProbe.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 

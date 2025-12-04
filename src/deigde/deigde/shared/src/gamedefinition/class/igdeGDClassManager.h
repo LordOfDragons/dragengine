@@ -26,7 +26,7 @@
 #define _IGDEGDCLASSMANAGER_H_
 
 #include "../igdeTagManager.h"
-#include "../igdeGDCategory::Ref.h"
+#include "../igdeGDCategory.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>

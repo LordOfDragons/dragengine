@@ -30,7 +30,7 @@
 #include <deigde/gui/igdeCheckBoxReference.h>
 #include <deigde/gui/igdeListBoxReference.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 
 class meWorld;
 class meWPAddListener;

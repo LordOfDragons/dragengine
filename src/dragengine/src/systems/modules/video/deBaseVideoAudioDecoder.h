@@ -26,7 +26,7 @@
 #define _DEBASEVIDEOAUDIODECODER_H_
 
 #include "../deBaseModule.h"
-#include "../../../common/file/decBaseFileReader::Ref.h"
+#include "../../../common/file/decBaseFileReader.h"
 
 
 /**

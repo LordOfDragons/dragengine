@@ -26,7 +26,7 @@
 #define _IGDELABEL_H_
 
 #include "igdeWidget.h"
-#include "resources/igdeIcon::Ref.h"
+#include "resources/igdeIcon.h"
 
 #include <dragengine/common/string/decString.h>
 

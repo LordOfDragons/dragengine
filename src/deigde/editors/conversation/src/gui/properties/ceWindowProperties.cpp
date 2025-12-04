@@ -35,7 +35,7 @@
 #include "../../conversation/ceConversation.h"
 
 #include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeWidget::Ref.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 

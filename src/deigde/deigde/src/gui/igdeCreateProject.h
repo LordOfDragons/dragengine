@@ -27,7 +27,7 @@
 
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/filesystem/deVirtualFileSystem::Ref.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 
 class igdeGameProject;
 class igdeTemplate;

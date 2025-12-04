@@ -26,7 +26,7 @@
 #define _IGDEBROWSEITEMGDPREVIEWLISTENER_H_
 
 #include "../igdeIconListBoxReference.h"
-#include "../model/igdeListItem::Ref.h"
+#include "../model/igdeListItem.h"
 #include "../../gamedefinition/preview/igdeGDPreviewListener.h"
 
 

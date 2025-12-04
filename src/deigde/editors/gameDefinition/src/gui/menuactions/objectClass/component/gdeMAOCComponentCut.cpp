@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 #include "../../../../undosys/objectClass/component/gdeUOCRemoveComponent.h"
 
-#include <deigde/clipboard/igdeClipboardData::Ref.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>

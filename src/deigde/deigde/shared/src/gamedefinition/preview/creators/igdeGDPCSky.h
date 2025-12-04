@@ -28,8 +28,8 @@
 #include "igdeGDPreviewCreator.h"
 
 #include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/camera/deCamera::Ref.h>
-#include <dragengine/resources/world/deWorld::Ref.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeGDSky;
 class igdeWSky;

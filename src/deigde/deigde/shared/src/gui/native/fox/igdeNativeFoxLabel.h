@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXLABEL_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFont::Ref.h"
+#include "../../resources/igdeFont.h"
 
 class igdeLabel;
 class igdeEnvironment;

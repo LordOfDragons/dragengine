@@ -33,12 +33,12 @@
 #include "../igdeContainerReference.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeListBoxListener.h"
-#include "../event/igdeListBoxListener::Ref.h"
+#include "../event/igdeListBoxListener.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../model/igdeListItem.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../undo/igdeUndo.h"
-#include "../../undo/igdeUndo::Ref.h"
+#include "../../undo/igdeUndo.h"
 #include "../../undo/igdeUndoSystem.h"
 
 #include <dragengine/deEngine.h>

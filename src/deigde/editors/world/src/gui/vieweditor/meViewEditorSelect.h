@@ -28,7 +28,7 @@
 #include "meViewEditorNavigation.h"
 #include "../meInfoBubble.h"
 
-#include <dragengine/resources/collider/deCollider::Ref.h>
+#include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
 

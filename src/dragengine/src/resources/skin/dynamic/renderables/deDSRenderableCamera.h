@@ -26,7 +26,7 @@
 #define _DEDSRENDERABLECAMERA_H_
 
 #include "deDSRenderable.h"
-#include "../../../camera/deCamera::Ref.h"
+#include "../../../camera/deCamera.h"
 
 
 /**

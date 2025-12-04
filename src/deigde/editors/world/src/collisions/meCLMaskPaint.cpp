@@ -35,7 +35,7 @@
 #include "../world/terrain/meTerrainMaskImage.h"
 #include "../undosys/gui/heightterrain/meUHTPaintMask.h"
 
-#include <deigde/undo/igdeUndo::Ref.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>

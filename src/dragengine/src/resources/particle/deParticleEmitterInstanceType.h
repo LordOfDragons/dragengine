@@ -25,8 +25,8 @@
 #ifndef _DEPARTICLEEMITTERINSTANCETYPE_H_
 #define _DEPARTICLEEMITTERINSTANCETYPE_H_
 
-#include "../component/deComponent::Ref.h"
-#include "../skin/dynamic/deDynamicSkin::Ref.h"
+#include "../component/deComponent.h"
+#include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
 
 

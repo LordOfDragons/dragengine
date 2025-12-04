@@ -35,7 +35,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader::Ref.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageReference.h>

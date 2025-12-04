@@ -34,10 +34,10 @@
 #include <deigde/gui/igdeIconListBoxReference.h>
 #include <deigde/gui/igdeTextAreaReference.h>
 #include <deigde/gui/composed/igdeEditPropertyValueReference.h>
-#include <deigde/gui/event/igdeAction::Ref.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/resources/igdeIcon::Ref.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 
 class igdeUndo;

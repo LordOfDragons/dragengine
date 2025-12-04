@@ -25,7 +25,7 @@
 #ifndef _IGDEGDSKINMANAGER_H_
 #define _IGDEGDSKINMANAGER_H_
 
-#include "../igdeGDCategory::Ref.h"
+#include "../igdeGDCategory.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
