@@ -27,13 +27,10 @@
 
 #include "igdeGDVisitor.h"
 #include "../../gui/igdeIconListBox.h"
-
+#include "igdeListItem.h"
 
 class deImage;
 class igdeEnvironment;
-class igdeListItem::Ref;
-
-
 
 /**
  * \brief Visitor adding the visited game definition elements to a list.

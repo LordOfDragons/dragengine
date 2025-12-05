@@ -29,11 +29,9 @@
 
 #include <deigde/gui/composed/igdeEditPropertyValue.h>
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
-
+#include "composed/igdeEditPropertyValue.h"
 
 class gdeProperty;
-class igdeEditPropertyValue::Ref;
-
 
 /**
  * \brief Default property value widget.

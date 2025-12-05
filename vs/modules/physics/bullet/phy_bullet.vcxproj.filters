@@ -2454,7 +2454,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\physics\bullet\src\module.xml">
-      <Filter>Source Files\module</Filter>
     </Xml>
   </ItemGroup>
 </Project>

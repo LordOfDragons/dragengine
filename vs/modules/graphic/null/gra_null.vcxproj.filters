@@ -21,7 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\graphic\null\src\module.xml">
-      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>

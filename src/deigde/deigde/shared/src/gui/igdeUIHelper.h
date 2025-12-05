@@ -32,73 +32,95 @@
 #include <stdint.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include "igdeButton.h"
+#include "igdeCheckBox.h"
+#include "igdeColorBox.h"
+#include "igdeComboBox.h"
+#include "igdeComboBoxFilter.h"
+#include "layout/igdeContainer.h"
+#include "layout/igdeContainerBorder.h"
+#include "layout/igdeContainerScroll.h"
+#include "composed/igdeEditDVector.h"
+#include "composed/igdeEditDirectory.h"
+#include "composed/igdeEditPath.h"
+#include "composed/igdeEditPoint.h"
+#include "composed/igdeEditPoint3.h"
+#include "composed/igdeEditPropertyValue.h"
+#include "composed/igdeEditSliderText.h"
+#include "composed/igdeEditTags.h"
+#include "composed/igdeEditVector.h"
+#include "composed/igdeEditVector2.h"
+#include "igdeIconListBox.h"
+#include "igdeLabel.h"
+#include "igdeListBox.h"
+#include "igdeProgressBar.h"
+#include "igdeScrollBar.h"
+#include "igdeSlider.h"
+#include "igdeSpacer.h"
+#include "igdeSpinTextField.h"
+#include "igdeTextArea.h"
+#include "igdeTextField.h"
+#include "igdeToggleButton.h"
+#include "igdeToggleTags.h"
+#include "igdeTreeList.h"
+#include "igdeViewCurveBezier.h"
+#include "igdeWPCamera.h"
+#include "igdeWPSky.h"
+#include "igdeWPTriggerTable.h"
+#include "igdeWPWObject.h"
+#include "igdeWidget.h"
 
 class igdeAction;
-class igdeButton::Ref;
-class igdeCheckBox::Ref;
+
 class igdeColorBoxListener;
-class igdeColorBox::Ref;
-class igdeComboBoxFilter::Ref;
+
 class igdeComboBoxListener;
-class igdeComboBox::Ref;
+
 class igdeContainer;
-class igdeContainerBorder::Ref;
-class igdeContainer::Ref;
-class igdeContainerScroll::Ref;
+
 class igdeEditDirectoryListener;
-class igdeEditDirectory::Ref;
+
 class igdeEditDVectorListener;
-class igdeEditDVector::Ref;
+
 class igdeEditPathListener;
-class igdeEditPath::Ref;
+
 class igdeEditPoint3Listener;
-class igdeEditPoint3::Ref;
+
 class igdeEditPointListener;
-class igdeEditPoint::Ref;
+
 class igdeEditPropertyValueListener;
-class igdeEditPropertyValue::Ref;
+
 class igdeEditSliderTextListener;
-class igdeEditSliderText::Ref;
-class igdeEditTags::Ref;
+
 class igdeEditVector2Listener;
-class igdeEditVector2::Ref;
+
 class igdeEditVectorListener;
-class igdeEditVector::Ref;
+
 class igdeEnvironment;
 class igdeIcon;
 class igdeIconListBoxListener;
-class igdeIconListBox::Ref;
-class igdeLabel::Ref;
+
 class igdeListBoxListener;
-class igdeListBox::Ref;
+
 class igdeMenuCascade;
-class igdeProgressBar::Ref;
+
 class igdeRecentFiles;
 class igdeScrollBarListener;
-class igdeScrollBar::Ref;
+
 class igdeSliderListener;
-class igdeSlider::Ref;
-class igdeSpacer::Ref;
+
 class igdeSpinTextFieldListener;
-class igdeSpinTextField::Ref;
+
 class igdeTextAreaListener;
-class igdeTextArea::Ref;
+
 class igdeTextFieldListener;
-class igdeTextField::Ref;
-class igdeToggleButton::Ref;
-class igdeToggleTags::Ref;
+
 class igdeToolBar;
 class igdeTreeListListener;
-class igdeTreeList::Ref;
-class igdeViewCurveBezierListener;
-class igdeViewCurveBezier::Ref;
-class igdeWidget::Ref;
-class igdeWPCamera::Ref;
-class igdeWPSky::Ref;
-class igdeWPTriggerTable::Ref;
-class igdeWPWObject::Ref;
-class igdeWidget;
 
+class igdeViewCurveBezierListener;
+
+class igdeWidget;
 
 /**
  * \brief UI Helpers.

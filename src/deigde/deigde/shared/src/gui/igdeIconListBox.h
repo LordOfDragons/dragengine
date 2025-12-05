@@ -34,14 +34,12 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
-
+#include "igdeListItem.h"
 
 class igdeIconListBoxListener;
 class igdeIcon;
 class igdeListHeader;
 class igdeListItem;
-class igdeListItem::Ref;
-
 
 /**
  * \brief IGDE UI IconListBox.

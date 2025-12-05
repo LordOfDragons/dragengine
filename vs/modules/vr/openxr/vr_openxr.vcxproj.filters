@@ -400,7 +400,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\vr\openxr\src\module.xml">
-      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>

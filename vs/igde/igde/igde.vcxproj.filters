@@ -198,7 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\deigde\deigde\src\deigde-res.rc">
-      <Filter>Source Files</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -33,13 +33,11 @@
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-
+#include "igdeTreeItem.h"
 
 class igdeTreeListListener;
 class igdeIcon;
 class igdeTreeItem;
-class igdeTreeItem::Ref;
-
 
 /**
  * \brief IGDE UI TreeList.

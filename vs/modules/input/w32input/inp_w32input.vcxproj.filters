@@ -82,7 +82,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\input\w32input\src\module.xml">
-      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>

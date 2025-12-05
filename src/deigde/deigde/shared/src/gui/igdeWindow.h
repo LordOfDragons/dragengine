@@ -31,11 +31,9 @@
 #include "resources/igdeIcon.h"
 
 #include <dragengine/common/string/decString.h>
+#include "layout/igdeContainer.h"
 
-class igdeContainer::Ref;
 class igdeWidget;
-
-
 
 /**
  * \brief IGDE UI Window.

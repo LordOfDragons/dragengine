@@ -42,7 +42,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\image\jpeg\src\module.xml">
-      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>

@@ -60,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\video\theora\src\module.xml">
-      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>

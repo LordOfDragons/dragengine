@@ -17,7 +17,6 @@
   <ItemGroup>
     <None Include="..\..\..\src\launcher\gui\SConscript" />
     <None Include="..\..\..\src\launcher\gui\src\.gitignore">
-      <Filter>Source Files</Filter>
     </None>
     <None Include="post_build.ps1" />
   </ItemGroup>
@@ -225,7 +224,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\launcher\gui\src\guilaunch-res.rc">
-      <Filter>Source Files</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -32,11 +32,9 @@
 #include "../event/igdeAction.h"
 
 #include <dragengine/common/string/decString.h>
+#include "layout/igdeContainer.h"
 
 class igdeWidget;
-class igdeContainer::Ref;
-
-
 
 /**
  * \brief IGDE UI Dialog.

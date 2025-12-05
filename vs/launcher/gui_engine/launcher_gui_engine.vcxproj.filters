@@ -25,7 +25,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\..\src\launcher\gui\src\guilaunch-res.rc">
-      <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>

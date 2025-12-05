@@ -16,7 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\font\freetype\src\module.xml">
-      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>

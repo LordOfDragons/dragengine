@@ -1941,16 +1941,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\ChangeLog">
-      <Filter>contrib\squish</Filter>
     </None>
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\README">
-      <Filter>contrib\squish</Filter>
     </None>
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\README_DE">
-      <Filter>contrib\squish</Filter>
     </None>
     <None Include="..\..\..\..\src\modules\graphic\opengl\squish\singlecolourlookup.inl">
-      <Filter>contrib\squish</Filter>
     </None>
     <None Include="..\..\..\..\src\modules\graphic\opengl\SConscript" />
     <None Include="post_build.ps1" />
@@ -3825,7 +3821,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\..\src\modules\graphic\opengl\squish\texture_compression_s3tc.txt">
-      <Filter>contrib\squish</Filter>
     </Text>
   </ItemGroup>
 </Project>
