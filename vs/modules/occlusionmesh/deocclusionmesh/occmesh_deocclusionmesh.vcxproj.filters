@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\occlusionmesh\deocclusionmesh\src\module.xml">
+      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>

@@ -258,6 +258,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\network\basic\src\module.xml">
+      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>

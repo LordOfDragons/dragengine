@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\model\demodel\src\module.xml">
+      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>

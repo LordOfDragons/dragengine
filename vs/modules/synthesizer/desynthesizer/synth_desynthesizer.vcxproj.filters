@@ -201,6 +201,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\synthesizer\desynthesizer\src\module.xml">
+      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>

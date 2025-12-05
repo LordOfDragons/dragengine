@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\image\ies\src\module.xml">
+      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>

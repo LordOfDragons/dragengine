@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\src\modules\crashrecovery\basicrecovery\src\module.xml">
+      <Filter>Source Files</Filter>
     </Xml>
   </ItemGroup>
 </Project>
