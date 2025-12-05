@@ -25,7 +25,7 @@
 #ifndef _DETTHREADSAFEOBJECTREFERENCE_H_
 #define _DETTHREADSAFEOBJECTREFERENCE_H_
 
-#include "common/exceptions.h"
+#include "../common/exceptions.h"
 
 /**
  * \brief Template version of deThreadSafeObjectReference.
