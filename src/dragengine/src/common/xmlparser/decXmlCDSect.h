@@ -37,7 +37,6 @@ public:
 	typedef deTObjectReference<decXmlCDSect> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

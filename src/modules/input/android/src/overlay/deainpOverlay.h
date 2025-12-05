@@ -42,6 +42,7 @@ class deainpOverlay : public deObject{
 public:
 	typedef deTObjectReference<deainpOverlay> Ref;
 	
+	
 private:
 	deAndroidInput &pAndroidInput;
 	

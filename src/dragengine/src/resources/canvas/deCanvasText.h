@@ -26,7 +26,7 @@
 #define _DECANVASTEXT_H_
 
 #include "deCanvas.h"
-#include "../font/deFontReference.h"
+#include "../font/deFont.h"
 #include "../../common/string/decString.h"
 
 
@@ -39,9 +39,8 @@ public:
 	typedef deTObjectReference<deCanvasText> Ref;
 	
 	
-	
 private:
-	deFontReference pFont;
+	deFont::Ref pFont;
 	float pFontSize;
 	decString pText;
 	decColor pColor;

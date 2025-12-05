@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deoalEffectSlot> Ref;
 	
 	
-	
 private:
 	deoalAudioThread &pAudioThread;
 	

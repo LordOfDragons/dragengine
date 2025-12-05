@@ -25,12 +25,12 @@
 #ifndef _MEWPSNAVSPACE_H_
 #define _MEWPSNAVSPACE_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWPSNavSpaceListener;
@@ -50,12 +50,12 @@ private:
 	
 	meWorld *pWorld;
 	
-	igdeSpinTextFieldReference pSpinActive;
-	igdeTextFieldReference pEditSelCount;
-	igdeEditDVectorReference pEditPositon;
-	igdeEditVectorReference pEditOrientation;
-	igdeEditPathReference pEditPath;
-	igdeListBoxReference pListUsedCostTypes;
+	igdeSpinTextField::Ref pSpinActive;
+	igdeTextField::Ref pEditSelCount;
+	igdeEditDVector::Ref pEditPositon;
+	igdeEditVector::Ref pEditOrientation;
+	igdeEditPath::Ref pEditPath;
+	igdeListBox::Ref pListUsedCostTypes;
 	
 	
 	

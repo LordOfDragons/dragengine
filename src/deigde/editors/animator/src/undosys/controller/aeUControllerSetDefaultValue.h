@@ -27,9 +27,6 @@
 
 #include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-#include <dragengine/deObjectReference.h>
-
-
 /**
  * Undo action controller set default value.
  */

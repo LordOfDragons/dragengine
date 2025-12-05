@@ -49,7 +49,6 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/world/deWorld.h>
 
@@ -62,7 +61,7 @@ class igdeWOSOBillboardResLoadComponent : public igdeResourceLoaderListener{
 private:
 	igdeWOSOBillboard *pOwner;
 	decString pPathSkin;
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	int pCounter;
 	bool pSuccess;
 	

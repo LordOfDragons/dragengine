@@ -26,7 +26,7 @@
 #define _MEWVNODE_H_
 
 #include <deigde/gui/nodeview/igdeNVNode.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 class meWVNodeSlot;
 class meHTVRule;
@@ -42,7 +42,7 @@ private:
 	meWindowVegetation &pWindowVegetation;
 	meHTVRule *pRule;
 	
-	igdeUndoReference pUndoMove;
+	igdeUndo::Ref pUndoMove;
 	
 	
 	

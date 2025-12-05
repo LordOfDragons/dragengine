@@ -35,7 +35,7 @@
 #include "../../../../../conversation/condition/ceConversationConditionList.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -74,7 +74,7 @@ void ceWPTMACopyCondition::OnAction(){
 	ceConversationConditionList conditions;
 	conditions.Add( pCondition );
 	
-	igdeClipboardDataReference cdata;
+	igdeClipboardData::Ref cdata;
 	cdata.TakeOver( new ceClipboardDataCondition( conditions ) );
 	GetWindowMain().GetClipboard().Set( cdata );
 }

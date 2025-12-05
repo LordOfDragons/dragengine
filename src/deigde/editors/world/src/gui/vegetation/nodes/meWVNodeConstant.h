@@ -25,8 +25,8 @@
 #ifndef _MEWVNODECONSTANT_H_
 #define _MEWVNODECONSTANT_H_
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 #include "meWVNode.h"
 
@@ -41,8 +41,8 @@ class meWVNodeConstant : public meWVNode{
 private:
 	meHTVRuleConstant *pRuleConstant;
 	
-	igdeContainerReference pFraParameters;
-	igdeEditVectorReference pEditVector;
+	igdeContainer::Ref pFraParameters;
+	igdeEditVector::Ref pEditVector;
 	
 	
 	

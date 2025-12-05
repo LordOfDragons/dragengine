@@ -48,6 +48,7 @@ class deoglWorldComputeElement : public deObject{
 public:
 	typedef deTObjectReference<deoglWorldComputeElement> Ref;
 	
+	
 	/** Compute shader element types. */
 	enum eElementTypes{
 		eetComponent,

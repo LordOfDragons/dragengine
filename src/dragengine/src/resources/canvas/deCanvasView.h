@@ -37,7 +37,6 @@ public:
 	typedef deTObjectReference<deCanvasView> Ref;
 	
 	
-	
 private:
 	deCanvas *pCanvasRoot;
 	deCanvas *pCanvasTail;

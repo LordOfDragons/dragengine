@@ -25,10 +25,10 @@
 #ifndef _IGDEDIALOGSTARTUP_H_
 #define _IGDEDIALOGSTARTUP_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/dialog/igdeDialog.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction.h>
 
 
 class igdeWindowMain;
@@ -45,12 +45,12 @@ class igdeDialogStartUp : public igdeDialog{
 private:
 	igdeWindowMain &pWindowMain;
 	
-	igdeListBoxReference pListRecentProjects;
+	igdeListBox::Ref pListRecentProjects;
 	
-	igdeActionReference pActionLoadRecent;
-	igdeActionReference pActionLoadFile;
-	igdeActionReference pActionNewProject;
-	igdeActionReference pActionQuit;
+	igdeAction::Ref pActionLoadRecent;
+	igdeAction::Ref pActionLoadFile;
+	igdeAction::Ref pActionNewProject;
+	igdeAction::Ref pActionQuit;
 	
 	
 	

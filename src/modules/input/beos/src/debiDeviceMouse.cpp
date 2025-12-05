@@ -61,10 +61,8 @@ debiDevice( module )
 	SetType( deInputDevice::edtMouse );
 	
 	// add axis
-	deObjectReference refObject;
-	
-	refObject.TakeOver( new debiDeviceAxis( module ) );
-	AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+	const debiDeviceAxis::Ref refObject(debiDeviceAxis::Ref::NewWith(module));
+	AddAxis( refObject );
 	debiDeviceAxis &axisX = ( debiDeviceAxis& )( deObject& )refObject;
 	axisX.SetIndex( 0 );
 	axisX.SetAbsolute( false );
@@ -74,7 +72,7 @@ debiDevice( module )
 	axisX.SetDisplayImages( "mouseX" );
 	
 	refObject.TakeOver( new debiDeviceAxis( module ) );
-	AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+	AddAxis( refObject );
 	debiDeviceAxis &axisY = ( debiDeviceAxis& )( deObject& )refObject;
 	axisY.SetIndex( 1 );
 	axisY.SetAbsolute( false );
@@ -84,7 +82,7 @@ debiDevice( module )
 	axisY.SetDisplayImages( "mouseY" );
 	
 	refObject.TakeOver( new debiDeviceAxis( module ) );
-	AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+	AddAxis( refObject );
 	debiDeviceAxis &wheelY = ( debiDeviceAxis& )( deObject& )refObject;
 	wheelY.SetIndex( 2 );
 	wheelY.SetAbsolute( false );
@@ -95,7 +93,7 @@ debiDevice( module )
 	wheelY.SetDisplayText( "Wheel" );
 	
 	refObject.TakeOver( new debiDeviceAxis( module ) );
-	AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+	AddAxis( refObject );
 	debiDeviceAxis &wheelX = ( debiDeviceAxis& )( deObject& )refObject;
 	wheelX.SetIndex( 3 );
 	wheelX.SetAbsolute( false );
@@ -120,7 +118,7 @@ debiDevice( module )
 	
 	if( buttonCount > 0 ){
 		refObject.TakeOver( new debiDeviceButton( module ) );
-		AddButton( ( debiDeviceButton* )( deObject* )refObject );
+		AddButton( refObject );
 		debiDeviceButton &buttonLeft = ( debiDeviceButton& )( deObject& )refObject;
 		buttonLeft.SetID( "left" );
 		buttonLeft.SetBICode( mmap.button[ 0 ] );
@@ -131,7 +129,7 @@ debiDevice( module )
 	
 	if( buttonCount > 1 ){
 		refObject.TakeOver( new debiDeviceButton( module ) );
-		AddButton( ( debiDeviceButton* )( deObject* )refObject );
+		AddButton( refObject );
 		debiDeviceButton &buttonRight = ( debiDeviceButton& )( deObject& )refObject;
 		buttonRight.SetID( "right" );
 		buttonRight.SetBICode( mmap.button[ 1 ] );
@@ -142,7 +140,7 @@ debiDevice( module )
 	
 	if( buttonCount > 2 ){
 		refObject.TakeOver( new debiDeviceButton( module ) );
-		AddButton( ( debiDeviceButton* )( deObject* )refObject );
+		AddButton( refObject );
 		debiDeviceButton &buttonMiddle = ( debiDeviceButton& )( deObject& )refObject;
 		buttonMiddle.SetID( "middle" );
 		buttonMiddle.SetBICode( mmap.button[ 2 ] );
@@ -154,7 +152,7 @@ debiDevice( module )
 	int i;
 	for( i=3; i<buttonCount; i++ ){
 		refObject.TakeOver( new debiDeviceButton( module ) );
-		AddButton( ( debiDeviceButton* )( deObject* )refObject );
+		AddButton( refObject );
 		debiDeviceButton &button = ( debiDeviceButton& )( deObject& )refObject;
 		
 		string.Format( "aux%d", i - 2 );

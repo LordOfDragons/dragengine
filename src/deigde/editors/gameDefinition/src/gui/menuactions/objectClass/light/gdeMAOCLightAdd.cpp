@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -60,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Light...",
 ///////////////
 
 igdeUndo *gdeMAOCLightAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference light;
-	light.TakeOver( new gdeOCLight );
-	return new gdeUOCAddLight( &objectClass, ( gdeOCLight* )( deObject* )light );
+	return new gdeUOCAddLight(&objectClass, gdeOCLight::Ref::NewWith());
 }
 
 void gdeMAOCLightAdd::Update(){

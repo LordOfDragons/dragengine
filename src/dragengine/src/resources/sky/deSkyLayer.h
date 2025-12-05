@@ -26,7 +26,7 @@
 #define _DESKYLAYER_H_
 
 #include "deSkyControllerTarget.h"
-#include "../skin/deSkinReference.h"
+#include "../skin/deSkin.h"
 #include "../../common/math/decMath.h"
 
 class deSkyLayerVisitor;
@@ -141,7 +141,7 @@ private:
 	decColor pColor;
 	float pIntensity;
 	float pTransparency;
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	
 	decQuaternion pLightOrientation;
 	decColor pLightColor;

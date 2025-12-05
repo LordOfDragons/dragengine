@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<ceActorController> Ref;
 	
 	
-	
 public:
 	/** \brief Update types. */
 	enum eUpdateTypes{

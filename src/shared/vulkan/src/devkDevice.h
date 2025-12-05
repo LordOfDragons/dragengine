@@ -45,6 +45,7 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<devkDevice> Ref;
 	
+	
 	/** Configuration to use for new device. */
 	struct DeviceConfig{
 		/** Count of graphic queues to create. */

@@ -68,6 +68,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalAWorld> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create world peer. */

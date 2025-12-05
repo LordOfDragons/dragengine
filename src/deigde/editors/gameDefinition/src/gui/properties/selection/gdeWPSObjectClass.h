@@ -25,20 +25,20 @@
 #ifndef _GDEWPSOBJECTCLASS_H_
 #define _GDEWPSOBJECTCLASS_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeIconListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeFilePattern;
@@ -62,63 +62,63 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeActionReference pActionInheritAdd;
-	igdeActionReference pActionInheritRemove;
-	igdeActionReference pActionInheritRemoveAll;
-	igdeActionReference pActionPropertyValueSet;
-	igdeActionReference pActionPropertyValueRemove;
-	igdeActionReference pActionPropertyValueClear;
-	igdeActionReference pActionPropertyValuesFromSubObjects;
-	igdeActionContextMenuReference pActionTexturesMenu;
-	igdeActionReference pActionTextureAdd;
-	igdeActionReference pActionTextureRemove;
+	igdeAction::Ref pActionInheritAdd;
+	igdeAction::Ref pActionInheritRemove;
+	igdeAction::Ref pActionInheritRemoveAll;
+	igdeAction::Ref pActionPropertyValueSet;
+	igdeAction::Ref pActionPropertyValueRemove;
+	igdeAction::Ref pActionPropertyValueClear;
+	igdeAction::Ref pActionPropertyValuesFromSubObjects;
+	igdeActionContextMenu::Ref pActionTexturesMenu;
+	igdeAction::Ref pActionTextureAdd;
+	igdeAction::Ref pActionTextureRemove;
 	
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeComboBoxReference pCBScaleMode;
-	igdeCheckBoxReference pChkIsGhost;
-	igdeCheckBoxReference pChkCanInstantiate;
-	igdeCheckBoxReference pChkIsAttachableBehavior;
-	igdeCheckBoxReference pChkInheritSOBillboards;
-	igdeCheckBoxReference pChkInheritSOComponents;
-	igdeCheckBoxReference pChkInheritSOLights;
-	igdeCheckBoxReference pChkInheritSOSnapPoints;
-	igdeCheckBoxReference pChkInheritSOParticleEmitters;
-	igdeCheckBoxReference pChkInheritSOForceFields;
-	igdeCheckBoxReference pChkInheritSOEnvMapProbes;
-	igdeCheckBoxReference pChkInheritSOSpeakers;
-	igdeCheckBoxReference pChkInheritSONavigationSpaces;
-	igdeCheckBoxReference pChkInheritSONavigationBlockers;
-	igdeCheckBoxReference pChkInheritSOWorlds;
-	igdeTextFieldReference pEditDefaultInheritPropertyPrefix;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeComboBox::Ref pCBScaleMode;
+	igdeCheckBox::Ref pChkIsGhost;
+	igdeCheckBox::Ref pChkCanInstantiate;
+	igdeCheckBox::Ref pChkIsAttachableBehavior;
+	igdeCheckBox::Ref pChkInheritSOBillboards;
+	igdeCheckBox::Ref pChkInheritSOComponents;
+	igdeCheckBox::Ref pChkInheritSOLights;
+	igdeCheckBox::Ref pChkInheritSOSnapPoints;
+	igdeCheckBox::Ref pChkInheritSOParticleEmitters;
+	igdeCheckBox::Ref pChkInheritSOForceFields;
+	igdeCheckBox::Ref pChkInheritSOEnvMapProbes;
+	igdeCheckBox::Ref pChkInheritSOSpeakers;
+	igdeCheckBox::Ref pChkInheritSONavigationSpaces;
+	igdeCheckBox::Ref pChkInheritSONavigationBlockers;
+	igdeCheckBox::Ref pChkInheritSOWorlds;
+	igdeTextField::Ref pEditDefaultInheritPropertyPrefix;
 	
-	igdeWidgetReference pEditProperties;
-	igdeWidgetReference pEditTextureProperties;
+	igdeWidget::Ref pEditProperties;
+	igdeWidget::Ref pEditTextureProperties;
 	
-	igdeComboBoxReference pCBPropertyValuesKeys;
-	igdeButtonReference pBtnPropertyValueSet;
-	igdeIconListBoxReference pListPropertyValues;
+	igdeComboBox::Ref pCBPropertyValuesKeys;
+	igdeButton::Ref pBtnPropertyValueSet;
+	igdeIconListBox::Ref pListPropertyValues;
 	
-	igdeComboBoxFilterReference pCBCategory;
-	igdeButtonReference pBtnJumpToCategory;
+	igdeComboBoxFilter::Ref pCBCategory;
+	igdeButton::Ref pBtnJumpToCategory;
 	
-	igdeWidgetReference pListHideTags;
-	igdeWidgetReference pListPartialHideTags;
+	igdeWidget::Ref pListHideTags;
+	igdeWidget::Ref pListPartialHideTags;
 	
-	igdeListBoxReference pListInherits;
-	igdeComboBoxFilterReference pInheritCBClass;
-	igdeButtonReference pBtnJumpToInheritClass;
-	igdeTextFieldReference pInheritEditPropertyPrefix;
-	igdeButtonReference pBtnInheritPropertyPrefixReset;
+	igdeListBox::Ref pListInherits;
+	igdeComboBoxFilter::Ref pInheritCBClass;
+	igdeButton::Ref pBtnJumpToInheritClass;
+	igdeTextField::Ref pInheritEditPropertyPrefix;
+	igdeButton::Ref pBtnInheritPropertyPrefixReset;
 	
-	igdeComboBoxReference pCBTextures;
-	igdeButtonReference pBtnTextures;
-	igdeTextFieldReference pTextureEditName;
-	igdeEditPathReference pTextureEditPathSkin;
-	igdeEditVector2Reference pTextureEditOffset;
-	igdeTextFieldReference pTextureEditRotation;
-	igdeEditVector2Reference pTextureEditScale;
-	igdeColorBoxReference pTextureClrTint;
+	igdeComboBox::Ref pCBTextures;
+	igdeButton::Ref pBtnTextures;
+	igdeTextField::Ref pTextureEditName;
+	igdeEditPath::Ref pTextureEditPathSkin;
+	igdeEditVector2::Ref pTextureEditOffset;
+	igdeTextField::Ref pTextureEditRotation;
+	igdeEditVector2::Ref pTextureEditScale;
+	igdeColorBox::Ref pTextureClrTint;
 	
 	
 	

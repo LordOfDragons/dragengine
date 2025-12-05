@@ -67,6 +67,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGDClass> Ref;
 	
+	
 	/** \brief Scale modes. */
 	enum eScaleModes{
 		/** \brief Fixed size. */

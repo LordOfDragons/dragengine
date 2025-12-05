@@ -26,8 +26,8 @@
 #define _DERESOURCELOADERTASK_X_H_
 
 #include "../deResourceLoader.h"
-#include "../../deResourceReference.h"
-#include "../../../filesystem/deVirtualFileSystemReference.h"
+#include "../../deResource.h"
+#include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../parallel/deParallelTask.h"
 #include "../../../common/utils/decTimer.h"
 #include "../../../common/string/decString.h"
@@ -69,11 +69,11 @@ private:
 	deEngine &pEngine;
 	deResourceLoader &pResourceLoader;
 	
-	deVirtualFileSystemReference pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	decString pPath;
 	deResourceLoader::eResourceType pResourceType;
 	
-	deResourceReference pResource;
+	deResource::Ref pResource;
 	eStates pState;
 	eTypes pType;
 	

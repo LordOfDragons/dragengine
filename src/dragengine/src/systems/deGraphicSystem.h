@@ -42,8 +42,8 @@
 
 #include "deBaseSystem.h"
 #include "../common/math/decMath.h"
-#include "../resources/canvas/deCanvasViewReference.h"
-#include "../resources/rendering/deRenderWindowReference.h"
+#include "../resources/canvas/deCanvasView.h"
+#include "../resources/rendering/deRenderWindow.h"
 
 class deBaseGraphicModule;
 class deBillboard;
@@ -111,10 +111,10 @@ class deWorld;
 class DE_DLL_EXPORT deGraphicSystem : public deBaseSystem{
 private:
 	deBaseGraphicModule *pActiveModule;
-	deRenderWindowReference pRenderWindow;
+	deRenderWindow::Ref pRenderWindow;
 	
-	deCanvasViewReference pInputOverlayCanvas;
-	deCanvasViewReference pDebugOverlayCanvas;
+	deCanvasView::Ref pInputOverlayCanvas;
+	deCanvasView::Ref pDebugOverlayCanvas;
 	
 	
 	

@@ -25,8 +25,9 @@
 #include "ceDialogEditStringWithList.h"
 
 #include <deigde/gui/igdeUIHelper.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 
 #include <dragengine/common/exceptions.h>
@@ -45,15 +46,17 @@ igdeDialog( environment, windowTitle )
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
-	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
+	igdeContainer::Ref content;
+	content.TakeOver(new igdeContainerForm(environment));
 	helper.ComboBoxFilter( content, textLabel, true, "", pCBString, NULL );
 	pCBString->SetDefaultSorter();
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Cancel" );
 	
 	AddContent( content, buttonBar );
+	
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(400, 150)));
 	
 	// init list
 	const int count = choices.GetCount();

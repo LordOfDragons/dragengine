@@ -37,7 +37,6 @@
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -53,7 +52,7 @@
 deoglShaderUnitSourceCode::deoglShaderUnitSourceCode(deGraphicOpenGl &ogl, const decPath &path) :
 pStage(0)
 {
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver(new decXmlDocument);
 	
 	deVirtualFileSystem &vfs = ogl.GetVFS();

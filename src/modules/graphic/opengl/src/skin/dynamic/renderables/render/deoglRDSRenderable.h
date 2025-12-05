@@ -41,6 +41,10 @@ class deoglRenderPlanMasked;
  * Render dynamic skin renderable.
  */
 class deoglRDSRenderable : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDSRenderable> Ref;
+
+
 public:
 	enum eType{
 		etValue,

@@ -39,7 +39,8 @@ private:
 	class Tracker : public deObject{
 	public:
 		typedef deTObjectReference<Tracker> Ref;
-		
+	
+	
 		const deoxrPath path;
 		deoxrPath pathRole;
 		deoxrDevice::Ref device;
@@ -53,7 +54,8 @@ private:
 	class RoleAction : public deObject{
 	public:
 		typedef deTObjectReference<RoleAction> Ref;
-		
+	
+	
 		const deoxrPath path;
 		const deoxrAction::Ref action;
 		

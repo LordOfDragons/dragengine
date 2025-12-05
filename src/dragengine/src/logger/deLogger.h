@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<deLogger> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

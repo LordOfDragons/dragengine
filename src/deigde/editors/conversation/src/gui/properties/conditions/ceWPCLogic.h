@@ -25,7 +25,7 @@
 #ifndef _CEWPCLOGIC_H_
 #define _CEWPCLOGIC_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPCondition.h"
 
@@ -39,7 +39,7 @@ class ceWPTopic;
  */
 class ceWPCLogic : public ceWPCondition{
 private:
-	igdeComboBoxReference pCBOperator;
+	igdeComboBox::Ref pCBOperator;
 	
 	
 	

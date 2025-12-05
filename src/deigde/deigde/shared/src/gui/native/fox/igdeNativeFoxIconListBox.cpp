@@ -32,7 +32,6 @@
 #include "igdeNativeFoxIconListBox.h"
 #include "igdeNativeFoxResizer.h"
 #include "../../igdeIconListBox.h"
-#include "../../igdeIconListBox.h"
 #include "../../igdeCommonDialogs.h"
 #include "../../igdeContainer.h"
 #include "../../model/igdeListItem.h"

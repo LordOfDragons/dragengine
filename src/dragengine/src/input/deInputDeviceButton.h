@@ -27,7 +27,7 @@
 
 #include "../common/string/decString.h"
 #include "../common/collection/decObjectOrderedSet.h"
-#include "../resources/image/deImageReference.h"
+#include "../resources/image/deImage.h"
 
 
 /**
@@ -140,7 +140,7 @@ private:
 	decString pID, pName;
 	eButtonTypes pType;
 	decString pComponent;
-	deImageReference pDisplayImage;
+	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	bool pTouchable, pApproachable;

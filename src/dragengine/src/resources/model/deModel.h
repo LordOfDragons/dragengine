@@ -52,7 +52,6 @@ public:
 	typedef deTObjectReference<deModel> Ref;
 	
 	
-	
 private:
 	deModelBone **pBones;
 	int pBoneCount;

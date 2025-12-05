@@ -1224,7 +1224,7 @@ void deoglRenderPlan::pPlanEnvMaps(){
 		
 		// if we found an environment map update it
 		if( updateEnvmap ){
-			const deObjectReference guard( updateEnvmap );
+			const deoglEnvironmentMap::Ref guard(updateEnvmap);
 			updateEnvmap->Update( *this );
 			
 			// rendering the environment map potentially alters the reference position. ensure the reference

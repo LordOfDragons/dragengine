@@ -26,7 +26,7 @@
 #define _GDEVAOCAMERA_H_
 
 #include "gdeVAOSubObject.h"
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class gdeOCCamera;
 class igdeWDebugDrawerShape;
@@ -38,10 +38,15 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object camera for edit view.
  */
 class gdeVAOCamera : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOCamera> Ref;
+	
+	
 private:
 	gdeOCCamera *pOCCamera;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

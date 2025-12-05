@@ -66,7 +66,6 @@
 #include "../triangles/deoglTriangleSorter.h"
 #include "../visitors/deoglTransformVolume.h"
 #include "../world/deoglRWorld.h"
-#include "../world/deoglRWorld.h"
 #include "../world/deoglWorldOctree.h"
 
 #include <dragengine/common/exceptions.h>

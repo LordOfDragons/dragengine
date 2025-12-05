@@ -65,6 +65,10 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRDecal &pDecal;
 	public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDecal> Ref;
+
+
 		WorldComputeElement( deoglRDecal &decal );
 		virtual void UpdateData( sDataElement &data ) const;
 		virtual void UpdateDataGeometries( sDataElementGeometry *data ) const;

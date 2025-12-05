@@ -35,7 +35,6 @@
 #include "../common/file/decMemoryFileReader.h"
 #include "../common/utils/decTgaImage.h"
 #include "../common/xmlparser/decXmlDocument.h"
-#include "../common/xmlparser/decXmlDocumentReference.h"
 #include "../common/xmlparser/decXmlCharacterData.h"
 #include "../common/xmlparser/decXmlElementTag.h"
 #include "../common/xmlparser/decXmlAttValue.h"
@@ -110,7 +109,7 @@ void dealFont::pCleanUp(){
 void dealFont::pLoadXML( const char *filename ){
 	decMemoryFile *memoryFileXML = NULL;
 	decMemoryFileReader *reader = NULL;
-	decXmlDocumentReference xmldoc;
+	decXmlDocument::Ref xmldoc;
 	
 	try{
 		memoryFileXML = new decMemoryFile( "xml" );

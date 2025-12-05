@@ -25,10 +25,10 @@
 #ifndef _DESPEAKER_H_
 #define _DESPEAKER_H_
 
-#include "deSoundReference.h"
+#include "deSound.h"
 #include "../deResource.h"
-#include "../synthesizer/deSynthesizerInstanceReference.h"
-#include "../video/deVideoPlayerReference.h"
+#include "../synthesizer/deSynthesizerInstance.h"
+#include "../video/deVideoPlayer.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 #include "../../common/shape/decShapeList.h"
@@ -70,7 +70,6 @@ public:
 	typedef deTObjectReference<deSpeaker> Ref;
 	
 	
-	
 public:
 	/** \brief Speaker type. */
 	enum eSpeakerType{
@@ -97,9 +96,9 @@ public:
 	
 private:
 	eSpeakerType pType;
-	deSoundReference pSound;
-	deSynthesizerInstanceReference pSynthesizer;
-	deVideoPlayerReference pVideoPlayer;
+	deSound::Ref pSound;
+	deSynthesizerInstance::Ref pSynthesizer;
+	deVideoPlayer::Ref pVideoPlayer;
 	decDVector pPosition;
 	decQuaternion pOrientation;
 	decVector pVelocity;

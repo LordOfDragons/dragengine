@@ -46,6 +46,10 @@ private:
 	dealGPMParameterList pParameterList;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGPModule> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game profile module. */

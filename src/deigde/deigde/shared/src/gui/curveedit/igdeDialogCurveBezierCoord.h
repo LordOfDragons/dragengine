@@ -26,7 +26,7 @@
 #define _IGDEDIALOGCURVEBEZIERCOORD_H_
 
 #include "../dialog/igdeDialog.h"
-#include "../composed/igdeEditVector2Reference.h"
+#include "../composed/igdeEditVector2.h"
 
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 
@@ -38,9 +38,9 @@
 class DE_DLL_EXPORT igdeDialogCurveBezierCoord : public igdeDialog{
 private:
 	decCurveBezierPoint pPoint;
-	igdeEditVector2Reference pEditPoint;
-	igdeEditVector2Reference pEditHandle1;
-	igdeEditVector2Reference pEditHandle2;
+	igdeEditVector2::Ref pEditPoint;
+	igdeEditVector2::Ref pEditHandle1;
+	igdeEditVector2::Ref pEditHandle2;
 	
 	
 	

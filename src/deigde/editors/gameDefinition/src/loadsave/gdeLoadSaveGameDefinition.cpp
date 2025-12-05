@@ -59,7 +59,6 @@
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -68,7 +67,6 @@
 #include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -102,7 +100,7 @@ pPattern( ".degd" ){
 
 void gdeLoadSaveGameDefinition::LoadGameDefinition( gdeGameDefinition &gameDefinition,
 decBaseFileReader &reader ){
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
@@ -237,8 +235,7 @@ void gdeLoadSaveGameDefinition::pReadGameDefinition( const decXmlElementTag &roo
 }
 
 void gdeLoadSaveGameDefinition::pReadProperty( const decXmlElementTag &root, gdePropertyList &propertyList ){
-	deObjectReference objRef;
-	objRef.TakeOver( new gdeProperty( GetAttributeString( root, "name" ) ) );
+	const gdeProperty::Ref objRef(gdeProperty::Ref::NewWith(GetAttributeString( root, "name" )));
 	gdeProperty &property = ( gdeProperty& )( deObject& )objRef;
 	
 	pReadProperty( root, property );
@@ -412,14 +409,12 @@ void gdeLoadSaveGameDefinition::pReadProperty( const decXmlElementTag &root, gde
 
 void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, gdeGameDefinition &gameDefinition ){
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	decStringSet partialHideTags;
 	decStringSet hideTags;
 	int i;
 	
-	objRef.TakeOver( new gdeObjectClass );
-	gdeObjectClass &objectClass = ( gdeObjectClass& )( deObject& )objRef;
-	objectClass.SetName( GetAttributeString( root, "name" ) );
+	const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::NewWith());
+	objectClass->SetName( GetAttributeString( root, "name" ) );
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -430,29 +425,29 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 		const decString tagName( tag->GetName() );
 		
 		if( tagName == "description" ){
-			objectClass.SetDescription( ReadMultilineString( *tag ) );
+			objectClass->SetDescription( ReadMultilineString( *tag ) );
 			
 		}else if( tagName == "property" ){
-			pReadProperty( *tag, objectClass.GetProperties() );
+			pReadProperty( *tag, objectClass->GetProperties() );
 			
 		}else if( tagName == "propertyValue" ){
-			objectClass.GetPropertyValues().SetAt( GetAttributeString( *tag, "name" ),
+			objectClass->GetPropertyValues().SetAt( GetAttributeString( *tag, "name" ),
 				ReadMultilineString( *tag ) );
 			
 		}else if( tagName == "textureProperty" ){
-			pReadProperty( *tag, objectClass.GetTextureProperties() );
+			pReadProperty( *tag, objectClass->GetTextureProperties() );
 			
 		}else if( tagName == "scaleMode" ){
 			const decString scaleMode( GetCDataString( *tag ) );
 			
 			if( scaleMode == "fixed" ){
-				objectClass.SetScaleMode( gdeObjectClass::esmFixed );
+				objectClass->SetScaleMode( gdeObjectClass::esmFixed );
 				
 			}else if( scaleMode == "uniform" ){
-				objectClass.SetScaleMode( gdeObjectClass::esmUniform );
+				objectClass->SetScaleMode( gdeObjectClass::esmUniform );
 				
 			}else if( scaleMode == "free" ){
-				objectClass.SetScaleMode( gdeObjectClass::esmFree );
+				objectClass->SetScaleMode( gdeObjectClass::esmFree );
 				
 			}else{
 				LogWarnUnknownValue( *tag, scaleMode );
@@ -498,17 +493,17 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 			pReadObjectClassTexture( *tag, objectClass );
 			
 		}else if( tagName == "category" ){
-			objectClass.SetCategory( GetCDataString( *tag ) );
+			objectClass->SetCategory( GetCDataString( *tag ) );
 			
 		}else if( tagName == "ghost" ){
-			objectClass.SetIsGhost( GetCDataBool( *tag ) );
+			objectClass->SetIsGhost( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "canInstantiate"
 		/* backwards compatibility */ || tagName == "canInstanciate" ){
-			objectClass.SetCanInstantiate( GetCDataBool( *tag ) );
+			objectClass->SetCanInstantiate( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "attachableBehavior" ){
-			objectClass.SetIsAttachableBehavior(GetCDataBool(*tag));
+			objectClass->SetIsAttachableBehavior(GetCDataBool(*tag));
 			
 		}else if( tagName == "replaceSubObjects" ){
 			const decStringList keys( decString( GetCDataString( *tag ) ).Split( ',' ) );
@@ -553,13 +548,13 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 				}
 			}
 			
-			objectClass.SetInheritSubObjects( inherit );
+			objectClass->SetInheritSubObjects( inherit );
 			
 		}else if( tagName == "inherit" ){
 			pReadObjectClassInherit( *tag, objectClass );
 			
 		}else if( tagName == "defaultInheritPropertyPrefix" ){
-			objectClass.SetDefaultInheritPropertyPrefix( GetCDataString( *tag ) );
+			objectClass->SetDefaultInheritPropertyPrefix( GetCDataString( *tag ) );
 			
 		}else if( tagName == "hideTag" ){
 			hideTags.Add( GetCDataString( *tag ) );
@@ -572,18 +567,15 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 		}
 	}
 	
-	objectClass.SetHideTags( hideTags );
-	objectClass.SetPartialHideTags( partialHideTags );
-	gameDefinition.AddObjectClass( &objectClass );
+	objectClass->SetHideTags( hideTags );
+	objectClass->SetPartialHideTags( partialHideTags );
+	gameDefinition.AddObjectClass(objectClass);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassInherit( const decXmlElementTag &root, gdeObjectClass &objectClass ){
-	deObjectReference objRef;
+	const gdeOCInherit::Ref inherit(gdeOCInherit::Ref::NewWith(GetAttributeString(root, "name")));
 	const int count = root.GetElementCount();
 	int i;
-	
-	objRef.TakeOver( new gdeOCInherit( GetAttributeString( root, "name" ) ) );
-	gdeOCInherit &inherit = ( gdeOCInherit& )( deObject& )objRef;
 	
 	for( i=0; i<count; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -593,23 +585,20 @@ void gdeLoadSaveGameDefinition::pReadObjectClassInherit( const decXmlElementTag 
 		
 		const decString tagName( tag->GetName() );
 		if( tagName == "propertyPrefix" ){
-			inherit.SetPropertyPrefix( GetCDataString( *tag ) );
+			inherit->SetPropertyPrefix( GetCDataString( *tag ) );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	objectClass.GetInherits().Add( &inherit );
+	objectClass.GetInherits().Add(inherit);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassBillboard( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCBillboard::Ref billboard(gdeOCBillboard::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCBillboard );
-	gdeOCBillboard &billboard = ( gdeOCBillboard& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -620,78 +609,78 @@ void gdeLoadSaveGameDefinition::pReadObjectClassBillboard( const decXmlElementTa
 		const decString tagName( tag->GetName() );
 		
 		if( tagName == "skin" ){
-			billboard.SetSkinPath( GetCDataString( *tag ) );
+			billboard->SetSkinPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "axis" ){
 			decVector axis;
 			ReadVector( *tag, axis );
-			billboard.SetAxis( axis );
+			billboard->SetAxis( axis );
 			
 		}else if( tagName == "size" ){
 			decVector2 size;
 			ReadVector2( *tag, size );
-			billboard.SetSize( size );
+			billboard->SetSize( size );
 			
 		}else if( tagName == "offset" ){
 			decVector2 offset;
 			ReadVector2( *tag, offset );
-			billboard.SetOffset( offset );
+			billboard->SetOffset( offset );
 			
 		}else if( tagName == "locked" ){
-			billboard.SetLocked( GetCDataBool( *tag ) );
+			billboard->SetLocked( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "spherical" ){
-			billboard.SetSpherical( GetCDataBool( *tag ) );
+			billboard->SetSpherical( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "sizeFixedToScreen" ){
-			billboard.SetSizeFixedToScreen( GetCDataBool( *tag ) );
+			billboard->SetSizeFixedToScreen( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "noScaling" ){
-			billboard.SetDoNotScale( GetCDataBool( *tag ) );
+			billboard->SetDoNotScale( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "partialHide" ){
-			billboard.SetPartialHide( GetCDataBool( *tag ) );
+			billboard->SetPartialHide( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "renderEnvMap" ){
-			billboard.SetRenderEnvMap( GetCDataBool( *tag ) );
+			billboard->SetRenderEnvMap( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			billboard.SetPosition( position );
+			billboard->SetPosition( position );
 			
 		}else if( tagName == "bone" ){
-			billboard.SetBoneName( GetCDataString( *tag ) );
+			billboard->SetBoneName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "link" ){
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "skin" ){
-				billboard.SetPropertyName( gdeOCBillboard::epSkin,
+				billboard->SetPropertyName( gdeOCBillboard::epSkin,
 					GetAttributeString( *tag, "property" ) );
 				
 			}else if( value == "axis" ){
-				billboard.SetPropertyName( gdeOCBillboard::epAxis,
+				billboard->SetPropertyName( gdeOCBillboard::epAxis,
 					GetAttributeString( *tag, "property" ) );
 				
 			}else if( value == "offset" ){
-				billboard.SetPropertyName( gdeOCBillboard::epOffset,
+				billboard->SetPropertyName( gdeOCBillboard::epOffset,
 					GetAttributeString( *tag, "property" ) );
 				
 			}else if( value == "locked" ){
-				billboard.SetPropertyName( gdeOCBillboard::epLocked,
+				billboard->SetPropertyName( gdeOCBillboard::epLocked,
 					GetAttributeString( *tag, "property" ) );
 				
 			}else if( value == "spherical" ){
-				billboard.SetPropertyName( gdeOCBillboard::epSpherical,
+				billboard->SetPropertyName( gdeOCBillboard::epSpherical,
 					GetAttributeString( *tag, "property" ) );
 				
 			}else if( value == "renderEnvMap" ){
-				billboard.SetPropertyName( gdeOCBillboard::epRenderEnvMap,
+				billboard->SetPropertyName( gdeOCBillboard::epRenderEnvMap,
 					GetAttributeString( *tag, "property" ) );
 				
 			}else if( value == "attachPosition" ){
-				billboard.SetPropertyName( gdeOCBillboard::epAttachPosition,
+				billboard->SetPropertyName( gdeOCBillboard::epAttachPosition,
 					GetAttributeString( *tag, "property" ) );
 				
 			}else{
@@ -703,16 +692,13 @@ void gdeLoadSaveGameDefinition::pReadObjectClassBillboard( const decXmlElementTa
 		}
 	}
 	
-	objectClass.GetBillboards().Add( &billboard );
+	objectClass.GetBillboards().Add(billboard);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCComponent::Ref component(gdeOCComponent::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCComponent );
-	gdeOCComponent &component = ( gdeOCComponent& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -723,81 +709,81 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 		const decString tagName( tag->GetName() );
 		
 		if( tagName == "model" ){
-			component.SetModelPath( GetCDataString( *tag ) );
+			component->SetModelPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "skin" ){
-			component.SetSkinPath( GetCDataString( *tag ) );
+			component->SetSkinPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "rig" ){
-			component.SetRigPath( GetCDataString( *tag ) );
+			component->SetRigPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "animator" ){
-			component.SetAnimatorPath( GetCDataString( *tag ) );
+			component->SetAnimatorPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "animation" ){
-			component.SetAnimationPath( GetCDataString( *tag ) );
+			component->SetAnimationPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "move" ){
-			component.SetMove( GetCDataString( *tag ) );
+			component->SetMove( GetCDataString( *tag ) );
 			
 		}else if( tagName == "occlusionMesh" ){
-			component.SetOcclusionMeshPath( GetCDataString( *tag ) );
+			component->SetOcclusionMeshPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "audioModel" ){
-			component.SetAudioModelPath( GetCDataString( *tag ) );
+			component->SetAudioModelPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "playbackController" ){
-			component.SetPlaybackController( GetCDataString( *tag ) );
+			component->SetPlaybackController( GetCDataString( *tag ) );
 			
 		}else if( tagName == "noScaling" ){
-			component.SetDoNotScale( GetCDataBool( *tag ) );
+			component->SetDoNotScale( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "static" ){
-			component.SetStatic( GetCDataBool( *tag ) );
+			component->SetStatic( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "partialHide" ){
-			component.SetPartialHide( GetCDataBool( *tag ) );
+			component->SetPartialHide( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "attachTarget" ){
-			component.SetAttachTarget( GetCDataBool( *tag ) );
+			component->SetAttachTarget( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "colliderResponseType" ){
 			const decString value( GetCDataString( *tag ) );
 			
 			if( value == "static" ){
-				component.SetColliderResponseType( deCollider::ertStatic );
+				component->SetColliderResponseType( deCollider::ertStatic );
 				
 			}else if( value == "kinematic" ){
-				component.SetColliderResponseType( deCollider::ertKinematic );
+				component->SetColliderResponseType( deCollider::ertKinematic );
 				
 			}else if( value == "dynamic" ){
-				component.SetColliderResponseType( deCollider::ertDynamic );
+				component->SetColliderResponseType( deCollider::ertDynamic );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
 			}
 			
 		}else if( tagName == "renderEnvMap" ){
-			component.SetRenderEnvMap( GetCDataBool( *tag ) );
+			component->SetRenderEnvMap( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "affectsAudio" ){
-			component.SetAffectsAudio( GetCDataBool( *tag ) );
+			component->SetAffectsAudio( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "lightShadowIgnore" ){
-			component.SetLightShadowIgnore( GetCDataBool( *tag ) );
+			component->SetLightShadowIgnore( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			component.SetPosition( position );
+			component->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			component.SetRotation( orientation );
+			component->SetRotation( orientation );
 			
 		}else if( tagName == "bone" ){
-			component.SetBoneName( GetCDataString( *tag ) );
+			component->SetBoneName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "texture" ){
 			pReadObjectClassComponentTexture( *tag, objectClass, component );
@@ -807,46 +793,46 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "model" ){
-				component.SetPropertyName( gdeOCComponent::epModel, property );
+				component->SetPropertyName( gdeOCComponent::epModel, property );
 				
 			}else if( value == "skin" ){
-				component.SetPropertyName( gdeOCComponent::epSkin, property );
+				component->SetPropertyName( gdeOCComponent::epSkin, property );
 				
 			}else if( value == "rig" ){
-				component.SetPropertyName( gdeOCComponent::epRig, property );
+				component->SetPropertyName( gdeOCComponent::epRig, property );
 				
 			}else if( value == "animator" ){
-				component.SetPropertyName( gdeOCComponent::epAnimator, property );
+				component->SetPropertyName( gdeOCComponent::epAnimator, property );
 				
 			}else if( value == "playbackController" ){
-				component.SetPropertyName( gdeOCComponent::epPlaybackController, property );
+				component->SetPropertyName( gdeOCComponent::epPlaybackController, property );
 				
 			}else if( value == "occlusionMesh" ){
-				component.SetPropertyName( gdeOCComponent::epOcclusionMesh, property );
+				component->SetPropertyName( gdeOCComponent::epOcclusionMesh, property );
 				
 			}else if( value == "audioModel" ){
-				component.SetPropertyName( gdeOCComponent::epAudioModel, property );
+				component->SetPropertyName( gdeOCComponent::epAudioModel, property );
 				
 			}else if( value == "renderEnvMap" ){
-				component.SetPropertyName( gdeOCComponent::epRenderEnvMap, property );
+				component->SetPropertyName( gdeOCComponent::epRenderEnvMap, property );
 				
 			}else if( value == "affectsAudio" ){
-				component.SetPropertyName( gdeOCComponent::epAffectsAudio, property );
+				component->SetPropertyName( gdeOCComponent::epAffectsAudio, property );
 				
 			}else if( value == "lightShadowIgnore" ){
-				component.SetPropertyName( gdeOCComponent::epLightShadowIgnore, property );
+				component->SetPropertyName( gdeOCComponent::epLightShadowIgnore, property );
 				
 			}else if( value == "attachPosition" ){
-				component.SetPropertyName( gdeOCComponent::epAttachPosition, property );
+				component->SetPropertyName( gdeOCComponent::epAttachPosition, property );
 				
 			}else if( value == "attachRotation" ){
-				component.SetPropertyName( gdeOCComponent::epAttachRotation, property );
+				component->SetPropertyName( gdeOCComponent::epAttachRotation, property );
 				
 			}else if( value == "animation" ){
-				component.SetPropertyName( gdeOCComponent::epAnimation, property );
+				component->SetPropertyName( gdeOCComponent::epAnimation, property );
 				
 			}else if( value == "move" ){
-				component.SetPropertyName( gdeOCComponent::epMove, property );
+				component->SetPropertyName( gdeOCComponent::epMove, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -857,7 +843,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassComponent( const decXmlElementTa
 		}
 	}
 	
-	objectClass.GetComponents().Add( &component );
+	objectClass.GetComponents().Add(component);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassComponentTexture(
@@ -867,11 +853,9 @@ const decXmlElementTag &root, gdeObjectClass&, gdeOCComponent &component ){
 		LogErrorGenericProblemValue( root, name, "A texture with this name exists already." );
 	}
 	
+	const gdeOCComponentTexture::Ref objRef(gdeOCComponentTexture::Ref::NewWith( name ));
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCComponentTexture( name ) );
 	gdeOCComponentTexture &texture = ( gdeOCComponentTexture& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
@@ -916,12 +900,9 @@ const decXmlElementTag &root, gdeObjectClass&, gdeOCComponent &component ){
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassLight( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCLight::Ref light(gdeOCLight::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCLight );
-	gdeOCLight &light = ( gdeOCLight& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -934,60 +915,60 @@ void gdeLoadSaveGameDefinition::pReadObjectClassLight( const decXmlElementTag &r
 		if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			light.SetPosition( position );
+			light->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			light.SetRotation( orientation );
+			light->SetRotation( orientation );
 			
 		}else if( tagName == "bone" ){
-			light.SetBoneName( GetCDataString( *tag ) );
+			light->SetBoneName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "color" ){
 			decColor color;
 			ReadColor( *tag, color );
-			light.SetColor( color );
+			light->SetColor( color );
 			
 		}else if( tagName == "type" ){
 			const decString value( GetCDataString( *tag ) );
 			
 			if( value == "point" ){
-				light.SetType( deLight::eltPoint );
+				light->SetType( deLight::eltPoint );
 				
 			}else if( value == "spot" ){
-				light.SetType( deLight::eltSpot );
+				light->SetType( deLight::eltSpot );
 				
 			}else if( value == "projector" ){
-				light.SetType( deLight::eltProjector );
+				light->SetType( deLight::eltProjector );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
 			}
 			
 		}else if( tagName == "intensity" ){
-			light.SetIntensity( GetCDataFloat( *tag ) );
+			light->SetIntensity( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "range" ){
-			light.SetRange( GetCDataFloat( *tag ) );
+			light->SetRange( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "ambientRatio" ){
-			light.SetAmbientRatio( GetCDataFloat( *tag ) );
+			light->SetAmbientRatio( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "halfIntensityDistance" ){
-			light.SetHalfIntensityDistance( GetCDataFloat( *tag ) );
+			light->SetHalfIntensityDistance( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "spotAngle" ){
-			light.SetSpotAngle( GetCDataFloat( *tag ) );
+			light->SetSpotAngle( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "spotRatio" ){
-			light.SetSpotRatio( GetCDataFloat( *tag ) );
+			light->SetSpotRatio( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "spotSmoothness" ){
-			light.SetSpotSmoothness( GetCDataFloat( *tag ) );
+			light->SetSpotSmoothness( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "spotExponent" ){
-			light.SetSpotExponent( GetCDataFloat( *tag ) );
+			light->SetSpotExponent( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "shadowOrigin" ){
 			// deprecated
@@ -996,31 +977,31 @@ void gdeLoadSaveGameDefinition::pReadObjectClassLight( const decXmlElementTag &r
 			// deprecated
 			
 		}else if( tagName == "activated" ){
-			light.SetActivated( GetCDataBool( *tag ) );
+			light->SetActivated( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "castShadows" ){
-			light.SetCastShadows( GetCDataBool( *tag ) );
+			light->SetCastShadows( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "lightSkin" ){
-			light.SetLightSkinPath( GetCDataString( *tag ) );
+			light->SetLightSkinPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "hintLightImportance" ){
-			light.SetHintLightImportance( GetCDataInt( *tag ) );
+			light->SetHintLightImportance( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "hintShadowImportance" ){
-			light.SetHintShadowImportance( GetCDataInt( *tag ) );
+			light->SetHintShadowImportance( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "hintMovement" ){
 			const decString value( GetCDataString( *tag ) );
 			
 			if( value == "static" ){
-				light.SetHintMovement( deLight::emhStationary );
+				light->SetHintMovement( deLight::emhStationary );
 				
 			}else if( value == "jittering" ){
-				light.SetHintMovement( deLight::emhJittering );
+				light->SetHintMovement( deLight::emhJittering );
 				
 			}else if( value == "dynamic" ){
-				light.SetHintMovement( deLight::emhDynamic );
+				light->SetHintMovement( deLight::emhDynamic );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1030,16 +1011,16 @@ void gdeLoadSaveGameDefinition::pReadObjectClassLight( const decXmlElementTag &r
 			const decString value( GetCDataString( *tag ) );
 			
 			if( value == "static" ){
-				light.SetHintParameter( deLight::ephStatic );
+				light->SetHintParameter( deLight::ephStatic );
 				
 			}else if( value == "activation" ){
-				light.SetHintParameter( deLight::ephActivation );
+				light->SetHintParameter( deLight::ephActivation );
 				
 			}else if( value == "flicker" ){
-				light.SetHintParameter( deLight::ephFlicker );
+				light->SetHintParameter( deLight::ephFlicker );
 				
 			}else if( value == "dynamic" ){
-				light.SetHintParameter( deLight::ephDynamic );
+				light->SetHintParameter( deLight::ephDynamic );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1050,55 +1031,55 @@ void gdeLoadSaveGameDefinition::pReadObjectClassLight( const decXmlElementTag &r
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "type" ){
-				light.SetPropertyName( gdeOCLight::epType, property );
+				light->SetPropertyName( gdeOCLight::epType, property );
 				
 			}else if( value == "color" ){
-				light.SetPropertyName( gdeOCLight::epColor, property );
+				light->SetPropertyName( gdeOCLight::epColor, property );
 				
 			}else if( value == "intensity" ){
-				light.SetPropertyName( gdeOCLight::epIntensity, property );
+				light->SetPropertyName( gdeOCLight::epIntensity, property );
 				
 			}else if( value == "range" ){
-				light.SetPropertyName( gdeOCLight::epRange, property );
+				light->SetPropertyName( gdeOCLight::epRange, property );
 				
 			}else if( value == "ambientRatio" ){
-				light.SetPropertyName( gdeOCLight::epAmbientRatio, property );
+				light->SetPropertyName( gdeOCLight::epAmbientRatio, property );
 				
 			}else if( value == "halfIntensityDistance" ){
-				light.SetPropertyName( gdeOCLight::epHalfIntDist, property );
+				light->SetPropertyName( gdeOCLight::epHalfIntDist, property );
 				
 			}else if( value == "spotAngle" ){
-				light.SetPropertyName( gdeOCLight::epSpotAngle, property );
+				light->SetPropertyName( gdeOCLight::epSpotAngle, property );
 				
 			}else if( value == "spotRatio" ){
-				light.SetPropertyName( gdeOCLight::epSpotRatio, property );
+				light->SetPropertyName( gdeOCLight::epSpotRatio, property );
 				
 			}else if( value == "spotSmoothness" ){
-				light.SetPropertyName( gdeOCLight::epSpotSmoothness, property );
+				light->SetPropertyName( gdeOCLight::epSpotSmoothness, property );
 				
 			}else if( value == "spotExponent" ){
-				light.SetPropertyName( gdeOCLight::epSpotExponent, property );
+				light->SetPropertyName( gdeOCLight::epSpotExponent, property );
 				
 			}else if( value == "lightSkin" ){
-				light.SetPropertyName( gdeOCLight::epLightSkin, property );
+				light->SetPropertyName( gdeOCLight::epLightSkin, property );
 				
 			}else if( value == "activated" ){
-				light.SetPropertyName( gdeOCLight::epActivated, property );
+				light->SetPropertyName( gdeOCLight::epActivated, property );
 				
 			}else if( value == "castShadows" ){
-				light.SetPropertyName( gdeOCLight::epCastShadows, property );
+				light->SetPropertyName( gdeOCLight::epCastShadows, property );
 				
 			}else if( value == "hintLightImportance" ){
-				light.SetPropertyName( gdeOCLight::epHintLightImportance, property );
+				light->SetPropertyName( gdeOCLight::epHintLightImportance, property );
 				
 			}else if( value == "hintShadowImportance" ){
-				light.SetPropertyName( gdeOCLight::epHintShadowImportance, property );
+				light->SetPropertyName( gdeOCLight::epHintShadowImportance, property );
 				
 			}else if( value == "attachPosition" ){
-				light.SetPropertyName( gdeOCLight::epAttachPosition, property );
+				light->SetPropertyName( gdeOCLight::epAttachPosition, property );
 				
 			}else if( value == "attachRotation" ){
-				light.SetPropertyName( gdeOCLight::epAttachRotation, property );
+				light->SetPropertyName( gdeOCLight::epAttachRotation, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1109,7 +1090,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassLight( const decXmlElementTag &r
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "activated" ){
-				light.SetTriggerName( gdeOCLight::etActivated, property );
+				light->SetTriggerName( gdeOCLight::etActivated, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1120,16 +1101,13 @@ void gdeLoadSaveGameDefinition::pReadObjectClassLight( const decXmlElementTag &r
 		}
 	}
 	
-	objectClass.GetLights().Add( &light );
+	objectClass.GetLights().Add(light);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassSnapPoint( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCSnapPoint::Ref snapPoint(gdeOCSnapPoint::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCSnapPoint );
-	gdeOCSnapPoint &snapPoint = ( gdeOCSnapPoint& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -1140,39 +1118,36 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSnapPoint( const decXmlElementTa
 		const decString tagName( tag->GetName() );
 		
 		if( tagName == "name" ){
-			snapPoint.SetName( GetCDataString( *tag ) );
+			snapPoint->SetName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			snapPoint.SetPosition( position );
+			snapPoint->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector rotation;
 			ReadVector( *tag, rotation );
-			snapPoint.SetRotation( rotation );
+			snapPoint->SetRotation( rotation );
 			
 		}else if( tagName == "snapDistance" ){
-			snapPoint.SetSnapDistance( GetCDataFloat( *tag ) );
+			snapPoint->SetSnapDistance( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "snapToRotation" ){
-			snapPoint.SetSnapToRotation( GetCDataBool( *tag ) );
+			snapPoint->SetSnapToRotation( GetCDataBool( *tag ) );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	objectClass.GetSnapPoints().Add( &snapPoint );
+	objectClass.GetSnapPoints().Add(snapPoint);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassParticleEmitter( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCParticleEmitter::Ref emitter(gdeOCParticleEmitter::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCParticleEmitter );
-	gdeOCParticleEmitter &emitter = ( gdeOCParticleEmitter& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -1183,39 +1158,39 @@ void gdeLoadSaveGameDefinition::pReadObjectClassParticleEmitter( const decXmlEle
 		const decString tagName( tag->GetName() );
 		
 		if( tagName == "path" ){
-			emitter.SetPath( GetCDataString( *tag ) );
+			emitter->SetPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			emitter.SetPosition( position );
+			emitter->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			emitter.SetRotation( orientation );
+			emitter->SetRotation( orientation );
 			
 		}else if( tagName == "bone" ){
-			emitter.SetBoneName( GetCDataString( *tag ) );
+			emitter->SetBoneName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "casting" ){
-			emitter.SetCasting( GetCDataBool( *tag ) );
+			emitter->SetCasting( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "link" ){
 			const char * const property = GetAttributeString( *tag, "property" );
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "path" ){
-				emitter.SetPropertyName( gdeOCParticleEmitter::epPath, property );
+				emitter->SetPropertyName( gdeOCParticleEmitter::epPath, property );
 				
 			}else if( value == "casting" ){
-				emitter.SetPropertyName( gdeOCParticleEmitter::epCasting, property );
+				emitter->SetPropertyName( gdeOCParticleEmitter::epCasting, property );
 				
 			}else if( value == "attachPosition" ){
-				emitter.SetPropertyName( gdeOCParticleEmitter::epAttachPosition, property );
+				emitter->SetPropertyName( gdeOCParticleEmitter::epAttachPosition, property );
 				
 			}else if( value == "attachRotation" ){
-				emitter.SetPropertyName( gdeOCParticleEmitter::epAttachRotation, property );
+				emitter->SetPropertyName( gdeOCParticleEmitter::epAttachRotation, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1226,7 +1201,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassParticleEmitter( const decXmlEle
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "casting" ){
-				emitter.SetTriggerName( gdeOCParticleEmitter::etCasting, property );
+				emitter->SetTriggerName( gdeOCParticleEmitter::etCasting, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1237,18 +1212,15 @@ void gdeLoadSaveGameDefinition::pReadObjectClassParticleEmitter( const decXmlEle
 		}
 	}
 	
-	objectClass.GetParticleEmitters().Add( &emitter );
+	objectClass.GetParticleEmitters().Add(emitter);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassForceField(
 const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCForceField::Ref field(gdeOCForceField::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
 	igdeCodecPropertyString codec;
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCForceField );
-	gdeOCForceField &field = ( gdeOCForceField& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -1261,38 +1233,38 @@ const decXmlElementTag &root, gdeObjectClass &objectClass ){
 		if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			field.SetPosition( position );
+			field->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			field.SetRotation( orientation );
+			field->SetRotation( orientation );
 			
 		}else if( tagName == "bone" ){
-			field.SetBoneName( GetCDataString( *tag ) );
+			field->SetBoneName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "influenceArea" ){
 			decShapeList list;
 			codec.DecodeShapeList( GetCDataString( *tag ), list );
-			field.SetInfluenceArea( list );
+			field->SetInfluenceArea( list );
 			
 		}else if( tagName == "radius" ){
-			field.SetRadius( GetCDataFloat( *tag ) );
+			field->SetRadius( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "exponent" ){
-			field.SetExponent( GetCDataFloat( *tag ) );
+			field->SetExponent( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "fieldType" ){
 			const decString cdata( GetCDataString( *tag ) );
 			
 			if( cdata == "radial" ){
-				field.SetFieldType( deForceField::eftRadial );
+				field->SetFieldType( deForceField::eftRadial );
 				
 			}else if( cdata == "linear" ){
-				field.SetFieldType( deForceField::eftLinear );
+				field->SetFieldType( deForceField::eftLinear );
 				
 			}else if( cdata == "vortex" ){
-				field.SetFieldType( deForceField::eftVortex );
+				field->SetFieldType( deForceField::eftVortex );
 				
 			}else{
 				LogWarnUnknownValue( *tag, cdata );
@@ -1302,16 +1274,16 @@ const decXmlElementTag &root, gdeObjectClass &objectClass ){
 			const decString cdata( GetCDataString( *tag ) );
 			
 			if( cdata == "direct" ){
-				field.SetApplicationType( deForceField::eatDirect );
+				field->SetApplicationType( deForceField::eatDirect );
 				
 			}else if( cdata == "surface" ){
-				field.SetApplicationType( deForceField::eatSurface );
+				field->SetApplicationType( deForceField::eatSurface );
 				
 			}else if( cdata == "mass" ){
-				field.SetApplicationType( deForceField::eatMass );
+				field->SetApplicationType( deForceField::eatMass );
 				
 			}else if( cdata == "speed" ){
-				field.SetApplicationType( deForceField::eatSpeed );
+				field->SetApplicationType( deForceField::eatSpeed );
 				
 			}else{
 				LogWarnUnknownValue( *tag, cdata );
@@ -1320,67 +1292,67 @@ const decXmlElementTag &root, gdeObjectClass &objectClass ){
 		}else if( tagName == "direction" ){
 			decVector direction;
 			ReadVector( *tag, direction );
-			field.SetDirection( direction );
+			field->SetDirection( direction );
 			
 		}else if( tagName == "force" ){
-			field.SetForce( GetCDataFloat( *tag ) );
+			field->SetForce( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "fluctuationDirection" ){
-			field.SetFluctuationDirection( GetCDataFloat( *tag ) );
+			field->SetFluctuationDirection( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "fluctuationForce" ){
-			field.SetFluctuationForce( GetCDataFloat( *tag ) );
+			field->SetFluctuationForce( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "shape" ){
 			decShapeList list;
 			codec.DecodeShapeList( GetCDataString( *tag ), list );
-			field.SetShape( list );
+			field->SetShape( list );
 			
 		}else if( tagName == "enabled" ){
-			field.SetEnabled( GetCDataBool( *tag ) );
+			field->SetEnabled( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "link" ){
 			const char * const property = GetAttributeString( *tag, "property" );
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "influenceArea" ){
-				field.SetPropertyName( gdeOCForceField::epInfluenceArea, property );
+				field->SetPropertyName( gdeOCForceField::epInfluenceArea, property );
 				
 			}else if( value == "radius" ){
-				field.SetPropertyName( gdeOCForceField::epRadius, property );
+				field->SetPropertyName( gdeOCForceField::epRadius, property );
 				
 			}else if( value == "exponent" ){
-				field.SetPropertyName( gdeOCForceField::epExponent, property );
+				field->SetPropertyName( gdeOCForceField::epExponent, property );
 				
 			}else if( value == "fieldType" ){
-				field.SetPropertyName( gdeOCForceField::epFieldType, property );
+				field->SetPropertyName( gdeOCForceField::epFieldType, property );
 				
 			}else if( value == "applicationType" ){
-				field.SetPropertyName( gdeOCForceField::epApplicationType, property );
+				field->SetPropertyName( gdeOCForceField::epApplicationType, property );
 				
 			}else if( value == "direction" ){
-				field.SetPropertyName( gdeOCForceField::epDirection, property );
+				field->SetPropertyName( gdeOCForceField::epDirection, property );
 				
 			}else if( value == "force" ){
-				field.SetPropertyName( gdeOCForceField::epForce, property );
+				field->SetPropertyName( gdeOCForceField::epForce, property );
 				
 			}else if( value == "fluctuationDirection" ){
-				field.SetPropertyName( gdeOCForceField::epFluctuationDirection, property );
+				field->SetPropertyName( gdeOCForceField::epFluctuationDirection, property );
 				
 			}else if( value == "fluctuationForce" ){
-				field.SetPropertyName( gdeOCForceField::epFluctuationForce, property );
+				field->SetPropertyName( gdeOCForceField::epFluctuationForce, property );
 				
 			}else if( value == "shape" ){
-				field.SetPropertyName( gdeOCForceField::epShape, property );
+				field->SetPropertyName( gdeOCForceField::epShape, property );
 				
 			}else if( value == "enabled" ){
-				field.SetPropertyName( gdeOCForceField::epEnabled, property );
+				field->SetPropertyName( gdeOCForceField::epEnabled, property );
 				
 			}else if( value == "attachPosition" ){
-				field.SetPropertyName( gdeOCForceField::epAttachPosition, property );
+				field->SetPropertyName( gdeOCForceField::epAttachPosition, property );
 				
 			}else if( value == "attachRotation" ){
-				field.SetPropertyName( gdeOCForceField::epAttachRotation, property );
+				field->SetPropertyName( gdeOCForceField::epAttachRotation, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1391,7 +1363,7 @@ const decXmlElementTag &root, gdeObjectClass &objectClass ){
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "enabled" ){
-				field.SetTriggerName( gdeOCForceField::etEnabled, property );
+				field->SetTriggerName( gdeOCForceField::etEnabled, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1402,17 +1374,14 @@ const decXmlElementTag &root, gdeObjectClass &objectClass ){
 		}
 	}
 	
-	objectClass.GetForceFields().Add( &field );
+	objectClass.GetForceFields().Add(field);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassEnvMapProbe( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCEnvMapProbe::Ref envMapProbe(gdeOCEnvMapProbe::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	igdeCodecPropertyString codec;
 	int i;
-	
-	objRef.TakeOver( new gdeOCEnvMapProbe );
-	gdeOCEnvMapProbe &envMapProbe = ( gdeOCEnvMapProbe& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -1425,67 +1394,67 @@ void gdeLoadSaveGameDefinition::pReadObjectClassEnvMapProbe( const decXmlElement
 		if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			envMapProbe.SetPosition( position );
+			envMapProbe->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			envMapProbe.SetRotation( orientation );
+			envMapProbe->SetRotation( orientation );
 			
 		}else if( tagName == "scaling" ){
 			decVector scaling;
 			ReadVector( *tag, scaling );
-			envMapProbe.SetScaling( scaling );
+			envMapProbe->SetScaling( scaling );
 			
 		}else if( tagName == "influenceArea" ){
-			envMapProbe.GetShapeListInfluence().RemoveAll();
-			codec.DecodeShapeList( GetCDataString( *tag ), envMapProbe.GetShapeListInfluence() );
+			envMapProbe->GetShapeListInfluence().RemoveAll();
+			codec.DecodeShapeList( GetCDataString( *tag ), envMapProbe->GetShapeListInfluence() );
 			
 		}else if( tagName == "reflectionShape" ){
 			decShapeList shapeList;
 			codec.DecodeShapeList( GetCDataString( *tag ), shapeList );
 			
 			if( shapeList.GetCount() == 0 ){
-				envMapProbe.SetShapeReflection( NULL );
+				envMapProbe->SetShapeReflection( NULL );
 				
 			}else{
-				envMapProbe.SetShapeReflection( shapeList.GetAt( 0 )->Copy() );
+				envMapProbe->SetShapeReflection( shapeList.GetAt( 0 )->Copy() );
 			}
 			
 		}else if( tagName == "reflectionMask" ){
-			envMapProbe.GetShapeListReflectionMask().RemoveAll();
-			codec.DecodeShapeList( GetCDataString( *tag ), envMapProbe.GetShapeListReflectionMask() );
+			envMapProbe->GetShapeListReflectionMask().RemoveAll();
+			codec.DecodeShapeList( GetCDataString( *tag ), envMapProbe->GetShapeListReflectionMask() );
 			
 		}else if( tagName == "influenceBorderSize" ){
-			envMapProbe.SetInfluenceBorderSize( GetCDataFloat( *tag ) );
+			envMapProbe->SetInfluenceBorderSize( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "influencePriority" ){
-			envMapProbe.SetInfluencePriority( GetCDataInt( *tag ) );
+			envMapProbe->SetInfluencePriority( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "link" ){
 			const char * const property = GetAttributeString( *tag, "property" );
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "influenceArea" ){
-				envMapProbe.SetPropertyName( gdeOCEnvMapProbe::epInfluenceArea, property );
+				envMapProbe->SetPropertyName( gdeOCEnvMapProbe::epInfluenceArea, property );
 				
 			}else if( value == "influenceBorderSize" ){
-				envMapProbe.SetPropertyName( gdeOCEnvMapProbe::epInfluenceBorderSize, property );
+				envMapProbe->SetPropertyName( gdeOCEnvMapProbe::epInfluenceBorderSize, property );
 				
 			}else if( value == "influencePriority" ){
-				envMapProbe.SetPropertyName( gdeOCEnvMapProbe::epInfluencePriority, property );
+				envMapProbe->SetPropertyName( gdeOCEnvMapProbe::epInfluencePriority, property );
 				
 			}else if( value == "reflectionShape" ){
-				envMapProbe.SetPropertyName( gdeOCEnvMapProbe::epReflectionShape, property );
+				envMapProbe->SetPropertyName( gdeOCEnvMapProbe::epReflectionShape, property );
 				
 			}else if( value == "reflectionMask" ){
-				envMapProbe.SetPropertyName( gdeOCEnvMapProbe::epReflectionMask, property );
+				envMapProbe->SetPropertyName( gdeOCEnvMapProbe::epReflectionMask, property );
 				
 			}else if( value == "attachPosition" ){
-				envMapProbe.SetPropertyName( gdeOCComponent::epAttachPosition, property );
+				envMapProbe->SetPropertyName( gdeOCComponent::epAttachPosition, property );
 				
 			}else if( value == "attachRotation" ){
-				envMapProbe.SetPropertyName( gdeOCComponent::epAttachRotation, property );
+				envMapProbe->SetPropertyName( gdeOCComponent::epAttachRotation, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1496,16 +1465,13 @@ void gdeLoadSaveGameDefinition::pReadObjectClassEnvMapProbe( const decXmlElement
 		}
 	}
 	
-	objectClass.GetEnvMapProbes().Add( &envMapProbe );
+	objectClass.GetEnvMapProbes().Add(envMapProbe);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCSpeaker::Ref speaker(gdeOCSpeaker::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCSpeaker );
-	gdeOCSpeaker &speaker = ( gdeOCSpeaker& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -1516,75 +1482,75 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag 
 		const decString tagName( tag->GetName() );
 		
 		if( tagName == "sound" ){
-			speaker.SetPathSound( GetCDataString( *tag ) );
+			speaker->SetPathSound( GetCDataString( *tag ) );
 			
 		}else if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			speaker.SetPosition( position );
+			speaker->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			speaker.SetRotation( orientation );
+			speaker->SetRotation( orientation );
 			
 		}else if( tagName == "bone" ){
-			speaker.SetBoneName( GetCDataString( *tag ) );
+			speaker->SetBoneName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "looping" ){
-			speaker.SetLooping( GetCDataBool( *tag ) );
+			speaker->SetLooping( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "playing" ){
-			speaker.SetPlaying( GetCDataBool( *tag ) );
+			speaker->SetPlaying( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "volume" ){
-			speaker.SetVolume( GetCDataFloat( *tag ) );
+			speaker->SetVolume( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "range" ){
-			speaker.SetRange( GetCDataFloat( *tag ) );
+			speaker->SetRange( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "rollOff" ){
-			speaker.SetRollOff( GetCDataFloat( *tag ) );
+			speaker->SetRollOff( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "distanceOffset" ){
-			speaker.SetDistanceOffset( GetCDataFloat( *tag ) );
+			speaker->SetDistanceOffset( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "playSpeed" ){
-			speaker.SetPlaySpeed( GetCDataFloat( *tag ) );
+			speaker->SetPlaySpeed( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "link" ){
 			const char * const property = GetAttributeString( *tag, "property" );
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "sound" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epSound, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epSound, property );
 				
 			}else if( value == "looping" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epLooping, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epLooping, property );
 				
 			}else if( value == "playing" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epPlaying, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epPlaying, property );
 				
 			}else if( value == "volume" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epVolume, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epVolume, property );
 				
 			}else if( value == "range" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epRange, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epRange, property );
 				
 			}else if( value == "rollOff" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epRollOff, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epRollOff, property );
 				
 			}else if( value == "distanceOffset" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epDistanceOffset, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epDistanceOffset, property );
 				
 			}else if( value == "playSpeed" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epPlaySpeed, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epPlaySpeed, property );
 				
 			}else if( value == "attachPosition" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epAttachPosition, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epAttachPosition, property );
 				
 			}else if( value == "attachRotation" ){
-				speaker.SetPropertyName( gdeOCSpeaker::epAttachRotation, property );
+				speaker->SetPropertyName( gdeOCSpeaker::epAttachRotation, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1595,10 +1561,10 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag 
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "playing" ){
-				speaker.SetTriggerName( gdeOCSpeaker::etPlaying, property );
+				speaker->SetTriggerName( gdeOCSpeaker::etPlaying, property );
 				
 			}else if( value == "muted" ){
-				speaker.SetTriggerName( gdeOCSpeaker::etMuted, property );
+				speaker->SetTriggerName( gdeOCSpeaker::etMuted, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1609,17 +1575,14 @@ void gdeLoadSaveGameDefinition::pReadObjectClassSpeaker( const decXmlElementTag 
 		}
 	}
 	
-	objectClass.GetSpeakers().Add( &speaker );
+	objectClass.GetSpeakers().Add(speaker);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassNavigationSpace( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCNavigationSpace::Ref navspace(gdeOCNavigationSpace::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	igdeCodecPropertyString codec;
 	int i;
-	
-	objRef.TakeOver( new gdeOCNavigationSpace );
-	gdeOCNavigationSpace &navspace = ( gdeOCNavigationSpace& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -1630,80 +1593,80 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationSpace( const decXmlEle
 		const decString tagName( tag->GetName() );
 		
 		if( tagName == "path" ){
-			navspace.SetPath( GetCDataString( *tag ) );
+			navspace->SetPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			navspace.SetPosition( position );
+			navspace->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			navspace.SetRotation( orientation );
+			navspace->SetRotation( orientation );
 			
 		}else if( tagName == "bone" ){
-			navspace.SetBoneName( GetCDataString( *tag ) );
+			navspace->SetBoneName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "layer" ){
-			navspace.SetLayer( GetCDataInt( *tag ) );
+			navspace->SetLayer( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "type" ){
 			const decString value( GetCDataString( *tag ) );
 			
 			if( value == "grid" ){
-				navspace.SetType( deNavigationSpace::estGrid );
+				navspace->SetType( deNavigationSpace::estGrid );
 				
 			}else if( value == "mesh" ){
-				navspace.SetType( deNavigationSpace::estMesh );
+				navspace->SetType( deNavigationSpace::estMesh );
 				
 			}else if( value == "volume" ){
-				navspace.SetType( deNavigationSpace::estVolume );
+				navspace->SetType( deNavigationSpace::estVolume );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
 			}
 			
 		}else if( tagName == "blockingPriority" ){
-			navspace.SetBlockingPriority( GetCDataInt( *tag ) );
+			navspace->SetBlockingPriority( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "blockerShape" ){
-			navspace.GetBlockerShapeList().RemoveAll();
-			codec.DecodeShapeList( GetCDataString( *tag ), navspace.GetBlockerShapeList() );
+			navspace->GetBlockerShapeList().RemoveAll();
+			codec.DecodeShapeList( GetCDataString( *tag ), navspace->GetBlockerShapeList() );
 			
 		}else if( tagName == "snapDistance" ){
-			navspace.SetSnapDistance( GetCDataFloat( *tag ) );
+			navspace->SetSnapDistance( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "snapAngle" ){
-			navspace.SetSnapAngle( GetCDataFloat( *tag ) );
+			navspace->SetSnapAngle( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "link" ){
 			const char * const property = GetAttributeString( *tag, "property" );
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "path" ){
-				navspace.SetPropertyName( gdeOCNavigationSpace::epPath, property );
+				navspace->SetPropertyName( gdeOCNavigationSpace::epPath, property );
 				
 			}else if( value == "blockerShape" ){
-				navspace.SetPropertyName( gdeOCNavigationSpace::epBlockerShape, property );
+				navspace->SetPropertyName( gdeOCNavigationSpace::epBlockerShape, property );
 				
 			}else if( value == "layer" ){
-				navspace.SetPropertyName( gdeOCNavigationSpace::epLayer, property );
+				navspace->SetPropertyName( gdeOCNavigationSpace::epLayer, property );
 				
 			}else if( value == "blockingPriority" ){
-				navspace.SetPropertyName( gdeOCNavigationSpace::epBlockingPriority, property );
+				navspace->SetPropertyName( gdeOCNavigationSpace::epBlockingPriority, property );
 				
 			}else if( value == "snapDistance" ){
-				navspace.SetPropertyName( gdeOCNavigationSpace::epSnapDistance, property );
+				navspace->SetPropertyName( gdeOCNavigationSpace::epSnapDistance, property );
 				
 			}else if( value == "snapAngle" ){
-				navspace.SetPropertyName( gdeOCNavigationSpace::epSnapAngle, property );
+				navspace->SetPropertyName( gdeOCNavigationSpace::epSnapAngle, property );
 				
 			}else if( value == "attachPosition" ){
-				navspace.SetPropertyName( gdeOCNavigationSpace::epAttachPosition, property );
+				navspace->SetPropertyName( gdeOCNavigationSpace::epAttachPosition, property );
 				
 			}else if( value == "attachRotation" ){
-				navspace.SetPropertyName( gdeOCNavigationSpace::epAttachRotation, property );
+				navspace->SetPropertyName( gdeOCNavigationSpace::epAttachRotation, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1714,17 +1677,14 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationSpace( const decXmlEle
 		}
 	}
 	
-	objectClass.GetNavigationSpaces().Add( &navspace );
+	objectClass.GetNavigationSpaces().Add(navspace);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassNavigationBlocker( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCNavigationBlocker::Ref navblocker(gdeOCNavigationBlocker::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	igdeCodecPropertyString codec;
 	int i;
-	
-	objRef.TakeOver( new gdeOCNavigationBlocker );
-	gdeOCNavigationBlocker &navblocker = ( gdeOCNavigationBlocker& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -1737,66 +1697,66 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationBlocker( const decXmlE
 		if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			navblocker.SetPosition( position );
+			navblocker->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			navblocker.SetRotation( orientation );
+			navblocker->SetRotation( orientation );
 			
 		}else if( tagName == "bone" ){
-			navblocker.SetBoneName( GetCDataString( *tag ) );
+			navblocker->SetBoneName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "enabled" ){
-			navblocker.SetEnabled( GetCDataBool( *tag ) );
+			navblocker->SetEnabled( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "layer" ){
-			navblocker.SetLayer( GetCDataInt( *tag ) );
+			navblocker->SetLayer( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "type" ){
 			const decString value( GetCDataString( *tag ) );
 			
 			if( value == "grid" ){
-				navblocker.SetType( deNavigationSpace::estGrid );
+				navblocker->SetType( deNavigationSpace::estGrid );
 				
 			}else if( value == "mesh" ){
-				navblocker.SetType( deNavigationSpace::estMesh );
+				navblocker->SetType( deNavigationSpace::estMesh );
 				
 			}else if( value == "volume" ){
-				navblocker.SetType( deNavigationSpace::estVolume );
+				navblocker->SetType( deNavigationSpace::estVolume );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
 			}
 			
 		}else if( tagName == "blockingPriority" ){
-			navblocker.SetBlockingPriority( GetCDataInt( *tag ) );
+			navblocker->SetBlockingPriority( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "shape" ){
-			navblocker.GetShapeList().RemoveAll();
-			codec.DecodeShapeList( GetCDataString( *tag ), navblocker.GetShapeList() );
+			navblocker->GetShapeList().RemoveAll();
+			codec.DecodeShapeList( GetCDataString( *tag ), navblocker->GetShapeList() );
 			
 		}else if( tagName == "link" ){
 			const char * const property = GetAttributeString( *tag, "property" );
 			const decString value( GetAttributeString( *tag, "target" ) );
 			
 			if( value == "enabled" ){
-				navblocker.SetPropertyName( gdeOCNavigationBlocker::epEnabled, property );
+				navblocker->SetPropertyName( gdeOCNavigationBlocker::epEnabled, property );
 				
 			}else if( value == "shape" ){
-				navblocker.SetPropertyName( gdeOCNavigationBlocker::epShape, property );
+				navblocker->SetPropertyName( gdeOCNavigationBlocker::epShape, property );
 				
 			}else if( value == "layer" ){
-				navblocker.SetPropertyName( gdeOCNavigationBlocker::epLayer, property );
+				navblocker->SetPropertyName( gdeOCNavigationBlocker::epLayer, property );
 				
 			}else if( value == "blockingPriority" ){
-				navblocker.SetPropertyName( gdeOCNavigationBlocker::epBlockingPriority, property );
+				navblocker->SetPropertyName( gdeOCNavigationBlocker::epBlockingPriority, property );
 				
 			}else if( value == "attachPosition" ){
-				navblocker.SetPropertyName( gdeOCNavigationBlocker::epAttachPosition, property );
+				navblocker->SetPropertyName( gdeOCNavigationBlocker::epAttachPosition, property );
 				
 			}else if( value == "attachRotation" ){
-				navblocker.SetPropertyName( gdeOCNavigationBlocker::epAttachRotation, property );
+				navblocker->SetPropertyName( gdeOCNavigationBlocker::epAttachRotation, property );
 				
 			}else{
 				LogWarnUnknownValue( *tag, value );
@@ -1807,11 +1767,11 @@ void gdeLoadSaveGameDefinition::pReadObjectClassNavigationBlocker( const decXmlE
 		}
 	}
 	
-	objectClass.GetNavigationBlockers().Add( &navblocker );
+	objectClass.GetNavigationBlockers().Add(navblocker);
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassWorld(const decXmlElementTag &root, gdeObjectClass &objectClass){
-	const gdeOCWorld::Ref world(gdeOCWorld::Ref::New(new gdeOCWorld));
+	const gdeOCWorld::Ref world(gdeOCWorld::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
 	int i;
 	
@@ -1867,11 +1827,9 @@ void gdeLoadSaveGameDefinition::pReadObjectClassTexture( const decXmlElementTag 
 		LogErrorGenericProblemValue( root, name, "A texture with this name exists already." );
 	}
 	
+	const gdeOCComponentTexture::Ref objRef(gdeOCComponentTexture::Ref::NewWith( name ));
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCComponentTexture( name ) );
 	gdeOCComponentTexture &texture = ( gdeOCComponentTexture& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
@@ -1950,12 +1908,9 @@ const decXmlElementTag &root, gdeFilePatternList &list ){
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassCamera( const decXmlElementTag &root, gdeObjectClass &objectClass ){
+	const gdeOCCamera::Ref camera(gdeOCCamera::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeOCCamera );
-	gdeOCCamera &camera = ( gdeOCCamera& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -1968,49 +1923,46 @@ void gdeLoadSaveGameDefinition::pReadObjectClassCamera( const decXmlElementTag &
 		if( tagName == "position" ){
 			decVector position;
 			ReadVector( *tag, position );
-			camera.SetPosition( position );
+			camera->SetPosition( position );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			camera.SetRotation( orientation );
+			camera->SetRotation( orientation );
 			
 		}else if( tagName == "fov" ){
-			camera.SetFov( GetCDataFloat( *tag ) );
+			camera->SetFov( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "fovRatio" ){
-			camera.SetFovRatio( GetCDataFloat( *tag ) );
+			camera->SetFovRatio( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "imageDistance" ){
-			camera.SetImageDistance( GetCDataFloat( *tag ) );
+			camera->SetImageDistance( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "viewDistance" ){
-			camera.SetViewDistance( GetCDataFloat( *tag ) );
+			camera->SetViewDistance( GetCDataFloat( *tag ) );
 			
 		}else if(tagName == "propName"){
-			camera.SetPropName(GetCDataString(*tag));
+			camera->SetPropName(GetCDataString(*tag));
 			
 		}else if(tagName == "propPosition"){
-			camera.SetPropPosition(GetCDataString(*tag));
+			camera->SetPropPosition(GetCDataString(*tag));
 			
 		}else if(tagName == "propRotation"){
-			camera.SetPropRotation(GetCDataString(*tag));
+			camera->SetPropRotation(GetCDataString(*tag));
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	objectClass.GetCameras().Add( &camera );
+	objectClass.GetCameras().Add(camera);
 }
 
 void gdeLoadSaveGameDefinition::pReadParticleEmitter( const decXmlElementTag &root, gdeGameDefinition &gameDefinition ){
+	const gdeParticleEmitter::Ref emitter(gdeParticleEmitter::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeParticleEmitter );
-	gdeParticleEmitter &emitter = ( gdeParticleEmitter& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -2021,82 +1973,36 @@ void gdeLoadSaveGameDefinition::pReadParticleEmitter( const decXmlElementTag &ro
 		const decString tagName( tag->GetName() );
 		
 		if( tagName == "path" ){
-			emitter.SetPath( GetCDataString( *tag ) );
+			emitter->SetPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "name" ){
-			emitter.SetName( GetCDataString( *tag ) );
+			emitter->SetName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "description" ){
-			emitter.SetDescription( ReadMultilineString( *tag ) );
+			emitter->SetDescription( ReadMultilineString( *tag ) );
 			
 		}else if( tagName == "category" ){
-			emitter.SetCategory( GetCDataString( *tag ) );
+			emitter->SetCategory( GetCDataString( *tag ) );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	if( emitter.GetPath().IsEmpty() ){
+	if( emitter->GetPath().IsEmpty() ){
 		LogErrorMissingTag( root, "path" );
 	}
-	if( emitter.GetName().IsEmpty() ){
+	if( emitter->GetName().IsEmpty() ){
 		LogErrorMissingTag( root, "name" );
 	}
 	
-	gameDefinition.AddParticleEmitter( &emitter );
+	gameDefinition.AddParticleEmitter(emitter);
 }
 
 void gdeLoadSaveGameDefinition::pReadSkin( const decXmlElementTag &root, gdeGameDefinition &gameDefinition ){
+	const gdeSkin::Ref skin(gdeSkin::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
 	int i;
-	
-	objRef.TakeOver( new gdeSkin );
-	gdeSkin &skin = ( gdeSkin& )( deObject& )objRef;
-	
-		for( i=0; i<elementCount; i++ ){
-		const decXmlElementTag * const tag = root.GetElementIfTag( i );
-		if( ! tag ){
-			continue;
-		}
-		
-		const decString tagName( tag->GetName() );
-		
-		if( tagName == "path" ){
-			skin.SetPath( GetCDataString( *tag ) );
-			
-		}else if( tagName == "name" ){
-			skin.SetName( GetCDataString( *tag ) );
-			
-		}else if( tagName == "description" ){
-			skin.SetDescription( ReadMultilineString( *tag ) );
-			
-		}else if( tagName == "category" ){
-			skin.SetCategory( GetCDataString( *tag ) );
-			
-		}else{
-			LogWarnUnknownTag( root, *tag );
-		}
-	}
-	
-	if( skin.GetPath().IsEmpty() ){
-		LogErrorMissingTag( root, "path" );
-	}
-	if( skin.GetName().IsEmpty() ){
-		LogErrorMissingTag( root, "name" );
-	}
-	
-	gameDefinition.AddSkin( &skin );
-}
-
-void gdeLoadSaveGameDefinition::pReadSky( const decXmlElementTag &root, gdeGameDefinition &gameDefinition ){
-	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
-	int i;
-	
-	objRef.TakeOver( new gdeSky );
-	gdeSky &sky = ( gdeSky& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -2107,23 +2013,63 @@ void gdeLoadSaveGameDefinition::pReadSky( const decXmlElementTag &root, gdeGameD
 		const decString tagName( tag->GetName() );
 		
 		if( tagName == "path" ){
-			sky.SetPath( GetCDataString( *tag ) );
+			skin->SetPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "name" ){
-			sky.SetName( GetCDataString( *tag ) );
+			skin->SetName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "description" ){
-			sky.SetDescription( ReadMultilineString( *tag ) );
+			skin->SetDescription( ReadMultilineString( *tag ) );
 			
 		}else if( tagName == "category" ){
-			sky.SetCategory( GetCDataString( *tag ) );
+			skin->SetCategory( GetCDataString( *tag ) );
+			
+		}else{
+			LogWarnUnknownTag( root, *tag );
+		}
+	}
+	
+	if( skin->GetPath().IsEmpty() ){
+		LogErrorMissingTag( root, "path" );
+	}
+	if( skin->GetName().IsEmpty() ){
+		LogErrorMissingTag( root, "name" );
+	}
+	
+	gameDefinition.AddSkin(skin);
+}
+
+void gdeLoadSaveGameDefinition::pReadSky( const decXmlElementTag &root, gdeGameDefinition &gameDefinition ){
+	const gdeSky::Ref sky(gdeSky::Ref::NewWith());
+	const int elementCount = root.GetElementCount();
+	int i;
+	
+	for( i=0; i<elementCount; i++ ){
+		const decXmlElementTag * const tag = root.GetElementIfTag( i );
+		if( ! tag ){
+			continue;
+		}
+		
+		const decString tagName( tag->GetName() );
+		
+		if( tagName == "path" ){
+			sky->SetPath( GetCDataString( *tag ) );
+			
+		}else if( tagName == "name" ){
+			sky->SetName( GetCDataString( *tag ) );
+			
+		}else if( tagName == "description" ){
+			sky->SetDescription( ReadMultilineString( *tag ) );
+			
+		}else if( tagName == "category" ){
+			sky->SetCategory( GetCDataString( *tag ) );
 			
 		}else if( tagName == "controller" ){
 			gdeSkyController *controller = NULL;
 			try{
 				controller = new gdeSkyController(
 					GetAttributeString( *tag, "name" ), GetCDataFloat( *tag ) );
-				sky.AddController( controller );
+				sky->AddController( controller );
 				controller->FreeReference();
 				
 			}catch( const deException & ){
@@ -2138,14 +2084,14 @@ void gdeLoadSaveGameDefinition::pReadSky( const decXmlElementTag &root, gdeGameD
 		}
 	}
 	
-	if( sky.GetPath().IsEmpty() ){
+	if( sky->GetPath().IsEmpty() ){
 		LogErrorMissingTag( root, "path" );
 	}
-	if( sky.GetName().IsEmpty() ){
+	if( sky->GetName().IsEmpty() ){
 		LogErrorMissingTag( root, "name" );
 	}
 	
-	gameDefinition.AddSky( &sky );
+	gameDefinition.AddSky(sky);
 }
 
 void gdeLoadSaveGameDefinition::pReadCategories( const decXmlElementTag &root, gdeGameDefinition &gameDefinition ){
@@ -2231,8 +2177,7 @@ gdeCategoryList *list, gdeCategory *parent ){
 		LogErrorMissingTag( root, "name" );
 	}
 	
-	deObjectReference objRef;
-	objRef.TakeOver( new gdeCategory( categoryName ) );
+	const gdeCategory::Ref objRef(gdeCategory::Ref::NewWith(categoryName));
 	gdeCategory &category = ( gdeCategory& )( deObject& )objRef;
 	
 	if( list ){

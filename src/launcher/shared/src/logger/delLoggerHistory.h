@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<delLoggerHistory> Ref;
 	
 	
-	
 private:
 	int pHistorySize;
 	delLoggerHistoryEntry *pEntries;

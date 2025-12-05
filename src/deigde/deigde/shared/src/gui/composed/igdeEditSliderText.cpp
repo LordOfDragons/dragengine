@@ -30,10 +30,10 @@
 #include "igdeEditSliderTextListener.h"
 #include "../igdeSlider.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeUIHelper.h"
-#include "../event/igdeSliderListenerReference.h"
-#include "../event/igdeTextFieldListenerReference.h"
+#include "../event/igdeSliderListener.h"
+#include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/exceptions.h>

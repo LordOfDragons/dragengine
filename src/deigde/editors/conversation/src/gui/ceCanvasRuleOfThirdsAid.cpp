@@ -36,7 +36,6 @@
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
 
 
 
@@ -173,7 +172,7 @@ void ceCanvasRuleOfThirdsAid::pAddFocus( int x, int y ){
 }
 
 void ceCanvasRuleOfThirdsAid::pAddRect( int x1, int y1, int x2, int y2, const decColor &color, float transparency ){
-	deCanvasPaintReference canvasPaint;
+	deCanvasPaint::Ref canvasPaint;
 	canvasPaint.TakeOver( pEnvironment.GetEngineController()->GetEngine()->GetCanvasManager()->CreateCanvasPaint() );
 	canvasPaint->SetShapeType( deCanvasPaint::estRectangle );
 	canvasPaint->SetThickness( 0 );

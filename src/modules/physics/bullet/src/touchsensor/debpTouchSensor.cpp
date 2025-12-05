@@ -70,7 +70,6 @@
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/sensor/deTouchSensor.h>
-#include <dragengine/resources/sensor/deTouchSensorReference.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
@@ -252,7 +251,7 @@ void debpTouchSensor::ApplyChanges(){
 	
 	// NOTE it is possible the user removes touch sensors during tracking changes. to avoid problems
 	//      touch sensors are keeping a fake reference while applying changes to not vanish underneath
-	const deTouchSensorReference guard( &pTouchSensor );
+	const deTouchSensor::Ref guard( &pTouchSensor );
 	
 	// this function is only called if tracking enter-leave is enabled
 	if( pGhostObject->GetGhostObject() ){
@@ -516,7 +515,7 @@ void debpTouchSensor::RemoveColliderImmediately( debpCollider *collider ){
 		return;
 	}
 	
-	const deTouchSensorReference guard( &pTouchSensor );
+	const deTouchSensor::Ref guard( &pTouchSensor );
 	
 	int index = pLeavingColliders.IndexOf( collider );
 	if( index != -1 ){

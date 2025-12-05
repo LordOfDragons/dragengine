@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<igdeLoggerHistory> Ref;
 	
 	
-	
 private:
 	int pHistorySize;
 	igdeLoggerHistoryEntry *pEntries;

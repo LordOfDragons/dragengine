@@ -110,7 +110,7 @@ pStateHat( NULL )
 		int i;
 		for( i=0; i<countAxes; i++ ){
 			refObject.TakeOver( new debiDeviceAxis( module ) );
-			AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+			AddAxis( refObject );
 			debiDeviceAxis &axis = ( debiDeviceAxis& )( deObject& )refObject;
 			
 			axis.SetIndex( indexAxis );
@@ -146,11 +146,11 @@ pStateHat( NULL )
 		
 		for( i=0; i<countHats; i++ ){
 			refObject.TakeOver( new debiDeviceAxis( module ) );
-			AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+			AddAxis( refObject );
 			debiDeviceAxis &hatX = ( debiDeviceAxis& )( deObject& )refObject;
 			
 			refObject.TakeOver( new debiDeviceAxis( module ) );
-			AddAxis( ( debiDeviceAxis* )( deObject* )refObject );
+			AddAxis( refObject );
 			debiDeviceAxis &hatY = ( debiDeviceAxis& )( deObject& )refObject;
 			
 			if( pJoystick->GetHatNameAt( i, &bname ) != B_OK ){
@@ -195,7 +195,7 @@ pStateHat( NULL )
 		
 		for( i=0; i<countButtons; i++ ){
 			refObject.TakeOver( new debiDeviceButton( module ) );
-			AddButton( ( debiDeviceButton* )( deObject* )refObject );
+			AddButton( refObject );
 			debiDeviceButton &button = ( debiDeviceButton& )( deObject& )refObject;
 			
 			string.Format( "button%d", i );

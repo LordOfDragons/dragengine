@@ -27,16 +27,16 @@
 
 #include <dragengine/common/math/decMath.h>
 
-#include "../igdeTextFieldReference.h"
-#include "../igdeCheckBoxReference.h"
-#include "../igdeButtonReference.h"
-#include "../composed/igdeEditVectorReference.h"
-#include "../composed/igdeEditSliderTextReference.h"
+#include "../igdeTextField.h"
+#include "../igdeCheckBox.h"
+#include "../igdeButton.h"
+#include "../composed/igdeEditVector.h"
+#include "../composed/igdeEditSliderText.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../filedialog/igdeFilePatternList.h"
 #include "../layout/igdeContainerFlow.h"
-#include "../curveedit/igdeViewCurveBezierReference.h"
+#include "../curveedit/igdeViewCurveBezier.h"
 
 
 class igdeCamera;
@@ -56,32 +56,37 @@ class igdeCamera;
  * camera exists as long as it is assigned to this widget.
  */
 class DE_DLL_EXPORT igdeWPCamera : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWPCamera> Ref;
+	
+	
 private:
 	igdeCamera *pCamera;
 	
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeEditVectorReference pEditViewDir;
-	igdeButtonReference pBtnCamera;
-	igdeTextFieldReference pEditOrbitDistance;
-	igdeTextFieldReference pEditFov;
-	igdeTextFieldReference pEditFovRatio;
-	igdeTextFieldReference pEditImageDist;
-	igdeTextFieldReference pEditViewDist;
-	igdeTextFieldReference pEditExposure;
-	igdeTextFieldReference pEditLowInt;
-	igdeTextFieldReference pEditHiInt;
-	igdeTextFieldReference pEditAdaptTime;
-	igdeCheckBoxReference pChkEnableHDRR;
-	igdeCheckBoxReference pChkEnableGI;
-	igdeTextFieldReference pEditWhiteIntensity;
-	igdeTextFieldReference pEditBloomIntensity;
-	igdeTextFieldReference pEditBloomStrength;
-	igdeEditSliderTextReference pSldBloomSize;
-	igdeEditSliderTextReference pSldBloomBlend;
-	igdeViewCurveBezierReference pEditToneMapCurve;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeEditVector::Ref pEditViewDir;
+	igdeButton::Ref pBtnCamera;
+	igdeTextField::Ref pEditOrbitDistance;
+	igdeTextField::Ref pEditFov;
+	igdeTextField::Ref pEditFovRatio;
+	igdeTextField::Ref pEditImageDist;
+	igdeTextField::Ref pEditViewDist;
+	igdeTextField::Ref pEditExposure;
+	igdeTextField::Ref pEditLowInt;
+	igdeTextField::Ref pEditHiInt;
+	igdeTextField::Ref pEditAdaptTime;
+	igdeCheckBox::Ref pChkEnableHDRR;
+	igdeCheckBox::Ref pChkEnableGI;
+	igdeTextField::Ref pEditWhiteIntensity;
+	igdeTextField::Ref pEditBloomIntensity;
+	igdeTextField::Ref pEditBloomStrength;
+	igdeEditSliderText::Ref pSldBloomSize;
+	igdeEditSliderText::Ref pSldBloomBlend;
+	igdeViewCurveBezier::Ref pEditToneMapCurve;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

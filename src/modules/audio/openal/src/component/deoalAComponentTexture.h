@@ -57,6 +57,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalAComponentTexture> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component texture. */

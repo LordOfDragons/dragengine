@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<fbxRigBone> Ref;
 	
 	
-	
 private:
 	fbxRig &pRig;
 	fbxNode &pNodePoseBone;

@@ -71,6 +71,10 @@ protected:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglDynamicTBO> Ref;
+
+
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

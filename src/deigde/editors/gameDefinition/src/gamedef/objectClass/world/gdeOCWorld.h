@@ -40,6 +40,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCWorld> Ref;
 	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Path to world file. */

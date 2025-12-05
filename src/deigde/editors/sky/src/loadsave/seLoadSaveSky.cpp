@@ -51,7 +51,6 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -79,7 +78,7 @@ pPattern( ".desky" ){
 ///////////////////////
 
 void seLoadSaveSky::LoadSky( seLoadSaveSystem &lssys, seSky &sky, decBaseFileReader &reader ){
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( lssys.GetWindowMain().GetEnvironment().GetLogger() ).ParseXml( &reader, xmlDoc );
@@ -459,12 +458,9 @@ void seLoadSaveSky::pReadController( const decXmlElementTag &root, seSky &sky ){
 }
 
 void seLoadSaveSky::pReadLink( const decXmlElementTag &root, seSky &sky ){
+	const seLink::Ref link(seLink::Ref::NewWith());
 	const int elementCount = root.GetElementCount();
-	deObjectReference refLink;
 	int i;
-	
-	refLink.TakeOver( new seLink );
-	seLink &link = ( seLink& )( deObject& )refLink;
 	
 	for( i=0; i<elementCount; i++ ){
 		decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -475,37 +471,34 @@ void seLoadSaveSky::pReadLink( const decXmlElementTag &root, seSky &sky ){
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "name" ){
-			link.SetName( GetCDataString( *tag ) );
+			link->SetName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "controller" ){
 			const int index = GetCDataInt( *tag );
 			if( index != -1 ){
-				link.SetController( sky.GetControllers().GetAt( index ) );
+				link->SetController( sky.GetControllers().GetAt( index ) );
 			}
 			
 		}else if( tagName == "repeat" ){
-			link.SetRepeat( GetCDataInt( *tag ) );
+			link->SetRepeat( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "curve" ){
-			ReadCurveBezier( *tag, link.GetCurve() );
+			ReadCurveBezier( *tag, link->GetCurve() );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	sky.AddLink( &link );
+	sky.AddLink(link);
 }
 
 void seLoadSaveSky::pReadLayer( const decXmlElementTag &root, seSky &sky ){
+	const seLayer::Ref layer(seLayer::Ref::NewWith( *sky.GetEnvironment()));
 	const int elementCount = root.GetElementCount();
-	deObjectReference refLayer;
 	int i;
 	
-	refLayer.TakeOver( new seLayer( *sky.GetEnvironment() ) );
-	seLayer &layer = ( seLayer& )( deObject& )refLayer;
-	
-	sky.AddLayer( &layer ); // ensures relative path can be properly resolved
+	sky.AddLayer(layer); // ensures relative path can be properly resolved
 	
 	for( i=0; i<elementCount; i++ ){
 		decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -516,53 +509,53 @@ void seLoadSaveSky::pReadLayer( const decXmlElementTag &root, seSky &sky ){
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "name" ){
-			layer.SetName( GetCDataString( *tag ) );
+			layer->SetName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "offset" ){
 			decVector offset;
 			ReadVector( *tag, offset );
-			layer.SetOffset( offset );
+			layer->SetOffset( offset );
 			
 		}else if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			layer.SetOrientation( orientation );
+			layer->SetOrientation( orientation );
 			
 		}else if( tagName == "color" ){
 			decColor color( 1.0f, 1.0f, 1.0f );
 			ReadColor( *tag, color );
-			layer.SetColor( color );
+			layer->SetColor( color );
 			
 		}else if( tagName == "intensity" ){
-			layer.SetIntensity( GetCDataFloat( *tag ) );
+			layer->SetIntensity( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "transparency" ){
-			layer.SetTransparency( GetCDataFloat( *tag ) );
+			layer->SetTransparency( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "mulBySkyLight" ){
-			layer.SetMultiplyBySkyLight( GetCDataBool( *tag ) );
+			layer->SetMultiplyBySkyLight( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "mulBySkyColor" ){
-			layer.SetMultiplyBySkyColor( GetCDataBool( *tag ) );
+			layer->SetMultiplyBySkyColor( GetCDataBool( *tag ) );
 			
 		}else if( tagName == "skin" ){
-			layer.SetSkinPath( GetCDataString( *tag ) );
+			layer->SetSkinPath( GetCDataString( *tag ) );
 			
 		}else if( tagName == "lightOrientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			layer.SetLightOrientation( orientation );
+			layer->SetLightOrientation( orientation );
 			
 		}else if( tagName == "lightColor" ){
 			decColor color( 1.0f, 1.0f, 1.0f );
 			ReadColor( *tag, color );
-			layer.SetLightColor( color );
+			layer->SetLightColor( color );
 			
 		}else if( tagName == "lightIntensity" ){
-			layer.SetLightIntensity( GetCDataFloat( *tag ) );
+			layer->SetLightIntensity( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "ambientIntensity" ){
-			layer.SetAmbientIntensity( GetCDataFloat( *tag ) );
+			layer->SetAmbientIntensity( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "body" ){
 			pReadBody( *tag, sky, layer );
@@ -665,14 +658,11 @@ void seLoadSaveSky::pReadTarget( const decXmlElementTag &root, seSky &sky, seLay
 }
 
 void seLoadSaveSky::pReadBody( const decXmlElementTag &root, seSky &sky, seLayer &layer ){
+	const seBody::Ref body(seBody::Ref::NewWith( sky.GetEngine()));
 	const int elementCount = root.GetElementCount();
-	deObjectReference refBody;
 	int i;
 	
-	refBody.TakeOver( new seBody( sky.GetEngine() ) );
-	seBody &body = ( seBody& )( deObject& )refBody;
-	
-	layer.AddBody( &body ); // ensures relative path can be properly resolved
+	layer.AddBody(body); // ensures relative path can be properly resolved
 	
 	for( i=0; i<elementCount; i++ ){
 		decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -685,20 +675,20 @@ void seLoadSaveSky::pReadBody( const decXmlElementTag &root, seSky &sky, seLayer
 		if( tagName == "orientation" ){
 			decVector orientation;
 			ReadVector( *tag, orientation );
-			body.SetOrientation( orientation );
+			body->SetOrientation( orientation );
 			
 		}else if( tagName == "size" ){
 			decVector2 size( 5.0f, 5.0f );
 			ReadVector2( *tag, size );
-			body.SetSize( size );
+			body->SetSize( size );
 			
 		}else if( tagName == "color" ){
 			decColor color( 1.0f, 1.0f, 1.0f );
 			ReadColor( *tag, color );
-			body.SetColor( color );
+			body->SetColor( color );
 			
 		}else if( tagName == "skin" ){
-			body.SetSkinPath( GetCDataString( *tag ) );
+			body->SetSkinPath( GetCDataString( *tag ) );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );

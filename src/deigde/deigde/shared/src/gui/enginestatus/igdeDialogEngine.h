@@ -25,7 +25,7 @@
 #ifndef _IGDEDIALOGENGINE_H_
 #define _IGDEDIALOGENGINE_H_
 
-#include "../igdeTabBookReference.h"
+#include "../igdeTabBook.h"
 #include "../dialog/igdeDialog.h"
 
 
@@ -39,7 +39,7 @@ class igdeMainWindow;
 class DE_DLL_EXPORT igdeDialogEngine : public igdeDialog{
 private:
 	igdeMainWindow &pMainWindow;
-	igdeTabBookReference pTabPanels;
+	igdeTabBook::Ref pTabPanels;
 	
 	
 	

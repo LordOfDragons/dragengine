@@ -37,7 +37,6 @@ public:
 	typedef deTObjectReference<deSynthesizerSourceWave> Ref;
 	
 	
-	
 public:
 	/** \brief Wave type. */
 	enum eWaveType{

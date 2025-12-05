@@ -27,8 +27,8 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 
 /**
@@ -36,12 +36,12 @@
  */
 class aeWPAPanelRuleBoneTransformator : public aeWPAPanelRule{
 private:
-	igdeEditVectorReference pEditMinTrans, pEditMaxTrans, pEditMinRot, pEditMaxRot;
-	igdeEditVectorReference pEditMinScale, pEditMaxScale, pEditAxis;
-	igdeTextFieldReference pEditMinAngle, pEditMaxAngle;
-	igdeComboBoxReference pCBCoordFrame, pCBInputSource;
-	igdeCheckBoxReference pChkEnablePosition, pChkEnableRotation, pChkEnableSize, pChkUseAxis;
-	igdeComboBoxFilterReference pCBTargetBone, pCBInputBone;
+	igdeEditVector::Ref pEditMinTrans, pEditMaxTrans, pEditMinRot, pEditMaxRot;
+	igdeEditVector::Ref pEditMinScale, pEditMaxScale, pEditAxis;
+	igdeTextField::Ref pEditMinAngle, pEditMaxAngle;
+	igdeComboBox::Ref pCBCoordFrame, pCBInputSource;
+	igdeCheckBox::Ref pChkEnablePosition, pChkEnableRotation, pChkEnableSize, pChkUseAxis;
+	igdeComboBoxFilter::Ref pCBTargetBone, pCBInputBone;
 	
 	
 	

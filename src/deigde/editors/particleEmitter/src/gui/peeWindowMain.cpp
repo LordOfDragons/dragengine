@@ -44,12 +44,10 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -105,7 +103,7 @@ pEmitter( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(360)));
 	AddChild( splitted );
@@ -113,7 +111,7 @@ pEmitter( NULL )
 	pWindowProperties = new peeWindowProperties( *this );
 	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
 	
-	igdeContainerSplittedReference splitted2;
+	igdeContainerSplitted::Ref splitted2;
 	splitted2.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espBottom,
 		igdeApplication::app().DisplayScaled(260)));
 	splitted->AddChild( splitted2, igdeContainerSplitted::eaCenter );
@@ -550,7 +548,7 @@ void peeWindowMain::pCreateToolBarEdit(){
 
 void peeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "Emitter", deInputEvent::ekcM ) );
 	pCreateMenuEmitter( cascade );

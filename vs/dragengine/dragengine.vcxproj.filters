@@ -117,13 +117,7 @@
     <ClCompile Include="..\..\src\dragengine\src\common\file\decBaseFileReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\common\file\decBaseFileReaderReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\file\decBaseFileWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\common\file\decBaseFileWriterReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\file\decDiskFileReader.cpp">
@@ -136,9 +130,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\file\decMemoryFileReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\common\file\decMemoryFileReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\file\decMemoryFileWriter.cpp">
@@ -354,13 +345,7 @@
     <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlDocument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlDocumentReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlElement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlElementReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\common\xmlparser\decXmlElementTag.cpp">
@@ -408,9 +393,6 @@
     <ClCompile Include="..\..\src\dragengine\src\deObjectDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\deObjectReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTrace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -450,9 +432,6 @@
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSContainerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVFSDiskDirectory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -466,9 +445,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\filesystem\deVirtualFileSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\filesystem\deVirtualFileSystemReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\input\deInputDevice.cpp">
@@ -513,16 +489,10 @@
     <ClCompile Include="..\..\src\dragengine\src\logger\deLoggerFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\logger\deLoggerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\parallel\deParallelProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\parallel\deParallelTask.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\parallel\deParallelTaskReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\parallel\deParallelThread.cpp">
@@ -555,9 +525,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationMove.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\animation\deAnimationReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\controller\deAnimatorController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -573,16 +540,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstanceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstanceReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\animator\deAnimatorReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRule.cpp">
@@ -612,9 +573,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleLimit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateManipulator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -642,16 +600,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\archive\deArchiveManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\archive\deArchiveReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\billboard\deBillboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\billboard\deBillboardManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\billboard\deBillboardReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\camera\deCamera.cpp">
@@ -660,16 +612,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\camera\deCameraManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\camera\deCameraReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvas.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvasManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvasReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvas.cpp">
@@ -678,13 +624,7 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasCanvasView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasCanvasViewReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasImageReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasManager.cpp">
@@ -693,34 +633,16 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasPaint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasPaintReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasRenderWorld.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasRenderWorldReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasTextReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasVideoPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasVideoPlayerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasView.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasViewReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\canvas\deCanvasVisitor.cpp">
@@ -741,9 +663,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderCollisionTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderCollisionTestReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -754,9 +673,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\collider\deColliderRig.cpp">
@@ -783,9 +699,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\component\deComponentManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\component\deComponentReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\component\deComponentTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -793,9 +706,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerShape.cpp">
@@ -816,9 +726,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecalManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\decal\deDecalReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\deFileResource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -835,9 +742,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\deResourceManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\deResourceReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffect.cpp">
@@ -861,9 +765,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectOverlayImage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\effect\deEffectVisitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -885,16 +786,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\font\deFontReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\forcefield\deForceField.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\forcefield\deForceFieldManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\forcefield\deForceFieldReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\image\deImage.cpp">
@@ -903,16 +798,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\image\deImageManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\image\deImageReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\light\deLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\light\deLightManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\light\deLightReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\loader\deResourceLoader.cpp">
@@ -996,9 +885,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\localization\deLanguagePackManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\localization\deLanguagePackReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1015,9 +901,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\model\deModelTexture.cpp">
@@ -1047,9 +930,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlockerManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlockerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1057,9 +937,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorPath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorType.cpp">
@@ -1080,9 +957,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceRoom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1095,16 +969,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\network\deConnectionManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\network\deConnectionReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkMessageReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkMessageReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkMessageWriter.cpp">
@@ -1116,16 +984,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkStateManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\network\deNetworkStateReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\network\deServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\network\deServerManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\network\deServerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValue.cpp">
@@ -1147,9 +1009,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueQuaternion.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueString.cpp">
@@ -1179,9 +1038,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshVertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1200,9 +1056,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1212,9 +1065,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterParameter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1222,9 +1072,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbeManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbeReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropField.cpp">
@@ -1242,9 +1089,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropFieldManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropFieldReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\propfield\dePropFieldType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1252,9 +1096,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\rendering\deRenderWindowManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\rendering\deRenderWindowReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\rig\deRig.cpp">
@@ -1272,16 +1113,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\rig\deRigManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\rig\deRigReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deLumimeter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deLumimeterManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deLumimeterReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeter.cpp">
@@ -1290,16 +1125,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeterManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeterReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deTouchSensor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deTouchSensorManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\sensor\deTouchSensorReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkin.cpp">
@@ -1309,9 +1138,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\deSkinTexture.cpp">
@@ -1324,9 +1150,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderable.cpp">
@@ -1425,9 +1248,6 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyInstanceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyInstanceReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1438,9 +1258,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\sky\deSkyReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitter.cpp">
@@ -1455,31 +1272,19 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophoneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deMicrophoneReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSoundDecoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSoundDecoderReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSoundManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSoundReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSpeaker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSpeakerManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\sound\deSpeakerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizer.cpp">
@@ -1497,16 +1302,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstanceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstanceReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffect.cpp">
@@ -1575,13 +1374,7 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoAudioDecoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoAudioDecoderReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoDecoder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoDecoderReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoManager.cpp">
@@ -1593,19 +1386,10 @@
     <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoPlayerManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoPlayerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\video\deVideoReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\world\deWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\resources\world\deWorldManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\resources\world\deWorldReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\systems\deAISystem.cpp">
@@ -2150,13 +1934,7 @@
     <ClInclude Include="..\..\src\dragengine\src\common\file\decBaseFileReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\file\decBaseFileReaderReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\file\decBaseFileWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\file\decBaseFileWriterReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\file\decDiskFileReader.h">
@@ -2169,9 +1947,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\file\decMemoryFileReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\file\decMemoryFileReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\file\decMemoryFileWriter.h">
@@ -2387,13 +2162,7 @@
     <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlDocument.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlDocumentReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlElement.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlElementReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\common\xmlparser\decXmlElementTag.h">
@@ -2436,9 +2205,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\deObjectDebug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\deObjectReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\deTObjectReference.h">
@@ -2486,9 +2252,6 @@
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSContainerReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVFSDiskDirectory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2502,9 +2265,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\filesystem\deVirtualFileSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\filesystem\deVirtualFileSystemReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\input\deInputDevice.h">
@@ -2549,16 +2309,10 @@
     <ClInclude Include="..\..\src\dragengine\src\logger\deLoggerFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\logger\deLoggerReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\parallel\deParallelProcessing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\parallel\deParallelTask.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\parallel\deParallelTaskReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\parallel\deParallelThread.h">
@@ -2591,9 +2345,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationMove.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\animation\deAnimationReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\controller\deAnimatorController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2609,16 +2360,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstanceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorInstanceReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorLink.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\animator\deAnimatorReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRule.h">
@@ -2648,9 +2393,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleLimit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\animator\rule\deAnimatorRuleStateManipulator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2678,16 +2420,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\archive\deArchiveManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\archive\deArchiveReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\billboard\deBillboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\billboard\deBillboardManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\billboard\deBillboardReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\camera\deCamera.h">
@@ -2696,16 +2432,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\camera\deCameraManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\camera\deCameraReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvas.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvasManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\capture\deCaptureCanvasReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvas.h">
@@ -2714,13 +2444,7 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasCanvasView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasCanvasViewReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasImage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasImageReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasManager.h">
@@ -2729,34 +2453,16 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasPaint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasPaintReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasRenderWorld.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasRenderWorldReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasText.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasTextReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasVideoPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasVideoPlayerReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasViewReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\canvas\deCanvasVisitor.h">
@@ -2777,9 +2483,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderCollisionTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderCollisionTestReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2790,9 +2493,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\collider\deColliderRig.h">
@@ -2819,9 +2519,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\component\deComponentManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\component\deComponentReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\component\deComponentTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2829,9 +2526,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\debug\deDebugDrawerShape.h">
@@ -2852,9 +2546,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecalManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\decal\deDecalReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\deFileResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2871,9 +2562,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\deResourceManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\deResourceReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffect.h">
@@ -2897,9 +2585,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectOverlayImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\effect\deEffectVisitor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2921,16 +2606,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\font\deFontReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\forcefield\deForceField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\forcefield\deForceFieldManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\forcefield\deForceFieldReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\image\deImage.h">
@@ -2939,16 +2618,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\image\deImageManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\image\deImageReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\light\deLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\light\deLightManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\light\deLightReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\loader\deResourceLoader.h">
@@ -3032,9 +2705,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\localization\deLanguagePackManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\localization\deLanguagePackReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3051,9 +2721,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\model\deModelTexture.h">
@@ -3083,9 +2750,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlockerManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\blocker\deNavigationBlockerReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3093,9 +2757,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorPath.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\navigation\navigator\deNavigatorType.h">
@@ -3116,9 +2777,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\navigation\space\deNavigationSpaceRoom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3131,16 +2789,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\network\deConnectionManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\network\deConnectionReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkMessageReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkMessageReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkMessageWriter.h">
@@ -3152,16 +2804,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkStateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\network\deNetworkStateReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\network\deServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\network\deServerManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\network\deServerReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValue.h">
@@ -3183,9 +2829,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueQuaternion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\network\value\deNetworkValueString.h">
@@ -3215,9 +2858,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\occlusionmesh\deOcclusionMeshVertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3236,9 +2876,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterInstanceType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3251,9 +2888,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterParameter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\particle\deParticleEmitterType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3261,9 +2895,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbeManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\probe\deEnvMapProbeReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropField.h">
@@ -3281,9 +2912,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropFieldManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropFieldReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\propfield\dePropFieldType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3291,9 +2919,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\rendering\deRenderWindowManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\rendering\deRenderWindowReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\rig\deRig.h">
@@ -3311,16 +2936,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\rig\deRigManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\rig\deRigReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deLumimeter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deLumimeterManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deLumimeterReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeter.h">
@@ -3329,16 +2948,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeterManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deSoundLevelMeterReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deTouchSensor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deTouchSensorManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\sensor\deTouchSensorReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkin.h">
@@ -3348,9 +2961,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\deSkinTexture.h">
@@ -3363,9 +2973,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\deDynamicSkinReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\skin\dynamic\renderables\deDSRenderable.h">
@@ -3464,9 +3071,6 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyInstanceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyInstanceReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3477,9 +3081,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\sky\deSkyReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\smoke\deSmokeEmitter.h">
@@ -3494,31 +3095,19 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophoneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deMicrophoneReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSound.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSoundDecoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSoundDecoderReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSoundManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSoundReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSpeaker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSpeakerManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\sound\deSpeakerReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizer.h">
@@ -3536,16 +3125,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstanceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerInstanceReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerLink.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\deSynthesizerReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\synthesizer\effect\deSynthesizerEffect.h">
@@ -3614,13 +3197,7 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoAudioDecoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoAudioDecoderReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoDecoder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoDecoderReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoManager.h">
@@ -3632,19 +3209,10 @@
     <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoPlayerManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoPlayerReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\video\deVideoReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\world\deWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\resources\world\deWorldManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\resources\world\deWorldReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\systems\deAISystem.h">
@@ -4056,6 +3624,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\threading\deTThreadSafeObjectReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.h">

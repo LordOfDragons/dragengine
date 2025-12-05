@@ -47,6 +47,7 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrSession> Ref;
 	
+	
 	/** Graphic Api. */
 	enum eGraphicApi{
 		egaHeadless,

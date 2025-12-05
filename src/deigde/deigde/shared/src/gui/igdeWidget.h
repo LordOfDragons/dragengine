@@ -25,7 +25,7 @@
 #ifndef _IGDEWIDGET_H_
 #define _IGDEWIDGET_H_
 
-#include "theme/igdeGuiThemeReference.h"
+#include "theme/igdeGuiTheme.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -56,7 +56,7 @@ private:
 	void *pNativeWidget;
 	igdeContainer *pParent;
 	bool pVisible;
-	igdeGuiThemeReference pGuiTheme;
+	igdeGuiTheme::Ref pGuiTheme;
 	decString pGuiThemeName;
 	
 	

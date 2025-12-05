@@ -39,6 +39,7 @@ class deoglSkinConstructedProperty : public deObject{
 public:
 	typedef deTObjectReference<deoglSkinConstructedProperty> Ref;
 	
+	
 private:
 	const deoglSkinStateCNGroup::Ref pContent;
 	const int pBitCount;

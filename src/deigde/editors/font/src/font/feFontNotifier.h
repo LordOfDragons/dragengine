@@ -42,6 +42,10 @@ class feFontGlyph;
  */
 class feFontNotifier : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<feFontNotifier> Ref;
+
+
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new font notifier. */

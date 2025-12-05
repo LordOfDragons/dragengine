@@ -62,6 +62,11 @@ class deBaseModule;
  * Use SetFinishAfterRun() to set the appropriate behavior.
  */
 class DE_DLL_EXPORT deParallelTask : public deThreadSafeObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deParallelTask> Ref;
+	
+	
 private:
 	deBaseModule *pOwner;
 	

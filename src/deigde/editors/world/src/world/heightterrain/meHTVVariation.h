@@ -67,6 +67,10 @@ private:
 	float pRandomRotationMax;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVVariation> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */

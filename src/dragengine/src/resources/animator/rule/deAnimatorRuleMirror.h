@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deAnimatorRuleMirror> Ref;
 	
 	
-	
 public:
 	/** \brief Mirror axis. */
 	enum eMirrorAxis{

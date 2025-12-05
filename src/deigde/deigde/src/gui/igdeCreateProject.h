@@ -27,7 +27,7 @@
 
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 
 class igdeGameProject;
 class igdeTemplate;
@@ -64,7 +64,7 @@ private:
 	
 	igdeGameDefinition *pGameDef;
 	decString pSharedGameDefContent;
-	deVirtualFileSystemReference pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	
 	decStringList pFileRenameTokens;
 	decStringList pFileRenameValues;

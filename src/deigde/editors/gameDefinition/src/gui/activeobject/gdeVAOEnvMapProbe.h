@@ -26,8 +26,8 @@
 #define _GDEVAOENVMAPPROBE_H_
 
 #include "gdeVAOSubObject.h"
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/probe/deEnvMapProbeReference.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/probe/deEnvMapProbe.h>
 
 class gdeOCEnvMapProbe;
 class igdeWDebugDrawerShape;
@@ -38,12 +38,17 @@ class igdeWDebugDrawerShape;
  * \brief Game definition active object environment map probe for edit view.
  */
 class gdeVAOEnvMapProbe : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOEnvMapProbe> Ref;
+	
+	
 private:
 	gdeOCEnvMapProbe *pOCEnvMapProbe;
 	
-	deEnvMapProbeReference pEnvMapProbe;
+	deEnvMapProbe::Ref pEnvMapProbe;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWDebugDrawerShape *pDDSReflection;
 	igdeWDebugDrawerShape *pDDSInfluence;

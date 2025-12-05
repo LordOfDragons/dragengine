@@ -70,7 +70,6 @@ public:
 	typedef deTObjectReference<deHeightTerrain> Ref;
 	
 	
-	
 private:
 	float pSectorSize;
 	int pSectorResolution;

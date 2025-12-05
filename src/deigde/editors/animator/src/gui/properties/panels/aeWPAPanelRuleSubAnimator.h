@@ -27,7 +27,7 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 
 
 class aeController;
@@ -38,13 +38,13 @@ class aeController;
  */
 class aeWPAPanelRuleSubAnimator : public aeWPAPanelRule{
 private:
-	igdeEditPathReference pEditPathAnimator;
-	igdeComboBoxReference pCBConnection;
-	igdeComboBoxReference pCBConnectionController;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeEditPath::Ref pEditPathAnimator;
+	igdeComboBox::Ref pCBConnection;
+	igdeComboBox::Ref pCBConnectionController;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	bool pPreventUpdate;
 	
 	

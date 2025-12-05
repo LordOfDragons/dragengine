@@ -26,7 +26,7 @@
 #define _SEVIEWSKY_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 class seWindowMain;
 class seSky;
@@ -42,7 +42,7 @@ private:
 	
 	seSky *pSky;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
 	

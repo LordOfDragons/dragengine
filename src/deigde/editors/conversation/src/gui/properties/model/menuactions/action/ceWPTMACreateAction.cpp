@@ -33,7 +33,7 @@
 #include "../../../ceWindowProperties.h"
 #include "../../../../ceWindowMain.h"
 #include "../../../../../conversation/ceConversation.h"
-#include "../../../../../conversation/action/ceConversationActionReference.h"
+#include "../../../../../conversation/action/ceConversationAction.h"
 #include "../../../../../conversation/action/ceCAActorAdd.h"
 #include "../../../../../conversation/action/ceCAActorCommand.h"
 #include "../../../../../conversation/action/ceCAActorRemove.h"
@@ -57,7 +57,7 @@
 #include "../../../../../conversation/action/ceCAWait.h"
 
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -82,10 +82,10 @@ pActionType( actionType ){
 ///////////////
 
 void ceWPTMACreateAction::OnAction(){
-	ceConversationActionReference action;
+	ceConversationAction::Ref action;
 	action.TakeOver( CreateAction() );
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( CreateUndo( action ) );
 	GetConversation().GetUndoSystem()->Add( undo );
 }

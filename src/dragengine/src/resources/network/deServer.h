@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<deServer> Ref;
 	
 	
-	
 private:
 	decString pAddress;
 	

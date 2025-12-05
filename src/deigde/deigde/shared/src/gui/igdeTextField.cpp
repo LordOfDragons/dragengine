@@ -32,7 +32,6 @@
 #include "event/igdeTextFieldListener.h"
 #include "native/toolkit.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"

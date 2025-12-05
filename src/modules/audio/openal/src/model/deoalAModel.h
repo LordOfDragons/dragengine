@@ -45,6 +45,10 @@ class deModelLOD;
  * \brief Audio model.
  */
 class deoalAModel : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalAModel> Ref;
+
+
 public:
 	/** \brief Weight. */
 	struct sWeight{

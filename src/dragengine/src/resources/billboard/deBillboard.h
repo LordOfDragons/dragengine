@@ -26,8 +26,8 @@
 #define _DEBILLBOARD_H_
 
 #include "../deResource.h"
-#include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../skin/deSkin.h"
+#include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
 
@@ -62,14 +62,13 @@ public:
 	typedef deTObjectReference<deBillboard> Ref;
 	
 	
-	
 private:
 	decDVector pPosition;
 	decVector pAxis;
 	decVector2 pSize;
 	decVector2 pOffset;
-	deSkinReference pSkin;
-	deDynamicSkinReference pDynamicSkin;
+	deSkin::Ref pSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	bool pLocked;
 	bool pSpherical;
 	bool pSizeFixedToScreen;

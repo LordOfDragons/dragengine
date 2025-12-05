@@ -43,6 +43,10 @@
  */
 class meHTVRuleMapping : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleMapping> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Mapped value. */

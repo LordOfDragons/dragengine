@@ -42,6 +42,10 @@
  */
 class meHTVRuleConstant : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleConstant> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Vector. */

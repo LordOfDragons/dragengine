@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<fbxModelCluster> Ref;
 	
 	
-	
 private:
 	fbxModel &pModel;
 	fbxNode &pNodeCluster;

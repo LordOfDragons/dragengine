@@ -36,7 +36,7 @@ class ceCAMusic;
  */
 class ceWPAMusic : public ceWPAction{
 private:
-	igdeTextFieldReference pEditName;
+	igdeTextField::Ref pEditName;
 	
 	
 	

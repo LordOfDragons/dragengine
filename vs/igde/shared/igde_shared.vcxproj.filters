@@ -21,9 +21,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\clipboard\igdeClipboardData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\clipboard\igdeClipboardDataReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\codec\igdeCodecPropertyString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDClassManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDClassReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\light\igdeGDCLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -153,9 +147,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategoryReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeTagManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -198,9 +189,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDPropertyList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDPropertyReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\skin\igdeGDSkin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -217,9 +205,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\visitor\igdeGDAddToListVisitor.cpp">
@@ -258,34 +243,16 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVectorListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVectorListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVectorReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPathListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPathListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPathReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint.cpp">
@@ -297,19 +264,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint3Listener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint3ListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint3Reference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPointListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPointListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPointReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValue.cpp">
@@ -318,28 +273,13 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValueListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValueListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValueReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderTextListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderTextListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderTextReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditTags.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditTagsReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector.cpp">
@@ -351,25 +291,10 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector2Listener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector2ListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector2Reference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVectorListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVectorListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVectorReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeToggleTags.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeToggleTagsReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierClamp.cpp">
@@ -384,22 +309,10 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogMultilineValue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogMultilineValueReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogTexturePropertyList.cpp">
@@ -426,19 +339,10 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionClearUndo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionClearUndoReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionContextMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionContextMenuReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionExternOpen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionExternOpenReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionListener.cpp">
@@ -447,106 +351,52 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionRedo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionRedoReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectDirectory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectDirectoryReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectFileReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionUndo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionUndoReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeColorBoxListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeColorBoxListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeComboBoxListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeComboBoxListenerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeIconListBoxListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeIconListBoxListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeListBoxListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeListBoxListenerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseCameraListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseCameraListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseDragListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseDragListenerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseKeyListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseKeyListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeScrollBarListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeScrollBarListenerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSliderListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSliderListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSpinTextFieldListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSpinTextFieldListenerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextAreaListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextAreaListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextFieldListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextFieldListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTreeListListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTreeListListenerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePattern.cpp">
@@ -561,22 +411,13 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButtonReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCheckBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCheckBoxReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeColorBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeColorBoxReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBox.cpp">
@@ -585,19 +426,10 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBoxFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBoxFilterReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBoxReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCommonDialogs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeContainer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeContainerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeEditorWindow.cpp">
@@ -606,25 +438,13 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeGroupBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeGroupBoxReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBoxReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabelReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBoxReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeMainWindow.cpp">
@@ -633,13 +453,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeProgressBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeProgressBarReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeScrollBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeScrollBarReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSeparator.cpp">
@@ -651,25 +465,13 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSlider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSliderReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpacer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpacerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpinTextField.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpinTextFieldReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStatusBar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStatusBarReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStepableTask.cpp">
@@ -678,37 +480,19 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSwitcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSwitcherReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTabBook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTabBookReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextArea.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextAreaReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextField.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextFieldReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTimer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTimerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToggleButton.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToggleButtonReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBar.cpp">
@@ -717,19 +501,10 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarDock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarDockReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarSeparator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTreeList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTreeListReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeUIHelper.cpp">
@@ -738,22 +513,13 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeViewRenderWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeViewRenderWindowReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWidgetReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBorder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBorderReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBox.cpp">
@@ -774,13 +540,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerScroll.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerScrollReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerSplitted.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerSplittedReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLogger.cpp">
@@ -789,19 +549,10 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLoggerListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLoggerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuBarReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCascade.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCascadeReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCheck.cpp">
@@ -819,31 +570,16 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListHeader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListHeaderReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItemReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItemSorter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItemSorterReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItemReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItemSorter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItemSorterReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxDialog.cpp">
@@ -1041,16 +777,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoardListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoardListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoardReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVLink.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVLinkReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNode.cpp">
@@ -1059,52 +786,25 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNodeListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNodeListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNodeReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVSlot.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVSlotReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPCameraReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPSky.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPSkyReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPTriggerTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPTriggerTableReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPUndoHistory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPUndoHistoryReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPWObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPWObjectReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeFont.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeFontReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeHotKey.cpp">
@@ -1113,31 +813,16 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeIcon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeIconReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextSegment.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextSegmentReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextStyle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextStyleReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiTheme.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiThemeProperty.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiThemePropertyReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiThemeReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\propertyNames.cpp">
@@ -1248,9 +933,6 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderListenerReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1269,13 +951,7 @@
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParserState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerListener.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerListenerReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerTarget.cpp">
@@ -1285,9 +961,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndoReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndoSystem.cpp">
@@ -1317,9 +990,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\clipboard\igdeClipboardData.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\clipboard\igdeClipboardDataReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\codec\igdeCodecPropertyString.h">
@@ -1397,9 +1067,6 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDClassManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\igdeGDClassReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\class\light\igdeGDCLight.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1451,9 +1118,6 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategory.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeGDCategoryReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\igdeTagManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1496,9 +1160,6 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDPropertyList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\property\igdeGDPropertyReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\skin\igdeGDSkin.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1515,9 +1176,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\sky\igdeGDSkyReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gamedefinition\visitor\igdeGDAddToListVisitor.h">
@@ -1556,34 +1214,16 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDirectoryReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVector.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVectorListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVectorListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditDVectorReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPath.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPathListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPathListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPathReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint.h">
@@ -1595,19 +1235,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint3Listener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint3ListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPoint3Reference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPointListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPointListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPointReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValue.h">
@@ -1616,28 +1244,13 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValueListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValueListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditPropertyValueReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderText.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderTextListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderTextListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditSliderTextReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditTags.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditTagsReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector.h">
@@ -1649,25 +1262,10 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector2Listener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector2ListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVector2Reference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVectorListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVectorListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeEditVectorReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeToggleTags.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\composed\igdeToggleTagsReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeDialogCurveBezierClamp.h">
@@ -1682,22 +1280,10 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\curveedit\igdeViewCurveBezierReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialog.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogMultilineValue.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogMultilineValueReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\dialog\igdeDialogTexturePropertyList.h">
@@ -1724,19 +1310,10 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionClearUndo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionClearUndoReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionContextMenu.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionContextMenuReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionExternOpen.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionExternOpenReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionListener.h">
@@ -1745,106 +1322,52 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionRedo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionRedoReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectDirectory.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectDirectoryReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectFile.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionSelectFileReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionUndo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeActionUndoReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeColorBoxListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeColorBoxListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeComboBoxListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeComboBoxListenerReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeIconListBoxListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeIconListBoxListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeListBoxListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeListBoxListenerReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseCameraListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseCameraListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseDragListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseDragListenerReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseKeyListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeMouseKeyListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeScrollBarListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeScrollBarListenerReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSliderListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSliderListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSpinTextFieldListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeSpinTextFieldListenerReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextAreaListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextAreaListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextFieldListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTextFieldListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTreeListListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\event\igdeTreeListListenerReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\filedialog\igdeFilePattern.h">
@@ -1859,22 +1382,13 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButton.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeButtonReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCamera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCheckBox.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCheckBoxReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeColorBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeColorBoxReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBox.h">
@@ -1883,19 +1397,10 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBoxFilter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBoxFilterReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeComboBoxReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeCommonDialogs.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeContainer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeContainerReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeEditorWindow.h">
@@ -1904,25 +1409,13 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeGroupBox.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeGroupBoxReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeIconListBoxReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeLabelReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBox.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeListBoxReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeMainWindow.h">
@@ -1931,13 +1424,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeProgressBar.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeProgressBarReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeScrollBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeScrollBarReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSeparator.h">
@@ -1949,25 +1436,13 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSlider.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSliderReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpacer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpacerReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpinTextField.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSpinTextFieldReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStatusBar.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStatusBarReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeStepableTask.h">
@@ -1976,37 +1451,19 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSwitcher.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeSwitcherReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTabBook.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTabBookReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextArea.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextAreaReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextField.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTextFieldReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTimer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTimerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToggleButton.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToggleButtonReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBar.h">
@@ -2015,19 +1472,10 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarDock.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarDockReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeToolBarSeparator.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTreeList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeTreeListReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeUIHelper.h">
@@ -2036,22 +1484,13 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeViewRenderWindow.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeViewRenderWindowReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWidget.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWidgetReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\igdeWindow.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBorder.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBorderReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerBox.h">
@@ -2072,13 +1511,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerScroll.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerScrollReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerSplitted.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\layout\igdeContainerSplittedReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLogger.h">
@@ -2087,19 +1520,10 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLoggerListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\logger\igdeWindowLoggerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuBar.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuBarReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCascade.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCascadeReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\menu\igdeMenuCheck.h">
@@ -2117,31 +1541,16 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListHeader.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListHeaderReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItem.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItemReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItemSorter.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeListItemSorterReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItem.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItemReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItemSorter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\model\igdeTreeItemSorterReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\native\fox\dialog\igdeNativeFoxDialog.h">
@@ -2345,16 +1754,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoardListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoardListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVBoardReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVLink.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVLinkReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNode.h">
@@ -2363,52 +1763,25 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNodeListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNodeListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVNodeReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVSlot.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\nodeview\igdeNVSlotReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPCamera.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPCameraReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPSky.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPSkyReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPTriggerTable.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPTriggerTableReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPUndoHistory.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPUndoHistoryReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPWObject.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\properties\igdeWPWObjectReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeFont.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeFontReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeHotKey.h">
@@ -2417,31 +1790,16 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeIcon.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeIconReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextSegment.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextSegmentReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextStyle.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\resources\igdeTextStyleReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiTheme.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiThemeProperty.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiThemePropertyReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\igdeGuiThemeReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\gui\theme\propertyNames.h">
@@ -2552,9 +1910,6 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderListener.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderListenerReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\resourceloader\igdeResourceLoaderTask.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2573,13 +1928,7 @@
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionParserState.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerExpressionReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerListener.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerListenerReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\triggersystem\igdeTriggerTarget.h">
@@ -2589,9 +1938,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndoReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\deigde\deigde\shared\src\undo\igdeUndoSystem.h">

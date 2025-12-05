@@ -27,7 +27,7 @@
 
 #include "../meColliderOwner.h"
 
-#include <deigde/gui/igdeTimerReference.h>
+#include <deigde/gui/igdeTimer.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -65,7 +65,7 @@ private:
 	
 	meAttachedDecal **pAttachedDecals;
 	int pAttachedDecalCount;
-	igdeTimerReference pTimerReattachDecals;
+	igdeTimer::Ref pTimerReattachDecals;
 	
 	meWorld *pWorld;
 	

@@ -26,8 +26,8 @@
 #define _SEWPVIEW_H_
 
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
-#include <deigde/gui/properties/igdeWPWObjectReference.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
+#include <deigde/gui/properties/igdeWPWObject.h>
 
 class seSky;
 class seWindowProperties;
@@ -44,8 +44,8 @@ private:
 	seSky *pSky;
 	seWPViewListener *pListener;
 	
-	igdeWPWObjectReference pWPEnvObject;
-	igdeWPCameraReference pWPCamera;
+	igdeWPWObject::Ref pWPEnvObject;
+	igdeWPCamera::Ref pWPCamera;
 	
 	
 	

@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deoxrPassthrough> Ref;
 	
 	
-	
 private:
 	deoxrSession &pSession;
 	

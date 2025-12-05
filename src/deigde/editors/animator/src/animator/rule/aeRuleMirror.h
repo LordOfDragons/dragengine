@@ -39,10 +39,12 @@ class aeRuleMirror : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleMirror> Ref;
 	
+	
 	class cMatchName : public deObject {
 	public:
 		typedef deTObjectReference<cMatchName> Ref;
-		
+	
+	
 		cMatchName( const char *first, const char *second, deAnimatorRuleMirror::eMatchNameType type );
 		
 		inline const decString &GetFirst() const{ return pFirst; }

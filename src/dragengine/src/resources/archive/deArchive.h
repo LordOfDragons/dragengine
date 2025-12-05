@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<deArchive> Ref;
 	
 	
-	
 private:
 	deBaseArchiveContainer *pPeerContainer;
 	

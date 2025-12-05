@@ -34,16 +34,13 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
-#include <deigde/gui/event/igdeListBoxListenerReference.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -56,11 +53,11 @@ namespace{
 
 class cActionAppend : public igdeAction {
 	gdeWPPathList &pPanel;
-	igdeEditPathReference &pEditPath;
-	igdeListBoxReference &pListBox;
+	igdeEditPath::Ref &pEditPath;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionAppend( gdeWPPathList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
+	cActionAppend( gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox ) : 
 	igdeAction( "Append", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Append path" ),
 	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
 	
@@ -73,7 +70,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( *pPanel.GetPathList() + pEditPath->GetPath() ) );
 		pPanel.GetUndoSystem()->Add( undo );
 		
@@ -83,11 +80,11 @@ public:
 
 class cActionInsert : public igdeAction {
 	gdeWPPathList &pPanel;
-	igdeEditPathReference &pEditPath;
-	igdeListBoxReference &pListBox;
+	igdeEditPath::Ref &pEditPath;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionInsert( gdeWPPathList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
+	cActionInsert( gdeWPPathList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox ) : 
 	igdeAction( "Insert", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Insert path" ),
 	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
 	
@@ -105,7 +102,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		decStringList list( *pPanel.GetPathList() );
 		list.InsertAt( pEditPath->GetPath(), position );
 		undo.TakeOver( pPanel.UndoSet( list ) );
@@ -121,10 +118,10 @@ public:
 
 class cActionRemove : public igdeAction {
 	gdeWPPathList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionRemove( gdeWPPathList &panel, igdeListBoxReference &listBox ) :
+	cActionRemove( gdeWPPathList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Remove", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
 		"Remove path" ), pPanel( panel ), pListBox( listBox ){ }
 	
@@ -139,7 +136,7 @@ public:
 			paths.RemoveFrom( index );
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( paths ) );
 		pPanel.GetUndoSystem()->Add( undo );
 		
@@ -151,10 +148,10 @@ public:
 
 class cActionClear : public igdeAction {
 	gdeWPPathList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClear( gdeWPPathList &panel, igdeListBoxReference &listBox ) :
+	cActionClear( gdeWPPathList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Clear", NULL, "Clear path" ), pPanel( panel ), pListBox( listBox ){ }
 	
 	virtual void OnAction(){
@@ -162,7 +159,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( decStringList() ) );
 		pPanel.GetUndoSystem()->Add( undo );
 	}

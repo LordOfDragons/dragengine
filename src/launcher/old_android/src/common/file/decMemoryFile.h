@@ -44,6 +44,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decMemoryFile> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**

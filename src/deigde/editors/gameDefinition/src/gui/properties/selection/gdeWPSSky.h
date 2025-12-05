@@ -25,16 +25,16 @@
 #ifndef _GDEWPSSKY_H_
 #define _GDEWPSSKY_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -56,21 +56,21 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeActionReference pActionControllerAdd;
-	igdeActionReference pActionControllerRemove;
-	igdeActionContextMenuReference pActionControllerMenu;
+	igdeAction::Ref pActionControllerAdd;
+	igdeAction::Ref pActionControllerRemove;
+	igdeActionContextMenu::Ref pActionControllerMenu;
 	
-	igdeEditPathReference pEditPath;
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
+	igdeEditPath::Ref pEditPath;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
 	
-	igdeComboBoxReference pCBController;
-	igdeButtonReference pBtnControllerMenu;
-	igdeTextFieldReference pEditControllerName;
-	igdeTextFieldReference pEditControllerValue;
+	igdeComboBox::Ref pCBController;
+	igdeButton::Ref pBtnControllerMenu;
+	igdeTextField::Ref pEditControllerName;
+	igdeTextField::Ref pEditControllerValue;
 	
-	igdeComboBoxFilterReference pCBCategory;
-	igdeButtonReference pBtnJumpToCategory;
+	igdeComboBoxFilter::Ref pCBCategory;
+	igdeButton::Ref pBtnJumpToCategory;
 	
 	
 	

@@ -97,7 +97,6 @@ public:
 	typedef deTObjectReference<ceGesture> Ref;
 	
 	
-	
 private:
 	ceConversation *pConversation;
 	

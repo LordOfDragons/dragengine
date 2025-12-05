@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deLoggerChain> Ref;
 	
 	
-	
 private:
 	decObjectOrderedSet pLoggerList;
 	deMutex pMutex;

@@ -27,8 +27,8 @@
 
 #include "reWPPanelShape.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 class reRigShapeCylinder;
 
@@ -39,11 +39,11 @@ class reRigShapeCylinder;
  */
 class reWPPanelShapeCylinder : public reWPPanelShape{
 private:
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditHalfHeight;
-	igdeTextFieldReference pEditTopRadius;
-	igdeTextFieldReference pEditBottomRadius;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditHalfHeight;
+	igdeTextField::Ref pEditTopRadius;
+	igdeTextField::Ref pEditBottomRadius;
 	
 	
 	

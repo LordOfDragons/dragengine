@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<decZFileReader> Ref;
 	
 	
-	
 private:
 	decBaseFileReader::Ref pReader;
 	int pFilePosition;

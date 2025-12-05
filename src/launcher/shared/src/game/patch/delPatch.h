@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<delPatch> Ref;
 	
 	
-	
 private:
 	decUuid pIdentifier;
 	decUnicodeString pName;

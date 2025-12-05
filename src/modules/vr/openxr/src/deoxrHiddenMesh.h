@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<deoxrHiddenMesh> Ref;
 	
 	
-	
 private:
 	deoxrSession &pSession;
 	

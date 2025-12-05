@@ -55,6 +55,10 @@ private:
 	bool pActive;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeController> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new controller. */

@@ -28,7 +28,7 @@
 #include "igdeDialogCurveBezierCoord.h"
 #include "../igdeUIHelper.h"
 #include "../igdeCheckBox.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../composed/igdeEditVector2.h"
 #include "../composed/igdeEditVector2Listener.h"
 #include "../layout/igdeContainerForm.h"
@@ -132,7 +132,7 @@ void igdeDialogCurveBezierCoord::SetPoint( const decCurveBezierPoint &point ){
 void igdeDialogCurveBezierCoord::pCreateContent( igdeEnvironment &environment ){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerForm( environment ) );
 	
 	helper.EditVector2( content, "Point:", "Point coordinates",
@@ -142,7 +142,7 @@ void igdeDialogCurveBezierCoord::pCreateContent( igdeEnvironment &environment ){
 	helper.EditVector2( content, "Right Handle:", "Right handle coordinates",
 		pEditHandle2, new igdeDialogCurveBezierCoordEditHandle2( *this ) );
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Discard" );
 	
 	AddContent( content, buttonBar );

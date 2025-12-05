@@ -138,9 +138,7 @@ void meCLAddDecal::RunAction(){
 		decalSize = ( ( meUAddDecal& )( igdeUndo& )pUndo ).GetDecal()->GetSize();
 		
 	}else{
-		deObjectReference refDecal;
-		
-		refDecal.TakeOver( new meDecal( pWorld->GetEnvironment() ) );
+		const meDecal::Ref refDecal(meDecal::Ref::NewWith(pWorld->GetEnvironment()));
 		meDecal &decal = ( meDecal& )( deObject& )refDecal;
 		
 		decal.SetSkinPath( browseSkin );

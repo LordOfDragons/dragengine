@@ -27,7 +27,7 @@
 
 #include "../../../common/collection/decPointerOrderedSet.h"
 #include "../../../common/math/decMath.h"
-#include "../../../resources/image/deImageReference.h"
+#include "../../../resources/image/deImage.h"
 
 class deHeightTerrain;
 class deHeightTerrainNavSpace;
@@ -54,7 +54,7 @@ private:
 	deHeightTerrain *pParentHeightTerrain;
 	int pIndex;
 	
-	deImageReference pHeightImage;
+	deImage::Ref pHeightImage;
 	
 	unsigned char *pVisibleFaces;
 	int pVFByteCount;

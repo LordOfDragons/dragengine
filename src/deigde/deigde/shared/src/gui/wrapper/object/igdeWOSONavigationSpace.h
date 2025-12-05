@@ -27,8 +27,8 @@
 
 #include "igdeWOSubObject.h"
 
-#include <dragengine/resources/navigation/space/deNavigationSpaceReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/navigation/space/deNavigationSpace.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -39,11 +39,16 @@ class igdeGDCNavigationSpace;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSONavigationSpace : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSONavigationSpace> Ref;
+	
+	
 private:
 	const igdeGDCNavigationSpace &pGDNavigationSpace;
-	deNavigationSpaceReference pNavigationSpace;
+	deNavigationSpace::Ref pNavigationSpace;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
 	decString pPathNavigationSpace;
 	

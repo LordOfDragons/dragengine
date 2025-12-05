@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<deoxrActionSet> Ref;
 	
 	
-	
 private:
 	deoxrInstance &pInstance;
 	

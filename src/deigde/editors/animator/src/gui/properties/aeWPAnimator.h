@@ -25,10 +25,10 @@
 #ifndef _AEWPANIMATOR_H_
 #define _AEWPANIMATOR_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 
@@ -47,18 +47,18 @@ private:
 	aeWPAnimatorListener *pListener;
 	aeAnimator *pAnimator;
 	
-	igdeEditPathReference pEditRigPath;
-	igdeEditPathReference pEditAnimPath;
+	igdeEditPath::Ref pEditRigPath;
+	igdeEditPath::Ref pEditAnimPath;
 	
-	igdeListBoxReference pListBones;
-	igdeComboBoxFilterReference pCBBones;
-	igdeButtonReference pBtnBoneAdd;
-	igdeButtonReference pBtnBoneDel;
+	igdeListBox::Ref pListBones;
+	igdeComboBoxFilter::Ref pCBBones;
+	igdeButton::Ref pBtnBoneAdd;
+	igdeButton::Ref pBtnBoneDel;
 	
-	igdeListBoxReference pListVertexPositionSets;
-	igdeComboBoxFilterReference pCBVertexPositionSets;
-	igdeButtonReference pBtnVertexPositionSetAdd;
-	igdeButtonReference pBtnVertexPositionSetDel;
+	igdeListBox::Ref pListVertexPositionSets;
+	igdeComboBoxFilter::Ref pCBVertexPositionSets;
+	igdeButton::Ref pBtnVertexPositionSetAdd;
+	igdeButton::Ref pBtnVertexPositionSetDel;
 	
 	
 	

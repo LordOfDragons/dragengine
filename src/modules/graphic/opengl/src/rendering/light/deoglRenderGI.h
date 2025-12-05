@@ -27,8 +27,6 @@
 
 #include "deoglRenderLightBase.h"
 
-#include <dragengine/deObjectReference.h>
-
 class deoglGIState;
 class deoglGIBVH;
 class deoglRenderTask;

@@ -38,9 +38,8 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeIconListBox.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
-#include <deigde/gui/model/igdeListItemReference.h>
+#include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/model/igdeListItemSorter.h>
-#include <deigde/gui/model/igdeListItemSorterReference.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -127,7 +126,7 @@ pWorld( NULL )
 		headers, 3, "Changes", pListChanges, new cListChangelog( *this ) );
 	AddChild( pListChanges, igdeContainerBorder::eaCenter );
 	
-	igdeListItemSorterReference sorter;
+	igdeListItemSorter::Ref sorter;
 	sorter.TakeOver( new cChangelogSorter );
 	pListChanges->SetSorter( sorter );
 }
@@ -181,7 +180,7 @@ void meWindowChangelog::UpdateChangelog(){
 	}
 	
 	meHeightTerrain * const hterrain = pWorld->GetHeightTerrain();
-	igdeListItemReference refEntry;
+	igdeListItem::Ref refEntry;
 	int i, j;
 	
 	try{

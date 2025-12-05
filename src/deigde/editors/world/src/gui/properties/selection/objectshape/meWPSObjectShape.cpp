@@ -46,7 +46,7 @@
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeSwitcher.h>
@@ -60,7 +60,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -172,7 +172,7 @@ pPreventUpdate( false )
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, form, formLine;
+	igdeContainer::Ref content, form, formLine;
 	
 	pListener = new meWPSObjectShapeListener( *this );
 	
@@ -339,7 +339,6 @@ void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
 	
 	// rebuild the shape list from the currently selected property
 	if( isPropertyShape){
-		deObjectReference refObjectShape;
 		igdeCodecPropertyString codec;
 		decShapeList shapeList;
 		int i, count;
@@ -358,8 +357,8 @@ void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
 		}
 		
 		for( i=0; i<count; i++ ){
-			refObjectShape.TakeOver( new meObjectShape( pWorld->GetEnvironment(), *shapeList.GetAt( i ) ) );
-			meObjectShape * const objectShape = ( meObjectShape* )( deObject* )refObjectShape;
+			const meObjectShape::Ref objectShape(meObjectShape::Ref::NewWith(
+				pWorld->GetEnvironment(), *shapeList.GetAt(i)));
 			objectShape->SetWorld( pWorld );
 			objectShape->SetParentObject( activeObject );
 			pWorld->GetObjectShapes().Add( objectShape );
@@ -516,7 +515,7 @@ void meWPSObjectShape::OnShapeChanged(){
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	decShape *shape = NULL;
 	
 	try{
@@ -576,7 +575,7 @@ void meWPSObjectShape::OnShapeChanged(){
 void meWPSObjectShape::pCreateShapePanels(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	
 	
 	pSwitcherShapeType.TakeOver( new igdeSwitcher( env ) );

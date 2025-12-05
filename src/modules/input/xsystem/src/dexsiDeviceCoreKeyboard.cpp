@@ -70,10 +70,8 @@ dexsiDevice( module, esX11 )
 	
 	XDisplayKeycodes( display, &minKeyCode, &maxKeyCode );
 	
-	deObjectReference refSharedButton;
-	refSharedButton.TakeOver( new dexsiDeviceButton( module ) );
-	dexsiDeviceButton &sharedButton = ( dexsiDeviceButton& )( deObject& )refSharedButton;
-	sharedButton.SetDisplayImages( "key" );
+	const dexsiDeviceButton::Ref sharedButton(dexsiDeviceButton::Ref::NewWith(module));
+	sharedButton->SetDisplayImages( "key" );
 	
 	XKeyEvent fakeKeyEvent;
 	memset( &fakeKeyEvent, 0, sizeof( fakeKeyEvent ) );
@@ -117,7 +115,6 @@ dexsiDevice( module, esX11 )
 		ResetX11KeyCodeMap( minKeyCode, keyCodeCount );
 		
 		int buttonIndex = 0;
-		deObjectReference refButton;
 		for( i=0; i<keyCodeCount; i++ ){
 			const KeySym keysym = keysyms[ i * keySymPerKeyCode ];
 			
@@ -125,12 +122,11 @@ dexsiDevice( module, esX11 )
 				continue;
 			}
 			
-			refButton.TakeOver( new dexsiDeviceButton( module ) );
-			dexsiDeviceButton &button = ( dexsiDeviceButton& )( deObject& )refButton;
-			AddButton( &button );
+			const dexsiDeviceButton::Ref button(dexsiDeviceButton::Ref::NewWith(module));
+			AddButton(button);
 			
 			string.Format( "k%d", minKeyCode + i );
-			button.SetID( string );
+			button->SetID( string );
 			
 			const char * const keysymString = XKeysymToString( keysym );
 			if( keysymString ){
@@ -138,19 +134,19 @@ dexsiDevice( module, esX11 )
 				if( ! string.IsEmpty() ){
 					string.SetAt( 0, toupper( string.GetAt( 0 ) ) );
 				}
-				button.SetName( string );
+				button->SetName( string );
 				
 			}else{
 				string.Format( "<KeyCode %d>", minKeyCode + i );
-				button.SetName( string );
+				button->SetName( string );
 			}
 			
-			button.SetX11Code( minKeyCode + i );
-			button.SetKeyCode( KeyCodeForKeySym( keysym ) );
-			button.SetKeyLocation( KeyLocationForKeySym( keysym ) );
-			button.SetMatchPriority( MatchingPriorityForKeySym( keysym ) );
+			button->SetX11Code( minKeyCode + i );
+			button->SetKeyCode( KeyCodeForKeySym( keysym ) );
+			button->SetKeyLocation( KeyLocationForKeySym( keysym ) );
+			button->SetMatchPriority( MatchingPriorityForKeySym( keysym ) );
 			
-			button.SetDisplayImages( sharedButton );
+			button->SetDisplayImages( sharedButton );
 			
 			// try to find a representative character for this key. X11 has no useful
 			// function for this so we have to do this on our own. furthermore various
@@ -176,19 +172,19 @@ dexsiDevice( module, esX11 )
 					continue; // only printable
 				}
 				
-				//module.LogInfoFormat( "Check '%s': %d => %d", button.GetName().GetString(), j, character );
+				//module.LogInfoFormat( "Check '%s': %d => %d", button->GetName().GetString(), j, character );
 				displayCharacter = ordinal;
 				break;
 			}
 			
 			if( displayCharacter ){
-				button.SetDisplayText( decUnicodeString( displayCharacter ).GetUpper().ToUTF8() );
+				button->SetDisplayText( decUnicodeString( displayCharacter ).GetUpper().ToUTF8() );
 				
 			}else{
-				button.SetDisplayText( button.GetName() );
+				button->SetDisplayText( button->GetName() );
 			}
 			
-			SetLookupX11KeyCode( button.GetX11Code(), buttonIndex++ );
+			SetLookupX11KeyCode( button->GetX11Code(), buttonIndex++ );
 		}
 		
 		XFree( keysyms );

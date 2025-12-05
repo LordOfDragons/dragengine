@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<decDiskFileWriter> Ref;
 	
 	
-	
 private:
 	decString pFilename;
 	FILE *pFile;

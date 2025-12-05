@@ -25,10 +25,10 @@
 #ifndef _IGDEWPUNDOHISTORY_H_
 #define _IGDEWPUNDOHISTORY_H_
 
-#include "../igdeListBoxReference.h"
-#include "../event/igdeActionUndoReference.h"
-#include "../event/igdeActionRedoReference.h"
-#include "../event/igdeActionClearUndoReference.h"
+#include "../igdeListBox.h"
+#include "../event/igdeActionUndo.h"
+#include "../event/igdeActionRedo.h"
+#include "../event/igdeActionClearUndo.h"
 #include "../layout/igdeContainerBox.h"
 
 class igdeUndoSystem;
@@ -39,12 +39,18 @@ class igdeUndoSystem;
  * \brief Undo history panel.
  */
 class DE_DLL_EXPORT igdeWPUndoHistory : public igdeContainerBox{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWPUndoHistory> Ref;
+	
+	
 private:
 	igdeUndoSystem *pUndoSystem;
-	igdeListBoxReference pListUndo;
-	igdeActionUndoReference pActionUndo;
-	igdeActionRedoReference pActionRedo;
-	igdeActionClearUndoReference pActionClear;
+	igdeListBox::Ref pListUndo;
+	igdeActionUndo::Ref pActionUndo;
+	igdeActionRedo::Ref pActionRedo;
+	igdeActionClearUndo::Ref pActionClear;
 	
 	
 	

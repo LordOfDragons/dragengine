@@ -32,10 +32,10 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/filesystem/dePathList.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 
 class projWindowMain;
@@ -53,6 +53,10 @@ class decXmlWriter;
 class projTaskDistribute : public igdeStepableTask{
 private:
 	class cProcessDirectory : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cProcessDirectory> Ref;
+
+
 	public:
 		decString path;
 		dePathList directories;
@@ -74,7 +78,7 @@ private:
 	const projProject &pProject;
 	const projProfile &pProfile;
 	
-	deVirtualFileSystemReference pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	decObjectList pStackDirectories;
 	eStates pState;
 	decStringSet pUsedFileExtensions;
@@ -83,7 +87,7 @@ private:
 	
 	zipFile pZipFile;
 	decString pDelgaPath;
-	decBaseFileWriterReference pDelgaWriter;
+	decBaseFileWriter::Ref pDelgaWriter;
 	
 	long pDelgaSize;
 	long pDelgaPosition;

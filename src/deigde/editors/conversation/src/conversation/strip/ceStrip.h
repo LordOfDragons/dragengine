@@ -40,6 +40,10 @@ private:
 	float pDuration;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceStrip> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new empty strip. */

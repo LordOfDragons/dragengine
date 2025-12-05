@@ -27,7 +27,6 @@
 
 #include "../ceWPTTreeItemModel.h"
 #include "../../../../conversation/action/ceConversationAction.h"
-#include "../../../../conversation/action/ceConversationActionReference.h"
 
 
 /**
@@ -35,7 +34,7 @@
  */
 class ceWPTTIMAction : public ceWPTTreeItemModel{
 private:
-	ceConversationActionReference pAction;
+	ceConversationAction::Ref pAction;
 	
 public:
 	static const ceConversationAction::eActionTypes ListAddMenuActions[ 19 ];

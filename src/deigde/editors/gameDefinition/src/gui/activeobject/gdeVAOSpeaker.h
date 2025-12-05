@@ -27,7 +27,7 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class gdeOCSpeaker;
 class igdeWDebugDrawerShape;
@@ -39,10 +39,15 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object speaker for edit view.
  */
 class gdeVAOSpeaker : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOSpeaker> Ref;
+	
+	
 private:
 	gdeOCSpeaker *pOCSpeaker;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

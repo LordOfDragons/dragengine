@@ -44,6 +44,11 @@ class deEngine;
  * \brief Particle emitter type.
  */
 class peeType : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<peeType> Ref;
+
+
 private:
 	peeEmitter *pEmitter;
 	deEngine *pEngine;

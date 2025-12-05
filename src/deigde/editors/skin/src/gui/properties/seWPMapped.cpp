@@ -45,14 +45,14 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
@@ -61,15 +61,12 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezierListener.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -98,7 +95,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( skin ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -166,7 +163,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *textField, skin, mapped ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -183,7 +180,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy mapped" ){}
 	
 	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ) override{
-		igdeClipboardDataReference data;
+		igdeClipboardData::Ref data;
 		seMappedList list;
 		list.Add( mapped );
 		data.TakeOver( new seClipboardDataMapped( list ) );
@@ -199,7 +196,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ), "Cut mapped" ){}
 	
 	virtual igdeUndo *OnActionMapped( seSkin*, seMapped *mapped ) override{
-		igdeClipboardDataReference data;
+		igdeClipboardData::Ref data;
 		seMappedList list;
 		list.Add( mapped );
 		data.TakeOver( new seClipboardDataMapped( list ) );
@@ -297,7 +294,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUMappedSetName( mapped, value ) );
 		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
 	}
@@ -321,7 +318,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUMappedSetInputType( mapped, type ) );
 		skin->GetUndoSystem()->Add( undo );
 	}
@@ -472,7 +469,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUMappedSetRenderableComponent( mapped, component ) );
 		skin->GetUndoSystem()->Add( undo );
 	}
@@ -495,7 +492,7 @@ pListener( seWPMappedListener::Ref::New( new seWPMappedListener( *this ) ) ),
 pSkin( nullptr )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, panel, groupBox, form, formLine;
+	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );

@@ -25,7 +25,7 @@
 #ifndef _IGDERECENTFILES_H_
 #define _IGDERECENTFILES_H_
 
-#include "../gui/menu/igdeMenuCascadeReference.h"
+#include "../gui/menu/igdeMenuCascade.h"
 
 #include <dragengine/common/string/decStringList.h>
 
@@ -46,7 +46,7 @@ private:
 	int pSize;
 	bool pUnixPath;
 	decStringList pFiles;
-	igdeMenuCascadeReference pMenu;
+	igdeMenuCascade::Ref pMenu;
 	
 	
 	

@@ -56,6 +56,10 @@ private:
 	bool pWorldMarkedRemove;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglREnvMapProbe> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render environment map probe. */

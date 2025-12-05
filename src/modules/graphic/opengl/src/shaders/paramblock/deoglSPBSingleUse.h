@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<deoglSPBSingleUse> Ref;
 	
 	
-	
 private:
 	const deoglRenderThread &pRenderThread;
 	deoglShaderParameterBlock *pInitialBlock;

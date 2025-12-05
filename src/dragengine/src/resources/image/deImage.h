@@ -147,7 +147,6 @@ public:
 	typedef deTObjectReference<deImage> Ref;
 	
 	
-	
 private:
 	int pWidth;
 	int pHeight;

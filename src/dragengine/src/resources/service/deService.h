@@ -56,7 +56,6 @@ public:
 	typedef deTObjectReference<deService> Ref;
 	
 	
-	
 private:
 	const decString pName;
 	

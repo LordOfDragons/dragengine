@@ -47,6 +47,10 @@ private:
 	deoglVBOLayout *pVBOLayoutLocal;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRParticleEmitter> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render emitter. */

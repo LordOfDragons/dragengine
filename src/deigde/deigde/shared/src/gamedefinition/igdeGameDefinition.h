@@ -50,6 +50,11 @@ class deVirtualFileSystem;
  * case of broken links.
  */
 class DE_DLL_EXPORT igdeGameDefinition : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGameDefinition> Ref;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	

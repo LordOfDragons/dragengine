@@ -60,7 +60,6 @@
 #include <dragengine/debug/deDebugBlockInfo.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasVisitorIdentify.h>
 #include <dragengine/resources/component/deComponent.h>
@@ -70,7 +69,6 @@
 #include <dragengine/resources/debug/deDebugDrawerShapeFace.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/sound/deMicrophone.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/world/deWorld.h>
@@ -180,9 +178,9 @@ void deoalEnvironmentDebug::UpdateInfo( deDebugBlockInfo &debugInfo ){
 		debugInfo.AddEntry( "  LateRev. Pan", "", ct, ceaxLateRev );
 		
 		deEngine &engine = *pEnvironment.GetAudioThread().GetOal().GetGameEngine();
-		deCanvasImageReference canvasHistogram;
+		deCanvasImage::Ref canvasHistogram;
 		canvasHistogram.TakeOver( engine.GetCanvasManager()->CreateCanvasImage() );
-		deImageReference imageHistogram;
+		deImage::Ref imageHistogram;
 		imageHistogram.TakeOver( engine.GetImageManager()->CreateImage(
 			pHistogramSize.x, pHistogramSize.y, 1, 4, 8 ) );
 		memset( imageHistogram->GetDataRGBA8(), 0, sizeof( sRGBA8 ) * ( pHistogramSize.x * pHistogramSize.y ) );

@@ -52,17 +52,16 @@
 #include "../undosys/source/group/seUSourceGroupMoveSourceDown.h"
 #include "../undosys/source/group/seUSourceGroupRemoveSource.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -72,7 +71,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -180,9 +179,7 @@ void seWindowMain::SetSynthesizer( seSynthesizer *synthesizer ){
 }
 
 void seWindowMain::CreateSynthesizer(){
-	deObjectReference synthesizer;
-	synthesizer.TakeOver( new seSynthesizer( &GetEnvironment(), pLoadSaveSystem ) );
-	SetSynthesizer( ( seSynthesizer* )( deObject* )synthesizer );
+	SetSynthesizer(seSynthesizer::Ref::NewWith(&GetEnvironment(), pLoadSaveSystem));
 }
 
 void seWindowMain::SaveSynthesizer( const char *filename ){
@@ -213,8 +210,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group )
 	seSource * const activeSource = pSynthesizer->GetActiveSource();
 	int index = pSynthesizer->GetSources().GetCount();
 	seSourceGroup *parentGroup = NULL;
-	igdeUndoReference undoGroup, undo;
-	deObjectReference refSource;
+	igdeUndo::Ref undoGroup, undo;
 	
 	if( activeSource ){
 		parentGroup = activeSource->GetParentGroup();
@@ -232,8 +228,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group )
 		}
 	}
 	
-	refSource.TakeOver( seSource::CreateSourceFromType( GetEngine(), type ) );
-	seSource * const source = ( seSource* )( deObject* )refSource;
+	const seSource::Ref source(seSource::Ref::New(seSource::CreateSourceFromType(GetEngine(), type)));
 	source->SetName( name );
 	
 	if( insert ){
@@ -277,22 +272,16 @@ void seWindowMain::CreateEffect( deSynthesizerEffectVisitorIdentify::eEffectType
 	seSource * const activeSource = pSynthesizer->GetActiveSource();
 	seEffect * const activeEffect = activeSource->GetActiveEffect();
 	int index = activeSource->GetEffects().GetCount();
-	seEffect *effectSelect = NULL;
-	deObjectReference refEffect;
-	igdeUndoReference undo;
 	
 	if( insert && activeEffect ){
 		index = activeSource->GetEffects().IndexOf( activeEffect );
 	}
 	
-	refEffect.TakeOver( seEffect::CreateEffectFromType( GetEngine(), type ) );
-	seEffect * const effect = ( seEffect* )( deObject* )refEffect;
-	effectSelect = effect;
+	const seEffect::Ref effect(seEffect::Ref::New(seEffect::CreateEffectFromType(GetEngine(), type)));
 	
-	undo.TakeOver( new seUSourceAddEffect( activeSource, effect, index ) );
-	pSynthesizer->GetUndoSystem()->Add( undo );
+	pSynthesizer->GetUndoSystem()->Add(seUSourceAddEffect::Ref::NewWith(activeSource, effect, index));
 	
-	activeSource->SetActiveEffect( effectSelect );
+	activeSource->SetActiveEffect(effect);
 }
 
 
@@ -390,9 +379,7 @@ void seWindowMain::GetChangedDocuments( decStringList &list ){
 }
 
 void seWindowMain::LoadDocument( const char *filename ){
-	deObjectReference synthesizer;
-	synthesizer.TakeOver( pLoadSaveSystem.LoadSynthesizer( filename ) );
-	SetSynthesizer( ( seSynthesizer* )( deObject* )synthesizer );
+	SetSynthesizer(seSynthesizer::Ref::New(pLoadSaveSystem.LoadSynthesizer(filename)));
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -437,7 +424,7 @@ public:
 		if( ! pWindow.GetSynthesizer() ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetSynthesizer() ) );
 		if( undo ){
 			pWindow.GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -494,9 +481,8 @@ public:
 		if( igdeCommonDialogs::GetFileOpen( &pWindow, "Open Synthesizer",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename ) ){
-			deObjectReference synthesizer2;
-			synthesizer2.TakeOver( pWindow.GetLoadSaveSystem().LoadSynthesizer( filename ) );
-			pWindow.SetSynthesizer( ( seSynthesizer* )( deObject* )synthesizer2 );
+			pWindow.SetSynthesizer(seSynthesizer::Ref::New(
+				pWindow.GetLoadSaveSystem().LoadSynthesizer(filename)));
 			pWindow.GetRecentFiles().AddFile( filename );
 		}
 		return NULL;
@@ -603,9 +589,8 @@ public:
 			name.Format( "Controller #%d", number++ );
 		}
 		
-		deObjectReference controller;
-		controller.TakeOver( new seController( name ) );
-		return new seUAddController( synthesizer, ( seController* )( deObject* )controller );
+		const seController::Ref controller(seController::Ref::NewWith(name));
+		return new seUAddController( synthesizer, controller );
 	}
 };
 
@@ -1058,7 +1043,7 @@ void seWindowMain::pCreateToolBarEdit(){
 
 void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "File", deInputEvent::ekcF ) );
 	pCreateMenuSynthesizer( cascade );
@@ -1115,7 +1100,7 @@ void seWindowMain::pCreateMenuController( igdeMenuCascade &menu ){
 void seWindowMain::pCreateMenuSource( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascadeReference submenu;
+	igdeMenuCascade::Ref submenu;
 	submenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) );
 	helper.MenuCommand( submenu, pActionSourceAddWave );
 	helper.MenuCommand( submenu, pActionSourceAddSound );
@@ -1148,7 +1133,7 @@ void seWindowMain::pCreateMenuSource( igdeMenuCascade &menu ){
 void seWindowMain::pCreateMenuEffect( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascadeReference submenu;
+	igdeMenuCascade::Ref submenu;
 	submenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) );
 	helper.MenuCommand( submenu, pActionEffectAddStretch );
 	menu.AddChild( submenu );

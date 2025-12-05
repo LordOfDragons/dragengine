@@ -55,8 +55,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -149,7 +148,7 @@ void ceWPTTreeModel::AddChild( ceWPTTreeItemModel *child ){
 	pChildren.Add( child );
 	child->SetTree( this );
 	
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
 	pTreeList->AppendItem( NULL, item );
 	( ( ceWPTTreeItem& )( igdeTreeItem& )item ).SetModel( child );
@@ -172,7 +171,7 @@ void ceWPTTreeModel::InsertChild( ceWPTTreeItemModel *child, int position ){
 		}
 	}
 	
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	item.TakeOver( new ceWPTTreeItem( pTreeList ) );
 	
 	if( beforeItem ){
@@ -376,7 +375,7 @@ void ceWPTTreeModel::ContextMenuAction( igdeMenuCascade &contextMenu, ceConversa
 	igdeUIHelper &helper = environment.GetUIHelper();
 	const ceConversationActionList &actions = topic->GetActionList();
 	const int indexAction = action ? actions.IndexOf( action ) : -1;
-	igdeMenuCascadeReference subMenu;
+	igdeMenuCascade::Ref subMenu;
 	int i;
 	
 	// child action specific
@@ -440,7 +439,7 @@ void ceWPTTreeModel::ContextMenuTopic( igdeMenuCascade &contextMenu ){
 	igdeEnvironment &environment = pWindowMain.GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
 	const int indexAppend = topic->GetActionList().GetCount();
-	igdeMenuCascadeReference subMenu;
+	igdeMenuCascade::Ref subMenu;
 	int i;
 	
 	subMenu.TakeOver( new igdeMenuCascade( environment, "Add Action",

@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -60,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Environment Map Probe...",
 ///////////////
 
 igdeUndo *gdeMAOCEnvMapProbeAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference envMapProbe;
-	envMapProbe.TakeOver( new gdeOCEnvMapProbe );
-	return new gdeUOCAddEnvMapProbe( &objectClass, ( gdeOCEnvMapProbe* )( deObject* )envMapProbe );
+	return new gdeUOCAddEnvMapProbe(&objectClass, gdeOCEnvMapProbe::Ref::NewWith());
 }
 
 void gdeMAOCEnvMapProbeAdd::Update(){

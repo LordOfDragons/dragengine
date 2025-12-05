@@ -33,20 +33,17 @@
 #include "../igdeTextField.h"
 #include "../igdeToggleButton.h"
 #include "../igdeTreeList.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../layout/igdeContainerForm.h"
 #include "../layout/igdeContainerBox.h"
 #include "../layout/igdeContainerBorder.h"
-#include "../layout/igdeContainerBorderReference.h"
 #include "../layout/igdeContainerSplitted.h"
-#include "../layout/igdeContainerSplittedReference.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeListBoxListener.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../event/igdeTreeListListener.h"
 #include "../model/igdeListItem.h"
 #include "../model/igdeTreeItem.h"
-#include "../model/igdeTreeItemReference.h"
 #include "../../triggersystem/igdeTriggerExpression.h"
 #include "../../triggersystem/igdeTriggerExpressionParser.h"
 #include "../../triggersystem/igdeTriggerExpressionComponent.h"
@@ -184,9 +181,7 @@ public:
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if( component && component->GetType() != igdeTriggerExpressionComponent::ectTarget ){
-			deObjectReference child;
-			child.TakeOver( new igdeTriggerExpressionComponent );
-			component->AddChild( ( igdeTriggerExpressionComponent* )( deObject* )child );
+			component->AddChild(igdeTriggerExpressionComponent::Ref::NewWith());
 			pEditor.UpdateExpressionFromTree();
 			pEditor.UpdateTree();
 		}
@@ -690,8 +685,8 @@ void igdeTriggerExpressionEditor::OnParameterChanged( igdeAction* ){
 void igdeTriggerExpressionEditor::pCreateContent(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference form, panel, panel2, groupBox;
-	igdeContainerBorderReference groupBorder;
+	igdeContainer::Ref form, panel, panel2, groupBox;
+	igdeContainerBorder::Ref groupBorder;
 	
 	// expression string
 	form.TakeOver( new igdeContainerForm( env ) );
@@ -700,7 +695,7 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	AddChild( form );
 	
 	// content
-	igdeContainerSplittedReference panelContent;
+	igdeContainerSplitted::Ref panelContent;
 	panelContent.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espRight,
 		igdeApplication::app().DisplayScaled(200)));
 	AddChild( panelContent );

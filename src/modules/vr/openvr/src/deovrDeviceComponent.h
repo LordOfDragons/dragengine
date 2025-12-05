@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<deovrDeviceComponent> Ref;
 	
 	
-	
 private:
 	deovrDevice &pDevice;
 	

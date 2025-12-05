@@ -179,7 +179,7 @@ pListener( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox;
+	igdeContainer::Ref content, groupBox;
 	
 	pListener = new peeWPViewListener( *this );
 	

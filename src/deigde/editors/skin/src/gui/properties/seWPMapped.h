@@ -28,11 +28,11 @@
 #include "seWPMappedListener.h"
 #include "../../skin/seSkin.h"
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class seMapped;
@@ -50,19 +50,19 @@ private:
 	seSkin::Ref pSkin;
 	bool pRequiresUpdate;
 	
-	igdeListBoxReference pListMapped;
-	igdeTextFieldReference pEditName;
+	igdeListBox::Ref pListMapped;
+	igdeTextField::Ref pEditName;
 	
-	igdeViewCurveBezierReference pEditCurve;
-	igdeComboBoxReference pCBInputType;
-	igdeTextFieldReference pEditInputLower;
-	igdeTextFieldReference pEditInputUpper;
-	igdeCheckBoxReference pChkInputClamped;
-	igdeTextFieldReference pEditOutputLower;
-	igdeTextFieldReference pEditOutputUpper;
-	igdeTextFieldReference pEditBone;
-	igdeTextFieldReference pEditRenderable;
-	igdeComboBoxReference pCBRenderableComponent;
+	igdeViewCurveBezier::Ref pEditCurve;
+	igdeComboBox::Ref pCBInputType;
+	igdeTextField::Ref pEditInputLower;
+	igdeTextField::Ref pEditInputUpper;
+	igdeCheckBox::Ref pChkInputClamped;
+	igdeTextField::Ref pEditOutputLower;
+	igdeTextField::Ref pEditOutputUpper;
+	igdeTextField::Ref pEditBone;
+	igdeTextField::Ref pEditRenderable;
+	igdeComboBox::Ref pCBRenderableComponent;
 	
 	
 	

@@ -34,9 +34,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/filesystem/deCacheHelper.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/sound/deSound.h>
@@ -215,7 +213,7 @@ void desynSound::pLoadFromCache(){
 	const decString &filename = pSound.GetFilename();
 	desynCaches &caches = pModule.GetCaches();
 	deCacheHelper &cacheSound = caches.GetSound();
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	
 	const decPath path( decPath::CreatePathUnix( filename ) );
 	if( ! vfs.CanReadFile( path ) ){
@@ -329,7 +327,7 @@ void desynSound::pWriteToCache(){
 	const decString &filename = pSound.GetFilename();
 	desynCaches &caches = pModule.GetCaches();
 	deCacheHelper &cacheSound = caches.GetSound();
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	
 	const decPath path( decPath::CreatePathUnix( filename ) );
 	if( ! vfs.CanReadFile( path ) ){

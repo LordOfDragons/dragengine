@@ -92,6 +92,10 @@ private:
 	bool pDirtyPositions;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reRigConstraint> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new rig controller. */

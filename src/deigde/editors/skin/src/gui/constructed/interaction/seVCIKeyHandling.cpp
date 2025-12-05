@@ -35,9 +35,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 
@@ -153,7 +151,7 @@ void seVCIKeyHandling::ShowContextMenu( const decPoint &position ){
 	igdeEnvironment &env = pView.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( env ) );
 	
 	helper.MenuCommand( menu, pView.GetActionAddShape() );

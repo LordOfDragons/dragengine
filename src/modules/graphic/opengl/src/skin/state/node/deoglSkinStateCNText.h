@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deoglSkinStateCNText> Ref;
 	
 	
-	
 private:
 	deoglRFont::Ref pFont;
 	deoglRFontSize::Ref pFontSize;

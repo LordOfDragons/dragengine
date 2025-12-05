@@ -26,8 +26,8 @@
 #define _GDEVAOBILLBOARD_H_
 
 #include "gdeVAOSubObject.h"
-#include <dragengine/resources/billboard/deBillboardReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/billboard/deBillboard.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class gdeOCBillboard;
 
@@ -37,11 +37,16 @@ class gdeOCBillboard;
  * \brief Active object view object class billboard.
  */
 class gdeVAOBillboard : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOBillboard> Ref;
+	
+	
 private:
 	gdeOCBillboard *pOCBillboard;
 	
-	deBillboardReference pBillboard;
-	deColliderReference pCollider;
+	deBillboard::Ref pBillboard;
+	deCollider::Ref pCollider;
 	
 	
 public:

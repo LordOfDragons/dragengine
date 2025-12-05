@@ -28,10 +28,10 @@
 #include "igdeGDPreviewCreator.h"
 #include "../../../gui/wrapper/igdeWObject.h"
 
-#include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <dragengine/resources/canvas/deCanvasRenderWorld.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
 
 class igdeGDClass;
 class igdeWSky;
@@ -42,6 +42,11 @@ class igdeWSky;
  * \brief Create preview for game definition object class asynchronously.
  */
 class DE_DLL_EXPORT igdeGDPCObjectClass : public igdeGDPreviewCreator{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPCObjectClass> Ref;
+	
+	
 private:
 	class DE_DLL_EXPORT cAsyncFinished : public igdeWObject::cAsyncLoadFinished {
 	public:
@@ -53,12 +58,12 @@ private:
 	
 	igdeGDClass *pGDClass;
 	
-	deWorldReference pWorld;
-	deCameraReference pCamera;
-	deLightReference pLight;
+	deWorld::Ref pWorld;
+	deCamera::Ref pCamera;
+	deLight::Ref pLight;
 	igdeWObject::Ref pObject;
 	igdeWSky *pSky;
-	deCanvasRenderWorldReference pCanvasRenderWorld;
+	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
 	cAsyncFinished pAsyncFinished;
 	

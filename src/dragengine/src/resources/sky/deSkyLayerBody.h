@@ -26,7 +26,7 @@
 #define _DESKYLAYERBODY_H_
 
 #include "../../common/math/decMath.h"
-#include "../skin/deSkinReference.h"
+#include "../skin/deSkin.h"
 
 
 /**
@@ -50,7 +50,7 @@ private:
 	decQuaternion pOrientation;
 	decVector2 pSize;
 	decColor pColor;
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	
 	
 	

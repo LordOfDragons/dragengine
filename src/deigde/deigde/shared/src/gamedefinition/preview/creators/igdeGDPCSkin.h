@@ -26,16 +26,16 @@
 #define _IGDEGDPPCSKIN_H_
 
 #include "igdeGDPreviewCreator.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
 
-#include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/model/deModelReference.h>
-#include <dragengine/resources/skin/deSkinReference.h>
-#include <dragengine/resources/skin/dynamic/deDynamicSkinReference.h>
-#include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <dragengine/resources/canvas/deCanvasRenderWorld.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/world/deWorld.h>
+#include <dragengine/resources/light/deLight.h>
 
 class igdeGDSkin;
 class igdeWSky;
@@ -46,22 +46,27 @@ class igdeWSky;
  * \brief Create preview for game definition skin asynchronously.
  */
 class DE_DLL_EXPORT igdeGDPCSkin : public igdeGDPreviewCreator{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPCSkin> Ref;
+	
+	
 private:
 	igdeGDSkin *pGDSkin;
 	
-	deWorldReference pWorld;
-	deCameraReference pCamera;
-	deLightReference pLight;
-	deComponentReference pComponent;
-	deModelReference pModel;
-	deSkinReference pSkin;
-	deDynamicSkinReference pDynamicSkin;
-	deModelReference pLightBoxModel;
-	deSkinReference pLightBoxSkin;
+	deWorld::Ref pWorld;
+	deCamera::Ref pCamera;
+	deLight::Ref pLight;
+	deComponent::Ref pComponent;
+	deModel::Ref pModel;
+	deSkin::Ref pSkin;
+	deDynamicSkin::Ref pDynamicSkin;
+	deModel::Ref pLightBoxModel;
+	deSkin::Ref pLightBoxSkin;
 	igdeWSky *pSky;
-	deCanvasRenderWorldReference pCanvasRenderWorld;
+	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
-	igdeResourceLoaderListenerReference pResLoader;
+	igdeResourceLoaderListener::Ref pResLoader;
 	bool pResLoadFinished;
 	
 	

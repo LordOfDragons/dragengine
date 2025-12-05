@@ -56,7 +56,7 @@ pCount( 0 )
 {
 	const int count = reader.ReadUInt();
 	
-	decBaseFileReaderReference valueReader;
+	decBaseFileReader::Ref valueReader;
 	pGetValueReader( reader, valueReader );
 	
 	if( count == 0 ){

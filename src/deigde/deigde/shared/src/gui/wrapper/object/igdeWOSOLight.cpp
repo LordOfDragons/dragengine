@@ -53,7 +53,6 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/world/deWorld.h>
 
 
@@ -65,7 +64,7 @@ class igdeWOSOLightResLoadComponent : public igdeResourceLoaderListener{
 private:
 	igdeWOSOLight *pOwner;
 	decString pPathLightSkin;
-	deSkinReference pLightSkin;
+	deSkin::Ref pLightSkin;
 	int pCounter;
 	bool pSuccess;
 	

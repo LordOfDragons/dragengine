@@ -27,7 +27,7 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 
 class meHTVRuleRandom;
 
@@ -40,7 +40,7 @@ class meWVNodeRandom : public meWVNode{
 private:
 	meHTVRuleRandom *pRuleRandom;
 	
-	igdeContainerReference pFraParameters;
+	igdeContainer::Ref pFraParameters;
 	
 	
 	

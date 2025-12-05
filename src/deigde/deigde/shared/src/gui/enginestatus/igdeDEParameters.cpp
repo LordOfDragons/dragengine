@@ -32,7 +32,7 @@
 #include "../igdeButton.h"
 #include "../igdeTextArea.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../layout/igdeContainerForm.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeComboBoxListener.h"
@@ -119,7 +119,7 @@ pDialogEngine( dialogEngine )
 {
 	igdeEnvironment &env = dialogEngine.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference groupBox, line;
+	igdeContainer::Ref groupBox, line;
 	
 	
 	line.TakeOver( new igdeContainerForm( env ) );

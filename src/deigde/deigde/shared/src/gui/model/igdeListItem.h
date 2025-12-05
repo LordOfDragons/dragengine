@@ -25,7 +25,7 @@
 #ifndef _IGDELISTITEM_H_
 #define _IGDELISTITEM_H_
 
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -40,10 +40,16 @@
  * Optionally a data pointer can be assigned.
  */
 class DE_DLL_EXPORT igdeListItem : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeListItem> Ref;
+	
+	
 private:
 	decString pText;
 	decString pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	void *pData;
 	decStringList pDetails;
 	bool pSelected;

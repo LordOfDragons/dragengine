@@ -44,7 +44,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeSpinTextField.h>
@@ -61,7 +61,7 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -85,7 +85,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, link ) );
 		if( undo ){
 			link->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -110,7 +110,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( link ) );
 		if( undo ){
 			link->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -161,11 +161,7 @@ public:
 			return;
 		}
 		
-		deObjectReference link;
-		link.TakeOver( new seLink );
-		igdeUndoReference undo;
-		undo.TakeOver( new seULinkAdd( synthesizer, ( seLink* )( deObject* )link ) );
-		synthesizer->GetUndoSystem()->Add( undo );
+		synthesizer->GetUndoSystem()->Add(seULinkAdd::Ref::NewWith(synthesizer, seLink::Ref::NewWith()));
 	}
 	
 	virtual void Update(){
@@ -206,7 +202,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seULinkSetController( link, controller ) );
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -225,7 +221,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seULinkSetRepeat( link, value ) );
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -233,7 +229,7 @@ public:
 
 class cEditCurve : public igdeViewCurveBezierListener{
 	seWPLink &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	cEditCurve( seWPLink &panel ) : pPanel( panel ){ }
@@ -283,7 +279,7 @@ pPreventUpdate( false )
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new seWPLinkListener( *this );
 	
@@ -362,7 +358,7 @@ void seWPLink::SelectActiveLink(){
 }
 
 void seWPLink::UpdateLinkList(){
-	deObjectReference selection( GetLink() );
+	const seLink::Ref selection(GetLink());
 	
 	pListLink->RemoveAllItems();
 	

@@ -33,7 +33,6 @@
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/resources/image/deImage.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>
 
 #include <winrt/Windows.System.Power.h>
@@ -104,7 +103,7 @@ void dewiDeviceButton::SetDisplayImages( const char *name ){
 	pDisplayImage.TakeOver( imageManager.LoadImage( vfs, filename, "/" ) );
 	
 	const int sizes[ 4 ] = {128, 64, 32, 16};
-	deImageReference icon;
+	deImage::Ref icon;
 	int i;
 	
 	for( i=0; i<4; i++ ){

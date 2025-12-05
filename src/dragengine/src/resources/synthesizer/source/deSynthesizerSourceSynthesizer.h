@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deSynthesizerSourceSynthesizer> Ref;
 	
 	
-	
 private:
 	deSynthesizer *pSynthesizer;
 	

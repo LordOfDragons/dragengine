@@ -31,7 +31,6 @@
 #include "dragengine/systems/modules/deBaseModule.h"
 #include "dragengine/systems/modules/deLoadableModule.h"
 #include "dragengine/systems/modules/deModuleParameter.h"
-#include "dragengine/systems/modules/deLoadableModule.h"
 #include "dragengine/common/exceptions.h"
 
 

@@ -34,11 +34,9 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 
@@ -80,7 +78,7 @@ void desynConfiguration::LoadConfig(){
 		return;
 	}
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( vfs.OpenFileForReading( path ) );
 	pLoadConfig( reader );
 }
@@ -201,7 +199,7 @@ int desynConfiguration::pGetCDataInt( const decXmlElementTag &tag, int defaultVa
 
 
 void desynConfiguration::pLoadConfig( decBaseFileReader *file ){
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( pModule.GetGameEngine()->GetLogger() ).ParseXml( file, xmlDoc );

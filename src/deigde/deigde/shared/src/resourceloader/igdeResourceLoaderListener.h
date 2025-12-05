@@ -40,6 +40,10 @@ class deFileResource;
  */
 class DE_DLL_EXPORT igdeResourceLoaderListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeResourceLoaderListener> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<devkFramebuffer> Ref;
 	
 	
-	
 protected:
 	devkRenderPass::Ref pRenderPass;
 	const devkFramebufferConfiguration pConfiguration;

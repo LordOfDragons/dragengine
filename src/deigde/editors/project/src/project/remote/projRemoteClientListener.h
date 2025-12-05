@@ -34,6 +34,10 @@ class projRemoteClient;
  * \brief Remote client listener.
  */
 class projRemoteClientListener : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projRemoteClientListener> Ref;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

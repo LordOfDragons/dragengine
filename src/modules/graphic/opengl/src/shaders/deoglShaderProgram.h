@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<deoglShaderProgram> Ref;
 	
 	
-	
 private:
 	deoglRenderThread &pRenderThread;
 	const deoglShaderSources *pSources;

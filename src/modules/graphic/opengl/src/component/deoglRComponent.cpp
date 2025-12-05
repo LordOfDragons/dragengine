@@ -1108,8 +1108,7 @@ void deoglRComponent::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
 		return;
 	}
 	
-	deoglEnvironmentMap * const prevEnvMap = pRenderEnvMap;
-	const deObjectReference guard( prevEnvMap );
+	const deoglEnvironmentMap::Ref guard(pRenderEnvMap);
 	
 	if( pRenderEnvMap ){
 		pRenderEnvMap->GetComponentList().RemoveIfExisting( this );
@@ -1124,10 +1123,10 @@ void deoglRComponent::SetRenderEnvMap( deoglEnvironmentMap *envmap ){
 	}
 	
 	// now it is safe to set the fade env map
-	SetRenderEnvMapFade( prevEnvMap );
+	SetRenderEnvMapFade(guard);
 	pRenderEnvMapFadeFactor = 0.0f;
 	
-	if( ! prevEnvMap ){ // in case SetRenderEnvMapFade did not mark all textures dirty yet
+	if(!guard){ // in case SetRenderEnvMapFade did not mark all textures dirty yet
 		MarkAllTexturesTUCsDirtyEnvMapUse();
 	}
 }

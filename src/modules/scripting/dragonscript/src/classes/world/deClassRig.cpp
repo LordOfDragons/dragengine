@@ -39,7 +39,7 @@
 #include "../../resourceloader/dedsResourceLoader.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/resources/loader/deResourceLoader.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
@@ -537,7 +537,7 @@ void deClassRig::nfSave::RunFunction( dsRunTime *rt, dsValue *myself ){
 		DSTHROW_INFO( dueInvalidParam, "no module found to handle filename" );
 	}
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( engine.GetRigManager()->OpenFileForWriting(
 		*engine.GetVirtualFileSystem(), filename ) );
 	module->SaveRig( writer, rig );

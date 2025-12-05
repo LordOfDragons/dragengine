@@ -26,9 +26,9 @@
 #define _REVIEW3D_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseDragListenerReference.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/gui/event/igdeMouseDragListener.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
 
@@ -51,12 +51,12 @@ private:
 	
 	reRig *pRig;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
-	igdeMouseDragListenerReference pSimulationInteraction;
-	igdeMouseDragListenerReference pSelectInteraction;
-	igdeMouseDragListenerReference pMoveInteraction;
-	igdeMouseDragListenerReference pScaleInteraction;
-	igdeMouseDragListenerReference pRotateInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeMouseDragListener::Ref pSimulationInteraction;
+	igdeMouseDragListener::Ref pSelectInteraction;
+	igdeMouseDragListener::Ref pMoveInteraction;
+	igdeMouseDragListener::Ref pScaleInteraction;
+	igdeMouseDragListener::Ref pRotateInteraction;
 	
 	
 	

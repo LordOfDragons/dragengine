@@ -34,16 +34,13 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
-#include <deigde/gui/event/igdeListBoxListenerReference.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/logger/deLogger.h>
@@ -57,11 +54,11 @@ namespace{
 
 class cActionAppend : public igdeAction {
 	gdeWPPatternList &pPanel;
-	igdeEditPathReference &pEditPath;
-	igdeListBoxReference &pListBox;
+	igdeEditPath::Ref &pEditPath;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionAppend ( gdeWPPatternList &panel, igdeEditPathReference &editPath, igdeListBoxReference &listBox ) : 
+	cActionAppend ( gdeWPPatternList &panel, igdeEditPath::Ref &editPath, igdeListBox::Ref &listBox ) : 
 	igdeAction( "Add", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add pattern" ),
 	pPanel( panel ), pEditPath( editPath ), pListBox( listBox ){ }
 	
@@ -70,7 +67,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( *pPanel.GetPatternList() + pEditPath->GetPath() ) );
 		pPanel.GetUndoSystem()->Add( undo );
 		
@@ -80,10 +77,10 @@ public:
 
 class cActionRemove : public igdeAction {
 	gdeWPPatternList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionRemove( gdeWPPatternList &panel, igdeListBoxReference &listBox ) :
+	cActionRemove( gdeWPPatternList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Remove", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
 		"Remove pattern" ), pPanel( panel ), pListBox( listBox ){ }
 	
@@ -95,7 +92,7 @@ public:
 		decStringSet patterns( *pPanel.GetPatternList() );
 		patterns.Remove( pListBox->GetSelectedItem()->GetText() );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( patterns ) );
 		pPanel.GetUndoSystem()->Add( undo );
 		
@@ -107,10 +104,10 @@ public:
 
 class cActionClear : public igdeAction {
 	gdeWPPatternList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClear( gdeWPPatternList &panel, igdeListBoxReference &listBox ) :
+	cActionClear( gdeWPPatternList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Clear", NULL, "Clear pattern" ), pPanel( panel ), pListBox( listBox ){ }
 	
 	virtual void OnAction(){
@@ -118,7 +115,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( decStringSet() ) );
 		pPanel.GetUndoSystem()->Add( undo );
 	}

@@ -41,13 +41,13 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -74,7 +74,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUShapeSetProperty( shape, textField->GetText() ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -104,7 +104,7 @@ void reWPPanelShape::cEditPosition::OnVectorChanged( igdeEditVector *editVector 
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new reUSetShapePosition( shape, editVector->GetVector() ) );
 	if( undo ){
 		rig->GetUndoSystem()->Add( undo );
@@ -131,7 +131,7 @@ void reWPPanelShape::cEditRotation::OnVectorChanged( igdeEditVector *editVector 
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new reUSetShapeOrientation( shape, editVector->GetVector() ) );
 	if( undo ){
 		rig->GetUndoSystem()->Add( undo );
@@ -156,7 +156,7 @@ pShape( NULL )
 	igdeEnvironment &env = wpShape.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerForm( env ) );
 	AddChild( content );
 	

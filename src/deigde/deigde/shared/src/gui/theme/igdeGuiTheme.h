@@ -41,6 +41,12 @@ class igdeGuiThemeProperty;
  * integer, floating point, point, color or string.
  */
 class DE_DLL_EXPORT igdeGuiTheme : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGuiTheme> Ref;
+	
+	
 private:
 	decString pName;
 	decObjectDictionary pProperties;

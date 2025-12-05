@@ -36,12 +36,12 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeColorBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -71,7 +71,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSkySetBgColor( sky, colorBox->GetColor() ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -96,7 +96,7 @@ pSky( NULL ),
 pListener( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener = new seWPSkyListener( *this );

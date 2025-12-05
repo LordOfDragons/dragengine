@@ -25,7 +25,7 @@
 #ifndef _CEWPATRIGGER_H_
 #define _CEWPATRIGGER_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPAction.h"
 
@@ -38,8 +38,8 @@ class ceCATrigger;
  */
 class ceWPATrigger : public ceWPAction{
 private:
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBAction;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBAction;
 	
 	
 	

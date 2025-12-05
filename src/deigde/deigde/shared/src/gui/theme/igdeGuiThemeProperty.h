@@ -38,6 +38,10 @@
  */
 class DE_DLL_EXPORT igdeGuiThemeProperty : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGuiThemeProperty> Ref;
+	
+	
 	/** \brief Type. */
 	enum eType{
 		/** \brief Integer value. */

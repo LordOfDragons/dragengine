@@ -42,7 +42,6 @@
 #include "../../framebuffer/deoglFramebuffer.h"
 #include "../../framebuffer/deoglFramebufferManager.h"
 #include "../../renderthread/deoglRTFramebuffer.h"
-#include "../../renderthread/deoglRTLogger.h"
 #endif
 
 #include <dragengine/common/exceptions.h>

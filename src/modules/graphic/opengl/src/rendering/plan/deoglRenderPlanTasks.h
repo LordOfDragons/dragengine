@@ -41,6 +41,7 @@ class deoglRenderPlanTasks : public deObject{
 public:
 	typedef deTObjectReference<deoglRenderPlanTasks> Ref;
 	
+	
 private:
 	deoglRenderPlan &pPlan;
 	

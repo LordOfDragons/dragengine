@@ -27,9 +27,9 @@
 
 #include <dragengine/common/string/decString.h>
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -50,11 +50,11 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeTextFieldReference pEditName;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditSnapDistance;
-	igdeCheckBoxReference pChkSnapToRotation;
+	igdeTextField::Ref pEditName;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditSnapDistance;
+	igdeCheckBox::Ref pChkSnapToRotation;
 	
 	
 	

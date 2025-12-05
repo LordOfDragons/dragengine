@@ -37,7 +37,6 @@ public:
 	typedef deTObjectReference<devkPipelineCompute> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

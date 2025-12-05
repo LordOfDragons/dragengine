@@ -37,7 +37,6 @@ public:
 	typedef deTObjectReference<deVFSDiskDirectory> Ref;
 	
 	
-	
 private:
 	const decPath pDiskPath;
 	bool pReadOnly;

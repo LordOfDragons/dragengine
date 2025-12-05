@@ -26,8 +26,8 @@
 #define _GDEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class gdeWindowMain;
 class gdeGameDefinition;
@@ -42,10 +42,10 @@ class gdeWindowProperties : public igdeTabBook{
 private:
 	gdeWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelGameDefinition;
-	igdeWidgetReference pPanelSelection;
-	igdeWidgetReference pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWidget::Ref pPanelGameDefinition;
+	igdeWidget::Ref pPanelSelection;
+	igdeWidget::Ref pPanelView;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

@@ -38,7 +38,6 @@
 #include "../devmode/dedaiDeveloperMode.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/navigation/navigator/deNavigator.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
@@ -107,10 +106,9 @@ dedaiLayer *dedaiWorld::GetLayer( int layer ){
 		}
 	}
 	
-	deObjectReference newLayer;
-	newLayer.TakeOver( new dedaiLayer( *this, layer ) );
+	const dedaiLayer::Ref newLayer(dedaiLayer::Ref::NewWith(*this, layer));
 	pLayers.Add( newLayer );
-	return ( dedaiLayer* )( deObject* )newLayer; // pLayers keeps reference
+	return newLayer; // pLayers keeps reference
 }
 
 

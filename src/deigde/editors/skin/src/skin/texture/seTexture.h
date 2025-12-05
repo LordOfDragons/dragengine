@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<seTexture> Ref;
 	
 	
-	
 private:
 	deEngine *pEngine;
 	deSkin *pEngSkin;

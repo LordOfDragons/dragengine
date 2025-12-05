@@ -73,7 +73,6 @@ public:
 	typedef deTObjectReference<deRig> Ref;
 	
 	
-	
 private:
 	deRigBone **pBones;
 	int pBoneCount;

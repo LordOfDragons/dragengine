@@ -55,6 +55,10 @@ class decBaseFileWriter;
  * visible to game scripts unless the path is known.
  */
 class deVFSContainer : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVFSContainer> Ref;
+
+
 public:
 	/** \brief File types */
 	enum eFileTypes{

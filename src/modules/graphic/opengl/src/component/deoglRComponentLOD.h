@@ -56,6 +56,10 @@ class deoglGIBVHDynamic;
  * - input 3: vec3 tangent
  */
 class deoglRComponentLOD : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRComponentLOD> Ref;
+
+
 public:
 	deoglRComponent &pComponent;
 	const int pLODIndex;

@@ -29,18 +29,18 @@
 
 #include <dragengine/common/math/decMath.h>
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/composed/igdeEditPropertyValueReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/composed/igdeEditPropertyValue.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 
 class gdeGameDefinition;
@@ -63,48 +63,48 @@ private:
 	gdeGameDefinition *pGameDefinition;
 	igdeClipboard *pClipboard;
 	
-	igdeIconReference pIconIdentifierUsage;
-	igdeIconReference pIconIdentifierNoUsage;
+	igdeIcon::Ref pIconIdentifierUsage;
+	igdeIcon::Ref pIconIdentifierNoUsage;
 	
-	igdeActionContextMenuReference pActionPropertiesMenu;
-	igdeActionReference pActionPropertyAdd;
-	igdeActionReference pActionPropertyRemove;
-	igdeActionReference pActionPropertyCopy;
-	igdeActionReference pActionPropertyCut;
-	igdeActionReference pActionPropertyPaste;
+	igdeActionContextMenu::Ref pActionPropertiesMenu;
+	igdeAction::Ref pActionPropertyAdd;
+	igdeAction::Ref pActionPropertyRemove;
+	igdeAction::Ref pActionPropertyCopy;
+	igdeAction::Ref pActionPropertyCut;
+	igdeAction::Ref pActionPropertyPaste;
 	
-	igdeActionReference pActionOptionAdd;
-	igdeActionReference pActionOptionRemove;
+	igdeAction::Ref pActionOptionAdd;
+	igdeAction::Ref pActionOptionRemove;
 	
-	igdeActionReference pActionCustomPatternAdd;
-	igdeActionReference pActionCustomPatternRemove;
+	igdeAction::Ref pActionCustomPatternAdd;
+	igdeAction::Ref pActionCustomPatternRemove;
 	
-	igdeActionContextMenuReference pActionCustomPatternMenu;
+	igdeActionContextMenu::Ref pActionCustomPatternMenu;
 	
-	igdeComboBoxReference pCBProperties;
-	igdeButtonReference pBtnMenuProperties;
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeComboBoxReference pCBType;
+	igdeComboBox::Ref pCBProperties;
+	igdeButton::Ref pBtnMenuProperties;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeComboBox::Ref pCBType;
 	
-	igdeSwitcherReference pSwiParameters;
+	igdeSwitcher::Ref pSwiParameters;
 	
-	igdeTextFieldReference pEditMinimum;
-	igdeTextFieldReference pEditMaximum;
+	igdeTextField::Ref pEditMinimum;
+	igdeTextField::Ref pEditMaximum;
 	
-	igdeListBoxReference pListOptions;
+	igdeListBox::Ref pListOptions;
 	
-	igdeComboBoxReference pCBPathPatternType;
-	igdeComboBoxReference pCBCustomPattern;
-	igdeButtonReference pBtnCustomPatternMenu;
-	igdeTextFieldReference pCustomPatternEditName;
-	igdeTextFieldReference pCustomPatternEditPattern;
-	igdeTextFieldReference pCustomPatternEditExtension;
+	igdeComboBox::Ref pCBPathPatternType;
+	igdeComboBox::Ref pCBCustomPattern;
+	igdeButton::Ref pBtnCustomPatternMenu;
+	igdeTextField::Ref pCustomPatternEditName;
+	igdeTextField::Ref pCustomPatternEditPattern;
+	igdeTextField::Ref pCustomPatternEditExtension;
 	
-	igdeComboBoxReference pCBIdentifierGroup;
-	igdeCheckBoxReference pChkIdentifierUsage;
+	igdeComboBox::Ref pCBIdentifierGroup;
+	igdeCheckBox::Ref pChkIdentifierUsage;
 	
-	igdeEditPropertyValueReference pEditDefault;
+	igdeEditPropertyValue::Ref pEditDefault;
 	
 	
 public:

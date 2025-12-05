@@ -45,6 +45,7 @@ class cePlaybackActionStack : public deObject{
 public:
 	typedef deTObjectReference<cePlaybackActionStack> Ref;
 	
+	
 private:
 	cePlaybackActionStackEntry *pEntries;
 	int pEntryCount;

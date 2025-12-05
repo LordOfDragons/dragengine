@@ -35,6 +35,10 @@
  */
 class igdeTemplateReplace : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTemplateReplace> Ref;
+
+
 	/** \brief Replacement value. */
 	enum eValues{
 		/** \brief Absolute project directory path. */

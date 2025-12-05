@@ -27,7 +27,7 @@
 #include "igdeTriggerExpressionDialog.h"
 #include "igdeTriggerExpressionEditor.h"
 #include "../igdeApplication.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../triggersystem/igdeTriggerTargetList.h"
 #include "../../triggersystem/igdeTriggerExpressionParser.h"
@@ -53,7 +53,7 @@ igdeDialog( environment, title )
 	editor.SetParser( &parser );
 	editor.SetTargetList( &targetList );
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Discard" );
 	
 	AddContent( pEditor, buttonBar );

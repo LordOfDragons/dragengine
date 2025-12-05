@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<deLoggerConsoleColor> Ref;
 	
 	
-	
 public:
 	/** \brief Text attributes. */
 	enum eTextAttributes{

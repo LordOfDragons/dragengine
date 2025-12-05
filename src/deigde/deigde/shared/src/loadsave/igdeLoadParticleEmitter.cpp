@@ -33,11 +33,9 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -46,16 +44,13 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
-#include <dragengine/resources/model/deModelReference.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
-#include <dragengine/resources/particle/deParticleEmitterReference.h>
 #include <dragengine/resources/particle/deParticleEmitterManager.h>
 #include <dragengine/resources/particle/deParticleEmitterController.h>
 #include <dragengine/resources/particle/deParticleEmitterParameter.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkinReference.h>
 
 
 
@@ -190,7 +185,7 @@ decBaseFileReader &reader ){
 		basePath.SetFromUnix( "/" );
 	}
 	
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
@@ -319,7 +314,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 				continue;
 			}
 			
-			deSkinReference skin;
+			deSkin::Ref skin;
 			skin.TakeOver( particleEmitter.GetEngine()->GetSkinManager()->LoadSkin( path, basePath ) );
 			type.SetSkin( skin );
 			
@@ -329,7 +324,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 				continue;
 			}
 			
-			deModelReference model;
+			deModel::Ref model;
 			model.TakeOver( particleEmitter.GetEngine()->GetModelManager()->LoadModel( path, basePath ) );
 			type.SetModel( model );
 			
@@ -339,7 +334,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 				continue;
 			}
 			
-			deSkinReference skin;
+			deSkin::Ref skin;
 			skin.TakeOver( particleEmitter.GetEngine()->GetSkinManager()->LoadSkin( path, basePath ) );
 			type.SetModelSkin( skin );
 			
@@ -386,10 +381,10 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 			
 			const decPath trailPath( decPath::AbsolutePathUnix( path, basePath ) );
 			
-			decBaseFileReaderReference trailReader;
+			decBaseFileReader::Ref trailReader;
 			trailReader.TakeOver( particleEmitter.GetEngine()->GetVirtualFileSystem()->OpenFileForReading( trailPath ) );
 			
-			deParticleEmitterReference trailEmitter;
+			deParticleEmitter::Ref trailEmitter;
 			trailEmitter.TakeOver( particleEmitter.GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter() );
 			Load( trailPath.GetPathUnix(), trailEmitter, trailReader );
 			
@@ -434,10 +429,10 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 			
 			const decPath colPath( decPath::AbsolutePathUnix( path, basePath ) );
 			
-			decBaseFileReaderReference colReader;
+			decBaseFileReader::Ref colReader;
 			colReader.TakeOver( particleEmitter.GetEngine()->GetVirtualFileSystem()->OpenFileForReading( colPath ) );
 			
-			deParticleEmitterReference colEmitter;
+			deParticleEmitter::Ref colEmitter;
 			colEmitter.TakeOver( particleEmitter.GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter() );
 			Load( colPath.GetPathUnix(), colEmitter, colReader );
 			

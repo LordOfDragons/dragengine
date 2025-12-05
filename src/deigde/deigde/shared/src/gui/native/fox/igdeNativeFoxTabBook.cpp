@@ -28,7 +28,6 @@
 #include "igdeNativeFoxTabBook.h"
 #include "foxIcons.h"
 #include "../../igdeTabBook.h"
-#include "../../igdeTabBook.h"
 #include "../../igdeContainer.h"
 #include "../../igdeCommonDialogs.h"
 #include "../../event/igdeAction.h"

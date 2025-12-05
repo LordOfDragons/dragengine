@@ -165,7 +165,7 @@ void deGraphicSystem::SetRenderWindow( deRenderWindow *renderWindow ){
 
 void deGraphicSystem::CreateAndSetRenderWindow( int width, int height, bool fullScreen,
 const char *title, deImage *icon ){
-	deRenderWindowReference renderWindow;
+	deRenderWindow::Ref renderWindow;
 	renderWindow.TakeOver( GetEngine()->GetRenderWindowManager()->CreateRenderWindow() );
 	renderWindow->SetSize( width, height );
 	renderWindow->SetTitle( title );
@@ -203,7 +203,7 @@ bool fullScreen, const char *title, deImage *icon, HWND hostWindow )
 
 #ifdef IMPLEMENT_CreateAndSetHostedRenderWindow
 {
-	deRenderWindowReference renderWindow;
+	deRenderWindow::Ref renderWindow;
 	renderWindow.TakeOver( GetEngine()->GetRenderWindowManager()->CreateRenderWindowInside( hostWindow ) );
 	renderWindow->SetSize( width, height );
 	renderWindow->SetTitle( title );

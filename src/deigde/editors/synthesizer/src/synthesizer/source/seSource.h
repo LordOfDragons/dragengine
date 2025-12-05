@@ -47,6 +47,11 @@ class deEngine;
  * \brief Synthesizer source.
  */
 class seSource : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seSource> Ref;
+
+
 private:
 	seSynthesizer *pSynthesizer;
 	seSourceGroup *pParentGroup;

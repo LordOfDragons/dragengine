@@ -72,6 +72,10 @@ class deComponent;
  * Render component.
  */
 class deoglRComponent : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRComponent> Ref;
+
+
 public:
 	/** Render modes. */
 	enum eRenderModes{

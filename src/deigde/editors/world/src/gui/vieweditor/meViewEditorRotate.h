@@ -27,7 +27,7 @@
 
 #include "meViewEditorNavigation.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 class meObjectList;
 
@@ -39,7 +39,7 @@ class meObjectList;
  */
 class meViewEditorRotate : public meViewEditorNavigation{
 private:
-	igdeUndoReference pUndoRotate;
+	igdeUndo::Ref pUndoRotate;
 	float pNullAngle;
 	
 public:

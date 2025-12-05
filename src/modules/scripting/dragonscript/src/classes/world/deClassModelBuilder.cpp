@@ -40,7 +40,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelBone.h>
-#include <dragengine/resources/model/deModelReference.h>
 #include <dragengine/resources/model/deModelBuilder.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/model/deModelTexture.h>
@@ -128,7 +127,7 @@ void deClassModelBuilder::nfBuild::RunFunction( dsRunTime *rt, dsValue *myself )
 	const deScriptingDragonScript &ds = ( ( deClassModelBuilder* )GetOwnerClass() )->GetDS();
 	const char * const filename = rt->GetValue( 0 )->GetString();
 	deClassModelBuilder_Builder builder( rt, myself );
-	deModelReference model;
+	deModel::Ref model;
 	
 	nd.builder = &builder;
 	

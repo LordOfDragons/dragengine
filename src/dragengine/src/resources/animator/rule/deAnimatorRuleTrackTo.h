@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deAnimatorRuleTrackTo> Ref;
 	
 	
-	
 public:
 	/** \brief Track axis. */
 	enum eTrackAxis{

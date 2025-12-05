@@ -33,16 +33,16 @@
  */
 class aeWPAPanelRuleStateSnapshot : public aeWPAPanelRule{
 private:
-	igdeCheckBoxReference pChkUseLastState;
-	igdeButtonReference pBtnSnapshot;
-	igdeTextFieldReference pEditID;
-	igdeComboBoxFilterReference pCBMoveName;
-	igdeTextFieldReference pEditMoveTime;
-	igdeButtonReference pBtnGetFrame;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeCheckBox::Ref pChkUseLastState;
+	igdeButton::Ref pBtnSnapshot;
+	igdeTextField::Ref pEditID;
+	igdeComboBoxFilter::Ref pCBMoveName;
+	igdeTextField::Ref pEditMoveTime;
+	igdeButton::Ref pBtnGetFrame;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	

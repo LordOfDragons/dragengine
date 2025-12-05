@@ -78,6 +78,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRParticleEmitterInstanceType> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create type. */

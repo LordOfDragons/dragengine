@@ -38,9 +38,7 @@
 #include <dragengine/filesystem/deCacheHelper.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/string/decString.h>
 
 #include <libdscript/exceptions.h>
@@ -129,7 +127,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileReader ){
 void deClassCache::nfRead::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deCacheHelper &cacheHelper = *( ( ( const sCacheNatDat * )p_GetNativeData( myself ) )->cacheHelper );
 	deScriptingDragonScript &ds = ( ( deClassCache* )GetOwnerClass() )->GetDS();
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	
 	reader.TakeOver( cacheHelper.Read( rt->GetValue( 0 )->GetString() ) );
 	ds.GetClassFileReader()->PushFileReader( rt, reader );
@@ -144,7 +142,7 @@ DSTM_PUBLIC | DSTM_NATIVE, init.clsFileWriter ){
 void deClassCache::nfWrite::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deCacheHelper &cacheHelper = *( ( ( const sCacheNatDat * )p_GetNativeData( myself ) )->cacheHelper );
 	deScriptingDragonScript &ds = ( ( deClassCache* )GetOwnerClass() )->GetDS();
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	
 	writer.TakeOver( cacheHelper.Write( rt->GetValue( 0 )->GetString() ) );
 	ds.GetClassFileWriter()->PushFileWriter( rt, writer );

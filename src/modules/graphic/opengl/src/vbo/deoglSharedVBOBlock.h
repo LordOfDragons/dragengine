@@ -45,6 +45,10 @@ class deoglSharedVBO;
  */
 class deoglSharedVBOBlock : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglSharedVBOBlock> Ref;
+	
+	
 	deoglSharedVBO *pVBO;
 	int pOffset;
 	int pSize;

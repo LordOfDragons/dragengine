@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deoglShaderCompilingInfo> Ref;
 	
 	
-	
 private:
 	enum eState{
 		esInvisible,

@@ -40,6 +40,10 @@ private:
 	decUnicodeString pPhonetics;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceSAWord> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new word. */

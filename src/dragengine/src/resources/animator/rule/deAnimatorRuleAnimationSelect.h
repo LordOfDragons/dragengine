@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<deAnimatorRuleAnimationSelect> Ref;
 	
 	
-	
 private:
 	decStringList pMoves;
 	

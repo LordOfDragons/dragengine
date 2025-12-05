@@ -74,6 +74,10 @@ private:
 	decColor pOptionBoxImageSelectedColorize;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGuiTheme> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create gui theme. */

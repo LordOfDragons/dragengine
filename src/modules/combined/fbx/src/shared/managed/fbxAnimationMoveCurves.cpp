@@ -60,7 +60,6 @@ pRigBone( NULL )
 	decPointerList connections;
 	move.GetAnimation().GetScene().FindConnections( pNodeCurvesID, connections );
 	int i, conCount = connections.GetCount();
-	deObjectReference nodeCurve;
 	
 	for( i=0; i<conCount; i++ ){
 		const fbxConnection &connection = *( ( fbxConnection* )connections.GetAt( i ) );

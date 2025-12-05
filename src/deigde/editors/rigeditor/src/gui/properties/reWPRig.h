@@ -25,10 +25,10 @@
 #ifndef _REWPRIG_H_
 #define _REWPRIG_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reRig;
@@ -46,11 +46,11 @@ private:
 	reRig *pRig;
 	reWPRigListener *pListener;
 	
-	igdeComboBoxReference pCBRootBone;
-	igdeCheckBoxReference pChkDynamic;
-	igdeCheckBoxReference pChkModelCollision;
-	igdeEditVectorReference pEditCentralMassPoint;
-	igdeTextFieldReference pEditMass;
+	igdeComboBox::Ref pCBRootBone;
+	igdeCheckBox::Ref pChkDynamic;
+	igdeCheckBox::Ref pChkModelCollision;
+	igdeEditVector::Ref pEditCentralMassPoint;
+	igdeTextField::Ref pEditMass;
 	
 	
 	

@@ -37,7 +37,6 @@
 #include "../common/file/decBaseFileWriter.h"
 #include "../common/xmlparser/decXmlWriter.h"
 #include "../common/xmlparser/decXmlDocument.h"
-#include "../common/xmlparser/decXmlDocumentReference.h"
 #include "../common/xmlparser/decXmlCharacterData.h"
 #include "../common/xmlparser/decXmlElementTag.h"
 #include "../common/xmlparser/decXmlAttValue.h"
@@ -66,7 +65,7 @@ dealGameXML::~dealGameXML(){
 ///////////////
 
 void dealGameXML::ReadFromFile( decBaseFileReader &reader, dealGame &game ){
-	decXmlDocumentReference xmldoc;
+	decXmlDocument::Ref xmldoc;
 	xmldoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser parser( GetLogger() );

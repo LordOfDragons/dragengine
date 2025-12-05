@@ -28,26 +28,28 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
-#include "model/igdeListItemSorterReference.h"
+#include "model/igdeListItem.h"
+#include "model/igdeListItemSorter.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringList.h>
 
-
 class igdeIconListBoxListener;
 class igdeIcon;
 class igdeListHeader;
 class igdeListItem;
-class igdeListItemReference;
-
 
 /**
  * \brief IGDE UI IconListBox.
  */
 class DE_DLL_EXPORT igdeIconListBox : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeIconListBox> Ref;
+	
+	
 	/** \brief Selection mode. */
 	enum eSelectionMode{
 		/** \brief Single select. */
@@ -77,7 +79,7 @@ private:
 	eSelectionMode pSelectionMode;
 	eViewMode pViewMode;
 	int pSelection;
-	igdeListItemSorterReference pSorter;
+	igdeListItemSorter::Ref pSorter;
 	decPoint pMinimumSize;
 	decString pDescription;
 	decObjectOrderedSet pHeaders;
@@ -174,10 +176,10 @@ public:
 	void AddItem( const char *text, const decStringList &details,
 		igdeIcon *icon = NULL, void *data = NULL );
 	
-	void AddItem( igdeListItemReference &item, const char *text, igdeIcon *icon = NULL,
+	void AddItem( igdeListItem::Ref &item, const char *text, igdeIcon *icon = NULL,
 		void *data = NULL );
 	
-	void AddItem( igdeListItemReference &item, const char *text, const decStringList &details,
+	void AddItem( igdeListItem::Ref &item, const char *text, const decStringList &details,
 		igdeIcon *icon = NULL, void *data = NULL );
 	
 	/** \brief Insert item at index. */
@@ -189,10 +191,10 @@ public:
 	void InsertItem( int index, const char *text, const decStringList &details,
 		igdeIcon *icon = NULL, void *data = NULL );
 	
-	void InsertItem( igdeListItemReference &item, int index, const char *text,
+	void InsertItem( igdeListItem::Ref &item, int index, const char *text,
 		igdeIcon *icon = NULL, void *data = NULL );
 	
-	void InsertItem( igdeListItemReference &item, int index, const char *text,
+	void InsertItem( igdeListItem::Ref &item, int index, const char *text,
 		const decStringList &details, igdeIcon *icon = NULL, void *data = NULL );
 	
 	/** \brief Move item. */

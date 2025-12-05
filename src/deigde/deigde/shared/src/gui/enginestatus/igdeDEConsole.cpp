@@ -28,7 +28,7 @@
 #include "../igdeComboBox.h"
 #include "../igdeTextArea.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../event/igdeComboBoxListener.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../model/igdeListItem.h"
@@ -77,7 +77,7 @@ pLog( 1000 )
 	
 	helper.EditString( *this, "Console Logs", pEditLogs, 10, NULL );
 	
-	igdeContainerReference line;
+	igdeContainer::Ref line;
 	line.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
 	AddChild( line );
 	

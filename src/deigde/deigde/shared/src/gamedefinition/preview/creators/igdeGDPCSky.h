@@ -27,9 +27,9 @@
 
 #include "igdeGDPreviewCreator.h"
 
-#include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
-#include <dragengine/resources/camera/deCameraReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/resources/canvas/deCanvasRenderWorld.h>
+#include <dragengine/resources/camera/deCamera.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeGDSky;
 class igdeWSky;
@@ -40,13 +40,18 @@ class igdeWSky;
  * \brief Create preview for game definition sky asynchronously.
  */
 class DE_DLL_EXPORT igdeGDPCSky : public igdeGDPreviewCreator{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPCSky> Ref;
+	
+	
 private:
 	igdeGDSky *pGDSky;
 	
-	deWorldReference pWorld;
-	deCameraReference pCamera;
+	deWorld::Ref pWorld;
+	deCamera::Ref pCamera;
 	igdeWSky *pSky;
-	deCanvasRenderWorldReference pCanvasRenderWorld;
+	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
 	
 	

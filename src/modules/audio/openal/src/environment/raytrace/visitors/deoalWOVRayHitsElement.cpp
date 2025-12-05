@@ -183,8 +183,6 @@ all=78.118 comp=29.009(9924) compOctree=28.842(9891) face=0.000(0) rayAdd=9891 r
 2% at best is though nothing to warrent the troubles.
 furthermore it's slower as expected due to the mutex locking. 
  */
-#include "../../../audiothread/deoalAudioThread.h"
-#include "../../../audiothread/deoalATLogger.h"
 
 void deoalWOVRayHitsElement::VisitComponent( deoalAComponent *component ){
 	// WARNING everything in here has to be thread-safe

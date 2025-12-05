@@ -25,9 +25,9 @@
 #ifndef _DECAPTURECANVAS_H_
 #define _DECAPTURECANVAS_H_
 
-#include "../deCanvasViewReference.h"
+#include "../deCanvasView.h"
 #include "../../deResource.h"
-#include "../../image/deImageReference.h"
+#include "../../image/deImage.h"
 
 class deBaseGraphicCaptureCanvas;
 class deCaptureCanvasManager;
@@ -58,10 +58,9 @@ public:
 	typedef deTObjectReference<deCaptureCanvas> Ref;
 	
 	
-	
 private:
-	deCanvasViewReference pCanvasView;
-	deImageReference pImage;
+	deCanvasView::Ref pCanvasView;
+	deImage::Ref pImage;
 	bool pCapture;
 	
 	deBaseGraphicCaptureCanvas *pPeerGraphic;

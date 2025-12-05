@@ -25,11 +25,11 @@
 #ifndef _REWPBONE_H_
 #define _REWPBONE_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reRig;
@@ -49,19 +49,19 @@ private:
 	reRigBone *pBone;
 	reWPBoneListener *pListener;
 	
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBParent;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeEditVectorReference pEditCentralMassPoint;
-	igdeEditVectorReference pEditIKLimitsLower;
-	igdeEditVectorReference pEditIKLimitsUpper;
-	igdeEditVectorReference pEditIKResistance;
-	igdeTextFieldReference pEditMass;
-	igdeCheckBoxReference pChkDynamic;
-	igdeCheckBoxReference pChkIKLockedX;
-	igdeCheckBoxReference pChkIKLockedY;
-	igdeCheckBoxReference pChkIKLockedZ;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBParent;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeEditVector::Ref pEditCentralMassPoint;
+	igdeEditVector::Ref pEditIKLimitsLower;
+	igdeEditVector::Ref pEditIKLimitsUpper;
+	igdeEditVector::Ref pEditIKResistance;
+	igdeTextField::Ref pEditMass;
+	igdeCheckBox::Ref pChkDynamic;
+	igdeCheckBox::Ref pChkIKLockedX;
+	igdeCheckBox::Ref pChkIKLockedY;
+	igdeCheckBox::Ref pChkIKLockedZ;
 	
 	
 	

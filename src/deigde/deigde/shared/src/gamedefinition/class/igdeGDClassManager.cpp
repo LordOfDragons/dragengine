@@ -28,7 +28,6 @@
 
 #include "igdeGDClass.h"
 #include "igdeGDClassInherit.h"
-#include "igdeGDClassReference.h"
 #include "igdeGDClassManager.h"
 #include "component/igdeGDCComponent.h"
 #include "component/igdeGDCCTexture.h"
@@ -39,7 +38,6 @@
 #include "../visitor/igdeGDVisitor.h"
 #include "../../codec/igdeCodecPropertyString.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/shape/decShape.h>
@@ -195,7 +193,7 @@ void igdeGDClassManager::VisitMatchingFilter( igdeGDVisitor &visitor, const decS
 
 void igdeGDClassManager::UpdateWith( const igdeGDClassManager &classManager ){
 	const int count = classManager.GetCount();
-	igdeGDClassReference gdClass;
+	igdeGDClass::Ref gdClass;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -235,7 +233,6 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 	decObjectOrderedSet pendingClasses(classManager.pClasses), retryClasses;
 	int i, j, k, h, inheritClassCount;
 	igdeCodecPropertyString codec;
-	deObjectReference refCopy;
 	decString propertyValue;
 	bool detectRetry = true;
 	
@@ -260,8 +257,8 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				gdclassExisting->RemoveAllInheritClasses();
 				inheritClassCount = eclass->GetInheritClassCount();
 				for( j=0; j<inheritClassCount; j++ ){
-					refCopy.TakeOver( new igdeGDClassInherit( *eclass->GetInheritClassAt( j ) ) );
-					gdclassExisting->AddInheritClass( ( igdeGDClassInherit* )( deObject* )refCopy );
+					gdclassExisting->AddInheritClass(igdeGDClassInherit::Ref::NewWith(
+						*eclass->GetInheritClassAt(j)));
 				}
 				gdclassExisting->ResolveInheritClasses( *this );
 				

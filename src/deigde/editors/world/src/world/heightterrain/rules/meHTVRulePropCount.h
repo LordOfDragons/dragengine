@@ -43,6 +43,10 @@
  */
 class meHTVRulePropCount : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRulePropCount> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Count. */

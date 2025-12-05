@@ -26,7 +26,7 @@
 #define _CERULEOFTHIRDS_H_
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
 class igdeEnvironment;
 
@@ -37,7 +37,7 @@ class igdeEnvironment;
 class ceCanvasRuleOfThirdsAid{
 private:
 	igdeEnvironment &pEnvironment;
-	deCanvasViewReference pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 	
 	

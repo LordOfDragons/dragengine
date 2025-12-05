@@ -25,10 +25,10 @@
 #ifndef _SAEWPVIEW_H_
 #define _SAEWPVIEW_H_
 
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
+#include <deigde/gui/properties/igdeWPSky.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
 
 class saeWindowProperties;
 class saeGameDefinition;
@@ -46,12 +46,12 @@ private:
 	saeWPViewListener *pListener;
 	saeSAnimation *pSAnimation;
 	
-	igdeEditPathReference pEditDisplayModelPath;
-	igdeEditPathReference pEditDisplaySkinPath;
-	igdeEditPathReference pEditDisplayRigPath;
+	igdeEditPath::Ref pEditDisplayModelPath;
+	igdeEditPath::Ref pEditDisplaySkinPath;
+	igdeEditPath::Ref pEditDisplayRigPath;
 	
-	igdeWPSkyReference pWPSky;
-	igdeWPCameraReference pWPCamera;
+	igdeWPSky::Ref pWPSky;
+	igdeWPCamera::Ref pWPCamera;
 	
 	
 	

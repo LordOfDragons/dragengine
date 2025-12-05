@@ -44,6 +44,10 @@ private:
 	bool pTIMActionsExpanded;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceCAIfElseCase> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create if else case. */

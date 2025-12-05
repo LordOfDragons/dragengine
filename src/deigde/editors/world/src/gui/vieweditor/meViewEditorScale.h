@@ -27,7 +27,7 @@
 
 #include "meViewEditorNavigation.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -37,7 +37,7 @@
  */
 class meViewEditorScale : public meViewEditorNavigation{
 private:
-	igdeUndoReference pUndoScale;
+	igdeUndo::Ref pUndoScale;
 	
 public:
 	/** \name Constructors and Destructors */

@@ -40,6 +40,10 @@ class seSky;
  * \brief Sky listener.
  */
 class seSkyListener : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seSkyListener> Ref;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

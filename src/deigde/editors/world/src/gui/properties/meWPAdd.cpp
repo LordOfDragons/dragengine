@@ -44,7 +44,7 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeListBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -64,10 +64,10 @@ namespace{
 
 class cActionClassAdd : public igdeAction{
 	meWPAdd &pPanel;
-	igdeComboBoxFilterReference &pComboClass;
+	igdeComboBoxFilter::Ref &pComboClass;
 	
 public:
-	cActionClassAdd( meWPAdd &panel, igdeComboBoxFilterReference &comboClass ) :
+	cActionClassAdd( meWPAdd &panel, igdeComboBoxFilter::Ref &comboClass ) :
 	igdeAction( "Add", NULL, "Add class" ), pPanel( panel ), pComboClass( comboClass ){ }
 	
 	virtual void OnAction(){
@@ -86,10 +86,10 @@ public:
 
 class cActionClassRemove : public igdeAction{
 	meWPAdd &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClassRemove( meWPAdd &panel, igdeListBoxReference &listBox ) :
+	cActionClassRemove( meWPAdd &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Remove", NULL, "Remove selected class" ), pPanel( panel ), pListBox( listBox ){ }
 	
 	virtual void OnAction(){
@@ -202,7 +202,7 @@ pWorld( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new meWPAddListener( *this );
 	

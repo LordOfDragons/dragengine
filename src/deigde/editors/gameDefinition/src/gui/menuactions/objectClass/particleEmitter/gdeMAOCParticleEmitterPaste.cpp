@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/particleemitter/gdeOCParticleEmitter.h"
 #include "../../../../undosys/objectClass/particleemitter/gdeUOCAddParticleEmitter.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Particle Emitter",
 ///////////////
 
 igdeUndo *gdeMAOCParticleEmitterPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCParticleEmitter::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;
@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCParticleEmitterPaste::OnActionSubObject( gdeGameDefinition&, gd
 	const gdeClipboardDataOCParticleEmitter &clipOCParticleEmitter =
 		( const gdeClipboardDataOCParticleEmitter & )( igdeClipboardData& )clip;
 	
-	deObjectReference particleEmitter;
-	particleEmitter.TakeOver( new gdeOCParticleEmitter( *clipOCParticleEmitter.GetParticleEmitter() ) );
+	const gdeOCParticleEmitter::Ref particleEmitter(gdeOCParticleEmitter::Ref::NewWith(*clipOCParticleEmitter.GetParticleEmitter()));
 	
 	igdeUndo * const undo = new gdeUOCAddParticleEmitter( &objectClass,
-		( gdeOCParticleEmitter* )( deObject* )particleEmitter );
+		particleEmitter );
 	undo->SetShortInfo( "Paste object class particle emitter" );
 	return undo;
 }

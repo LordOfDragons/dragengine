@@ -53,7 +53,6 @@ public:
 	typedef deTObjectReference<fbxModel> Ref;
 	
 	
-	
 private:
 	struct sVertex {
 		decIntList weights;

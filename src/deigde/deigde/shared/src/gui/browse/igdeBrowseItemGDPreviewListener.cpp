@@ -30,7 +30,6 @@
 #include "../igdeIconListBox.h"
 #include "../model/igdeListItem.h"
 #include "../resources/igdeIcon.h"
-#include "../resources/igdeIconReference.h"
 
 #include <dragengine/resources/image/deImage.h>
 
@@ -63,7 +62,7 @@ void igdeBrowseItemGDPreviewListener::ImageCreated( deImage *image ){
 		return;
 	}
 	
-	igdeIconReference icon;
+	igdeIcon::Ref icon;
 	if( image->GetWidth() > image->GetHeight() ){
 		icon.TakeOver( new igdeIcon( *image, pIconSize, pIconSize * image->GetHeight() / image->GetWidth() ) );
 		

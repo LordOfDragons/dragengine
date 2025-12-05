@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<deArchiveContainer> Ref;
 	
 	
-	
 private:
 	const decPath pArchivePath;
 	deArchive *pArchive;

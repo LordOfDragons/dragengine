@@ -25,9 +25,9 @@
 #ifndef _FEWPGLYPH_H_
 #define _FEWPGLYPH_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class feFont;
@@ -47,9 +47,9 @@ private:
 	feFontGlyph *pGlyph;
 	feWPGlyphListener *pListener;
 	
-	igdeComboBoxReference pCBGlyph;
-	igdeButtonReference pBtnGlyphAdd, pBtnGlyphDel;
-	igdeTextFieldReference pEditU, pEditV, pEditWidth, pEditHeight, pEditBearing,
+	igdeComboBox::Ref pCBGlyph;
+	igdeButton::Ref pBtnGlyphAdd, pBtnGlyphDel;
+	igdeTextField::Ref pEditU, pEditV, pEditWidth, pEditHeight, pEditBearing,
 		pEditBearingY, pEditAdvance;
 	
 	

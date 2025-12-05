@@ -26,9 +26,9 @@
 #define _DELIGHT_H_
 
 #include "../deResource.h"
-#include "../canvas/deCanvasViewReference.h"
-#include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../canvas/deCanvasView.h"
+#include "../skin/deSkin.h"
+#include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/collection/decObjectSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/shape/decShapeList.h"
@@ -148,7 +148,6 @@ public:
 	typedef deTObjectReference<deLight> Ref;
 	
 	
-	
 public:
 	/** \brief Light type. */
 	enum eLightTypes{
@@ -207,9 +206,9 @@ private:
 	float pSpotExponent;
 	decShapeList pShape;
 	
-	deSkinReference pLightSkin;
-	deCanvasViewReference pLightCanvas;
-	deDynamicSkinReference pDynamicSkin;
+	deSkin::Ref pLightSkin;
+	deCanvasView::Ref pLightCanvas;
+	deDynamicSkin::Ref pDynamicSkin;
 	decTexMatrix2 pTransform;
 	
 	bool pActivated;

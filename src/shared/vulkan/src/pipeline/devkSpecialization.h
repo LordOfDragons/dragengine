@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<devkSpecialization> Ref;
 	
 	
-	
 private:
 	VkSpecializationMapEntry *pEntries;
 	int pEntryCount;

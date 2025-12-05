@@ -39,6 +39,10 @@ class dealWidgetLogFile : public dealWidgetLayoutFlow{
 private:
 	/** \brief Log entry. */
 	class LogEntry : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<LogEntry> Ref;
+
+
 	public:
 		/** \brief Log types. */
 		enum eLogTypes{

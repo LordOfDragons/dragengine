@@ -31,7 +31,6 @@
 #include "../igdeWidget.h"
 #include "../igdeUIHelper.h"
 #include "../menu/igdeMenuCascade.h"
-#include "../menu/igdeMenuCascadeReference.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -85,7 +84,7 @@ void igdeActionContextMenu::OnAction(){
 		return;
 	}
 	
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( pWidget->GetEnvironment() ) );
 	
 	AddContextMenuEntries( menu );

@@ -40,6 +40,12 @@
  * data it can paste.
  */
 class DE_DLL_EXPORT igdeClipboardData : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeClipboardData> Ref;
+	
+	
 private:
 	decString pTypeName;
 	

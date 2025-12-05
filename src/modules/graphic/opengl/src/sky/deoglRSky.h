@@ -54,6 +54,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRSky> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create new render sky. */

@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<deoglSharedSPBRTIGroupList> Ref;
 	
 	
-	
 private:
 	deoglRenderThread &pRenderThread;
 	decPointerList pGroups;

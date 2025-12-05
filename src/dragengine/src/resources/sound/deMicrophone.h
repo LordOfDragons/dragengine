@@ -55,7 +55,6 @@ public:
 	typedef deTObjectReference<deMicrophone> Ref;
 	
 	
-	
 public:
 	enum eMicrophoneType{
 		emtPoint,

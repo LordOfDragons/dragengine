@@ -26,7 +26,7 @@
 #define _DESKINPROPERTYVIDEO_H_
 
 #include "deSkinProperty.h"
-#include "../../video/deVideoReference.h"
+#include "../../video/deVideo.h"
 #include "../../../common/string/decString.h"
 
 
@@ -43,7 +43,7 @@
 class DE_DLL_EXPORT deSkinPropertyVideo : public deSkinProperty{
 private:
 	decString pPath;
-	deVideoReference pVideo;
+	deVideo::Ref pVideo;
 	bool pSharedTime;
 	
 	

@@ -31,7 +31,6 @@
 #include "../gui/igdeEditorWindow.h"
 #include "../gui/igdeUIHelper.h"
 #include "../gui/event/igdeAction.h"
-#include "../gui/event/igdeActionReference.h"
 #include "../gui/menu/igdeMenuCascade.h"
 
 #include <dragengine/logger/deLogger.h>
@@ -74,7 +73,7 @@ public:
 	}
 	
 	virtual void OnAction(){
-		igdeActionReference guard( this );
+		igdeAction::Ref guard( this );
 		pRecentFiles.OpenFile( pFilename );
 	}
 };

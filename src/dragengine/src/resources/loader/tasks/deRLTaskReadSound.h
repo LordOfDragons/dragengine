@@ -26,7 +26,7 @@
 #define _DERLTASKREADSOUND_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../sound/deSoundReference.h"
+#include "../../sound/deSound.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskReadSound : public deResourceLoaderTask {
 private:
-	deSoundReference pSound;
+	deSound::Ref pSound;
 	bool pSucceeded;
 	
 	

@@ -37,13 +37,11 @@
 #include <deigde/module/igdeEditorModule.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deCollectDirectorySearchVisitor.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
 #include <dragengine/logger/deLogger.h>
@@ -301,15 +299,14 @@ void igdeEditorModuleManager::pCleanUp(){
 
 void igdeEditorModuleManager::pScanForModules(){
 	deLogger &logger = *pWindowMain.GetLogger();
-	deObjectReference refModule;
 	int i;
 	
 	try{
-		deVirtualFileSystemReference vfs;
+		deVirtualFileSystem::Ref vfs;
 		vfs.TakeOver( new deVirtualFileSystem );
 		
 		const decPath searchPath( decPath::CreatePathNative( pPathModules ) );
-		deVFSContainerReference container;
+		deVFSContainer::Ref container;
 		container.TakeOver( new deVFSDiskDirectory( searchPath ) );
 		vfs->AddContainer( container );
 		
@@ -337,8 +334,8 @@ void igdeEditorModuleManager::pScanForModules(){
 			modulePath.AddUnixPath( "module.xml" );
 			
 			// try loading module
-			refModule.TakeOver( new igdeEditorModuleDefinition( *this, modulePath.GetPathNative() ) );
-			igdeEditorModuleDefinition * const module = ( igdeEditorModuleDefinition* )( deObject* )refModule;
+			const igdeEditorModuleDefinition::Ref module(
+				igdeEditorModuleDefinition::Ref::NewWith(*this, modulePath.GetPathNative()));
 			
 			if( module->GetErrorCode() != igdeEditorModuleDefinition::eecSuccess ){
 				switch( module->GetErrorCode() ){

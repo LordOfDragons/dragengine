@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<decXmlAttValue> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decString pValue;

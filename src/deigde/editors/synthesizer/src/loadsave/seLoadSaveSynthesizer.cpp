@@ -52,7 +52,6 @@
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
@@ -95,7 +94,7 @@ pPattern( ".desynth" )
 ///////////////
 
 void seLoadSaveSynthesizer::LoadSynthesizer( seSynthesizer &synthesizer, decBaseFileReader &reader ){
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );

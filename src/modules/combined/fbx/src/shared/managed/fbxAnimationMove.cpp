@@ -77,8 +77,6 @@ pFrameRate( 25 )
 	}
 	
 	// find curve nodes
-	deObjectReference refMove;
-	
 	connections.RemoveAll();
 	animation.GetScene().FindConnections( pNodeLayerID, connections );
 	conCount = connections.GetCount();
@@ -91,8 +89,7 @@ pFrameRate( 25 )
 		
 		fbxNode &node = *animation.GetScene().NodeWithID( connection.GetSource() );
 		if( node.GetName() == "AnimationCurveNode" ){
-			refMove.TakeOver( new fbxAnimationMoveCurves( *this, node ) );
-			pCurveNodes.Add( refMove );
+			pCurveNodes.Add(fbxAnimationMoveCurves::Ref::NewWith(*this, node));
 		}
 	}
 }

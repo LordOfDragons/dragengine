@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<deResource> Ref;
 	
 	
-	
 private:
 	deResourceManager *pResourceManager;
 	deResource *pLLManagerPrev;

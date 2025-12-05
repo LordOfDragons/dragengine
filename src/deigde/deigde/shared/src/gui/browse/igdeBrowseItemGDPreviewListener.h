@@ -25,8 +25,8 @@
 #ifndef _IGDEBROWSEITEMGDPREVIEWLISTENER_H_
 #define _IGDEBROWSEITEMGDPREVIEWLISTENER_H_
 
-#include "../igdeIconListBoxReference.h"
-#include "../model/igdeListItemReference.h"
+#include "../igdeIconListBox.h"
+#include "../model/igdeListItem.h"
 #include "../../gamedefinition/preview/igdeGDPreviewListener.h"
 
 
@@ -35,9 +35,14 @@
  * \brief Create preview listener updating an liste item once finished.
  */
 class DE_DLL_EXPORT igdeBrowseItemGDPreviewListener : public igdeGDPreviewListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeBrowseItemGDPreviewListener> Ref;
+	
+	
 private:
-	igdeIconListBoxReference pIconListBox;
-	igdeListItemReference pListItem;
+	igdeIconListBox::Ref pIconListBox;
+	igdeListItem::Ref pListItem;
 	int pIconSize;
 	
 	

@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deoglLoaderThreadTask> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

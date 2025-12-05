@@ -27,12 +27,11 @@
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 
 class peeWindowMainListener;
@@ -51,21 +50,21 @@ class peeWindowMain : public igdeEditorWindow{
 private:
 	peeWindowMainListener *pListener;
 	
-	//igdeIconReference pIconEmitterNew;
+	//igdeIcon::Ref pIconEmitterNew;
 	
-	igdeActionReference pActionEmitterNew;
-	igdeActionReference pActionEmitterOpen;
-	igdeActionReference pActionEmitterSave;
-	igdeActionReference pActionEmitterSaveAs;
+	igdeAction::Ref pActionEmitterNew;
+	igdeAction::Ref pActionEmitterOpen;
+	igdeAction::Ref pActionEmitterSave;
+	igdeAction::Ref pActionEmitterSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	peeConfiguration *pConfiguration;
 	igdeClipboard pClipboard;

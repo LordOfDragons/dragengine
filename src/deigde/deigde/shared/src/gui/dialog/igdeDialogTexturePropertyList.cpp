@@ -28,12 +28,11 @@
 #include "../igdeListBox.h"
 #include "../igdeTextArea.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../event/igdeListBoxListener.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../layout/igdeContainerForm.h"
 #include "../layout/igdeContainerSplitted.h"
-#include "../layout/igdeContainerSplittedReference.h"
 #include "../model/igdeListItem.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../engine/textureProperties/igdeTextureProperty.h"
@@ -70,7 +69,7 @@ igdeDialog( environment, "Texture Property List" ){
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(1000, 500)));
 	
-	igdeContainerSplittedReference content;
+	igdeContainerSplitted::Ref content;
 	content.TakeOver(new igdeContainerSplitted(environment, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(300)));
 	
@@ -78,7 +77,7 @@ igdeDialog( environment, "Texture Property List" ){
 	pListProperties->SetDefaultSorter();
 	content->AddChild( pListProperties, igdeContainerSplitted::eaSide );
 	
-	igdeContainerReference form;
+	igdeContainer::Ref form;
 	form.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
 	content->AddChild( form, igdeContainerSplitted::eaCenter );
 	
@@ -101,7 +100,7 @@ igdeDialog( environment, "Texture Property List" ){
 	pEditDescription->SetEditable( false );
 	
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Close" );
 	
 	AddContent( content, buttonBar );

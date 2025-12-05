@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<devkRenderPass> Ref;
 	
 	
-	
 protected:
 	devkDevice &pDevice;
 	const devkRenderPassConfiguration pConfiguration;

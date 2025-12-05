@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<fbxAnimationCurve> Ref;
 	
 	
-	
 private:
 	fbxNode &pNodeCurve;
 	fbxProperty *pPropertyTime;

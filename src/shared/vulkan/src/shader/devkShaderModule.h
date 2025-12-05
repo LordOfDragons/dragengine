@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<devkShaderModule> Ref;
 	
 	
-	
 private:
 	devkDevice &pDevice;
 	const decString pPath;

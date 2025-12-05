@@ -27,11 +27,11 @@
 
 #include "../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -52,18 +52,18 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeEditVectorReference pEditScaling;
-	igdeTextFieldReference pEditBoneName;
-	igdeCheckBoxReference pChkEnabled;
-	igdeTextFieldReference pEditLayer;
-	igdeComboBoxReference pCBType;
-	igdeTextFieldReference pEditBlockingPriority;
-	igdeTextFieldReference pEditShape;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeEditVector::Ref pEditScaling;
+	igdeTextField::Ref pEditBoneName;
+	igdeCheckBox::Ref pChkEnabled;
+	igdeTextField::Ref pEditLayer;
+	igdeComboBox::Ref pCBType;
+	igdeTextField::Ref pEditBlockingPriority;
+	igdeTextField::Ref pEditShape;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
 	
 	

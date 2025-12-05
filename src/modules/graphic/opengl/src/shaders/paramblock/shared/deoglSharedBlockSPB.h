@@ -54,7 +54,6 @@ public:
 	typedef deTObjectReference<deoglSharedBlockSPB> Ref;
 	
 	
-	
 private:
 	const deoglShaderParameterBlock::Ref pParameterBlock;
 	decObjectList pElements;

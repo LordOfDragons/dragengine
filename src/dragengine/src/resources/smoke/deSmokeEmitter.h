@@ -70,7 +70,6 @@ public:
 	typedef deTObjectReference<deSmokeEmitter> Ref;
 	
 	
-	
 private:
 	decDVector pEmitterPosition;
 	decQuaternion pEmitterOrientation;

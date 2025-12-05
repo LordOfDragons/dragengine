@@ -58,11 +58,10 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVFSContainer.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLoggerFile.h>
@@ -425,8 +424,8 @@ void projTestRunProcess::pCreateLogger(){
 	filePath.AddComponent( diskPath.GetLastComponent() );
 	diskPath.RemoveLastComponent();
 	
-	deVFSContainerReference container;
-	decBaseFileWriterReference writer;
+	deVFSContainer::Ref container;
+	decBaseFileWriter::Ref writer;
 	
 	container.TakeOver( new deVFSDiskDirectory( diskPath ) );
 	writer.TakeOver( container->OpenFileForWriting( filePath ) );

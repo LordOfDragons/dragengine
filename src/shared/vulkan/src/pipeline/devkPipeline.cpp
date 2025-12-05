@@ -34,9 +34,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 
@@ -95,7 +93,7 @@ pSaveCache( false )
 			if( vfs.ExistsFile( path ) ){
 				baseModule.LogInfoFormat( "Vulkan Pipeline: Read Cache for device %x", pDevice.GetProperties().deviceID );
 				
-				decBaseFileReaderReference reader;
+				decBaseFileReader::Ref reader;
 				reader.TakeOver( vfs.OpenFileForReading( path ) );
 				
 				cacheInfo.initialDataSize = reader->GetLength();
@@ -189,7 +187,7 @@ void devkPipeline::pCleanUp(){
 			baseModule.LogInfoFormat( "Vulkan Pipeline: Save Cache for device %x", pDevice.GetProperties().deviceID );
 			
 			try{
-				decBaseFileWriterReference writer;
+				decBaseFileWriter::Ref writer;
 				writer.TakeOver( vfs.OpenFileForWriting( path ) );
 				
 				size_t sizeData = 0;

@@ -41,6 +41,11 @@ class meHTVRule;
  * Undo action for adding a height terrain vegetation rule.
  */
 class meUHTVRuleAdd : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleAdd> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRule *pRule;

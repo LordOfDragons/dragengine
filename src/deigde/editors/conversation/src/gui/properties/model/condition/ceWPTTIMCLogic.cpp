@@ -45,7 +45,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -124,7 +123,7 @@ void ceWPTTIMCLogic::OnContextMenu( igdeMenuCascade &contextMenu ){
 	// child action specific
 	helper.MenuSeparator( contextMenu );
 	
-	igdeMenuCascadeReference subMenu;
+	igdeMenuCascade::Ref subMenu;
 	subMenu.TakeOver( new igdeMenuCascade( environment, "Logic: Add Condition",
 		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
 	contextMenu.AddChild( subMenu );
@@ -161,7 +160,7 @@ void ceWPTTIMCLogic::ContextMenuCondition( igdeMenuCascade &contextMenu, ceConve
 	int i;
 	
 	// child action specific
-	igdeMenuCascadeReference subMenu;
+	igdeMenuCascade::Ref subMenu;
 	subMenu.TakeOver( new igdeMenuCascade( environment, "Add Condition",
 		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
 	contextMenu.AddChild( subMenu );

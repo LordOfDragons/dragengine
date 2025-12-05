@@ -219,7 +219,7 @@ void deComponent::SetModelKeepTextures( deModel* model ){
 	
 	deComponentTexture *textures = NULL;
 	const int textureCount = pTextureCount;
-	const deModelReference oldModel( pModel ); // guard reference
+	const deModel::Ref oldModel( pModel ); // guard reference
 	int i;
 	
 	try{

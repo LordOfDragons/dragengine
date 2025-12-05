@@ -38,6 +38,10 @@
  */
 class gdeOCComponent : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeOCComponent> Ref;
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Model path. */

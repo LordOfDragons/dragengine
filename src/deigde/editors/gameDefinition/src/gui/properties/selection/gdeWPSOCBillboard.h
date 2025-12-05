@@ -27,13 +27,13 @@
 
 #include "../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditVector2Reference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -54,20 +54,20 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeEditPathReference pEditPathSkin;
-	igdeEditVectorReference pEditAxis;
-	igdeEditVector2Reference pEditSize;
-	igdeEditVector2Reference pEditOffset;
-	igdeCheckBoxReference pChkLocked;
-	igdeCheckBoxReference pChkSpherical;
-	igdeCheckBoxReference pChkRelativeSize;
-	igdeCheckBoxReference pChkDoNotScale;
-	igdeCheckBoxReference pChkRenderEnvMap;
-	igdeCheckBoxReference pChkPartialHide;
-	igdeEditVectorReference pEditPosition;
-	igdeTextFieldReference pEditBoneName;
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeEditPath::Ref pEditPathSkin;
+	igdeEditVector::Ref pEditAxis;
+	igdeEditVector2::Ref pEditSize;
+	igdeEditVector2::Ref pEditOffset;
+	igdeCheckBox::Ref pChkLocked;
+	igdeCheckBox::Ref pChkSpherical;
+	igdeCheckBox::Ref pChkRelativeSize;
+	igdeCheckBox::Ref pChkDoNotScale;
+	igdeCheckBox::Ref pChkRenderEnvMap;
+	igdeCheckBox::Ref pChkPartialHide;
+	igdeEditVector::Ref pEditPosition;
+	igdeTextField::Ref pEditBoneName;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
 	
 	

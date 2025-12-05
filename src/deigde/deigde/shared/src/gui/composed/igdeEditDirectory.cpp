@@ -30,11 +30,11 @@
 #include "igdeEditDirectoryListener.h"
 #include "../igdeButton.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeUIHelper.h"
 #include "../browse/igdeDialogBrowserSkin.h"
-#include "../event/igdeActionReference.h"
-#include "../event/igdeTextFieldListenerReference.h"
+#include "../event/igdeAction.h"
+#include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/exceptions.h>

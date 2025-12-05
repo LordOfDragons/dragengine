@@ -75,7 +75,6 @@ public:
 	typedef deTObjectReference<deWorld> Ref;
 	
 	
-	
 private:
 	deHeightTerrain *pHeightTerrain;
 	decDVector pSize;

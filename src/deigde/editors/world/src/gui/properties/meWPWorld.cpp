@@ -48,7 +48,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditDVector.h>
@@ -65,11 +65,10 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -98,7 +97,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -123,7 +122,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -146,7 +145,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -169,7 +168,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -192,7 +191,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editDVector->GetDVector(), world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -398,11 +397,10 @@ public:
 				continue;
 			}
 			
-			deObjectReference type;
-			type.TakeOver( new mePathFindTestType( newValue ) );
-			list.Add( ( mePathFindTestType* )( deObject* )type );
+			const mePathFindTestType::Ref type(mePathFindTestType::Ref::NewWith(newValue));
+			list.Add( type );
 			world->GetPathFindTest()->NotifyTypesChanged();
-			pPanel.SelectPFType( ( mePathFindTestType* )( deObject* )type );
+			pPanel.SelectPFType( type );
 			break;
 		}
 		return NULL;
@@ -624,7 +622,7 @@ pWorld( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new meWPWorldListener( *this );
 	

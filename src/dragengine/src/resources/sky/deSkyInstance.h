@@ -25,7 +25,7 @@
 #ifndef _DESKYINSTANCE_H_
 #define _DESKYINSTANCE_H_
 
-#include "deSkyReference.h"
+#include "deSky.h"
 #include "../deResource.h"
 #include "../../common/utils/decLayerMask.h"
 
@@ -49,7 +49,7 @@ public:
 	
 	
 private:
-	deSkyReference pSky;
+	deSky::Ref pSky;
 	int pOrder;
 	
 	deSkyController *pControllers;

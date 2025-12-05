@@ -49,6 +49,10 @@ private:
 	float pPathFactor;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dedsNavigationInfo> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new navigation information. */

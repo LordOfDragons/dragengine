@@ -44,6 +44,10 @@ private:
 	void *pStyle;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dedsStyledTextNode> Ref;
+
+
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new styled text node. */

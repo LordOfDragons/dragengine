@@ -64,7 +64,7 @@ pID( topic.pID ),
 pActiveCondition( NULL )
 {
 	const int count = topic.pActions.GetCount();
-	ceConversationActionReference action;
+	ceConversationAction::Ref action;
 	int i;
 	
 	try{

@@ -25,7 +25,7 @@
 #ifndef _IGDELISTITEMSORTER_H_
 #define _IGDELISTITEMSORTER_H_
 
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -42,6 +42,12 @@ class igdeListItem;
  * Default implementation sorts igdeListItem by text lexicographically.
  */
 class DE_DLL_EXPORT igdeListItemSorter : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeListItemSorter> Ref;
+	
+	
 private:
 	bool pAscending;
 	

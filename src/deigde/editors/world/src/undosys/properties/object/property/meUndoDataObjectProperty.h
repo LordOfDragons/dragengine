@@ -44,6 +44,10 @@ private:
 	decStringDictionary pOldProperties;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUndoDataObjectProperty> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo data object. */

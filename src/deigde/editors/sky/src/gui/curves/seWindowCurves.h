@@ -25,10 +25,10 @@
 #ifndef _SEWINDOWCURVES_H_
 #define _SEWINDOWCURVES_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 class seWindowMain;
 class seSky;
@@ -46,10 +46,10 @@ private:
 	
 	seSky *pSky;
 	
-	igdeViewCurveBezierReference pEditCurve;
-	igdeListBoxReference pListLinks;
+	igdeViewCurveBezier::Ref pEditCurve;
+	igdeListBox::Ref pListLinks;
 	
-	igdeUndoReference pUndoSetCurve;
+	igdeUndo::Ref pUndoSetCurve;
 	
 	
 	

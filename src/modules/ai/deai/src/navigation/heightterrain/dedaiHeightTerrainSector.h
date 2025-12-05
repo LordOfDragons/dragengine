@@ -41,6 +41,11 @@ class deHeightTerrainSector;
  * \brief Navigation space peer.
  */
 class dedaiHeightTerrainSector : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dedaiHeightTerrainSector> Ref;
+	
+	
 private:
 	dedaiHeightTerrain &pHeightTerrain;
 	const deHeightTerrainSector &pSector;

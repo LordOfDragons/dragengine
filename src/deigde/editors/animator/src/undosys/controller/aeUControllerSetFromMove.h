@@ -25,11 +25,8 @@
 #ifndef _AEUCONTROLLERSETFROMMOVE_H_
 #define _AEUCONTROLLERSETFROMMOVE_H_
 
+#include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class aeController;
 
 
 /**
@@ -37,7 +34,7 @@ class aeController;
  */
 class aeUControllerSetFromMove : public igdeUndo{
 private:
-	deObjectReference pController;
+	const aeController::Ref pController;
 	float pOldMinimumValue;
 	float pOldMaximumValue;
 	float pNewMinimumValue;

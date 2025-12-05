@@ -37,6 +37,10 @@
  */
 class igdeTemplateFile : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTemplateFile> Ref;
+
+
 	/** \brief Directories. */
 	enum eDirectories{
 		/** \brief Project data directory. */

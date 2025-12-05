@@ -34,9 +34,9 @@
  */
 class seWPAPanelSourceWave : public seWPAPanelSource{
 private:
-	igdeComboBoxReference pCBType;
-	igdeTextFieldReference pEditMinFrequency;
-	igdeTextFieldReference pEditMaxFrequency;
+	igdeComboBox::Ref pCBType;
+	igdeTextField::Ref pEditMinFrequency;
+	igdeTextField::Ref pEditMaxFrequency;
 	
 	
 	

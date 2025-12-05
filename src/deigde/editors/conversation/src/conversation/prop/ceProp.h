@@ -51,6 +51,10 @@ private:
 	bool pVisible;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceProp> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new prop. */

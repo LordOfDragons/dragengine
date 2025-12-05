@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<delFileFormat> Ref;
 	
 	
-	
 private:
 	deModuleSystem::eModuleTypes pType;
 	decString pPattern;

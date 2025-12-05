@@ -36,6 +36,10 @@
  */
 class sePropertyNodeText : public sePropertyNode{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<sePropertyNodeText> Ref;
+	
+	
 	enum eTextMapped{
 		etmFontSize = MappedCount, //<! Font size
 		etmColorRed, //<! Color red component

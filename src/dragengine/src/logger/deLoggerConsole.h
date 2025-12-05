@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<deLoggerConsole> Ref;
 	
 	
-	
 private:
 	deMutex pMutex;
 	

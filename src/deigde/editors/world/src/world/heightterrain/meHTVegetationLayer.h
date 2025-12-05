@@ -82,6 +82,10 @@ private:
 	decVector2 pViewCenter;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVegetationLayer> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */

@@ -40,6 +40,10 @@
  */
 class meHTVRuleComponents : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleComponents> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** X Component. */

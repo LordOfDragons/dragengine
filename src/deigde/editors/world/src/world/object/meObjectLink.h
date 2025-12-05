@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<meObjectLink> Ref;
 	
 	
-	
 private:
 	igdeEnvironment *pEnvironment;
 	meWorld *pWorld;

@@ -35,6 +35,10 @@
  */
 class ceConversationCondition : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceConversationCondition> Ref;
+	
+	
 	/** \brief Condition types. */
 	enum eConditionTypes{
 		/** \brief Logic operator. */

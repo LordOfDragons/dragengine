@@ -36,6 +36,12 @@
  * \brief IGDE UI StatusBar.
  */
 class DE_DLL_EXPORT igdeStatusBar : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeStatusBar> Ref;
+	
+	
 private:
 	decString pText;
 	

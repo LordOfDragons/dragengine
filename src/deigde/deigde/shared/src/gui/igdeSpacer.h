@@ -32,6 +32,12 @@
  * \brief IGDE UI Spacer.
  */
 class DE_DLL_EXPORT igdeSpacer : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeSpacer> Ref;
+	
+	
 private:
 	decPoint pSize;
 	

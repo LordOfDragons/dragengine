@@ -87,6 +87,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRCamera> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render camera. */

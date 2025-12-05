@@ -33,7 +33,6 @@
 #include "../environment/igdeEnvironment.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/deFileResource.h>
@@ -71,15 +70,14 @@ void igdeResourceLoader::Update(){
 			continue;
 		}
 		
-		const deObjectReference guardTask( pTasks.GetAt( index ) );
+		const igdeResourceLoaderTask::Ref task((igdeResourceLoaderTask*)pTasks.GetAt(index));
 		pTasks.RemoveFrom( index );
-		igdeResourceLoaderTask &task = ( igdeResourceLoaderTask& )( deObject& )guardTask;
 		
 		if( info.GetResource() ){
-			task.NotifyLoadingFinished( logger, info.GetResource() );
+			task->NotifyLoadingFinished( logger, info.GetResource() );
 			
 		}else{
-			task.NotifyLoadingFailed( logger );
+			task->NotifyLoadingFailed( logger );
 		}
 	}
 }
@@ -119,8 +117,7 @@ deResourceLoader::eResourceType resourceType ){
 
 void igdeResourceLoader::pAddTask( const char *filename,
 deResourceLoader::eResourceType resourceType ){
-	deObjectReference task;
-	task.TakeOver( new igdeResourceLoaderTask( filename, resourceType ) );
+	const igdeResourceLoaderTask::Ref task(igdeResourceLoaderTask::Ref::NewWith(filename, resourceType));
 	pTasks.Add( task );
 	
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();

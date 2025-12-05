@@ -26,7 +26,7 @@
 #define _DESKINPROPERTYIMAGE_H_
 
 #include "deSkinProperty.h"
-#include "../../image/deImageReference.h"
+#include "../../image/deImage.h"
 #include "../../../common/string/decString.h"
 
 
@@ -36,7 +36,7 @@
 class DE_DLL_EXPORT deSkinPropertyImage : public deSkinProperty{
 private:
 	decString pPath;
-	deImageReference pImage;
+	deImage::Ref pImage;
 	
 	
 	

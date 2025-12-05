@@ -25,12 +25,12 @@
 #ifndef _AEWPAPANELRULE_H_
 #define _AEWPAPANELRULE_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
@@ -54,26 +54,26 @@ private:
 	deAnimatorRuleVisitorIdentify::eRuleTypes pRequiredType;
 	aeControllerTarget *pTarget;
 	
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBBlendMode;
-	igdeTextFieldReference pEditBlendFactor;
-	igdeCheckBoxReference pChkInvertBlendFactor;
-	igdeCheckBoxReference pChkEnabled;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBBlendMode;
+	igdeTextField::Ref pEditBlendFactor;
+	igdeCheckBox::Ref pChkInvertBlendFactor;
+	igdeCheckBox::Ref pChkEnabled;
 	
-	igdeListBoxReference pListBones;
-	igdeComboBoxFilterReference pCBBones;
-	igdeButtonReference pBtnBoneAdd;
-	igdeButtonReference pBtnBoneDel;
+	igdeListBox::Ref pListBones;
+	igdeComboBoxFilter::Ref pCBBones;
+	igdeButton::Ref pBtnBoneAdd;
+	igdeButton::Ref pBtnBoneDel;
 	
-	igdeListBoxReference pListVertexPositionSets;
-	igdeComboBoxFilterReference pCBVertexPositionSets;
-	igdeButtonReference pBtnVertexPositionSetAdd;
-	igdeButtonReference pBtnVertexPositionSetDel;
+	igdeListBox::Ref pListVertexPositionSets;
+	igdeComboBoxFilter::Ref pCBVertexPositionSets;
+	igdeButton::Ref pBtnVertexPositionSetAdd;
+	igdeButton::Ref pBtnVertexPositionSetDel;
 	
-	igdeComboBoxReference pCBTarget;
-	igdeListBoxReference pListLinks;
-	igdeComboBoxFilterReference pCBLinks;
-	igdeButtonReference pBtnLinkAdd;
+	igdeComboBox::Ref pCBTarget;
+	igdeListBox::Ref pListLinks;
+	igdeComboBoxFilter::Ref pCBLinks;
+	igdeButton::Ref pBtnLinkAdd;
 	
 	
 	

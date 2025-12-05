@@ -154,7 +154,6 @@ void igdeGDSkyManager::UpdateWith( const igdeGDSkyManager &manager ){
 
 void igdeGDSkyManager::UpdateWithFound( const igdeGDSkyManager &skyManager ){
 	const int count = skyManager.GetSkyList().GetCount();
-	deObjectReference refSky;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -165,8 +164,7 @@ void igdeGDSkyManager::UpdateWithFound( const igdeGDSkyManager &skyManager ){
 			continue;
 		}
 		
-		refSky.TakeOver( new igdeGDSky( foundSky ) );
-		igdeGDSky * const sky = ( igdeGDSky* )( deObject* )refSky;
+		const igdeGDSky::Ref sky(igdeGDSky::Ref::NewWith(foundSky));
 		
 		igdeGDCategory * const autoCategory = pCategories->AutoCategorize( sky->GetPath() );
 		if( autoCategory ){
@@ -181,7 +179,7 @@ class igdeGDSkyManagerFind : public deFileSearchVisitor{
 private:
 	igdeGDSkyManager &pOwner;
 	const char * const pPattern;
-	deObjectReference pSky;
+	igdeGDSky::Ref pSky;
 	
 public:
 	igdeGDSkyManagerFind( igdeGDSkyManager &owner, const char *pattern ) :
@@ -205,9 +203,9 @@ public:
 		}
 		
 		try{
-			pSky.TakeOver( new igdeGDSky( fullPath, genName ) );
-			( ( igdeGDSky* )( deObject* )pSky )->SetDescription( "Auto-Imported" );
-			pOwner.AddSky( ( igdeGDSky* )( deObject* )pSky );
+			pSky.TakeOverWith(fullPath, genName);
+			pSky->SetDescription("Auto-Imported");
+			pOwner.AddSky(pSky);
 			
 		}catch( const deException & ){
 		}

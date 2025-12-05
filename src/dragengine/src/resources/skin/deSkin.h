@@ -58,7 +58,6 @@ public:
 	typedef deTObjectReference<deSkin> Ref;
 	
 	
-	
 private:
 	deSkinTexture **pTextures;
 	int pTextureCount, pTextureSize;

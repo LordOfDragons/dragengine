@@ -79,9 +79,9 @@ public:
 
 class cViewCurve : public igdeViewCurveBezierListener{
 	seWindowCurves &pPanel;
-	igdeUndoReference &pUndo;
+	igdeUndo::Ref &pUndo;
 public:
-	cViewCurve( seWindowCurves &panel, igdeUndoReference &undo ) :
+	cViewCurve( seWindowCurves &panel, igdeUndo::Ref &undo ) :
 	pPanel( panel ),
 	pUndo( undo ){
 	}

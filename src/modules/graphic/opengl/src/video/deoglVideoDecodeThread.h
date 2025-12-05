@@ -27,8 +27,8 @@
 
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
-#include <dragengine/resources/video/deVideoReference.h>
-#include <dragengine/resources/video/deVideoDecoderReference.h>
+#include <dragengine/resources/video/deVideo.h>
+#include <dragengine/resources/video/deVideoDecoder.h>
 #include <dragengine/threading/deThread.h>
 #include <dragengine/threading/deSemaphore.h>
 
@@ -38,8 +38,8 @@
  */
 class deoglVideoDecodeThread : public deThread{
 public:
-	const deVideoDecoderReference pDecoder;
-	const deVideoReference pVideo;
+	const deVideoDecoder::Ref pDecoder;
+	const deVideo::Ref pVideo;
 	int pFrame;
 	int pNextFrame;
 	

@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<devkDescriptorSetLayout> Ref;
 	
 	
-	
 private:
 	devkDevice &pDevice;
 	const devkDescriptorSetLayoutConfiguration pConfiguration;

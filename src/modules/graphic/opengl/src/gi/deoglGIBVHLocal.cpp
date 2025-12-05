@@ -171,41 +171,41 @@ void deoglGIBVHLocal::TBOBVHUpdateNodeExtends(){
 
 
 
-deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockNode(){
+const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockNode(){
 	if( ! pBlockNode ){
 		pBlockNode.TakeOver( pRenderThread.GetGI().GetBVHShared().GetSharedTBONode()
 			->AddBlock( pTBOIndex, pTBONodeBox ) );
 	}
-	return ( deoglDynamicTBOBlock* )( deObject* )pBlockNode;
+	return pBlockNode;
 }
 
-deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockFace(){
+const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockFace(){
 	if( ! pBlockFace ){
 		pBlockFace.TakeOver( pRenderThread.GetGI().GetBVHShared().GetSharedTBOFace()
 			->AddBlock( pTBOFace, pTBOTexCoord ) );
 	}
-	return ( deoglDynamicTBOBlock* )( deObject* )pBlockFace;
+	return pBlockFace;
 }
 
-deoglDynamicTBOBlock *deoglGIBVHLocal::GetBlockVertex(){
+const deoglDynamicTBOBlock::Ref &deoglGIBVHLocal::GetBlockVertex(){
 	if( ! pBlockVertex ){
 		pBlockVertex.TakeOver( pRenderThread.GetGI().GetBVHShared().GetSharedTBOVertex()
 			->AddBlock( pTBOVertex ) );
 	}
-	return ( deoglDynamicTBOBlock* )( deObject* )pBlockVertex;
+	return pBlockVertex;
 }
 
 void deoglGIBVHLocal::DropBlocks(){
 	if( pBlockNode ){
-		( ( deoglDynamicTBOBlock* )( deObject* )pBlockNode )->Drop();
+		pBlockNode->Drop();
 		pBlockNode = NULL;
 	}
 	if( pBlockFace ){
-		( ( deoglDynamicTBOBlock* )( deObject* )pBlockFace )->Drop();
+		pBlockFace->Drop();
 		pBlockFace = NULL;
 	}
 	if( pBlockVertex ){
-		( ( deoglDynamicTBOBlock* )( deObject* )pBlockVertex )->Drop();
+		pBlockVertex->Drop();
 		pBlockVertex = NULL;
 	}
 }

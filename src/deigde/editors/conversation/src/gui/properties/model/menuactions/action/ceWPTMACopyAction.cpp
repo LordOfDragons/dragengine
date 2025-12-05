@@ -35,7 +35,7 @@
 #include "../../../../../conversation/action/ceConversationActionList.h"
 
 #include <deigde/environment/igdeEnvironment.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -72,7 +72,7 @@ void ceWPTMACopyAction::OnAction(){
 	ceConversationActionList actions;
 	actions.Add( pAction );
 	
-	igdeClipboardDataReference cdata;
+	igdeClipboardData::Ref cdata;
 	cdata.TakeOver( new ceClipboardDataAction( actions ) );
 	GetWindowMain().GetClipboard().Set( cdata );
 }

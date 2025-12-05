@@ -43,7 +43,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
@@ -51,7 +51,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimation.h>
@@ -84,7 +84,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -180,7 +180,7 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertTrackTo )
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	
 	
 	helper.GroupBox( *this, groupBox, "Track To:" );

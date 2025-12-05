@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<decXmlComment> Ref;
 	
 	
-	
 private:
 	decString pComment;
 	

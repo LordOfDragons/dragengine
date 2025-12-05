@@ -17,7 +17,8 @@
 class FDVFSContainer : public deVFSContainer{
 public:
     typedef deTObjectReference<FDVFSContainer> Ref;
-
+	
+	
 private:
     class Entry{
     public:

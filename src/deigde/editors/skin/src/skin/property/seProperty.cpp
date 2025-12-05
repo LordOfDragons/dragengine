@@ -214,7 +214,7 @@ void seProperty::SetImagePath( const char *imagePath ){
 }
 
 void seProperty::UpdateImage(){
-	deImageReference image;
+	deImage::Ref image;
 	
 	if( ! pPathImage.IsEmpty() && pTexture && pTexture->GetSkin() ){
 		try{
@@ -240,7 +240,7 @@ void seProperty::SetVideoPath( const char *videoPath ){
 }
 
 void seProperty::UpdateVideo(){
-	deVideoReference video;
+	deVideo::Ref video;
 	
 	if( ! pPathVideo.IsEmpty() && pTexture && pTexture->GetSkin() ){
 		try{

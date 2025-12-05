@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<deVideo> Ref;
 	
 	
-	
 private:
 	int pWidth;
 	int pHeight;

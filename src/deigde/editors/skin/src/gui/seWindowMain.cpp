@@ -50,7 +50,7 @@
 #include "../undosys/property/seUPropertyRemove.h"
 #include "../undosys/property/seUPropertyAdd.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/engine/textureProperties/igdeTexturePropertyList.h>
 #include <deigde/gui/igdeApplication.h>
@@ -60,14 +60,12 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -83,7 +81,7 @@
 #include <deigde/gamedefinition/skin/igdeGDSkinManager.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <deigde/gui/browse/igdeDialogBrowserSkin.h>
 
@@ -134,7 +132,7 @@ pSkin( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
@@ -239,10 +237,9 @@ void seWindowMain::SetSkin( seSkin *skin ){
 }
 
 void seWindowMain::CreateNewSkin(){
-	deObjectReference skin;
-	skin.TakeOver( new seSkin( &GetEnvironment() ) );
+	const seSkin::Ref skin(seSkin::Ref::NewWith(&GetEnvironment()));
 	( ( seSkin& )( deObject& )skin ).SetModelPath( "/igde/models/materialTest/sphere.demodel" );
-	SetSkin( ( seSkin* )( deObject* )skin );
+	SetSkin( skin );
 }
 
 void seWindowMain::LoadSkin( const char *filename ){
@@ -251,9 +248,7 @@ void seWindowMain::LoadSkin( const char *filename ){
 	}
 	
 	GetEditorModule().LogInfoFormat( "Loading Skin %s", filename );
-	deObjectReference refSkin;
-	refSkin.TakeOver( pLoadSaveSystem->LoadSkin( filename, GetGameDefinition() ) );
-	seSkin * const skin = ( seSkin* )( deObject* )refSkin;
+	const seSkin::Ref skin(seSkin::Ref::New(pLoadSaveSystem->LoadSkin(filename, GetGameDefinition())));
 	
 	// store information
 	skin->SetFilePath( filename );
@@ -451,7 +446,7 @@ public:
 		if( ! pWindow.GetSkin() ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetSkin() ) );
 		if( undo ){
 			pWindow.GetSkin()->GetUndoSystem()->Add( undo );
@@ -524,9 +519,8 @@ public:
 		}
 		
 		// create skin and set it up to match the selected model
-		deObjectReference refSkin;
-		refSkin.TakeOver( new seSkin( &environment ) );
-		seSkin * const skin = ( seSkin* )( deObject* )refSkin;
+		const seSkin::Ref refSkin(seSkin::Ref::NewWith(&environment));
+		seSkin * const skin = refSkin;
 		
 		// set model. this loads the model
 		skin->SetModelPath( filename );
@@ -540,31 +534,30 @@ public:
 		// create a default texture for each texture defined in the model
 		const deModel &model = *skin->GetEngineComponent()->GetModel();
 		const int textureCount = model.GetTextureCount();
-		deObjectReference refTexture, refProperty;
-		seProperty *property;
+		seProperty::Ref property;
 		int i;
 		
 		for( i=0; i<textureCount; i++ ){
 			// create texture with the matching name
-			refTexture.TakeOver( new seTexture( engine, model.GetTextureAt( i )->GetName() ) );
-			seTexture * const texture = ( seTexture* )( deObject* )refTexture;
+			const seTexture::Ref texture(seTexture::Ref::NewWith(
+				engine, model.GetTextureAt(i)->GetName()));
 			
 			// create color property with a light gray color
-			refProperty.TakeOver( property = new seProperty( engine ) );
+			property.TakeOverWith(engine);
 			property->SetName( "color" );
 			property->SetValueType( seProperty::evtColor );
 			property->SetColor( decColor( 0.8f, 0.8f, 0.8f ) );
 			texture->AddProperty( property );
 			
 			// create reflectivity property with plastic reflectivity
-			refProperty.TakeOver( property = new seProperty( engine ) );
+			property.TakeOverWith(engine);
 			property->SetName( "reflectivity" );
 			property->SetValueType( seProperty::evtValue );
 			property->SetValue( 0.23f );
 			texture->AddProperty( property );
 			
 			// create roughness property with moderate roughness
-			refProperty.TakeOver( property = new seProperty( engine ) );
+			property.TakeOverWith(engine);
 			property->SetName( "roughness" );
 			property->SetValueType( seProperty::evtValue );
 			property->SetValue( 0.35f );
@@ -788,7 +781,7 @@ public:
 		"Add texture", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnAction( seSkin *skin ){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new seDialogAddTexture( pWindow ) );
 		if( ! dialog->Run( &pWindow ) ){
 			return NULL;
@@ -800,9 +793,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference texture;
-		texture.TakeOver( new seTexture( pWindow.GetEngine(), name ) );
-		return new seUTextureAdd( skin, ( seTexture* )( deObject* )texture );
+		const seTexture::Ref texture(seTexture::Ref::NewWith(pWindow.GetEngine(), name));
+		return new seUTextureAdd( skin, texture );
 	}
 };
 
@@ -999,7 +991,7 @@ public:
 		"Add property", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnActionTexture( seSkin*, seTexture *texture ){
-		igdeDialogReference refDialog;
+		igdeDialog::Ref refDialog;
 		refDialog.TakeOver( new seDialogAddProperty( pWindow ) );
 		if( ! refDialog->Run( &pWindow ) ){
 			return NULL;
@@ -1010,8 +1002,7 @@ public:
 		const sePropertyList &propertyList = texture->GetPropertyList();
 		const decString &customName = dialog.GetCustomPropertyName();
 		sePropertyList addPropertyList;
-		deObjectReference refProperty;
-		seProperty *property;
+		seProperty::Ref property;
 		
 		if( customName.IsEmpty() ){
 			const decStringSet selection( dialog.GetSelectedPropertyNames() );
@@ -1024,13 +1015,13 @@ public:
 					continue;
 				}
 				
-				refProperty.TakeOver( property = new seProperty( pWindow.GetEngine(), name ) );
+				property.TakeOverWith(pWindow.GetEngine(), name);
 				property->InitDefaults( knownPropertyList );
 				addPropertyList.Add( property );
 			}
 			
 		}else if( ! propertyList.HasNamed( customName ) ){
-			refProperty.TakeOver( property = new seProperty( pWindow.GetEngine(), customName ) );
+			property.TakeOverWith(pWindow.GetEngine(), customName);
 			property->InitDefaults( knownPropertyList );
 			addPropertyList.Add( property );
 		}
@@ -1156,7 +1147,7 @@ void seWindowMain::pCreateToolBarEdit(){
 
 void seWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "Skin", deInputEvent::ekcS ) );
 	pCreateMenuSkin( cascade );

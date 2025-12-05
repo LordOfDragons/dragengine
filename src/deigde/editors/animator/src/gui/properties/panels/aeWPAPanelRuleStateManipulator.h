@@ -27,8 +27,8 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 
 
@@ -37,18 +37,18 @@
  */
 class aeWPAPanelRuleStateManipulator : public aeWPAPanelRule{
 private:
-	igdeEditVectorReference pEditMinPos;
-	igdeEditVectorReference pEditMaxPos;
-	igdeEditVectorReference pEditMinRot;
-	igdeEditVectorReference pEditMaxRot;
-	igdeEditVectorReference pEditMinSize;
-	igdeEditVectorReference pEditMaxSize;
-	igdeTextFieldReference pEditMinVertexPositionSet;
-	igdeTextFieldReference pEditMaxVertexPositionSet;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeEditVector::Ref pEditMinPos;
+	igdeEditVector::Ref pEditMaxPos;
+	igdeEditVector::Ref pEditMinRot;
+	igdeEditVector::Ref pEditMaxRot;
+	igdeEditVector::Ref pEditMinSize;
+	igdeEditVector::Ref pEditMaxSize;
+	igdeTextField::Ref pEditMinVertexPositionSet;
+	igdeTextField::Ref pEditMaxVertexPositionSet;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	

@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<devkImage> Ref;
 	
 	
-	
 protected:
 	devkDevice &pDevice;
 	const devkImageConfiguration pConfiguration;

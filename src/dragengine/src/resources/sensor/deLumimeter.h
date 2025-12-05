@@ -56,7 +56,6 @@ public:
 	typedef deTObjectReference<deLumimeter> Ref;
 	
 	
-	
 private:
 	decDVector pPosition;
 	decVector pDirection;

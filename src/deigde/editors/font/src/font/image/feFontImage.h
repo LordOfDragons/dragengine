@@ -58,6 +58,10 @@ private:
 	bool pSaved;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<feFontImage> Ref;
+
+
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new font image. */

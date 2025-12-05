@@ -30,19 +30,16 @@
 #include "../igdeCommonDialogs.h"
 #include "../igdeListBox.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeListBoxListener.h"
-#include "../event/igdeListBoxListenerReference.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../model/igdeListItem.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../undo/igdeUndo.h"
-#include "../../undo/igdeUndoReference.h"
 #include "../../undo/igdeUndoSystem.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/logger/deLogger.h>

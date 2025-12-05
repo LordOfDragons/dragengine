@@ -47,11 +47,11 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -82,7 +82,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCActionSetDelay( topic, action, delay ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -103,7 +103,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCActionToggleWaitForActor( topic, action ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -130,7 +130,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCActionToggleWaitSpeakOnly( topic, action ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -155,7 +155,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCActionSetWaitForActorID( topic, action, comboBox->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}

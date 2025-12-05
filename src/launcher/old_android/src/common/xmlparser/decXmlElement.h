@@ -46,6 +46,10 @@ class decXmlNamespace;
  * \brief Base XML Tree Element.
  */
 class decXmlElement : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decXmlElement> Ref;
+
+
 public:
 	/** \brief Occurance enumeration. */
 	enum eOccuranceTypes{

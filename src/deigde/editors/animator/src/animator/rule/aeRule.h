@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<aeRule> Ref;
 	
 	
-	
 private:
 	aeAnimator *pAnimator;
 	aeRuleGroup *pParentGroup;

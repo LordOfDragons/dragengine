@@ -37,6 +37,7 @@ class aeRuleTrackTo : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleTrackTo> Ref;
 	
+	
 private:
 	decString pTrackBone;
 	deAnimatorRuleTrackTo::eTrackAxis pTrackAxis;

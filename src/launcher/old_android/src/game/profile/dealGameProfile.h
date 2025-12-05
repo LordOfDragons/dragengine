@@ -76,6 +76,10 @@ private:
 	bool pValid;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGameProfile> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new game profile. */

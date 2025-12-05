@@ -36,7 +36,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -109,10 +108,9 @@ gdeCategory *parent, const gdeCategoryList &list, gdeUCategoryBase::eCategoryTyp
 			continue;
 		}
 		
-		deObjectReference category;
-		category.TakeOver( new gdeCategory( name ) );
+		const gdeCategory::Ref category(gdeCategory::Ref::NewWith(name));
 		return new gdeUCategoryAdd( &gameDefinition, parent,
-			( gdeCategory* )( deObject* )category, categoryType );
+			category, categoryType );
 	}
 	
 	return NULL;

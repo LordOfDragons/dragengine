@@ -41,6 +41,10 @@ private:
 	decString pValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealEMParameter> Ref;
+
+
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new engine module parameter. */

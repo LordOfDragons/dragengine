@@ -26,7 +26,7 @@
 #define _DECOLLIDERRIG_H_
 
 #include "deCollider.h"
-#include "../rig/deRigReference.h"
+#include "../rig/deRig.h"
 
 class deColliderBone;
 class deRigConstraint;
@@ -53,9 +53,8 @@ public:
 	typedef deTObjectReference<deColliderRig> Ref;
 	
 	
-	
 private:
-	deRigReference pRig;
+	deRig::Ref pRig;
 	
 	deColliderBone **pBones;
 	int pBoneCount;

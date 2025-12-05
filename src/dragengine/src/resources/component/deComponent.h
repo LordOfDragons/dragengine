@@ -26,13 +26,13 @@
 #define _DECOMPONENT_H_
 
 #include "../deResource.h"
-#include "../model/deModelReference.h"
-#include "../rig/deRigReference.h"
-#include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
-#include "../occlusionmesh/deOcclusionMeshReference.h"
-#include "../animator/deAnimatorReference.h"
-#include "../../parallel/deParallelTaskReference.h"
+#include "../model/deModel.h"
+#include "../rig/deRig.h"
+#include "../skin/deSkin.h"
+#include "../skin/dynamic/deDynamicSkin.h"
+#include "../occlusionmesh/deOcclusionMesh.h"
+#include "../animator/deAnimator.h"
+#include "../../parallel/deParallelTask.h"
 #include "../../common/collection/decObjectOrderedSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
@@ -65,7 +65,6 @@ public:
 	typedef deTObjectReference<deComponent> Ref;
 	
 	
-	
 public:
 	/** \brief Movement hints. */
 	enum eMovementHints{
@@ -82,11 +81,11 @@ public:
 	
 	
 private:
-	deModelReference pModel;
-	deSkinReference pSkin;
-	deRigReference pRig;
-	deOcclusionMeshReference pOcclusionMesh;
-	deModelReference pAudioModel;
+	deModel::Ref pModel;
+	deSkin::Ref pSkin;
+	deRig::Ref pRig;
+	deOcclusionMesh::Ref pOcclusionMesh;
+	deModel::Ref pAudioModel;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;
@@ -98,7 +97,7 @@ private:
 	bool pEnableGI;
 	int pHintGIImportance;
 	
-	deAnimatorReference pAnimator;
+	deAnimator::Ref pAnimator;
 	
 	decLayerMask pLayerMask;
 	
@@ -114,13 +113,13 @@ private:
 	deComponentTexture *pTextures;
 	int pTextureCount;
 	
-	deDynamicSkinReference pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	deDecal *pDecalRoot;
 	deDecal *pDecalTail;
 	int pDecalCount;
 	
-	deParallelTaskReference pAnimatorTask;
+	deParallelTask::Ref pAnimatorTask;
 	
 	deBaseGraphicComponent *pPeerGraphic;
 	deBasePhysicsComponent *pPeerPhysics;

@@ -235,7 +235,7 @@ igdeGDProperty::ePathPatternTypes patternType, decStringList &names ){
 
 
 
-void meHelpers::CreateTexture( deObjectReference &texture, meObject *object, const char *textureName ){
+void meHelpers::CreateTexture(meObjectTexture::Ref &texture, meObject *object, const char *textureName ){
 	const igdeGDCComponent * const gdcomponent = meHelpers::FindFirstComponent( object->GetGDClass() );
 	const igdeGDCCTexture *gdctexture = NULL;
 	if( gdcomponent ){
@@ -247,7 +247,7 @@ void meHelpers::CreateTexture( deObjectReference &texture, meObject *object, con
 	meHelpers::CreateTexture( texture, object, textureName, gdctexture );
 }
 
-void meHelpers::CreateTexture( deObjectReference &texture, meObject *object,
+void meHelpers::CreateTexture(meObjectTexture::Ref &texture, meObject *object,
 const char *textureName, const igdeGDCCTexture *gdctexture ){
 	decColor initialColor( 1.0f, 1.0f, 1.0f );
 	decVector2 initialTexCoordOffset( 0.0f, 0.0f );
@@ -263,11 +263,10 @@ const char *textureName, const igdeGDCCTexture *gdctexture ){
 		initialTexCoordRotation = gdctexture->GetRotation();
 	}
 	
-	texture.TakeOver( new meObjectTexture( object->GetEnvironment(), textureName ) );
-	meObjectTexture &realTexture = ( meObjectTexture& )( deObject& )texture;
-	realTexture.SetSkinPath( initialSkin );
-	realTexture.SetColorTint( initialColor );
-	realTexture.SetTexCoordOffset( initialTexCoordOffset );
-	realTexture.SetTexCoordScaling( initialTexCoordScale );
-	realTexture.SetTexCoordRotation( initialTexCoordRotation );
+	texture.TakeOverWith(object->GetEnvironment(), textureName);
+	texture->SetSkinPath( initialSkin );
+	texture->SetColorTint( initialColor );
+	texture->SetTexCoordOffset( initialTexCoordOffset );
+	texture->SetTexCoordScaling( initialTexCoordScale );
+	texture->SetTexCoordRotation( initialTexCoordRotation );
 }

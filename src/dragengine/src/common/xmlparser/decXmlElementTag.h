@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<decXmlElementTag> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decString pNamespace;

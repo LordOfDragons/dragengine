@@ -87,8 +87,6 @@
 #include <dragengine/resources/collider/deColliderComponent.h>
 #include <dragengine/resources/collider/deColliderManager.h>
 #include <dragengine/resources/collider/deColliderVisitorIdentify.h>
-#include <dragengine/resources/component/deComponent.h>
-#include <dragengine/resources/component/deComponentManager.h>
 #include <dragengine/resources/component/deComponentTexture.h>
 #include <dragengine/resources/component/deComponentBone.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>

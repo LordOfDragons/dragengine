@@ -25,9 +25,9 @@
 #ifndef _CEWPASNIPPET_H_
 #define _CEWPASNIPPET_H_
 
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeButtonReference.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeButton.h>
 
 #include "ceWPAction.h"
 
@@ -40,9 +40,9 @@ class ceCASnippet;
  */
 class ceWPASnippet : public ceWPAction{
 private:
-	igdeComboBoxFilterReference pCBFile, pCBTopic;
-	igdeCheckBoxReference pChkCreateSideLane;
-	igdeButtonReference pBtnJumpToTopic;
+	igdeComboBoxFilter::Ref pCBFile, pCBTopic;
+	igdeCheckBox::Ref pChkCreateSideLane;
+	igdeButton::Ref pBtnJumpToTopic;
 	
 	
 public:

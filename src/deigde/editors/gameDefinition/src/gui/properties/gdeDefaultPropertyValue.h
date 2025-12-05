@@ -28,12 +28,10 @@
 #include "../../gamedef/property/gdeProperty.h"
 
 #include <deigde/gui/composed/igdeEditPropertyValue.h>
+#include <deigde/gui/composed/igdeEditPropertyValue.h>
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
 
-
 class gdeProperty;
-class igdeEditPropertyValueReference;
-
 
 /**
  * \brief Default property value widget.
@@ -64,10 +62,10 @@ public:
 	/*@{*/
 	/** \brief Create and add. */
 	static void CreateAndAdd( igdeContainer &parent, igdeUIHelper &helper,
-		igdeEditPropertyValueReference &widget, igdeEditPropertyValueListener *listener );
+		igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener );
 	
 	static void CreateAndAdd( igdeContainer &form, igdeUIHelper &helper, const char *label,
-		const char *description, igdeEditPropertyValueReference &widget,
+		const char *description, igdeEditPropertyValue::Ref &widget,
 		igdeEditPropertyValueListener *listener );
 	
 	/** \brief Set value. */

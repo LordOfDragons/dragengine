@@ -47,7 +47,6 @@ meUMoveObject::meUMoveObject( meWorld *world, const meObjectList &objects ){
 	}
 	
 	const int count = objects.GetCount();
-	deObjectReference ref;
 	
 	SetShortInfo( "Move Object" );
 	
@@ -59,8 +58,7 @@ meUMoveObject::meUMoveObject( meWorld *world, const meObjectList &objects ){
 		
 		int i;
 		for( i=0; i<count; i++ ){
-			ref.TakeOver( new meUndoDataObject( objects.GetAt( i ) ) );
-			pObjects.Add( ref );
+			pObjects.Add(meUndoDataObject::Ref::NewWith(objects.GetAt(i)));
 		}
 		
 	}catch( const deException & ){

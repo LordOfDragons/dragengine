@@ -38,6 +38,7 @@ class deoglSkinBone : public deObject{
 public:
 	typedef deTObjectReference<deoglSkinBone> Ref;
 	
+	
 private:
 	const decString pName;
 	int pBone;

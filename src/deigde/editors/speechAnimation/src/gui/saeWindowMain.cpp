@@ -50,12 +50,10 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -66,7 +64,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -110,7 +108,7 @@ pSAnimation( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(300)));
 	AddChild( splitted );
@@ -198,8 +196,7 @@ void saeWindowMain::SetSAnimation( saeSAnimation *sanimation ){
 }
 
 void saeWindowMain::CreateNewSAnimation(){
-	deObjectReference refSAnimation;
-	refSAnimation.TakeOver( new saeSAnimation( &GetEnvironment() ) );
+	const saeSAnimation::Ref refSAnimation(saeSAnimation::Ref::NewWith(&GetEnvironment()));
 	SetSAnimation( ( saeSAnimation* )refSAnimation.operator->() );
 }
 
@@ -333,7 +330,7 @@ public:
 	cActionBase( window, text, icon, description, mnemonic ){}
 	
 	virtual void OnAction(){
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetSAnimation() ) );
 		if( undo ){
 			pWindow.GetSAnimation()->GetUndoSystem()->Add( undo );
@@ -513,8 +510,7 @@ public:
 				continue;
 			}
 			
-			deObjectReference phonemeRef;
-			phonemeRef.TakeOver( new saePhoneme( ipa ) );
+			const saePhoneme::Ref phonemeRef(saePhoneme::Ref::NewWith(ipa));
 			return new saeUPhonemeAdd( sanimation, ( saePhoneme* )phonemeRef.operator->() );
 		}
 		
@@ -568,8 +564,7 @@ public:
 				continue;
 			}
 			
-			deObjectReference wordRef;
-			wordRef.TakeOver( new saeWord( name ) );
+			const saeWord::Ref wordRef(saeWord::Ref::NewWith(name));
 			return new saeUWordAdd( sanimation, ( saeWord* )wordRef.operator->() );
 		}
 		
@@ -595,7 +590,6 @@ public:
 			const decStringList lines( input.Split( '\n' ) );
 			const int countLines = lines.GetCount();
 			saeWordList addWordsList;
-			deObjectReference word;
 			int i;
 			
 			for( i=0; i<countLines; i++ ){
@@ -616,9 +610,8 @@ public:
 					break;
 				}
 				
-				word.TakeOver( new saeWord( parts.GetAt( 0 ),
-					decUnicodeString::NewFromUTF8( parts.GetAt( 1 ) ) ) );
-				addWordsList.Add( ( saeWord* )word.operator->() );
+				addWordsList.Add(saeWord::Ref::NewWith(parts.GetAt(0),
+					decUnicodeString::NewFromUTF8(parts.GetAt(1))));
 			}
 			
 			if( i < countLines || addWordsList.GetCount() == 0 ){
@@ -769,7 +762,7 @@ void saeWindowMain::pCreateToolBarEdit(){
 
 void saeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "File", deInputEvent::ekcF ) );
 	pCreateMenuFile( cascade );

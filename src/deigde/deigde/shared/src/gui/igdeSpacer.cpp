@@ -29,7 +29,6 @@
 #include "igdeSpacer.h"
 #include "native/toolkit.h"
 #include "igdeContainer.h"
-#include "native/toolkit.h"
 #include "../environment/igdeEnvironment.h"
 
 #include <dragengine/common/exceptions.h>

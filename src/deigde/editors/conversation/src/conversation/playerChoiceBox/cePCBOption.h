@@ -49,6 +49,10 @@ private:
 	deCanvasView *pCanvasView;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cePCBOption> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create player choice box option. */

@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<deLanguagePack> Ref;
 	
 	
-	
 private:
 	decString pIdentifier;
 	decUnicodeString pName;

@@ -25,8 +25,8 @@
 #ifndef _LPEWPLANGPACK_H_
 #define _LPEWPLANGPACK_H_
 
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class lpeLangPack;
@@ -45,10 +45,10 @@ private:
 	
 	lpeLangPack *pLangPack;
 	
-	igdeTextFieldReference pEditIdentifier;
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeTextFieldReference pEditMissingText;
+	igdeTextField::Ref pEditIdentifier;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeTextField::Ref pEditMissingText;
 	
 	
 	

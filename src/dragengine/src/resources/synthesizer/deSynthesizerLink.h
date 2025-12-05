@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<deSynthesizerLink> Ref;
 	
 	
-	
 private:
 	int pController;
 	decCurveBezier pCurve;

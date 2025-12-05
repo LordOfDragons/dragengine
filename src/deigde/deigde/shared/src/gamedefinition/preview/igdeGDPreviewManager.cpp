@@ -235,7 +235,7 @@ deImage *igdeGDPreviewManager::GetPreviewObjectClass( igdeGDClass *gdclass ) con
 		return gdclass->GetPreviewImage();
 	}
 	
-	deImageReference image;
+	deImage::Ref image;
 	pLoadFromFile( image, pDirObjectClass, gdclass->GetName() );
 	gdclass->SetPreviewImage( image );
 	return image;
@@ -256,11 +256,11 @@ void igdeGDPreviewManager::CreatePreviewObjectClass( igdeGDClass *gdclass, igdeG
 		}
 	}
 	
-	deObjectReference creator;
-	creator.TakeOver( new igdeGDPCObjectClass( pEnvironment, gdclass, decPoint( pImageSize, pImageSize ) ) );
-	( ( igdeGDPCObjectClass& )( deObject& )creator ).AddListener( listener );
-	( ( igdeGDPCObjectClass& )( deObject& )creator ).BeginCreation();
-	pCreatorsObjectClass.Add( creator );
+	const igdeGDPCObjectClass::Ref creator(igdeGDPCObjectClass::Ref::NewWith(
+		pEnvironment, gdclass, decPoint( pImageSize, pImageSize )));
+	creator->AddListener(listener);
+	creator->BeginCreation();
+	pCreatorsObjectClass.Add(creator);
 	
 	pHasCreators = true;
 }
@@ -286,7 +286,7 @@ deImage *igdeGDPreviewManager::GetPreviewSkin( igdeGDSkin *gdskin ) const{
 		return gdskin->GetPreviewImage();
 	}
 	
-	deImageReference image;
+	deImage::Ref image;
 	pLoadFromFile( image, pDirSkin, gdskin->GetName() );
 	gdskin->SetPreviewImage( image );
 	return image;
@@ -307,11 +307,11 @@ void igdeGDPreviewManager::CreatePreviewSkin( igdeGDSkin *gdskin, igdeGDPreviewL
 		}
 	}
 	
-	deObjectReference creator;
-	creator.TakeOver( new igdeGDPCSkin( pEnvironment, gdskin, decPoint( pImageSize, pImageSize ) ) );
-	( ( igdeGDPCSkin& )( deObject& )creator ).AddListener( listener );
-	( ( igdeGDPCSkin& )( deObject& )creator ).BeginCreation();
-	pCreatorsSkin.Add( creator );
+	const igdeGDPCSkin::Ref creator(igdeGDPCSkin::Ref::NewWith(
+		pEnvironment, gdskin, decPoint( pImageSize, pImageSize )));
+	creator->AddListener(listener);
+	creator->BeginCreation();
+	pCreatorsSkin.Add(creator);
 	
 	pHasCreators = true;
 }
@@ -337,7 +337,7 @@ deImage *igdeGDPreviewManager::GetPreviewSky( igdeGDSky *gdsky ) const{
 		return gdsky->GetPreviewImage();
 	}
 	
-	deImageReference image;
+	deImage::Ref image;
 	pLoadFromFile( image, pDirSky, gdsky->GetName() );
 	gdsky->SetPreviewImage( image );
 	return image;
@@ -358,11 +358,11 @@ void igdeGDPreviewManager::CreatePreviewSky( igdeGDSky *gdsky, igdeGDPreviewList
 		}
 	}
 	
-	deObjectReference creator;
-	creator.TakeOver( new igdeGDPCSky( pEnvironment, gdsky, decPoint( pImageSize, pImageSize ) ) );
-	( ( igdeGDPCSky& )( deObject& )creator ).AddListener( listener );
-	( ( igdeGDPCSky& )( deObject& )creator ).BeginCreation();
-	pCreatorsSky.Add( creator );
+	const igdeGDPCSky::Ref creator(igdeGDPCSky::Ref::NewWith(
+		pEnvironment, gdsky, decPoint(pImageSize, pImageSize)));
+	creator->AddListener(listener);
+	creator->BeginCreation();
+	pCreatorsSky.Add(creator);
 	
 	pHasCreators = true;
 }
@@ -382,7 +382,7 @@ void igdeGDPreviewManager::ClearPreviewSky( igdeGDSky *gdsky ){
 // Private Functions
 //////////////////////
 
-void igdeGDPreviewManager::pLoadFromFile( deImageReference &image, const decString &typedir, const decString &filename ) const{
+void igdeGDPreviewManager::pLoadFromFile( deImage::Ref &image, const decString &typedir, const decString &filename ) const{
 	image = NULL;
 	
 	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();

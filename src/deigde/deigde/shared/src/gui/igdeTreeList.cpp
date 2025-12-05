@@ -31,14 +31,11 @@
 #include "igdeCommonDialogs.h"
 #include "event/igdeTreeListListener.h"
 #include "menu/igdeMenuCascade.h"
-#include "menu/igdeMenuCascadeReference.h"
 #include "model/igdeTreeItem.h"
-#include "model/igdeTreeItemReference.h"
 #include "model/igdeTreeItemSorter.h"
 #include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -168,12 +165,12 @@ void igdeTreeList::AppendItem( igdeTreeItem *parent, igdeTreeItem *item ){
 }
 
 igdeTreeItem *igdeTreeList::AppendItem( igdeTreeItem *parent, const char *text, igdeIcon *icon, void *data ){
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	AppendItem( parent, item, text, icon, data );
 	return item;
 }
 
-void igdeTreeList::AppendItem( igdeTreeItem *parent, igdeTreeItemReference &item,
+void igdeTreeList::AppendItem( igdeTreeItem *parent, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data ){
 	item.TakeOver( new igdeTreeItem( text, icon, data ) );
 	AppendItem( parent, item );
@@ -194,12 +191,12 @@ void igdeTreeList::InsertItemBefore( igdeTreeItem *beforeItem, igdeTreeItem *ite
 
 igdeTreeItem *igdeTreeList::InsertItemBefore( igdeTreeItem *beforeItem, const char *text,
 igdeIcon *icon, void *data ){
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	InsertItemBefore( beforeItem, item, text, icon, data );
 	return item;
 }
 
-void igdeTreeList::InsertItemBefore( igdeTreeItem *beforeItem, igdeTreeItemReference &item,
+void igdeTreeList::InsertItemBefore( igdeTreeItem *beforeItem, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data ){
 	item.TakeOver( new igdeTreeItem( text, icon, data ) );
 	InsertItemBefore( beforeItem, item );
@@ -220,12 +217,12 @@ void igdeTreeList::InsertItemAfter( igdeTreeItem *afterItem, igdeTreeItem *item 
 
 igdeTreeItem *igdeTreeList::InsertItemAfter( igdeTreeItem *afterItem, const char *text,
 igdeIcon *icon, void *data ){
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	InsertItemAfter( afterItem, item, text, icon, data );
 	return item;
 }
 
-void igdeTreeList::InsertItemAfter( igdeTreeItem *afterItem, igdeTreeItemReference &item,
+void igdeTreeList::InsertItemAfter( igdeTreeItem *afterItem, igdeTreeItem::Ref &item,
 const char *text, igdeIcon *icon, void *data ){
 	item.TakeOver( new igdeTreeItem( text, icon, data ) );
 	InsertItemAfter( afterItem, item );
@@ -236,7 +233,7 @@ void igdeTreeList::MoveItemBefore( igdeTreeItem *item, igdeTreeItem *beforeItem 
 		DETHROW( deeInvalidParam );
 	}
 	
-	const igdeTreeItemReference guard( item );
+	const igdeTreeItem::Ref guard( item );
 	pRemoveItem( item );
 	pInsertItemBefore( item, beforeItem );
 	OnItemMoved( item );
@@ -247,7 +244,7 @@ void igdeTreeList::MoveItemAfter( igdeTreeItem *item, igdeTreeItem *afterItem ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const igdeTreeItemReference guard( item );
+	const igdeTreeItem::Ref guard( item );
 	pRemoveItem( item );
 	pInsertItemAfter( item, afterItem );
 	
@@ -259,7 +256,7 @@ void igdeTreeList::RemoveItem( igdeTreeItem *item ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	const igdeTreeItemReference guard( item );
+	const igdeTreeItem::Ref guard( item );
 	
 	bool selectionChanged = false;
 	if( pSelection ){
@@ -363,7 +360,7 @@ void igdeTreeList::SetDefaultSorter(){
 }
 
 static void igdeTreeList_Sort( decObjectList &items, igdeTreeItemSorter &sorter, int left, int right ){
-	igdeTreeItemReference pivot( ( igdeTreeItem* )items.GetAt( left ) );
+	igdeTreeItem::Ref pivot( ( igdeTreeItem* )items.GetAt( left ) );
 	const int r_hold = right;
 	const int l_hold = left;
 	
@@ -483,7 +480,7 @@ void igdeTreeList::ShowContextMenu( const decPoint &position ){
 		return;
 	}
 	
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( GetEnvironment() ) );
 	
 	const int count = pListeners.GetCount();
@@ -690,7 +687,7 @@ bool igdeTreeList::pHasItem( igdeTreeItem *parent, void *data ) const{
 }
 
 void igdeTreeList::pRemoveItem( igdeTreeItem *item ){
-	const deObjectReference guard( item );
+	const igdeTreeItem::Ref guard(item);
 	
 	if( item->GetPrevious() ){
 		item->GetPrevious()->SetNext( item->GetNext() );

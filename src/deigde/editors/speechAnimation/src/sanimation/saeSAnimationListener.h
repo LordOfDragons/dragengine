@@ -37,6 +37,10 @@ class saeWord;
  * Speech Animation Listener.
  */
 class saeSAnimationListener : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<saeSAnimationListener> Ref;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

@@ -114,7 +114,6 @@ public:
 	typedef deTObjectReference<deParticleEmitter> Ref;
 	
 	
-	
 private:
 	deParticleEmitterController **pControllers;
 	int pControllerCount;

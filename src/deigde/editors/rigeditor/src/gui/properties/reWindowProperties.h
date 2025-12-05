@@ -26,8 +26,8 @@
 #define _REWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class reWindowMain;
 
@@ -43,13 +43,13 @@ class reWindowProperties : public igdeTabBook{
 private:
 	reWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelRig;
-	igdeWidgetReference pPanelBone;
-	igdeWidgetReference pPanelShape;
-	igdeWidgetReference pPanelConstraint;
-	igdeWidgetReference pPanelPush;
-	igdeWidgetReference pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWidget::Ref pPanelRig;
+	igdeWidget::Ref pPanelBone;
+	igdeWidget::Ref pPanelShape;
+	igdeWidget::Ref pPanelConstraint;
+	igdeWidget::Ref pPanelPush;
+	igdeWidget::Ref pPanelView;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

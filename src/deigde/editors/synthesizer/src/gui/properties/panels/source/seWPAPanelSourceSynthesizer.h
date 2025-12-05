@@ -27,7 +27,7 @@
 
 #include "seWPAPanelSource.h"
 
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 
 
 
@@ -36,11 +36,11 @@
  */
 class seWPAPanelSourceSynthesizer : public seWPAPanelSource{
 private:
-	igdeEditPathReference pEditPathSynthesizer;
-	igdeComboBoxReference pCBConTarget;
-	igdeButtonReference pBtnConTargetMore;
-	igdeButtonReference pBtnConTargetLess;
-	igdeComboBoxReference pCBConController;
+	igdeEditPath::Ref pEditPathSynthesizer;
+	igdeComboBox::Ref pCBConTarget;
+	igdeButton::Ref pBtnConTargetMore;
+	igdeButton::Ref pBtnConTargetLess;
+	igdeComboBox::Ref pCBConController;
 	bool pPreventUpdate;
 	
 	

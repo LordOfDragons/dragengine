@@ -29,7 +29,6 @@
 #include "meUHTSetBaseHeight.h"
 #include "../../../world/meWorld.h"
 #include "../../../world/terrain/meHeightTerrain.h"
-#include "../../../world/terrain/meHeightTerrain.h"
 
 #include <dragengine/common/exceptions.h>
 

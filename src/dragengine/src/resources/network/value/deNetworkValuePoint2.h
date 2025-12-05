@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deNetworkValuePoint2> Ref;
 	
 	
-	
 private:
 	eValueFormats pFormat;
 	decPoint pValue;

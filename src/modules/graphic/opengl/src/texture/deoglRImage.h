@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<deoglRImage> Ref;
 	
 	
-	
 private:
 	deoglRenderThread &pRenderThread;
 	

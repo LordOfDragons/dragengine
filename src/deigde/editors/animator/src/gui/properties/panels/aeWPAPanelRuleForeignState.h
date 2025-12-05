@@ -34,18 +34,18 @@
  */
 class aeWPAPanelRuleForeignState : public aeWPAPanelRule{
 private:
-	igdeComboBoxFilterReference pCBBone;
-	igdeComboBoxFilterReference pCBVertexPositionSet;
-	igdeComboBoxReference pCBSrcCFrame;
-	igdeComboBoxReference pCBDestCFrame;
-	igdeTextFieldReference pEditPosition;
-	igdeTextFieldReference pEditRotation;
-	igdeTextFieldReference pEditSize;
-	igdeTextFieldReference pEditVertexPositionSet;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeComboBoxFilter::Ref pCBBone;
+	igdeComboBoxFilter::Ref pCBVertexPositionSet;
+	igdeComboBox::Ref pCBSrcCFrame;
+	igdeComboBox::Ref pCBDestCFrame;
+	igdeTextField::Ref pEditPosition;
+	igdeTextField::Ref pEditRotation;
+	igdeTextField::Ref pEditSize;
+	igdeTextField::Ref pEditVertexPositionSet;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	

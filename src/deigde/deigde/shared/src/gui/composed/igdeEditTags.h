@@ -25,12 +25,11 @@
 #ifndef _IGDEEDITTAGS_H_
 #define _IGDEEDITTAGS_H_
 
-#include "../igdeListBoxReference.h"
-#include "../igdeComboBoxFilterReference.h"
+#include "../igdeListBox.h"
+#include "../igdeComboBoxFilter.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
 
 #include <dragengine/common/string/decStringSet.h>
 
@@ -43,6 +42,11 @@ class decStringSet;
  * \brief Tag list.
  */
 class DE_DLL_EXPORT igdeEditTags : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeEditTags> Ref;
+	
+	
 protected:
 	/** \brief Action adding a tag. */
 	class DE_DLL_EXPORT cActionAdd : public igdeAction{
@@ -77,16 +81,16 @@ protected:
 	
 	
 private:
-	igdeComboBoxFilterReference pComboBox;
-	igdeListBoxReference pListBox;
+	igdeComboBoxFilter::Ref pComboBox;
+	igdeListBox::Ref pListBox;
 	
 	decStringSet pTags;
 	
-	igdeActionReference pActionAdd;
-	igdeActionReference pActionRemove;
-	igdeActionReference pActionClear;
+	igdeAction::Ref pActionAdd;
+	igdeAction::Ref pActionRemove;
+	igdeAction::Ref pActionClear;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

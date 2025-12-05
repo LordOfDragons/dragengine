@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deglGameIcon> Ref;
 	
 	
-	
 private:
 	deglSharedIcon::Ref pFoxIcon;
 	

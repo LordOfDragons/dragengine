@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<delLoggerHistoryListener> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

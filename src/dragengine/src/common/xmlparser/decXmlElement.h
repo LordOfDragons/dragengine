@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<decXmlElement> Ref;
 	
 	
-	
 public:
 	/** \brief Occurance enumeration. */
 	enum eOccuranceTypes{

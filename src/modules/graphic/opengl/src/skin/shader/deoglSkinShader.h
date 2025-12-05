@@ -51,6 +51,7 @@ class deoglSkinShader : public deObject{
 public:
 	typedef deTObjectReference<deoglSkinShader> Ref;
 	
+	
 	enum eReflectionTestMode{
 		ertmOldVersion,
 		ertmOwnPassReflection,

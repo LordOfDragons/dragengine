@@ -47,7 +47,6 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -80,7 +79,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakWordFromText( pLane.GetWindow().GetTopic(), action ) );
 		( ( ceUCAASpeakWordFromText& )( igdeUndo& )undo ).SetWordsFromText(
 			action->ResolveTextBoxText( *conversation ), 0.075f );

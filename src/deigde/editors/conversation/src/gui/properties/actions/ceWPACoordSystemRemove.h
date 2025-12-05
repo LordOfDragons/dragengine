@@ -25,7 +25,7 @@
 #ifndef _CEWPACOORDSYSTEMREMOVE_H_
 #define _CEWPACOORDSYSTEMREMOVE_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPAction.h"
 
@@ -38,7 +38,7 @@ class ceCACoordSystemRemove;
  */
 class ceWPACoordSystemRemove : public ceWPAction{
 private:
-	igdeComboBoxReference pCBCoordSystemID;
+	igdeComboBox::Ref pCBCoordSystemID;
 	
 	
 	

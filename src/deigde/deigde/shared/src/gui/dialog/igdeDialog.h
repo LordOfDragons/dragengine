@@ -28,15 +28,13 @@
 #include <stddef.h>
 
 #include "../igdeWindow.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget.h"
+#include "../igdeContainer.h"
 #include "../event/igdeAction.h"
 
 #include <dragengine/common/string/decString.h>
 
 class igdeWidget;
-class igdeContainerReference;
-
-
 
 /**
  * \brief IGDE UI Dialog.
@@ -46,6 +44,10 @@ class igdeContainerReference;
  */
 class DE_DLL_EXPORT igdeDialog : public igdeWindow{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialog> Ref;
+	
+	
 	/**
 	 * \brief Accept dialog action calling Accept() on dialog.
 	 */
@@ -154,26 +156,26 @@ public:
 	/**
 	 * \brief Create button bar using actions.
 	 */
-	void CreateButtonBar( igdeContainerReference &buttonBar, igdeAction *action );
+	void CreateButtonBar( igdeContainer::Ref &buttonBar, igdeAction *action );
 	
-	void CreateButtonBar( igdeContainerReference &buttonBar,
+	void CreateButtonBar( igdeContainer::Ref &buttonBar,
 		igdeAction *action1, igdeAction *action2 );
 	
-	void CreateButtonBar( igdeContainerReference &buttonBar,
+	void CreateButtonBar( igdeContainer::Ref &buttonBar,
 		igdeAction *action1, igdeAction *action2, igdeAction *action3 );
 	
-	void CreateButtonBar( igdeContainerReference &buttonBar,
+	void CreateButtonBar( igdeContainer::Ref &buttonBar,
 		igdeAction **actions, int actionCount );
 	
 	/**
 	 * \brief Create button bar with action CancelDialog.
 	 */
-	void CreateButtonBar( igdeContainerReference &buttonBar, const char *text );
+	void CreateButtonBar( igdeContainer::Ref &buttonBar, const char *text );
 	
 	/**
 	 * \brief Create button bar with action AcceptDialog and CancelDialog.
 	 */
-	void CreateButtonBar( igdeContainerReference &buttonBar,
+	void CreateButtonBar( igdeContainer::Ref &buttonBar,
 		const char *textAccept, const char *textCancel );
 	
 	

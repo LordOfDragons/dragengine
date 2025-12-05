@@ -42,6 +42,10 @@ private:
 	decString pValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGPMParameter> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game profile module parameter. */

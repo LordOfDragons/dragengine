@@ -39,6 +39,10 @@ class decXmlElementTag;
  * \brief Font.
  */
 class dealFont : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealFont> Ref;
+
+
 public:
 	/** \brief Glyph. */
 	struct sGlyph{

@@ -25,11 +25,11 @@
 #ifndef _FEWPFONT_H_
 #define _FEWPFONT_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/composed/igdeEditPointReference.h>
+#include <deigde/gui/composed/igdeEditPoint.h>
 
 class feFont;
 class feWindowProperties;
@@ -46,10 +46,10 @@ private:
 	feFont *pFont;
 	feWPFontListener *pListener;
 	
-	igdeTextFieldReference pEditImagePath;
-	igdeButtonReference pBtnImagePath;
-	igdeTextFieldReference pEditLineHeight, pEditBaseLine;
-	igdeCheckBoxReference pChkColorFont;
+	igdeTextField::Ref pEditImagePath;
+	igdeButton::Ref pBtnImagePath;
+	igdeTextField::Ref pEditLineHeight, pEditBaseLine;
+	igdeCheckBox::Ref pChkColorFont;
 	
 	
 	

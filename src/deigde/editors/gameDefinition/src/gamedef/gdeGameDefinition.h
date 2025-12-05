@@ -73,6 +73,10 @@ class deVirtualFileSystem;
  */
 class gdeGameDefinition : public igdeEditableEntity{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeGameDefinition> Ref;
+	
+	
 	/** Selectec object type. */
 	enum eObjectTypes{
 		/** No selection. */

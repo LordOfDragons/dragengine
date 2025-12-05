@@ -26,7 +26,7 @@
 #define _IGDENVNODE_H_
 
 #include "../igdeContainer.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
@@ -42,6 +42,12 @@ class igdeNVNodeListener;
  * \brief IGDE UI NodeView Node.
  */
 class DE_DLL_EXPORT igdeNVNode : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeNVNode> Ref;
+	
+	
 private:
 	decString pTitle;
 	decString pDescription;

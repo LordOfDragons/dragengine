@@ -32,11 +32,9 @@
 #include "native/toolkit.h"
 #include "event/igdeAction.h"
 #include "event/igdeTextAreaListener.h"
-#include "native/toolkit.h"
 #include "resources/igdeFont.h"
 #include "resources/igdeTextStyle.h"
 #include "resources/igdeTextSegment.h"
-#include "resources/igdeTextSegmentReference.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -236,7 +234,7 @@ void igdeTextArea::AppendText( const char *text, const char *style, igdeAction *
 	pText += text;
 	const int end = pText.GetLength() - 1;
 	
-	igdeTextSegmentReference segment;
+	igdeTextSegment::Ref segment;
 	segment.TakeOver( new igdeTextSegment( begin, end, style, action ) );
 	pSegments.Add( segment.operator->() );
 	
@@ -253,7 +251,7 @@ void igdeTextArea::DeleteText( int begin, int end ){
 	}
 	
 	const int count = pSegments.GetCount();
-	igdeTextSegmentReference newSegment;
+	igdeTextSegment::Ref newSegment;
 	const int length = end - begin;
 	int i;
 	
@@ -416,7 +414,7 @@ void igdeTextArea::SetTextSegment( int begin, int end, const char *style, igdeAc
 	bool changed = pClearSegment( begin, end );
 	
 	if( style[ 0 ] || action ){
-		igdeTextSegmentReference segment;
+		igdeTextSegment::Ref segment;
 		segment.TakeOver( new igdeTextSegment( begin, end, style, action ) );
 		pSegments.Add( segment.operator->() );
 		changed = true;
@@ -535,7 +533,7 @@ bool igdeTextArea::pClearSegment( int begin, int end ){
 	}
 	
 	const int count = pSegments.GetCount();
-	igdeTextSegmentReference newSegment;
+	igdeTextSegment::Ref newSegment;
 	bool changed = false;
 	int i;
 	

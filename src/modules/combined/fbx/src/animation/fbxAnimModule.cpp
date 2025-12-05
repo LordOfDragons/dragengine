@@ -123,13 +123,11 @@ void fbxAnimModule::SaveAnimation( decBaseFileWriter &writer, const deAnimation 
 //////////////////////
 
 void fbxAnimModule::pLoadAnimation( deAnimation &animation, fbxScene &scene ){
-	deObjectReference refLoadAnimation;
-	refLoadAnimation.TakeOver( new fbxAnimation( scene ) );
+	const fbxAnimation::Ref refLoadAnimation(fbxAnimation::Ref::NewWith(scene));
 	fbxAnimation &loadAnimation = ( fbxAnimation& )( deObject& )refLoadAnimation;
 	
 	fbxNode * const nodePose = scene.FirstNodeNamedOrNull( "Pose" );
-	deObjectReference refLoadRig;
-	refLoadRig.TakeOver( new fbxRig( scene, nodePose ) );
+	const fbxRig::Ref refLoadRig(fbxRig::Ref::NewWith(scene, nodePose));
 	fbxRig &loadRig = ( fbxRig& )( deObject& )refLoadRig;
 	// loadRig.DebugPrintStructure( *this, "LoadAnimation ", true );
 	loadAnimation.MatchRig( loadRig );

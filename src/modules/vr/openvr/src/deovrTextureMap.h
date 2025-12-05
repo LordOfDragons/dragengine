@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<deovrTextureMap> Ref;
 	
 	
-	
 private:
 	deVROpenVR &pOvr;
 	

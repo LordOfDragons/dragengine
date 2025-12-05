@@ -48,7 +48,7 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
@@ -62,7 +62,7 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -86,7 +86,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, controller ) );
 		if( undo ){
 			controller->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -111,7 +111,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( controller ) );
 		if( undo ){
 			controller->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -205,7 +205,7 @@ public:
 
 class cEditCurve : public igdeViewCurveBezierListener{
 	seWPController &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	cEditCurve( seWPController &panel ) : pPanel( panel ){ }
@@ -247,7 +247,7 @@ public:
 };
 
 class cActionSetCurve : public cBaseAction{
-	igdeViewCurveBezierReference pEditCurve;
+	igdeViewCurveBezier::Ref pEditCurve;
 	
 public:
 	cActionSetCurve( seWPController &panel, igdeViewCurveBezier *editCurve,
@@ -258,7 +258,7 @@ public:
 		decCurveBezier curve;
 		CreateCurve( *controller, curve );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUControllerSetCurve( controller, curve ) );
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 		pEditCurve->ResetView();
@@ -273,7 +273,7 @@ public:
 };
 
 class cActionCurveSetConstValue : public cActionSetCurve{
-	igdeTextFieldReference pEditConstValue;
+	igdeTextField::Ref pEditConstValue;
 	
 public:
 	cActionCurveSetConstValue( seWPController &panel, igdeViewCurveBezier *editCurve, igdeTextField *editConstValue ) :
@@ -385,7 +385,7 @@ pSynthesizer( NULL )
 {
 	igdeEnvironment &env = viewSynthesizer.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new seWPControllerListener( *this );
 	
@@ -480,7 +480,7 @@ void seWPController::SelectActiveController(){
 
 
 void seWPController::UpdateControllerList(){
-	deObjectReference selection( GetController() );
+	const seController::Ref selection(GetController());
 	
 	pListController->RemoveAllItems();
 	

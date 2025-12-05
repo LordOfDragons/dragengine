@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<decXmlPI> Ref;
 	
 	
-	
 private:
 	decString pTarget;
 	decString pCommand;

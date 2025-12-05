@@ -31,7 +31,7 @@
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeLabel.h>
-#include <deigde/gui/composed/igdeEditPropertyValueReference.h>
+#include <deigde/gui/composed/igdeEditPropertyValue.h>
 #include <deigde/gui/composed/igdeEditPropertyValueListener.h>
 
 #include <dragengine/deEngine.h>
@@ -63,7 +63,7 @@ gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){
 ///////////////
 
 void gdeDefaultPropertyValue::CreateAndAdd( igdeContainer &form, igdeUIHelper &helper,
-const char *label, const char *description, igdeEditPropertyValueReference &widget,
+const char *label, const char *description, igdeEditPropertyValue::Ref &widget,
 igdeEditPropertyValueListener *listener ){
 	helper.Label( form, label, description, igdeLabel::eaLeft | igdeLabel::eaMiddle );
 	widget.TakeOver( new gdeDefaultPropertyValue( helper ) );
@@ -75,7 +75,7 @@ igdeEditPropertyValueListener *listener ){
 }
 
 void gdeDefaultPropertyValue::CreateAndAdd( igdeContainer &parent, igdeUIHelper &helper,
-igdeEditPropertyValueReference &widget, igdeEditPropertyValueListener *listener ){
+igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener ){
 	widget.TakeOver( new gdeDefaultPropertyValue( helper ) );
 	if( listener ){
 		widget->AddListener( listener );

@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<meObjectTexture> Ref;
 	
 	
-	
 private:
 	igdeEnvironment *pEnvironment;
 	

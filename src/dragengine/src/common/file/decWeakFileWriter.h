@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<decWeakFileWriter> Ref;
 	
 	
-	
 private:
 	decBaseFileWriter::Ref pWriter;
 	

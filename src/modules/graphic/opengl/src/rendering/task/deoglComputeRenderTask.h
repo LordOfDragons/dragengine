@@ -48,6 +48,7 @@ class deoglComputeRenderTask : public deObject{
 public:
 	typedef deTObjectReference<deoglComputeRenderTask> Ref;
 	
+	
 	/** Config parameters. */
 	enum eConfigParameters{
 		ecpElementGeometryCount,

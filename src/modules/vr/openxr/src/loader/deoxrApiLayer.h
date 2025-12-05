@@ -60,7 +60,6 @@ public:
 	typedef deTObjectReference<deoxrApiLayer> Ref;
 	
 	
-	
 private:
 	deVROpenXR &pOxr;
 	decString pConfigFile;

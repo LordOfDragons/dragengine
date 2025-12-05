@@ -27,7 +27,7 @@
 
 #include "../igdeContainer.h"
 #include "../resources/igdeHotKey.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 
 
@@ -47,7 +47,7 @@ private:
 	decString pDescription;
 	igdeHotKey pHotKey;
 	deInputEvent::eKeyCodes pMnemonic;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pEnabled;
 	
 	

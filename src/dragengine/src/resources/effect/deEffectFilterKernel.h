@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<deEffectFilterKernel> Ref;
 	
 	
-	
 private:
 	float *pKernel;
 	int pKernelRows;

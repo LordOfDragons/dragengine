@@ -26,8 +26,8 @@
 #define _SEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class seSkin;
 class seWindowMain;
@@ -41,12 +41,12 @@ class seWindowProperties : public igdeTabBook{
 private:
 	seWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelMapped;
-	igdeWidgetReference pPanelTexture;
-	igdeWidgetReference pPanelNode;
-	igdeWidgetReference pPanelDynamicSkin;
-	igdeWidgetReference pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWidget::Ref pPanelMapped;
+	igdeWidget::Ref pPanelTexture;
+	igdeWidget::Ref pPanelNode;
+	igdeWidget::Ref pPanelDynamicSkin;
+	igdeWidget::Ref pPanelView;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

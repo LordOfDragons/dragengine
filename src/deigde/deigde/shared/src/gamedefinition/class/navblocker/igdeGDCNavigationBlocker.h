@@ -37,6 +37,10 @@
  * \brief Game definition class navigation blocker.
  */
 class DE_DLL_EXPORT igdeGDCNavigationBlocker : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDCNavigationBlocker> Ref;
+
+
 public:
 	/** \brief Properties. */
 	enum eProperties{

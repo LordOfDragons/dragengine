@@ -25,7 +25,7 @@
 #ifndef _CEWPAWAIT_H_
 #define _CEWPAWAIT_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPAction.h"
 
@@ -38,8 +38,8 @@ class ceCAWait;
  */
 class ceWPAWait : public ceWPAction{
 private:
-	igdeComboBoxReference pCBName;
-	igdeTextFieldReference pEditInterval;
+	igdeComboBox::Ref pCBName;
+	igdeTextField::Ref pEditInterval;
 	
 	
 	

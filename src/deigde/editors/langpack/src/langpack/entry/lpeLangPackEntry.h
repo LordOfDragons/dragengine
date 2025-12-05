@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<lpeLangPackEntry> Ref;
 	
 	
-	
 private:
 	lpeLangPack *pLangPack;
 	

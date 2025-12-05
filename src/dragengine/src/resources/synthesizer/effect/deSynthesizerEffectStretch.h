@@ -37,7 +37,6 @@ public:
 	typedef deTObjectReference<deSynthesizerEffectStretch> Ref;
 	
 	
-	
 private:
 	float pMinTime;
 	float pMaxTime;

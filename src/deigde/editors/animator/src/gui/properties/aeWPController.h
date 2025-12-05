@@ -25,13 +25,13 @@
 #ifndef _AEWPCONTROLLER_H_
 #define _AEWPCONTROLLER_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class aeAnimator;
@@ -49,22 +49,22 @@ private:
 	aeWPControllerListener *pListener;
 	aeAnimator *pAnimator;
 	
-	igdeListBoxReference pListController;
+	igdeListBox::Ref pListController;
 	
-	igdeTextFieldReference pEditName;
-	igdeTextFieldReference pEditMin;
-	igdeTextFieldReference pEditMax;
-	igdeButtonReference pBtnSetFromMove;
-	igdeButtonReference pBtnResetValue;
-	igdeEditSliderTextReference pSldValue;
-	igdeEditVectorReference pEditVector;
-	igdeCheckBoxReference pChkClamp;
-	igdeCheckBoxReference pChkFrozen;
-	igdeComboBoxReference pCBLocoAttr;
-	igdeTextFieldReference pEditLocoLeg;
-	igdeComboBoxReference pCBVectorSimulation;
-	igdeTextFieldReference pEditDefaultValue;
-	igdeEditVectorReference pEditDefaultVector;
+	igdeTextField::Ref pEditName;
+	igdeTextField::Ref pEditMin;
+	igdeTextField::Ref pEditMax;
+	igdeButton::Ref pBtnSetFromMove;
+	igdeButton::Ref pBtnResetValue;
+	igdeEditSliderText::Ref pSldValue;
+	igdeEditVector::Ref pEditVector;
+	igdeCheckBox::Ref pChkClamp;
+	igdeCheckBox::Ref pChkFrozen;
+	igdeComboBox::Ref pCBLocoAttr;
+	igdeTextField::Ref pEditLocoLeg;
+	igdeComboBox::Ref pCBVectorSimulation;
+	igdeTextField::Ref pEditDefaultValue;
+	igdeEditVector::Ref pEditDefaultVector;
 	
 	
 	

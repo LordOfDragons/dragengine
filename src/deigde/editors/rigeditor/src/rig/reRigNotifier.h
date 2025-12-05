@@ -41,6 +41,10 @@ class reRigConstraint;
  * Notifier for changes in a rig.
  */
 class reRigNotifier : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reRigNotifier> Ref;
+
+
 public:
 	/** @name Constructors and Destructors */
 	/*@{*/

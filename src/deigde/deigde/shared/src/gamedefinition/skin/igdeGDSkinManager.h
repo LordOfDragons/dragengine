@@ -25,7 +25,7 @@
 #ifndef _IGDEGDSKINMANAGER_H_
 #define _IGDEGDSKINMANAGER_H_
 
-#include "../igdeGDCategoryReference.h"
+#include "../igdeGDCategory.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
@@ -47,7 +47,7 @@ class decPath;
 class DE_DLL_EXPORT igdeGDSkinManager{
 private:
 	decObjectOrderedSet pSkins;
-	igdeGDCategoryReference pCategories;
+	igdeGDCategory::Ref pCategories;
 	decString pDefaultSkinPath;
 	decStringList pAutoFindPath;
 	

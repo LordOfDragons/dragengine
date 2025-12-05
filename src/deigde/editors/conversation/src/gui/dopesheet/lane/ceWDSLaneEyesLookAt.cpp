@@ -44,7 +44,6 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -72,7 +71,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakEyesLAFromHeadLA( pLane.GetWindow().GetTopic(), action ) );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}

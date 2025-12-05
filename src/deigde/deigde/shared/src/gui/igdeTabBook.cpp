@@ -30,12 +30,10 @@
 #include "native/toolkit.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -114,9 +112,8 @@ const char *description ){
 	
 	igdeContainer::AddChild( child );
 	
-	deObjectReference header;
+	const cHeader::Ref header(cHeader::Ref::NewWith( text, icon, description ));
 	try{
-		header.TakeOver( new cHeader( text, icon, description ) );
 		pHeaders.Add( header );
 		
 	}catch( const deException & ){

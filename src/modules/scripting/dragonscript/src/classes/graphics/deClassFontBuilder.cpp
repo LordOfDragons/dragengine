@@ -38,7 +38,6 @@
 #include <dragengine/resources/font/deFontGlyph.h>
 #include <dragengine/resources/font/deFontBuilder.h>
 #include <dragengine/resources/font/deFontManager.h>
-#include <dragengine/resources/font/deFontReference.h>
 
 
 class deClassFontBuilder_Builder : public deFontBuilder{
@@ -120,7 +119,7 @@ void deClassFontBuilder::nfBuild::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const char * const filename = rt->GetValue( 0 )->GetString();
 	deClassFontBuilder_Builder builder( rt, myself );
 	const int fontSize = rt->GetValue( 1 )->GetInt();
-	deFontReference font;
+	deFont::Ref font;
 	
 	nd.builder = &builder;
 	

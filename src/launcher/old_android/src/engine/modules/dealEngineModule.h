@@ -36,6 +36,10 @@
  * @brief Game Engine Module.
  */
 class dealEngineModule : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealEngineModule> Ref;
+
+
 public:
 	/** \brief Error Codes. */
 	enum eErrorCodes{

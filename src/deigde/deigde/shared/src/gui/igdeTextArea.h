@@ -49,6 +49,12 @@ class igdeAction;
  * AppendText() is safe to be used.
  */
 class DE_DLL_EXPORT igdeTextArea : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTextArea> Ref;
+	
+	
 private:
 	bool pEnabled;
 	decString pText;

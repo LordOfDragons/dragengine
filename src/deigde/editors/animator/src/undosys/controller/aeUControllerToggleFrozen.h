@@ -25,11 +25,8 @@
 #ifndef _AEUCONTROLLERTOGGLEFROZEN_H_
 #define _AEUCONTROLLERTOGGLEFROZEN_H_
 
+#include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class aeController;
 
 
 /**
@@ -37,7 +34,7 @@ class aeController;
  */
 class aeUControllerToggleFrozen : public igdeUndo{
 private:
-	deObjectReference pController;
+	const aeController::Ref pController;
 	
 	
 	

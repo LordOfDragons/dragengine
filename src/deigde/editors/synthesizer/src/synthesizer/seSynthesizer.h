@@ -52,6 +52,11 @@ class deMicrophone;
  * \brief Synthesizer.
  */
 class seSynthesizer : public igdeEditableEntity{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seSynthesizer> Ref;
+	
+	
 private:
 	seLoadSaveSystem &pLoadSaveSystem;
 	

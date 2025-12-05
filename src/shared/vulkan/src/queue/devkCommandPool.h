@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<devkCommandPool> Ref;
 	
 	
-	
 private:
 	const devkQueue::Ref pQueue;
 	

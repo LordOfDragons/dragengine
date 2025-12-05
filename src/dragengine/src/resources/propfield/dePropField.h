@@ -54,7 +54,6 @@ public:
 	typedef deTObjectReference<dePropField> Ref;
 	
 	
-	
 private:
 	decDVector pPosition;
 	

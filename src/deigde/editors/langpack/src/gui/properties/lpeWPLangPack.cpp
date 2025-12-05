@@ -41,18 +41,16 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
-#include <deigde/gui/event/igdeTextAreaListenerReference.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/gui/event/igdeTextFieldListenerReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
@@ -77,7 +75,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, langpack ) );
 		if( undo ){
 			langpack->GetUndoSystem()->Add( undo );
@@ -100,7 +98,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textArea, langpack ) );
 		if( undo ){
 			langpack->GetUndoSystem()->Add( undo );
@@ -178,7 +176,7 @@ pListener( new lpeWPLangPackListener( *this ) ),
 pLangPack( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );

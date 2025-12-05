@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class igdeGDSkyController;
 
@@ -38,6 +38,12 @@ class igdeGDSkyController;
  * \brief Game sky.
  */
 class DE_DLL_EXPORT igdeGDSky : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDSky> Ref;
+	
+	
 private:
 	decString pPath;
 	decString pName;
@@ -46,7 +52,7 @@ private:
 	
 	decObjectOrderedSet pControllers;
 	
-	deImageReference pPreviewImage;
+	deImage::Ref pPreviewImage;
 	
 	
 	

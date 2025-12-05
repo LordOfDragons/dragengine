@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<deoglShaderSources> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decString pFilename;

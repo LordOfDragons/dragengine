@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXTOGGLEBUTTON_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeToggleButton;
 class igdeEnvironment;
@@ -50,7 +50,7 @@ public:
 	
 private:
 	igdeToggleButton *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	bool *pDeleted;
 	
 public:

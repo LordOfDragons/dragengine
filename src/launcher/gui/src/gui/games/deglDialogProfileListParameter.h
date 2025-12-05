@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deglDialogProfileListParameter> Ref;
 	
 	
-	
 private:
 	delEMParameter &pParameter;
 	delGameProfile &pProfile;

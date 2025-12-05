@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<decWeakFileReader> Ref;
 	
 	
-	
 private:
 	decBaseFileReader::Ref pReader;
 	

@@ -27,9 +27,9 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
-#include <dragengine/resources/animator/deAnimatorInstanceReference.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/collider/deCollider.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 
 class gdeOCComponent;
 class gdeOCComponentTexture;
@@ -42,12 +42,17 @@ class deComponentTexture;
  * \brief Game definition active object component for edit view.
  */
 class gdeVAOComponent : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOComponent> Ref;
+	
+	
 private:
 	gdeOCComponent *pOCComponent;
 	
-	deColliderReference pCollider;
-	deComponentReference pComponent;
-	deAnimatorInstanceReference pAnimator;
+	deCollider::Ref pCollider;
+	deComponent::Ref pComponent;
+	deAnimatorInstance::Ref pAnimator;
 	bool pPlayback;
 	
 	

@@ -55,16 +55,14 @@
 #include "../../undosys/property/node/group/seUPNGroupNodes.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIconReference.h>
 #include <deigde/module/igdeEditorModule.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -72,19 +70,16 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/canvas/deCanvasReference.h>
+#include <dragengine/resources/canvas/deCanvas.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
-#include <dragengine/resources/canvas/deCanvasTextReference.h>
 #include <dragengine/resources/canvas/deCanvasVisitorIdentify.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 
 
@@ -109,7 +104,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( skin, property ) );
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
@@ -183,13 +178,11 @@ public:
 		const char *description ) : cBaseAction( view, text, icon, description ){}
 	
 	virtual igdeUndo *OnAction( seSkin *skin, seProperty *property ){
-		deObjectReference refNode;
-		refNode.TakeOver( CreateNode( *skin, *property ) );
-		if( ! refNode ){
-			return NULL;
+		const sePropertyNode::Ref node(sePropertyNode::Ref::New(CreateNode(*skin, *property)));
+		if(!node){
+			return nullptr;
 		}
 		
-		sePropertyNode * const node = ( sePropertyNode* )( deObject* )refNode;
 		node->SetPosition( decPoint3( 0, 0, property->GetActiveNodeLayer() ) );
 		
 		return new seUPNGroupAddNode( pView.GetActiveNodeGroup()
@@ -245,14 +238,12 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add text node" ){}
 	
 	virtual sePropertyNode *CreateNode( seSkin &, seProperty & ){
-		deObjectReference refNode;
-		refNode.TakeOver( new sePropertyNodeText( *pView.GetEngine() ) );
-		sePropertyNodeText * const node = ( sePropertyNodeText* )( deObject* )refNode;
+		const sePropertyNodeText::Ref node(sePropertyNodeText::Ref::NewWith(*pView.GetEngine()));
 		node->SetPath( "/igde/fonts/regular_67px.defont" );
 		node->SetTextSize( 67.0f );
 		node->SetSize( decPoint3( 256, 67, 1 ) );
 		node->SetText( "Text" );
-		refNode->AddReference(); // because we need to hand over a reference
+		node->AddReference(); // because we need to hand over a reference
 		return node;
 	}
 };
@@ -273,7 +264,7 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode* ){
-		igdeClipboardDataReference data;
+		igdeClipboardData::Ref data;
 		data.TakeOver( new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) );
 		pView.GetWindowMain().GetClipboard().Set( data );
 		return NULL;
@@ -286,7 +277,7 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ), "Cut nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode *node ){
-		igdeClipboardDataReference data;
+		igdeClipboardData::Ref data;
 		data.TakeOver( new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) );
 		pView.GetWindowMain().GetClipboard().Set( data );
 		
@@ -1142,7 +1133,7 @@ decVector2 &minBounds, decVector2 &maxBounds ){
 // Private Functions
 //////////////////////
 
-void seViewConstructedView::pCreateMarkerCanvas( deCanvasImageReference &canvas,
+void seViewConstructedView::pCreateMarkerCanvas( deCanvasImage::Ref &canvas,
 const char *pathImage, float order ) const{
 	decPath path;
 	path.SetFromUnix( "/data/modules" );
@@ -1150,7 +1141,7 @@ const char *pathImage, float order ) const{
 	path.AddComponent( "images" );
 	path.AddUnixPath( pathImage );
 	
-	deImageReference image;
+	deImage::Ref image;
 	image.TakeOver( pWindowMain.GetEngine()->GetImageManager()->LoadImage(
 		pWindowMain.GetEnvironment().GetFileSystemIGDE(), path.GetPathUnix(), "/" ) );
 	
@@ -1161,7 +1152,7 @@ const char *pathImage, float order ) const{
 	canvas->SetImage( image );
 }
 
-void seViewConstructedView::pCreateDarkeningCanvas( deCanvasPaintReference &canvas, float order ) const{
+void seViewConstructedView::pCreateDarkeningCanvas( deCanvasPaint::Ref &canvas, float order ) const{
 	const decColor darkeningColor( 0.0f, 0.0f, 0.0f );
 	const float darkeningAlpha = 0.5f; //0.25f
 	
@@ -1180,7 +1171,7 @@ void seViewConstructedView::pRecreateContentCanvas( const sePropertyNodeGroup &n
 	deCanvasManager &canvasManager = *pWindowMain.GetEngine()->GetCanvasManager();
 	const int activeLayer = GetActiveProperty()->GetActiveNodeLayer();
 	const int count = nodeGroup.GetNodeCount();
-	deCanvasReference canvas;
+	deCanvas::Ref canvas;
 	int i;
 	
 	for( i=0; i<count; i++ ){

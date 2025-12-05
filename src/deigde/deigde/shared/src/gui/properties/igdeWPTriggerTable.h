@@ -27,12 +27,12 @@
 
 #include <dragengine/common/math/decMath.h>
 
-#include "../igdeListBoxReference.h"
-#include "../igdeTextFieldReference.h"
+#include "../igdeListBox.h"
+#include "../igdeTextField.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 
 class igdeTriggerTargetList;
@@ -44,24 +44,29 @@ class igdeEnvironment;
  * \brief Trigger table panel.
  */
 class DE_DLL_EXPORT igdeWPTriggerTable : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWPTriggerTable> Ref;
+	
+	
 private:
 	igdeTriggerTargetList *pTriggerTargetList;
 	
-	igdeIconReference pIconFired;
-	igdeIconReference pIconNotFired;
+	igdeIcon::Ref pIconFired;
+	igdeIcon::Ref pIconNotFired;
 	
-	igdeActionReference pActionToggle;
-	igdeActionReference pActionClear;
-	igdeActionReference pActionAdd;
-	igdeActionReference pActionRemove;
-	igdeActionReference pActionFire;
-	igdeActionReference pActionReset;
-	igdeActionReference pActionFullReset;
+	igdeAction::Ref pActionToggle;
+	igdeAction::Ref pActionClear;
+	igdeAction::Ref pActionAdd;
+	igdeAction::Ref pActionRemove;
+	igdeAction::Ref pActionFire;
+	igdeAction::Ref pActionReset;
+	igdeAction::Ref pActionFullReset;
 	
-	igdeListBoxReference pListTriggerTable;
-	igdeTextFieldReference pEditTriggerTableFilter;
+	igdeListBox::Ref pListTriggerTable;
+	igdeTextField::Ref pEditTriggerTableFilter;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

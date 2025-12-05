@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<deoglShaderParameterBlock> Ref;
 	
 	
-	
 private:
 	deoglRenderThread &pRenderThread;
 	

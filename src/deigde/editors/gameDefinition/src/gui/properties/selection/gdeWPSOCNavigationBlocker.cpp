@@ -50,7 +50,7 @@
 #include <deigde/codec/igdeCodecPropertyString.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
@@ -63,7 +63,7 @@
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -92,7 +92,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), navblocker ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -116,7 +116,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), navblocker ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -140,7 +140,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), navblocker ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -165,7 +165,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnActionNavBlocker( pPanel.GetObjectClass(), navblocker ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -340,7 +340,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCNavBlockerSetPropertyName(
 			pPanel.GetObjectClass(), pPanel.GetNavigationBlocker(), propertyName, comboBox->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -365,7 +365,7 @@ pGameDefinition( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 	AddChild( content );

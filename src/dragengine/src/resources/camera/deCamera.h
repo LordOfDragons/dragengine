@@ -110,7 +110,6 @@ public:
 	typedef deTObjectReference<deCamera> Ref;
 	
 	
-	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

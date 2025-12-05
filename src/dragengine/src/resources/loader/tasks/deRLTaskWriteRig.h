@@ -26,7 +26,7 @@
 #define _DERLTASKWRITERIG_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../rig/deRigReference.h"
+#include "../../rig/deRig.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskWriteRig : public deResourceLoaderTask {
 private:
-	deRigReference pRig;
+	deRig::Ref pRig;
 	bool pSucceeded;
 	
 	

@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<deovrHiddenMesh> Ref;
 	
 	
-	
 private:
 	deVROpenVR &pOvr;
 	

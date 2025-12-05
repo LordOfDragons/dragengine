@@ -31,12 +31,12 @@
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/igdeTabBookReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/igdeTabBook.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
@@ -70,95 +70,95 @@ class aeWindowMain : public igdeEditorWindow{
 private:
 	aeWindowMainListener *pListener;
 	
-	igdeIconReference pIconRuleAnimation;
-	igdeIconReference pIconRuleAnimationDifference;
-	igdeIconReference pIconRuleAnimationSelect;
-	igdeIconReference pIconRuleBoneTransformator;
-	igdeIconReference pIconRuleForeignState;
-	igdeIconReference pIconRuleGroup;
-	igdeIconReference pIconRuleInverseKinematic;
-	igdeIconReference pIconRuleLimit;
-	igdeIconReference pIconRuleStateManipulator;
-	igdeIconReference pIconRuleStateSnapshot;
-	igdeIconReference pIconRuleSubAnimator;
-	igdeIconReference pIconRuleTrackTo;
-	igdeIconReference pIconRuleMirror;
+	igdeIcon::Ref pIconRuleAnimation;
+	igdeIcon::Ref pIconRuleAnimationDifference;
+	igdeIcon::Ref pIconRuleAnimationSelect;
+	igdeIcon::Ref pIconRuleBoneTransformator;
+	igdeIcon::Ref pIconRuleForeignState;
+	igdeIcon::Ref pIconRuleGroup;
+	igdeIcon::Ref pIconRuleInverseKinematic;
+	igdeIcon::Ref pIconRuleLimit;
+	igdeIcon::Ref pIconRuleStateManipulator;
+	igdeIcon::Ref pIconRuleStateSnapshot;
+	igdeIcon::Ref pIconRuleSubAnimator;
+	igdeIcon::Ref pIconRuleTrackTo;
+	igdeIcon::Ref pIconRuleMirror;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
 	
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
-	igdeActionReference pActionEditLocoEnabled;
-	igdeActionReference pActionEditWBTracking;
-	igdeActionReference pActionEditShowBones;
-	igdeActionReference pActionEditDDBoneSize;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
+	igdeAction::Ref pActionEditLocoEnabled;
+	igdeAction::Ref pActionEditWBTracking;
+	igdeAction::Ref pActionEditShowBones;
+	igdeAction::Ref pActionEditDDBoneSize;
 	
-	igdeActionReference pActionControllerAdd;
-	igdeActionReference pActionControllerDuplicate;
-	igdeActionReference pActionControllerRemove;
-	igdeActionReference pActionControllerUp;
-	igdeActionReference pActionControllerDown;
+	igdeAction::Ref pActionControllerAdd;
+	igdeAction::Ref pActionControllerDuplicate;
+	igdeAction::Ref pActionControllerRemove;
+	igdeAction::Ref pActionControllerUp;
+	igdeAction::Ref pActionControllerDown;
 	
-	igdeActionReference pActionLinkAdd;
-	igdeActionReference pActionLinkDuplicate;
-	igdeActionReference pActionLinkRemove;
-	igdeActionReference pActionLinkRemoveUnused;
+	igdeAction::Ref pActionLinkAdd;
+	igdeAction::Ref pActionLinkDuplicate;
+	igdeAction::Ref pActionLinkRemove;
+	igdeAction::Ref pActionLinkRemoveUnused;
 	
-	igdeActionReference pActionRuleAddAnim;
-	igdeActionReference pActionRuleAddAnimDiff;
-	igdeActionReference pActionRuleAddAnimSelect;
-	igdeActionReference pActionRuleAddBoneRot;
-	igdeActionReference pActionRuleAddInvKin;
-	igdeActionReference pActionRuleAddStateManip;
-	igdeActionReference pActionRuleAddStateSnap;
-	igdeActionReference pActionRuleAddForeignState;
-	igdeActionReference pActionRuleAddGroup;
-	igdeActionReference pActionRuleAddSubAnimator;
-	igdeActionReference pActionRuleAddTrackTo;
-	igdeActionReference pActionRuleAddLimit;
-	igdeActionReference pActionRuleAddMirror;
+	igdeAction::Ref pActionRuleAddAnim;
+	igdeAction::Ref pActionRuleAddAnimDiff;
+	igdeAction::Ref pActionRuleAddAnimSelect;
+	igdeAction::Ref pActionRuleAddBoneRot;
+	igdeAction::Ref pActionRuleAddInvKin;
+	igdeAction::Ref pActionRuleAddStateManip;
+	igdeAction::Ref pActionRuleAddStateSnap;
+	igdeAction::Ref pActionRuleAddForeignState;
+	igdeAction::Ref pActionRuleAddGroup;
+	igdeAction::Ref pActionRuleAddSubAnimator;
+	igdeAction::Ref pActionRuleAddTrackTo;
+	igdeAction::Ref pActionRuleAddLimit;
+	igdeAction::Ref pActionRuleAddMirror;
 	
-	igdeActionReference pActionRuleAddIntoGroupAnim;
-	igdeActionReference pActionRuleAddIntoGroupAnimDiff;
-	igdeActionReference pActionRuleAddIntoGroupAnimSelect;
-	igdeActionReference pActionRuleAddIntoGroupBoneRot;
-	igdeActionReference pActionRuleAddIntoGroupInvKin;
-	igdeActionReference pActionRuleAddIntoGroupStateManip;
-	igdeActionReference pActionRuleAddIntoGroupStateSnap;
-	igdeActionReference pActionRuleAddIntoGroupForeignState;
-	igdeActionReference pActionRuleAddIntoGroupGroup;
-	igdeActionReference pActionRuleAddIntoGroupSubAnimator;
-	igdeActionReference pActionRuleAddIntoGroupTrackTo;
-	igdeActionReference pActionRuleAddIntoGroupLimit;
-	igdeActionReference pActionRuleAddIntoGroupMirror;
+	igdeAction::Ref pActionRuleAddIntoGroupAnim;
+	igdeAction::Ref pActionRuleAddIntoGroupAnimDiff;
+	igdeAction::Ref pActionRuleAddIntoGroupAnimSelect;
+	igdeAction::Ref pActionRuleAddIntoGroupBoneRot;
+	igdeAction::Ref pActionRuleAddIntoGroupInvKin;
+	igdeAction::Ref pActionRuleAddIntoGroupStateManip;
+	igdeAction::Ref pActionRuleAddIntoGroupStateSnap;
+	igdeAction::Ref pActionRuleAddIntoGroupForeignState;
+	igdeAction::Ref pActionRuleAddIntoGroupGroup;
+	igdeAction::Ref pActionRuleAddIntoGroupSubAnimator;
+	igdeAction::Ref pActionRuleAddIntoGroupTrackTo;
+	igdeAction::Ref pActionRuleAddIntoGroupLimit;
+	igdeAction::Ref pActionRuleAddIntoGroupMirror;
 	
-	igdeActionReference pActionRuleInsertAnim;
-	igdeActionReference pActionRuleInsertAnimDiff;
-	igdeActionReference pActionRuleInsertAnimSelect;
-	igdeActionReference pActionRuleInsertBoneRot;
-	igdeActionReference pActionRuleInsertInvKin;
-	igdeActionReference pActionRuleInsertStateManip;
-	igdeActionReference pActionRuleInsertStateSnap;
-	igdeActionReference pActionRuleInsertForeignState;
-	igdeActionReference pActionRuleInsertGroup;
-	igdeActionReference pActionRuleInsertSubAnimator;
-	igdeActionReference pActionRuleInsertTrackTo;
-	igdeActionReference pActionRuleInsertLimit;
-	igdeActionReference pActionRuleInsertMirror;
+	igdeAction::Ref pActionRuleInsertAnim;
+	igdeAction::Ref pActionRuleInsertAnimDiff;
+	igdeAction::Ref pActionRuleInsertAnimSelect;
+	igdeAction::Ref pActionRuleInsertBoneRot;
+	igdeAction::Ref pActionRuleInsertInvKin;
+	igdeAction::Ref pActionRuleInsertStateManip;
+	igdeAction::Ref pActionRuleInsertStateSnap;
+	igdeAction::Ref pActionRuleInsertForeignState;
+	igdeAction::Ref pActionRuleInsertGroup;
+	igdeAction::Ref pActionRuleInsertSubAnimator;
+	igdeAction::Ref pActionRuleInsertTrackTo;
+	igdeAction::Ref pActionRuleInsertLimit;
+	igdeAction::Ref pActionRuleInsertMirror;
 	
-	igdeActionReference pActionRuleRemove;
-	igdeActionReference pActionRuleUp;
-	igdeActionReference pActionRuleDown;
+	igdeAction::Ref pActionRuleRemove;
+	igdeAction::Ref pActionRuleUp;
+	igdeAction::Ref pActionRuleDown;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	aeConfiguration *pConfiguration;
 	igdeClipboard pClipboard;

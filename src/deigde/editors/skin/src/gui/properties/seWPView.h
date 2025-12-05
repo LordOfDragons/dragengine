@@ -25,16 +25,16 @@
 #ifndef _SEWPVIEW_H_
 #define _SEWPVIEW_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
-#include <deigde/gui/properties/igdeWPWObjectReference.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
+#include <deigde/gui/properties/igdeWPSky.h>
+#include <deigde/gui/properties/igdeWPWObject.h>
 
 class seSkin;
 class seWindowProperties;
@@ -53,19 +53,19 @@ private:
 	
 	seSkin *pSkin;
 	
-	igdeComboBoxReference pCBPreviewMode;
+	igdeComboBox::Ref pCBPreviewMode;
 	
-	igdeEditPathReference pEditModelPath;
-	igdeEditPathReference pEditRigPath;
-	igdeEditPathReference pEditAnimPath;
-	igdeComboBoxFilterReference pCBAnimMoves;
-	igdeCheckBoxReference pChkPlayback;
+	igdeEditPath::Ref pEditModelPath;
+	igdeEditPath::Ref pEditRigPath;
+	igdeEditPath::Ref pEditAnimPath;
+	igdeComboBoxFilter::Ref pCBAnimMoves;
+	igdeCheckBox::Ref pChkPlayback;
 	
-	igdeButtonReference pBtnRewindTextures;
+	igdeButton::Ref pBtnRewindTextures;
 	
-	igdeWPCameraReference pWPCamera;
-	igdeWPSkyReference pWPSky;
-	igdeWPWObjectReference pWPEnvObject;
+	igdeWPCamera::Ref pWPCamera;
+	igdeWPSky::Ref pWPSky;
+	igdeWPWObject::Ref pWPEnvObject;
 	
 	
 	

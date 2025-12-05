@@ -25,8 +25,8 @@
 #ifndef _FEVIEWFONTIMAGE_H_
 #define _FEVIEWFONTIMAGE_H_
 
-#include <deigde/gui/igdeScrollBarReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeScrollBar.h>
+#include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 class feWindowMain;
@@ -51,9 +51,9 @@ private:
 	decPoint pContentSize;
 	decPoint pScrollOffset;
 	
-	igdeScrollBarReference pSBHorizontal;
-	igdeScrollBarReference pSBVertical;
-	igdeComboBoxReference pCBZoom;
+	igdeScrollBar::Ref pSBHorizontal;
+	igdeScrollBar::Ref pSBVertical;
+	igdeComboBox::Ref pCBZoom;
 	feViewFIImage *pViewImage;
 	
 	

@@ -40,6 +40,12 @@ class igdeEnvironment;
  * Redo action. Set Undo System to use or NULL if not available.
  */
 class DE_DLL_EXPORT igdeActionRedo : public igdeAction{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeActionRedo> Ref;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	igdeUndoSystem *pUndoSystem;

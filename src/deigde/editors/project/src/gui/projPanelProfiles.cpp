@@ -59,7 +59,7 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeListBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/composed/igdeEditPoint.h>
 #include <deigde/gui/composed/igdeEditPointListener.h>
@@ -67,7 +67,6 @@
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
-#include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
@@ -76,10 +75,9 @@
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/layout/igdeContainerScrollReference.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -108,7 +106,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( project, project->GetActiveProfile() ) );
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
@@ -141,7 +139,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, project, profile ) );
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
@@ -170,7 +168,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textArea, project, profile ) );
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
@@ -199,7 +197,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editPoint, project, profile ) );
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
@@ -681,8 +679,8 @@ pListener( NULL )
 	
 	
 	// side panel
-	igdeContainerScrollReference scroll;
-	igdeContainerReference sidePanel;
+	igdeContainerScroll::Ref scroll;
+	igdeContainer::Ref sidePanel;
 	helper.SidePanel( scroll, sidePanel, false, 5 );
 	sidePanel->SetWidgetGuiThemeName( "" );
 	AddChild( scroll, eaSide );
@@ -692,7 +690,7 @@ pListener( NULL )
 	helper.Button( sidePanel, windowMain.GetActionProfileRemove() );
 	helper.Button( sidePanel, windowMain.GetActionProfileDuplicate() );
 	
-	igdeContainerReference groupBox, formLine;
+	igdeContainer::Ref groupBox, formLine;
 	helper.GroupBoxStaticFlow( sidePanel, groupBox, "Content:" );
 	helper.Button( groupBox, windowMain.GetActionShowContent() );
 	
@@ -710,7 +708,7 @@ pListener( NULL )
 	sidePanel->SetWidgetGuiThemeName( "" );
 	AddChild( scroll, eaCenter );
 	
-	igdeContainerReference frameLine;
+	igdeContainer::Ref frameLine;
 	const char *description;
 	
 	groupBox.TakeOver( new igdeContainerForm( env ) );
@@ -778,7 +776,7 @@ pListener( NULL )
 	groupBox.TakeOver( new igdeGroupBox( env, "Processing Parameters:", false ) );
 	sidePanel->AddChild( groupBox );
 	
-	igdeContainerReference subGroup, subGroup2;
+	igdeContainer::Ref subGroup, subGroup2;
 	subGroup.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX ) );
 	groupBox->AddChild( subGroup );
 	

@@ -50,6 +50,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRCaptureCanvas> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create peer. */

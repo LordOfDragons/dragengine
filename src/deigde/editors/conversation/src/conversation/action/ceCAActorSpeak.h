@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<ceCAActorSpeak> Ref;
 	
 	
-	
 private:
 	deEngine *pEngine;
 	deSound *pEngSound;

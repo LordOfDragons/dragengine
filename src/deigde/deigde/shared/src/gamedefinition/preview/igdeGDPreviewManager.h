@@ -27,7 +27,7 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class igdeEnvironment;
 class igdeGDPreviewListener;
@@ -64,8 +64,8 @@ private:
 	decString pDirSkin;
 	decString pDirSky;
 	
-	deImageReference pImageCreating;
-	deImageReference pImageFailed;
+	deImage::Ref pImageCreating;
+	deImage::Ref pImageFailed;
 	int pImageSize;
 	
 	decObjectList pCreatorsObjectClass;
@@ -182,7 +182,7 @@ public:
 	
 	
 private:
-	void pLoadFromFile( deImageReference &image, const decString &typedir, const decString &filename ) const;
+	void pLoadFromFile( deImage::Ref &image, const decString &typedir, const decString &filename ) const;
 	void pSaveToFile( deImage *image, const decString &typedir, const decString &filename ) const;
 	void pDeleteFile( const decString &typedir, const decString &filename ) const;
 };

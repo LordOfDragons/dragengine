@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deNetworkValueFloat> Ref;
 	
 	
-	
 private:
 	eValueFormats pFormat;
 	double pValue;

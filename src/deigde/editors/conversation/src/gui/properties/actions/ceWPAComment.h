@@ -25,7 +25,7 @@
 #ifndef _CEWPACOMMENT_H_
 #define _CEWPACOMMENT_H_
 
-#include <deigde/gui/igdeTextAreaReference.h>
+#include <deigde/gui/igdeTextArea.h>
 
 #include "ceWPAction.h"
 
@@ -38,7 +38,7 @@ class ceCAComment;
  */
 class ceWPAComment : public ceWPAction{
 private:
-	igdeTextAreaReference pEditComment;
+	igdeTextArea::Ref pEditComment;
 	
 	
 	

@@ -25,7 +25,7 @@
 #ifndef _CEWPASETAPARAM_H_
 #define _CEWPASETAPARAM_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPAction.h"
 
@@ -38,11 +38,11 @@ class ceCASetActorParameter;
  */
 class ceWPASetAParam : public ceWPAction{
 private:
-	igdeComboBoxReference pCBActorID;
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBOperator;
-	igdeTextFieldReference pEditValue;
-	igdeTextFieldReference pEditValueVariable;
+	igdeComboBox::Ref pCBActorID;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBOperator;
+	igdeTextField::Ref pEditValue;
+	igdeTextField::Ref pEditValueVariable;
 	
 	
 	

@@ -31,7 +31,6 @@
 #include "deoglSharedVBOBlock.h"
 #include "deoglVBOAttribute.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -103,16 +102,16 @@ deoglSharedVBOBlock *deoglSharedVBOList::AddData( int size, int indexCount ){
 	}
 	
 	// otherwise create a new vbo to add the data there
-	deObjectReference vbo;
+	deoglSharedVBO::Ref vbo;
 	
 	if( size > pMaxPointCount || indexCount > pMaxIndexCount ){
 		// a little hack to deal with very large models. often they do not fit into the VBOs
 		// we have so for this case we create an oversized VBO for the time being. has to be
 		// made better later on
-		vbo.TakeOver( new deoglSharedVBO( this, size, indexCount ) );
+		vbo.TakeOverWith(this, size, indexCount);
 		
 	}else{
-		vbo.TakeOver( new deoglSharedVBO( this, pMaxPointCount, pMaxIndexCount ) );
+		vbo.TakeOverWith(this, pMaxPointCount, pMaxIndexCount);
 	}
 	
 	pVBOs.Add( vbo );

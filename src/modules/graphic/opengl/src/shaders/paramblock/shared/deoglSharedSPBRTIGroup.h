@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<deoglSharedSPBRTIGroup> Ref;
 	
 	
-	
 private:
 	const deoglSharedSPBRTIGroupList::Ref pParent;
 	deoglSharedSPB &pSharedSPB;

@@ -45,7 +45,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTextField.h>
@@ -55,13 +55,11 @@
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPSky.h>
@@ -412,10 +410,9 @@ public:
 			name.Format( "%s #%d", baseName.GetString(), number );
 		}
 		
-		deObjectReference attachment;
-		attachment.TakeOver( new aeAttachment( &pPanel.GetEnvironment(), name ) );
-		animator->AddAttachment( ( aeAttachment* )( deObject* )attachment );
-		animator->SetActiveAttachment( ( aeAttachment* )( deObject* )attachment );
+		const aeAttachment::Ref attachment(aeAttachment::Ref::NewWith(&pPanel.GetEnvironment(), name));
+		animator->AddAttachment( attachment );
+		animator->SetActiveAttachment( attachment );
 	}
 };
 
@@ -586,7 +583,7 @@ pAnimator( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new aeWPViewListener( *this );
 	
@@ -659,7 +656,7 @@ pAnimator( NULL )
 	helper.FormLineStretchFirst( groupBox, "Attachment:", "Attachment to edit", formLine );
 	helper.ComboBox( formLine, "Attachment to edit", pCBAttachments, new cComboAttachment( *this ) );
 	
-	igdeActionContextMenuReference actionMenuAttachment;
+	igdeActionContextMenu::Ref actionMenuAttachment;
 	actionMenuAttachment.TakeOver( new cActionMenuAttach( *this ) );
 	helper.Button( formLine, pBtnAttMenu, actionMenuAttachment );
 	actionMenuAttachment->SetWidget( pBtnAttMenu );

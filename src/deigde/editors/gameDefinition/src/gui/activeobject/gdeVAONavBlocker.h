@@ -27,7 +27,7 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
 
 class gdeOCNavigationBlocker;
 
@@ -39,10 +39,15 @@ class igdeWDebugDrawerShape;
  * \brief Active object view object class navigation blocker.
  */
 class gdeVAONavBlocker : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAONavBlocker> Ref;
+	
+	
 private:
 	gdeOCNavigationBlocker *pOCNavBlocker;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSBlocker;
 	
 	

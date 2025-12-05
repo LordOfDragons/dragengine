@@ -25,12 +25,12 @@
 #ifndef _SEWPAPANELEFFECT_H_
 #define _SEWPAPANELEFFECT_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 #include <dragengine/resources/synthesizer/effect/deSynthesizerEffectVisitorIdentify.h>
@@ -53,16 +53,16 @@ private:
 	seWPEffect &pWPEffect;
 	deSynthesizerEffectVisitorIdentify::eEffectTypes pRequiredType;
 	
-	igdeActionReference pActionLinkAdd;
-	igdeActionReference pActionLinkRemove;
+	igdeAction::Ref pActionLinkAdd;
+	igdeAction::Ref pActionLinkRemove;
 	
-	igdeTextFieldReference pEditStrength;
-	igdeCheckBoxReference pChkEnabled;
+	igdeTextField::Ref pEditStrength;
+	igdeCheckBox::Ref pChkEnabled;
 	
-	igdeComboBoxReference pCBTarget;
-	igdeListBoxReference pListLinks;
-	igdeComboBoxReference pCBLinks;
-	igdeButtonReference pBtnLinkAdd;
+	igdeComboBox::Ref pCBTarget;
+	igdeListBox::Ref pListLinks;
+	igdeComboBox::Ref pCBLinks;
+	igdeButton::Ref pBtnLinkAdd;
 	
 	
 	

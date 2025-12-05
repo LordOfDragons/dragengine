@@ -25,10 +25,10 @@
 #ifndef _REWPCONSTRAINT_H_
 #define _REWPCONSTRAINT_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reWindowProperties;
@@ -48,27 +48,27 @@ private:
 	reRigConstraint *pConstraint;
 	reWPConstraintListener *pListener;
 	
-	igdeTextFieldReference pEditBoneParent;
-	igdeComboBoxReference pCBBoneTarget;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeEditVectorReference pEditOffset;
+	igdeTextField::Ref pEditBoneParent;
+	igdeComboBox::Ref pCBBoneTarget;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeEditVector::Ref pEditOffset;
 	
-	igdeTextFieldReference pEditDofLower[ 6 ];
-	igdeTextFieldReference pEditDofUpper[ 6 ];
-	igdeTextFieldReference pEditDofStaFric[ 6 ];
-	igdeTextFieldReference pEditDofKinFric[ 6 ];
-	igdeTextFieldReference pEditDofSprStiff[ 6 ];
+	igdeTextField::Ref pEditDofLower[ 6 ];
+	igdeTextField::Ref pEditDofUpper[ 6 ];
+	igdeTextField::Ref pEditDofStaFric[ 6 ];
+	igdeTextField::Ref pEditDofKinFric[ 6 ];
+	igdeTextField::Ref pEditDofSprStiff[ 6 ];
 	
-	igdeCheckBoxReference pChkShowJointError;
+	igdeCheckBox::Ref pChkShowJointError;
 	
-	igdeTextFieldReference pEditDampLin;
-	igdeTextFieldReference pEditDampAng;
-	igdeTextFieldReference pEditDampSpr;
+	igdeTextField::Ref pEditDampLin;
+	igdeTextField::Ref pEditDampAng;
+	igdeTextField::Ref pEditDampSpr;
 	
-	igdeCheckBoxReference pChkRope;
+	igdeCheckBox::Ref pChkRope;
 	
-	igdeTextFieldReference pEditBreakingThreshold;
+	igdeTextField::Ref pEditBreakingThreshold;
 	
 	bool pPreventUpdate;
 	

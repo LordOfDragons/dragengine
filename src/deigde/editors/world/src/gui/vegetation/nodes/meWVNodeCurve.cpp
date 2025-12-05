@@ -40,9 +40,7 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezierListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -57,7 +55,7 @@ namespace {
 class cEditCurve : public igdeViewCurveBezierListener{
 protected:
 	meWVNodeCurve &pNode;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	cEditCurve( meWVNodeCurve &node ) : pNode( node ){ }
@@ -96,12 +94,12 @@ pRuleCurve( rule )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	SetTitle( "Curve" );
 	
 	// slots
-	igdeNVSlotReference slot;
+	igdeNVSlot::Ref slot;
 	slot.TakeOver( new meWVNodeSlot( env, "Value", "Value of curve at input value",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eosValue ) );
 	AddSlot( slot );

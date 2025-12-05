@@ -46,6 +46,10 @@ private:
 	deCanvasView *pCanvasView;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceTextBoxText> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text box text. */

@@ -46,22 +46,19 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
-#include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
-#include <deigde/gui/event/igdeTextFieldListenerReference.h>
 #include <deigde/gui/composed/igdeEditPoint.h>
 #include <deigde/gui/composed/igdeEditPointListener.h>
-#include <deigde/gui/composed/igdeEditPointListenerReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decPath.h>
@@ -69,7 +66,6 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/image/deImage.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>
 
 
@@ -92,7 +88,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, font ) );
 		if( undo ){
 			font->GetUndoSystem()->Add( undo );
@@ -145,7 +141,7 @@ public:
 			return true;
 		}
 		
-		deImageReference image;
+		deImage::Ref image;
 		image.TakeOver( pWindow.GetEngine()->GetImageManager()->LoadImage( path, "/" ) );
 		
 		if( image->GetComponentCount() != 4 ){
@@ -184,7 +180,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new feUFontToggleColorFont( font ) );
 		font->GetUndoSystem()->Add( undo );
 	}
@@ -217,7 +213,7 @@ pFont( NULL ),
 pListener( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener = new feWPFontListener( *this );

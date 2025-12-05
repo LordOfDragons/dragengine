@@ -38,6 +38,11 @@ class igdeWCoordSysArrows;
  * \brief Active object view object class navigation space.
  */
 class gdeVAOWorld : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOWorld> Ref;
+	
+	
 private:
 	const gdeOCWorld::Ref pOCWorld;
 	

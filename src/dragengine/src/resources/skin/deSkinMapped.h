@@ -58,6 +58,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deSkinMapped> Ref;
 	
+	
 	/** \brief Input types. */
 	enum eInputTypes{
 		/** \brief Use elapsed time. */

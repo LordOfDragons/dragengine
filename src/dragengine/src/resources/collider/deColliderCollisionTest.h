@@ -25,9 +25,9 @@
 #ifndef _DECOLLIDERCOLLISIONTEST_H_
 #define _DECOLLIDERCOLLISIONTEST_H_
 
-#include "deColliderReference.h"
-#include "../component/deComponentReference.h"
-#include "../sensor/deTouchSensorReference.h"
+#include "deCollider.h"
+#include "../component/deComponent.h"
+#include "../sensor/deTouchSensor.h"
 #include "../../deObject.h"
 #include "../../common/collection/decObjectList.h"
 #include "../../common/math/decMath.h"
@@ -56,13 +56,12 @@ public:
 	typedef deTObjectReference<deColliderCollisionTest> Ref;
 	
 	
-	
 private:
-	deTouchSensorReference pTouchSensor;
-	deColliderReference pCollider;
+	deTouchSensor::Ref pTouchSensor;
+	deCollider::Ref pCollider;
 	decCollisionFilter pCollisionFilter;
 	
-	deComponentReference pComponent;
+	deComponent::Ref pComponent;
 	decString pBone;
 	decVector pOrigin;
 	decQuaternion pOrientation;

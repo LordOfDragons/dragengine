@@ -26,7 +26,7 @@
 #define _DERLTASKWRITEIMAGE_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../image/deImageReference.h"
+#include "../../image/deImage.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskWriteImage : public deResourceLoaderTask {
 private:
-	deImageReference pImage;
+	deImage::Ref pImage;
 	bool pSucceeded;
 	
 	

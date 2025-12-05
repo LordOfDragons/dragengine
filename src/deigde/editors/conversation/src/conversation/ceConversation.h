@@ -74,6 +74,7 @@ class ceConversation : public igdeEditableEntity{
 public:
 	typedef deTObjectReference<ceConversation> Ref;
 	
+	
 	/** Paste snippet dialog parameters. */
 	struct sPasteSnippetDialogParams{
 		decString cameraShot1, cameraShot2;

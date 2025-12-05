@@ -46,12 +46,10 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterManager.h>
-#include <dragengine/resources/particle/deParticleEmitterReference.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceManager.h>
 #include <dragengine/resources/particle/deParticleEmitterInstanceType.h>
@@ -240,7 +238,7 @@ void igdeWOSOParticleEmitter::pUpdateParticleEmitter(){
 		pGDParticleEmitter.GetPath() ) );
 	
 	if( pathEmitter != pPathEmitter ){
-		deParticleEmitterReference emitter( pParticleEmitter->GetEmitter() );
+		deParticleEmitter::Ref emitter( pParticleEmitter->GetEmitter() );
 		
 		if( ! pathEmitter.IsEmpty() ){
 			igdeLoadParticleEmitter loadEmitter( GetEnvironment(), &GetLogger(), "DEIGDE" );
@@ -249,7 +247,7 @@ void igdeWOSOParticleEmitter::pUpdateParticleEmitter(){
 			
 			if( engine.GetVirtualFileSystem()->ExistsFile( vfsPath ) ){
 				try{
-					decBaseFileReaderReference reader;
+					decBaseFileReader::Ref reader;
 					reader.TakeOver( engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) );
 					emitter.TakeOver( engine.GetParticleEmitterManager()->CreateParticleEmitter() );
 					loadEmitter.Load( pathEmitter, emitter, reader );

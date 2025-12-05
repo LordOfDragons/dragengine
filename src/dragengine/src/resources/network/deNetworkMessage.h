@@ -52,7 +52,6 @@ public:
 	typedef deTObjectReference<deNetworkMessage> Ref;
 	
 	
-	
 private:
 	uint8_t *pBuffer;
 	int pBufferSize;

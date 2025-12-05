@@ -42,6 +42,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglShaderSourceLocation> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader source location. */

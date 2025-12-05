@@ -26,8 +26,8 @@
 #define _FEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class feWindowMain;
 class feFont;
@@ -41,9 +41,9 @@ class feWindowProperties : public igdeTabBook{
 private:
 	feWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelFont;
-	igdeWidgetReference pPanelGlyph;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWidget::Ref pPanelFont;
+	igdeWidget::Ref pPanelGlyph;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

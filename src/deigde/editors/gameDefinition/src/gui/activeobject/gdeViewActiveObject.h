@@ -26,16 +26,16 @@
 #define _GDEVIEWACTIVEOBJECT_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/model/deModelReference.h>
-#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
-#include <dragengine/resources/skin/deSkinReference.h>
-#include <dragengine/resources/sky/deSkyInstanceReference.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
+#include <dragengine/resources/skin/deSkin.h>
+#include <dragengine/resources/sky/deSkyInstance.h>
 
 class gdeWindowMain;
 class gdeViewActiveObjectListener;
@@ -77,11 +77,11 @@ private:
 	
 	gdeObjectClass *pObjectClass;
 	
-	deComponentReference pPreviewComponent;
-	deModelReference pPreviewModelBox;
-	deSkinReference pPreviewSkin;
-	deSkyInstanceReference pPreviewSky;
-	deParticleEmitterInstanceReference pPreviewParticleEmitter;
+	deComponent::Ref pPreviewComponent;
+	deModel::Ref pPreviewModelBox;
+	deSkin::Ref pPreviewSkin;
+	deSkyInstance::Ref pPreviewSky;
+	deParticleEmitterInstance::Ref pPreviewParticleEmitter;
 	
 	decObjectList pOCBillboards;
 	decObjectList pOCCameras;
@@ -96,12 +96,12 @@ private:
 	decObjectList pOCSpeakers;
 	decObjectList pOCWorlds;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	
 	bool pShowEnvMapProbes;
 	bool pShowNavBlockers;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
 	

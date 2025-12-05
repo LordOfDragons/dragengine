@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<delEMParameter> Ref;
 	
 	
-	
 private:
 	int pIndex;
 	deModuleParameter pInfo;

@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<deoglHTView> Ref;
 	
 	
-	
 private:
 	class HTListener : public deoglHeightTerrainListener{
 		deoglHTView &pHTView;

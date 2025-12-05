@@ -48,10 +48,10 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
@@ -62,7 +62,7 @@
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/rig/deRig.h>
@@ -91,7 +91,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( animator, rule ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -132,7 +132,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -175,7 +175,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add match name" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Add match name" ) );
 		return dialog->Run( &pPanel ) ? new aeURuleMirrorAddMatchName( rule, 
 			( ( aeDialogMirrorMatchName& )( igdeDialog& )dialog ).CreateMatchName() ) : nullptr;
@@ -239,7 +239,7 @@ public:
 			return nullptr;
 		}
 		
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Edit match name" ) );
 		( ( aeDialogMirrorMatchName& )( igdeDialog& )dialog ).Set( *matchName );
 		if( ! dialog->Run( &pPanel ) ){
@@ -294,7 +294,7 @@ public:
 	cListMatchNames( aeWPAPanelRuleMirror &panel ) : pPanel( panel ){ }
 	
 	virtual void OnDoubleClickItem( igdeListBox*, int ){
-		igdeActionReference action;
+		igdeAction::Ref action;
 		action.TakeOver( new cActionMatchNameEdit( pPanel ) );
 		action->OnAction();
 	}
@@ -401,7 +401,7 @@ aeWPAPanelRule( wpRule, deAnimatorRuleVisitorIdentify::ertMirror )
 {
 	igdeEnvironment &env = wpRule.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	
 	
 	helper.GroupBox( *this, groupBox, "Mirror:" );

@@ -25,13 +25,13 @@
 #ifndef _IGDETRIGGEREXPRESSIONEDITOR_H_
 #define _IGDETRIGGEREXPRESSIONEDITOR_H_
 
-#include "../igdeButtonReference.h"
-#include "../igdeToggleButtonReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../igdeListBoxReference.h"
-#include "../igdeTreeListReference.h"
+#include "../igdeButton.h"
+#include "../igdeToggleButton.h"
+#include "../igdeTextField.h"
+#include "../igdeListBox.h"
+#include "../igdeTreeList.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/string/decString.h>
@@ -54,20 +54,20 @@ private:
 	igdeTriggerExpression *pWorkExpression;
 	decString pExpression;
 	
-	igdeToggleButtonReference pBtnNegate;
-	igdeToggleButtonReference pBtnCurState;
-	igdeToggleButtonReference pBtnAnd;
-	igdeToggleButtonReference pBtnOr;
-	igdeToggleButtonReference pBtnTarget;
-	igdeButtonReference pBtnAddChild;
-	igdeButtonReference pBtnRemoveChild;
-	igdeTextFieldReference pEditFilterTargetName;
-	igdeTextFieldReference pEditTargetName;
-	igdeListBoxReference pListTargetName;
-	igdeTextFieldReference pEditExpression;
-	igdeTreeListReference pTreeExpression;
+	igdeToggleButton::Ref pBtnNegate;
+	igdeToggleButton::Ref pBtnCurState;
+	igdeToggleButton::Ref pBtnAnd;
+	igdeToggleButton::Ref pBtnOr;
+	igdeToggleButton::Ref pBtnTarget;
+	igdeButton::Ref pBtnAddChild;
+	igdeButton::Ref pBtnRemoveChild;
+	igdeTextField::Ref pEditFilterTargetName;
+	igdeTextField::Ref pEditTargetName;
+	igdeListBox::Ref pListTargetName;
+	igdeTextField::Ref pEditExpression;
+	igdeTreeList::Ref pTreeExpression;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

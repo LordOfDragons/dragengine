@@ -45,6 +45,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDynamicSkin> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin. */

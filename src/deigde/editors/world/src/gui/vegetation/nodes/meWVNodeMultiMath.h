@@ -27,8 +27,8 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeContainer.h>
 
 class meHTVRuleMultiMath;
 
@@ -41,8 +41,8 @@ class meWVNodeMultiMath : public meWVNode{
 private:
 	meHTVRuleMultiMath *pRuleMultiMath;
 	
-	igdeContainerReference pFraParameters;
-	igdeComboBoxReference pCBOperator;
+	igdeContainer::Ref pFraParameters;
+	igdeComboBox::Ref pCBOperator;
 	
 	
 	

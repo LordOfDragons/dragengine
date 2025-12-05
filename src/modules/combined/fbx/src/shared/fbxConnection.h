@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<fbxConnection> Ref;
 	
 	
-	
 private:
 	int64_t pSource;
 	int64_t pTarget;

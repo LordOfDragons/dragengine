@@ -28,7 +28,7 @@
 #include "igdeDialogCurveBezierClamp.h"
 #include "../igdeUIHelper.h"
 #include "../igdeCheckBox.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../composed/igdeEditVector2.h"
 #include "../layout/igdeContainerForm.h"
 
@@ -98,14 +98,14 @@ void igdeDialogCurveBezierClamp::SetClampMax( const decVector2 &maximum ){
 void igdeDialogCurveBezierClamp::pCreateContent( igdeEnvironment &environment ){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerForm( environment ) );
 	
 	helper.CheckBox( content, "Enable Clamping", "Curve points are clamped to minimum/maximum range", pChkClamp );
 	helper.EditVector2( content, "Minimum:", "Minimum coordinates to clamp curve points to", pEditMinimum, NULL );
 	helper.EditVector2( content, "Maximum:", "Maximum coordinates to clamp curve points to", pEditMaximum, NULL );
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Discard" );
 	
 	AddContent( content, buttonBar );

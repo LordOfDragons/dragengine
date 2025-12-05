@@ -69,12 +69,10 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -86,10 +84,9 @@
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
@@ -137,7 +134,7 @@ pRig( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(300)));
 	AddChild( splitted );
@@ -232,8 +229,7 @@ void reWindowMain::SetRig( reRig *rig ){
 }
 
 void reWindowMain::CreateNewRig(){
-	deObjectReference refRig;
-	refRig.TakeOver( new reRig( &GetEnvironment() ) );
+	const reRig::Ref refRig(reRig::Ref::NewWith(&GetEnvironment()));
 	reRig * const rig = ( reRig* )refRig.operator->();
 	
 	SetRig( rig );
@@ -303,9 +299,7 @@ void reWindowMain::LoadDocument( const char *filename ){
 		}
 	}
 	
-	deObjectReference rig;
-	rig.TakeOver( pLoadSaveSystem->LoadRig( filename ) );
-	SetRig( ( reRig* )( deObject* )rig );
+	SetRig(reRig::Ref::New(pLoadSaveSystem->LoadRig(filename)));
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -355,7 +349,7 @@ public:
 	pWindow( window ){}
 	
 	virtual void OnAction(){
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetRig() ) );
 		if( undo ){
 			pWindow.GetRig()->GetUndoSystem()->Add( undo );
@@ -447,9 +441,7 @@ public:
 			return;
 		}
 		
-		deObjectReference rig;
-		rig.TakeOver( pWindow.GetLoadSaveSystem().LoadRig( filename ) );
-		pWindow.SetRig( ( reRig* )( deObject* )rig );
+		pWindow.SetRig(reRig::Ref::New(pWindow.GetLoadSaveSystem().LoadRig(filename)));
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };
@@ -911,9 +903,7 @@ public:
 	cActionBase( window, text, icon, description, mnemonic ){}
 	
 	virtual igdeUndo *OnAction( reRig *rig ){
-		deObjectReference shape;
-		shape.TakeOver( CreateShape() );
-		return new reUAddShape( rig, NULL, ( reRigShape* )shape.operator->() );
+		return new reUAddShape(rig, nullptr, reRigShape::Ref::New(CreateShape()));
 	}
 	
 	virtual reRigShape *CreateShape() = 0;
@@ -965,8 +955,7 @@ public:
 		"Add Constraint", NULL, "Add a constraint", deInputEvent::ekcC ){}
 	
 	virtual igdeUndo *OnAction( reRig *rig ){
-		deObjectReference constraint;
-		constraint.TakeOver( new reRigConstraint( pWindow.GetEngineController().GetEngine() ) );
+		const reRigConstraint::Ref constraint(reRigConstraint::Ref::NewWith(pWindow.GetEngineController().GetEngine()));
 		return new reUAddConstraint( rig, NULL, ( reRigConstraint* )constraint.operator->() );
 	}
 };
@@ -977,8 +966,7 @@ public:
 		"Add Push", NULL, "Add a push", deInputEvent::ekcP ){}
 	
 	virtual igdeUndo *OnAction( reRig *rig ){
-		deObjectReference push;
-		push.TakeOver( new reRigPush( pWindow.GetEngineController().GetEngine() ) );
+		const reRigPush::Ref push(reRigPush::Ref::NewWith(pWindow.GetEngineController().GetEngine()));
 		return new reUAddPush( rig, ( reRigPush* )push.operator->() );
 	}
 };
@@ -1048,9 +1036,7 @@ public:
 	cActionBaseBone( window, text, icon, description, mnemonic ){}
 	
 	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
-		deObjectReference shape;
-		shape.TakeOver( CreateShape() );
-		return new reUAddShape( NULL, bone, ( reRigShape* )shape.operator->() );
+		return new reUAddShape(nullptr, bone, reRigShape::Ref::New(CreateShape()));
 	}
 	
 	virtual reRigShape *CreateShape() = 0;
@@ -1102,8 +1088,7 @@ public:
 		"Add Constraint", NULL, "Add a constraint", deInputEvent::ekcC ){}
 	
 	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
-		deObjectReference constraint;
-		constraint.TakeOver( new reRigConstraint( pWindow.GetEngineController().GetEngine() ) );
+		const reRigConstraint::Ref constraint(reRigConstraint::Ref::NewWith(pWindow.GetEngineController().GetEngine()));
 		return new reUAddConstraint( NULL, bone, ( reRigConstraint* )constraint.operator->() );
 	}
 };
@@ -1172,28 +1157,21 @@ public:
 		"Import the selected bones from file", deInputEvent::ekcI ){}
 	
 	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
-		igdeDialogReference refDialog;
-		refDialog.TakeOver( new reDialogImportBone( pWindow ) );
-		
-		if( ! refDialog->Run( &pWindow ) ){
+		const reDialogImportBone::Ref dialog(reDialogImportBone::Ref::NewWith(pWindow));
+		if( ! dialog->Run( &pWindow ) ){
 			return NULL;
 		}
 		
-		const reDialogImportBone &dialog = ( reDialogImportBone& )( igdeDialog& )refDialog;
-		deObjectReference refImportRig;
-		refImportRig.TakeOver( pWindow.GetLoadSaveSystem().LoadRig( dialog.GetPath() ) );
+		const reUBoneImportFromFile::Ref undo(reUBoneImportFromFile::Ref::NewWith(
+			rig, reRig::Ref::New(pWindow.GetLoadSaveSystem().LoadRig(dialog->GetPath()))));
 		
-		igdeUndoReference refUndo;
-		refUndo.TakeOver( new reUBoneImportFromFile( rig, ( reRig* )refImportRig.operator->() ) );
-		reUBoneImportFromFile &undo = ( reUBoneImportFromFile& )( igdeUndo& )refUndo;
+		undo->SetScale( dialog->GetScaling() );
+		undo->SetImportBoneProperties( dialog->GetImportBoneProperties() );
+		undo->SetImportShapes( dialog->GetImportShapes() );
+		undo->SetImportConstraints( dialog->GetImportConstraints() );
 		
-		undo.SetScale( dialog.GetScaling() );
-		undo.SetImportBoneProperties( dialog.GetImportBoneProperties() );
-		undo.SetImportShapes( dialog.GetImportShapes() );
-		undo.SetImportConstraints( dialog.GetImportConstraints() );
-		
-		refUndo->AddReference();
-		return refUndo;
+		undo->AddReference();
+		return undo;
 	}
 };
 
@@ -1510,7 +1488,7 @@ void reWindowMain::pCreateToolBarEdit(){
 
 void reWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "File", deInputEvent::ekcF ) );
 	pCreateMenuFile( cascade );

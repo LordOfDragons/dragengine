@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<deInternalModule> Ref;
 	
 	
-	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new internal module object. */

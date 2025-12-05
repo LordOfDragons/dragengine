@@ -30,7 +30,7 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -73,7 +73,7 @@ pWindowMain( windowMain )
 	
 	
 	// content
-	igdeContainerReference content, frameLine;
+	igdeContainer::Ref content, frameLine;
 	content.TakeOver( new igdeContainerForm( env ) );
 	
 	const char *description = "File to import selected bones from.";
@@ -96,7 +96,7 @@ pWindowMain( windowMain )
 	
 	
 	// button line
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Import", "Cancel" );
 	
 	AddContent( content, buttonBar );

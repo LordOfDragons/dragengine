@@ -26,8 +26,8 @@
 #define _DEANIMATOR_H_
 
 #include "../deResource.h"
-#include "../animation/deAnimationReference.h"
-#include "../rig/deRigReference.h"
+#include "../animation/deAnimation.h"
+#include "../rig/deRig.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decStringSet.h"
 #include "../../common/collection/decObjectOrderedSet.h"
@@ -58,10 +58,9 @@ public:
 	typedef deTObjectReference<deAnimator> Ref;
 	
 	
-	
 private:
-	deRigReference pRig;
-	deAnimationReference pAnimation;
+	deRig::Ref pRig;
+	deAnimation::Ref pAnimation;
 	
 	deAnimatorController **pControllers;
 	int pControllerCount;

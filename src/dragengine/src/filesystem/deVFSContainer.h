@@ -61,7 +61,6 @@ public:
 	typedef deTObjectReference<deVFSContainer> Ref;
 	
 	
-	
 public:
 	/** \brief File types */
 	enum eFileTypes{

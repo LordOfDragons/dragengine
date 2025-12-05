@@ -41,7 +41,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/exceptions.h>
@@ -110,7 +110,7 @@ igdeGameProject *igdeLoadSaveSystem::LoadGameProject( const char *filename ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference fileReader;
+	decBaseFileReader::Ref fileReader;
 	igdeGameProject *project = NULL;
 	
 	try{

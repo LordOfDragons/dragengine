@@ -46,18 +46,16 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/layout/igdeContainerScrollReference.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeTextStyle.h>
-#include <deigde/gui/resources/igdeTextStyleReference.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -272,14 +270,14 @@ pMaxLines( 500 )
 	
 	
 	// side panel
-	igdeContainerScrollReference scroll;
-	igdeContainerReference sidePanel;
+	igdeContainerScroll::Ref scroll;
+	igdeContainer::Ref sidePanel;
 	helper.SidePanel( scroll, sidePanel, false, 5 );
 	sidePanel->SetWidgetGuiThemeName( "" );
 	AddChild( scroll, eaSide );
 	
 	
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	groupBox.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
 	helper.Label( groupBox, "Profile:" );
 	helper.ComboBox( groupBox, "Distribution profile to run.",
@@ -302,7 +300,7 @@ pMaxLines( 500 )
 	// remote launching
 	helper.GroupBoxFlow(sidePanel, groupBox, "Remote Launching:");
 	
-	igdeContainerReference form;
+	igdeContainer::Ref form;
 	form.TakeOver(new igdeContainerForm(env));
 	helper.EditString(form, "Address:", "IP address to listen for remote client connections",
 		pEditRemoteAddress, new cEditRemoteAddress(*this));
@@ -328,7 +326,7 @@ pMaxLines( 500 )
 	// logs widget
 	pEditLogs.TakeOver( new igdeTextArea( env, 60, 10, false ) );
 	
-	igdeTextStyleReference style;
+	igdeTextStyle::Ref style;
 	style.TakeOver( new igdeTextStyle( styleWarning ) );
 	style->SetColor( decColor( 0.0f, 0.0f, 0.0f ) );
 	style->SetBgColor( decColor( 1.0f, 0.815f, 0.0f ) );

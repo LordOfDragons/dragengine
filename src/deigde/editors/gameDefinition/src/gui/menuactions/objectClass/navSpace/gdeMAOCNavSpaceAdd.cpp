@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -60,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Space...",
 ///////////////
 
 igdeUndo *gdeMAOCNavSpaceAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference navSpace;
-	navSpace.TakeOver( new gdeOCNavigationSpace );
-	return new gdeUOCAddNavSpace( &objectClass, ( gdeOCNavigationSpace* )( deObject* )navSpace );
+	return new gdeUOCAddNavSpace(&objectClass, gdeOCNavigationSpace::Ref::NewWith());
 }
 
 void gdeMAOCNavSpaceAdd::Update(){

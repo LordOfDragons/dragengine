@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<decXmlCharReference> Ref;
 	
 	
-	
 public:
 	/** \brief Radix enumeration. */
 	enum eRadices{

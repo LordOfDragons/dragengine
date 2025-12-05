@@ -47,9 +47,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -79,7 +77,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleVecMathSetOp( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRuleVectorMath(), op ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -99,7 +97,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleVecMathSetVectorA( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRuleVectorMath(), value ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -119,7 +117,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleVecMathSetVectorB( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRuleVectorMath(), value ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -142,12 +140,12 @@ pRuleVectorMath( NULL )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	SetTitle( "Vector-Math" );
 	
 	// slots
-	igdeNVSlotReference slot;
+	igdeNVSlot::Ref slot;
 	slot.TakeOver( new meWVNodeSlot( env, "Value", "Value result of operation",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleVectorMath::eosValue ) );
 	AddSlot( slot );

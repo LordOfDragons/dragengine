@@ -25,7 +25,7 @@
 #ifndef _CEDIALOGEDITSTRINGWITHLIST_H_
 #define _CEDIALOGEDITSTRINGWITHLIST_H_
 
-#include <deigde/gui/igdeComboBoxFilterReference.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 class decStringList;
@@ -44,7 +44,7 @@ class decStringList;
  */
 class ceDialogEditStringWithList : public igdeDialog{
 private:
-	igdeComboBoxFilterReference pCBString;
+	igdeComboBoxFilter::Ref pCBString;
 	
 	
 	

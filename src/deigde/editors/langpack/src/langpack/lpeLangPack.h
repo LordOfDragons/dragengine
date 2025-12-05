@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<lpeLangPack> Ref;
 	
 	
-	
 private:
 	decString pIdentifier;
 	decUnicodeString pName;

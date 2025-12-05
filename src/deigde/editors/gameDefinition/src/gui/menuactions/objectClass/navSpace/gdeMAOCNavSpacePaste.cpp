@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/navspace/gdeOCNavigationSpace.h"
 #include "../../../../undosys/objectClass/navspace/gdeUOCAddNavSpace.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Navigation Space",
 ///////////////
 
 igdeUndo *gdeMAOCNavSpacePaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCNavSpace::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;
@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCNavSpacePaste::OnActionSubObject( gdeGameDefinition&, gdeObject
 	const gdeClipboardDataOCNavSpace &clipOCNavigationSpace =
 		( const gdeClipboardDataOCNavSpace & )( igdeClipboardData& )clip;
 	
-	deObjectReference navSpace;
-	navSpace.TakeOver( new gdeOCNavigationSpace( *clipOCNavigationSpace.GetNavSpace() ) );
+	const gdeOCNavigationSpace::Ref navSpace(gdeOCNavigationSpace::Ref::NewWith(*clipOCNavigationSpace.GetNavSpace()));
 	
 	igdeUndo * const undo = new gdeUOCAddNavSpace( &objectClass,
-		( gdeOCNavigationSpace* )( deObject* )navSpace );
+		navSpace );
 	undo->SetShortInfo( "Paste object class navigation space" );
 	return undo;
 }

@@ -146,18 +146,14 @@ void fbxModelModule::pLoadModel( deModel &model, fbxScene &scene ){
 	fbxNode &nodeGeometry = *scene.FirstNodeNamed( "Geometry" );
 	fbxNode * const nodePose = scene.FirstNodeNamedOrNull( "Pose" );
 	
-	deObjectReference refLoadModel;
-	refLoadModel.TakeOver( new fbxModel( scene, nodeGeometry ) );
-	fbxModel &loadModel = ( fbxModel& )( deObject& )refLoadModel;
+	const fbxModel::Ref loadModel(fbxModel::Ref::NewWith(scene, nodeGeometry));
 	
-	deObjectReference refLoadRig;
-	fbxRig *loadRig = NULL;
+	fbxRig::Ref loadRig;
 	if( nodePose ){
-		refLoadRig.TakeOver( new fbxRig( scene, nodePose ) );
-		loadRig = ( fbxRig* )( deObject* )refLoadRig;
+		loadRig.TakeOverWith(scene, nodePose);
 		//loadRig->DebugPrintStructure( *this, "LoadModel ", true );
-		loadModel.MatchClusters( *loadRig );
-		loadModel.BuildWeights();
+		loadModel->MatchClusters(loadRig);
+		loadModel->BuildWeights();
 	}
 	
 	// loadModel.DebugPrintStructure( *this, "LoadSkin ", true );

@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<deoglFence> Ref;
 	
 	
-	
 private:
 	deoglRenderThread &pRenderThread;
 	GLsync pFence;

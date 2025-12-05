@@ -40,6 +40,7 @@ class dedsLoadingScreen : public deObject{
 public:
 	typedef deTObjectReference<dedsLoadingScreen> Ref;
 	
+	
 private:
 	deScriptingDragonScript &pDS;
 	deCanvasPaint::Ref pCanvasBackground;

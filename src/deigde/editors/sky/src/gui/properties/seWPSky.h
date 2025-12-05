@@ -25,7 +25,7 @@
 #ifndef _SEWPSKY_H_
 #define _SEWPSKY_H_
 
-#include <deigde/gui/igdeColorBoxReference.h>
+#include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class seSky;
@@ -42,7 +42,7 @@ private:
 	seSky *pSky;
 	seWPSkyListener *pListener;
 	
-	igdeColorBoxReference pClrBg;
+	igdeColorBox::Ref pClrBg;
 	
 	
 	

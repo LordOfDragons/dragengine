@@ -66,6 +66,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRPropField> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render prop field. */

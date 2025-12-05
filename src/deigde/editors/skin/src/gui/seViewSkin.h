@@ -26,9 +26,9 @@
 #define _SEVIEWSKIN_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 class seWindowMain;
@@ -42,7 +42,7 @@ class seViewSkin : public igdeViewRenderWindow{
 private:
 	seWindowMain &pWindowMain;
 	seSkin *pSkin;
-	igdeMouseCameraListenerReference pCameraInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
 	

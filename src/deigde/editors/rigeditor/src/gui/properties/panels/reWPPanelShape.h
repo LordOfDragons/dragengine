@@ -27,7 +27,7 @@
 
 #include "../../../rig/shape/reRigShape.h"
 
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
@@ -65,8 +65,8 @@ private:
 	reRig *pRig;
 	reRigShape *pShape;
 	
-	igdeTextFieldReference pEditBone;
-	igdeTextFieldReference pEditProperty;
+	igdeTextField::Ref pEditBone;
+	igdeTextField::Ref pEditProperty;
 	
 	
 	

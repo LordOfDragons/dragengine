@@ -48,6 +48,10 @@ private:
 	dealDialog *pPopupDialog;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealDialog> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */

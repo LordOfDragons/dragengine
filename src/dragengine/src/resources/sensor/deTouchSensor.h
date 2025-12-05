@@ -68,7 +68,6 @@ public:
 	typedef deTObjectReference<deTouchSensor> Ref;
 	
 	
-	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

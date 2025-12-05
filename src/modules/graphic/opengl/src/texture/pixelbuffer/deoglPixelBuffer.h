@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deoglPixelBuffer> Ref;
 	
 	
-	
 public:
 	/** Pixel formats. */
 	enum ePixelFormats{

@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<deNavigator> Ref;
 	
 	
-	
 private:
 	int pLayer;
 	deNavigationSpace::eSpaceTypes pSpaceType;

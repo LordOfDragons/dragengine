@@ -25,12 +25,12 @@
 #ifndef _MEWPSOBJECTSHAPE_H_
 #define _MEWPSOBJECTSHAPE_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meObject;
@@ -59,34 +59,34 @@ private:
 	meWorld *pWorld;
 	bool pPreventUpdate;
 	
-	igdeTextFieldReference pEditObjectClass;
+	igdeTextField::Ref pEditObjectClass;
 	
-	igdeComboBoxReference pCBProperties;
-	igdeTextAreaReference pTextInfos;
+	igdeComboBox::Ref pCBProperties;
+	igdeTextArea::Ref pTextInfos;
 	
-	igdeSpinTextFieldReference pSpinActive;
-	igdeTextFieldReference pEditShapeCount;
+	igdeSpinTextField::Ref pSpinActive;
+	igdeTextField::Ref pEditShapeCount;
 	
-	igdeSwitcherReference pSwitcherShapeType;
+	igdeSwitcher::Ref pSwitcherShapeType;
 	
-	igdeEditVectorReference pEditSpherePosition;
-	igdeTextFieldReference pEditSphereRadius;
+	igdeEditVector::Ref pEditSpherePosition;
+	igdeTextField::Ref pEditSphereRadius;
 	
-	igdeEditVectorReference pEditBoxPosition;
-	igdeEditVectorReference pEditBoxRotation;
-	igdeEditVectorReference pEditBoxExtends;
+	igdeEditVector::Ref pEditBoxPosition;
+	igdeEditVector::Ref pEditBoxRotation;
+	igdeEditVector::Ref pEditBoxExtends;
 	
-	igdeEditVectorReference pEditCylinderPosition;
-	igdeEditVectorReference pEditCylinderRotation;
-	igdeTextFieldReference pEditCylinderHeight;
-	igdeTextFieldReference pEditCylinderRadiusTop;
-	igdeTextFieldReference pEditCylinderRadiusBottom;
+	igdeEditVector::Ref pEditCylinderPosition;
+	igdeEditVector::Ref pEditCylinderRotation;
+	igdeTextField::Ref pEditCylinderHeight;
+	igdeTextField::Ref pEditCylinderRadiusTop;
+	igdeTextField::Ref pEditCylinderRadiusBottom;
 	
-	igdeEditVectorReference pEditCapsulePosition;
-	igdeEditVectorReference pEditCapsuleRotation;
-	igdeTextFieldReference pEditCapsuleHeight;
-	igdeTextFieldReference pEditCapsuleRadiusTop;
-	igdeTextFieldReference pEditCapsuleRadiusBottom;
+	igdeEditVector::Ref pEditCapsulePosition;
+	igdeEditVector::Ref pEditCapsuleRotation;
+	igdeTextField::Ref pEditCapsuleHeight;
+	igdeTextField::Ref pEditCapsuleRadiusTop;
+	igdeTextField::Ref pEditCapsuleRadiusBottom;
 	
 	
 	

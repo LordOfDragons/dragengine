@@ -74,6 +74,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRPropFieldType> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create prop field type. */

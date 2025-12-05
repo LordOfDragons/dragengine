@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileWriter.h"
-#include "../../../common/file/decBaseFileWriterReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"
@@ -80,7 +79,7 @@ void deRLTaskWriteOcclusionMesh::Run(){
 	decPath path;
 	path.SetFromUnix( GetPath() );
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( GetVFS()->OpenFileForWriting( path ) );
 	module->SaveOcclusionMesh( writer, pOcclusionMesh );
 	

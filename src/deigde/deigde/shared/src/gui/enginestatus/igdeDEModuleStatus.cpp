@@ -29,7 +29,7 @@
 #include "../igdeCheckBox.h"
 #include "../igdeTextArea.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeComboBoxListener.h"
 #include "../model/igdeListItem.h"
@@ -72,7 +72,7 @@ pDialogEngine( dialogEngine )
 {
 	igdeEnvironment &env = dialogEngine.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference groupBox, line;
+	igdeContainer::Ref groupBox, line;
 	
 	
 	line.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esLast ) );

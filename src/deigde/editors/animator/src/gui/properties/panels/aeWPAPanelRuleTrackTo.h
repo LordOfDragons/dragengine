@@ -33,11 +33,11 @@
  */
 class aeWPAPanelRuleTrackTo : public aeWPAPanelRule{
 private:
-	igdeComboBoxFilterReference pCBTrackBone;
-	igdeComboBoxReference pCBTrackAxis;
-	igdeComboBoxReference pCBUpAxis;
-	igdeComboBoxReference pCBUpTarget;
-	igdeComboBoxReference pCBLockedAxis;
+	igdeComboBoxFilter::Ref pCBTrackBone;
+	igdeComboBox::Ref pCBTrackAxis;
+	igdeComboBox::Ref pCBUpAxis;
+	igdeComboBox::Ref pCBUpTarget;
+	igdeComboBox::Ref pCBLockedAxis;
 	
 	
 	

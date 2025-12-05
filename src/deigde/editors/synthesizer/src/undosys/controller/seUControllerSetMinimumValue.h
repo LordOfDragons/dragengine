@@ -26,12 +26,8 @@
 #ifndef _SEUCONTROLLERSETMINIMUMVALUE_H_
 #define _SEUCONTROLLERSETMINIMUMVALUE_H_
 
+#include "../../synthesizer/controller/seController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class seController;
-
 
 
 /**
@@ -39,7 +35,7 @@ class seController;
  */
 class seUControllerSetMinimumValue : public igdeUndo{
 private:
-	deObjectReference pController;
+	const seController::Ref pController;
 	float pOldValue;
 	float pNewValue;
 	

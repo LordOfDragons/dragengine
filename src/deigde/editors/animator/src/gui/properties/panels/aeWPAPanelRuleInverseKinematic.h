@@ -27,7 +27,7 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 
 /**
@@ -35,17 +35,17 @@
  */
 class aeWPAPanelRuleInverseKinematic : public aeWPAPanelRule{
 private:
-	igdeEditVectorReference pEditGoalPos;
-	igdeEditVectorReference pEditGoalRot;
-	igdeEditVectorReference pEditLocalPos;
-	igdeEditVectorReference pEditLocalRot;
-	igdeCheckBoxReference pChkAdjustRotation;
-	igdeComboBoxFilterReference pCBSolverBone;
-	igdeCheckBoxReference pChkUseSolverBone;
+	igdeEditVector::Ref pEditGoalPos;
+	igdeEditVector::Ref pEditGoalRot;
+	igdeEditVector::Ref pEditLocalPos;
+	igdeEditVector::Ref pEditLocalRot;
+	igdeCheckBox::Ref pChkAdjustRotation;
+	igdeComboBoxFilter::Ref pCBSolverBone;
+	igdeCheckBox::Ref pChkUseSolverBone;
 	
-	igdeTextFieldReference pEditReachRange;
-	igdeComboBoxFilterReference pCBReachBone;
-	igdeEditVectorReference pEditReachCenter;
+	igdeTextField::Ref pEditReachRange;
+	igdeComboBoxFilter::Ref pCBReachBone;
+	igdeEditVector::Ref pEditReachCenter;
 	
 	
 	

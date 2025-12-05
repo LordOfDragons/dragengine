@@ -27,7 +27,7 @@
 
 
 #include "../environment/igdeEnvironment.h"
-#include "igdeWidgetReference.h"
+#include "igdeWidget.h"
 
 #include <dragengine/dragengine_configuration.h>
 #include <dragengine/common/string/decString.h>
@@ -143,7 +143,7 @@ private:
 	void pSharedRun( decUnicodeStringList &arguments );
 	
 	void *pNativeApplication;
-	igdeWidgetReference pMainWindow;
+	igdeWidget::Ref pMainWindow;
 	static igdeApplication *pApp;
 };
 

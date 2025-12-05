@@ -26,7 +26,6 @@
 #include <stdlib.h>
 
 #include "igdeUndo.h"
-#include "igdeUndoReference.h"
 #include "igdeUndoSystem.h"
 #include "../editableentity/igdeEditableEntity.h"
 

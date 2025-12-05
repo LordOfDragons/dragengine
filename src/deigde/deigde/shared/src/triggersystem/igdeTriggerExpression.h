@@ -37,6 +37,12 @@ class igdeTriggerListener;
  * \brief Trigger Expression.
  */
 class DE_DLL_EXPORT igdeTriggerExpression : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTriggerExpression> Ref;
+	
+	
 private:
 	igdeTriggerExpressionComponent *pRootComponent;
 	bool pResult;

@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<deoglSkinStateCNGroup> Ref;
 	
 	
-	
 private:
 	decObjectList pNodes;
 	

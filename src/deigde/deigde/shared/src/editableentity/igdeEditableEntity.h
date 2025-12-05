@@ -73,6 +73,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditableEntity> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**

@@ -278,7 +278,7 @@ const char *fbxProperty::DebugTypeName() const{
 // Protected Functions
 ////////////////////////
 
-void fbxProperty::pGetValueReader( decBaseFileReader &reader, decBaseFileReaderReference& valueReader ){
+void fbxProperty::pGetValueReader( decBaseFileReader &reader, decBaseFileReader::Ref& valueReader ){
 	const int encoding = reader.ReadUInt();
 	const int compressedLength = reader.ReadUInt();
 	

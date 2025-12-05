@@ -26,7 +26,7 @@
 #define _AEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class aeRule;
 class aeWPAnimator;
@@ -53,7 +53,7 @@ private:
 	aeWPController *pPropController;
 	aeWPView *pPropView;
 	aeWPPlayground *pPropPlayground;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 public:

@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<meMapIDGroup> Ref;
 	
 	
-	
 private:
 	igdeGDProperty *pProperty;
 	meIDGroup *pGroup;

@@ -25,7 +25,7 @@
 #ifndef _IGDELISTHEADER_H_
 #define _IGDELISTHEADER_H_
 
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -39,9 +39,15 @@
  * Stores information about a column header.
  */
 class DE_DLL_EXPORT igdeListHeader : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeListHeader> Ref;
+	
+	
 private:
 	decString pTitle;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	int pSize;
 	
 	

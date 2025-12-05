@@ -26,12 +26,8 @@
 #ifndef _SEUCONTROLLERTOGGLECLAMP_H_
 #define _SEUCONTROLLERTOGGLECLAMP_H_
 
+#include "../../synthesizer/controller/seController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class seController;
-
 
 
 /**
@@ -39,7 +35,7 @@ class seController;
  */
 class seUControllerToggleClamp : public igdeUndo{
 private:
-	deObjectReference pController;
+	const seController::Ref pController;
 	
 	
 public:

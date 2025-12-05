@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<deLoggerFile> Ref;
 	
 	
-	
 private:
 	decBaseFileWriter *pWriter;
 	deMutex pMutex;

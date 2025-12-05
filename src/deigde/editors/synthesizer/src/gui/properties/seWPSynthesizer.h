@@ -25,11 +25,11 @@
 #ifndef _SEWPSYNTHESIZER_H_
 #define _SEWPSYNTHESIZER_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class seSynthesizer;
@@ -48,19 +48,19 @@ private:
 	
 	seSynthesizer *pSynthesizer;
 	
-	igdeActionReference pActionPlay;
-	igdeActionReference pActionPause;
-	igdeActionReference pActionStop;
+	igdeAction::Ref pActionPlay;
+	igdeAction::Ref pActionPause;
+	igdeAction::Ref pActionStop;
 	
-	igdeComboBoxReference pCBChannelCount;
-	igdeComboBoxReference pCBSampleRate;
-	igdeComboBoxReference pCBBytesPerSample;
-	igdeTextFieldReference pEditSampleCount;
-	igdeTextFieldReference pEditPlayTime;
-	igdeCheckBoxReference pChkLooping;
-	igdeButtonReference pBtnPlay;
-	igdeButtonReference pBtnPause;
-	igdeButtonReference pBtnStop;
+	igdeComboBox::Ref pCBChannelCount;
+	igdeComboBox::Ref pCBSampleRate;
+	igdeComboBox::Ref pCBBytesPerSample;
+	igdeTextField::Ref pEditSampleCount;
+	igdeTextField::Ref pEditPlayTime;
+	igdeCheckBox::Ref pChkLooping;
+	igdeButton::Ref pBtnPlay;
+	igdeButton::Ref pBtnPause;
+	igdeButton::Ref pBtnStop;
 	
 	bool pPreventUpdate;
 	

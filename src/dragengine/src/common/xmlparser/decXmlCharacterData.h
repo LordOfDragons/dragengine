@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<decXmlCharacterData> Ref;
 	
 	
-	
 private:
 	decString pData;
 	

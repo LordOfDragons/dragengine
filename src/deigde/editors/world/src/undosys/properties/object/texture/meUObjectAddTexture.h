@@ -40,6 +40,11 @@ class meObjectTexture;
  * Undo action for adding a texture to an object.
  */
 class meUObjectAddTexture : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUObjectAddTexture> Ref;
+	
+	
 private:
 	meObject *pObject;
 	meObjectTexture *pTexture;

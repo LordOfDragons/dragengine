@@ -37,6 +37,7 @@ public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<dexsiDeviceCoreMouse> Ref;
 	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device. */

@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<deNetworkValue> Ref;
 	
 	
-	
 public:
 	/** \brief Value formats. */
 	enum eValueFormats{

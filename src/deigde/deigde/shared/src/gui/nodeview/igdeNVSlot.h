@@ -43,6 +43,12 @@ class igdeNVLink;
  * like igdeContainerFlow with X-Axis layout from left to right or reversed.
  */
 class DE_DLL_EXPORT igdeNVSlot : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeNVSlot> Ref;
+	
+	
 private:
 	decString pText;
 	decString pDescription;

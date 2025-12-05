@@ -28,9 +28,9 @@
 #include "../langpack/lpeLangPack.h"
 #include "../langpack/lpeLangPackListener.h"
 
-#include <deigde/gui/igdeIconListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 class lpeLangPackEntry;
@@ -49,11 +49,11 @@ private:
 	lpeLangPack::Ref pLangPack;
 	lpeLangPack::Ref pRefLangPack;
 	
-	igdeTextFieldReference pEditFilter;
-	igdeIconListBoxReference pListEntries;
-	igdeTextFieldReference pEditEntryName;
-	igdeTextAreaReference pEditEntryText;
-	igdeTextFieldReference pEditRefText;
+	igdeTextField::Ref pEditFilter;
+	igdeIconListBox::Ref pListEntries;
+	igdeTextField::Ref pEditEntryName;
+	igdeTextArea::Ref pEditEntryText;
+	igdeTextField::Ref pEditRefText;
 	
 	
 	

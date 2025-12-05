@@ -25,15 +25,15 @@
 #ifndef _AEWPPLAYGROUND_H_
 #define _AEWPPLAYGROUND_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeLabelReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeLabel.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 
@@ -52,7 +52,7 @@ class aeWPPlayground : public igdeContainerScroll{
 private:
 	struct sController{
 		aeController *controller;
-		igdeEditSliderTextReference slider;
+		igdeEditSliderText::Ref slider;
 	};
 	
 	
@@ -62,36 +62,36 @@ private:
 	aeWPPlaygroundListener *pListener;
 	aeAnimator *pAnimator;
 	
-	igdeContainerReference pFraContent;
+	igdeContainer::Ref pFraContent;
 	sController *pControllers;
 	int pControllerCount;
 	
-	igdeComboBoxReference pCBLocomotionType;
+	igdeComboBox::Ref pCBLocomotionType;
 	
-	igdeTextFieldReference pEditLocoLimitDown;
-	igdeTextFieldReference pEditLocoLimitUp;
-	igdeTextFieldReference pEditLocoLimitLeft;
-	igdeTextFieldReference pEditLocoLimitRight;
-	igdeTextFieldReference pEditLocoSpeedWalk;
-	igdeTextFieldReference pEditLocoSpeedRun;
-	igdeTextFieldReference pEditLocoAdjTimeUD;
-	igdeTextFieldReference pEditLocoAdjTimeLR;
-	igdeTextFieldReference pEditLocoAdjTimeStance;
-	igdeTextFieldReference pEditLocoAdjTimeOrientation;
-	igdeTextFieldReference pEditLocoAdjTimeVelocity;
-	igdeTextFieldReference pEditLocoAdjTimeTurnIP;
+	igdeTextField::Ref pEditLocoLimitDown;
+	igdeTextField::Ref pEditLocoLimitUp;
+	igdeTextField::Ref pEditLocoLimitLeft;
+	igdeTextField::Ref pEditLocoLimitRight;
+	igdeTextField::Ref pEditLocoSpeedWalk;
+	igdeTextField::Ref pEditLocoSpeedRun;
+	igdeTextField::Ref pEditLocoAdjTimeUD;
+	igdeTextField::Ref pEditLocoAdjTimeLR;
+	igdeTextField::Ref pEditLocoAdjTimeStance;
+	igdeTextField::Ref pEditLocoAdjTimeOrientation;
+	igdeTextField::Ref pEditLocoAdjTimeVelocity;
+	igdeTextField::Ref pEditLocoAdjTimeTurnIP;
 	
-	igdeTextFieldReference pEditLocoLegBlendTime;
-	igdeSpinTextFieldReference pSpinLocoUseLegPairs;
-	igdeSpinTextFieldReference pSpinLocoLeg;
-	igdeEditVectorReference pEditLocoLegPDPosStand;
-	igdeEditVectorReference pEditLocoLegPDPosWalk;
-	igdeEditVectorReference pEditLocoLegPDPosRun;
-	igdeTextFieldReference pEditLocoLegLiftOffTime;
-	igdeTextFieldReference pEditLocoLegPutDownTime;
+	igdeTextField::Ref pEditLocoLegBlendTime;
+	igdeSpinTextField::Ref pSpinLocoUseLegPairs;
+	igdeSpinTextField::Ref pSpinLocoLeg;
+	igdeEditVector::Ref pEditLocoLegPDPosStand;
+	igdeEditVector::Ref pEditLocoLegPDPosWalk;
+	igdeEditVector::Ref pEditLocoLegPDPosRun;
+	igdeTextField::Ref pEditLocoLegLiftOffTime;
+	igdeTextField::Ref pEditLocoLegPutDownTime;
 	
-	igdeCheckBoxReference pChkLocoShowShapes;
-	igdeCheckBoxReference pChkLocoUseFoGIK;
+	igdeCheckBox::Ref pChkLocoShowShapes;
+	igdeCheckBox::Ref pChkLocoUseFoGIK;
 	
 	
 	

@@ -45,6 +45,7 @@ class deoglShaderProgramUnit : public deObject{
 public:
 	typedef deTObjectReference<deoglShaderProgramUnit> Ref;
 	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	const deoglShaderUnitSourceCode *pSources;

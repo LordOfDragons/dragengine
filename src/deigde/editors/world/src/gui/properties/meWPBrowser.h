@@ -25,15 +25,15 @@
 #ifndef _MEWPBROWSER_H_
 #define _MEWPBROWSER_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeIconListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeTreeListReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeTreeList.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 
 class meWorld;
@@ -85,31 +85,31 @@ private:
 	meWorld *pWorld;
 	
 	
-	igdeActionReference pActionSetClass;
-	igdeActionReference pActionSetSkin;
-	igdeActionReference pActionSetDecal;
-	igdeActionReference pActionSetSky;
+	igdeAction::Ref pActionSetClass;
+	igdeAction::Ref pActionSetSkin;
+	igdeAction::Ref pActionSetDecal;
+	igdeAction::Ref pActionSetSky;
 	
-	igdeActionReference pActionPISizeSmall;
-	igdeActionReference pActionPISizeMedium;
-	igdeActionReference pActionPISizeLarge;
+	igdeAction::Ref pActionPISizeSmall;
+	igdeAction::Ref pActionPISizeMedium;
+	igdeAction::Ref pActionPISizeLarge;
 	
-	igdeActionReference pActionPIViewList;
-	igdeActionReference pActionPIViewPreview;
+	igdeAction::Ref pActionPIViewList;
+	igdeAction::Ref pActionPIViewPreview;
 	
-	igdeActionReference pActionPIRebuild;
+	igdeAction::Ref pActionPIRebuild;
 	
 	
-	igdeComboBoxReference pCBTypes;
-	igdeButtonReference pBtnSelByCat;
-	igdeButtonReference pBtnSelByFilter;
+	igdeComboBox::Ref pCBTypes;
+	igdeButton::Ref pBtnSelByCat;
+	igdeButton::Ref pBtnSelByFilter;
 	
-	igdeSwitcherReference pSwitcherSelBy;
-	igdeTreeListReference pTreeCategories;
-	igdeIconListBoxReference pListItems;
-	igdeTextFieldReference pEditFilter;
+	igdeSwitcher::Ref pSwitcherSelBy;
+	igdeTreeList::Ref pTreeCategories;
+	igdeIconListBox::Ref pListItems;
+	igdeTextField::Ref pEditFilter;
 	
-	igdeTextAreaReference pEditInfos;
+	igdeTextArea::Ref pEditInfos;
 	
 	ePreviewSize pPreviewSize;
 	eSelectionMode pSelectionMode;

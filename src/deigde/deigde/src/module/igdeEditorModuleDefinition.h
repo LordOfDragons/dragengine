@@ -59,6 +59,10 @@ class decBaseFileReader;
  */
 class igdeEditorModuleDefinition : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditorModuleDefinition> Ref;
+
+
 	/** \brief Error Codes. */
 	enum eErrorCodes{
 		/** \brief Module library loaded successfullym and the module is created and ready for usage. */

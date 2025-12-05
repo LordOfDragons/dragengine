@@ -25,17 +25,17 @@
 #ifndef _MEWNDPROPWORLD_H_
 #define _MEWNDPROPWORLD_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/composed/igdeEditDVectorReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/composed/igdeEditDVector.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class meWindowProperties;
@@ -54,41 +54,41 @@ private:
 	meWPWorldListener *pListener;
 	meWorld *pWorld;
 	
-	igdeActionContextMenuReference pActionPFTTypes;
-	igdeActionReference pActionPFTTypeAdd;
-	igdeActionReference pActionPFTTypeRemove;
-	igdeActionReference pActionPFTTypeClear;
-	igdeActionReference pActionMusicPlay;
-	igdeActionReference pActionMusicPause;
-	igdeActionReference pActionMusicStop;
+	igdeActionContextMenu::Ref pActionPFTTypes;
+	igdeAction::Ref pActionPFTTypeAdd;
+	igdeAction::Ref pActionPFTTypeRemove;
+	igdeAction::Ref pActionPFTTypeClear;
+	igdeAction::Ref pActionMusicPlay;
+	igdeAction::Ref pActionMusicPause;
+	igdeAction::Ref pActionMusicStop;
 	
 	
-	igdeWidgetReference pEditProperties;
+	igdeWidget::Ref pEditProperties;
 	
-	igdeEditDVectorReference pEditSize;
-	igdeEditVectorReference pEditGravity;
+	igdeEditDVector::Ref pEditSize;
+	igdeEditVector::Ref pEditGravity;
 	
-	igdeEditDVectorReference pEditPFTStartPosition;
-	igdeButtonReference pBtnPFTStartPosFromCamera;
-	igdeEditDVectorReference pEditPFTGoalPosition;
-	igdeButtonReference pBtnPFTGoalPosFromCamera;
-	igdeTextFieldReference pEditPFTLayer;
-	igdeComboBoxReference pCBPFTSpaceType;
-	igdeTextFieldReference pEditPFTBlockingCost;
-	igdeCheckBoxReference pChkPFTShowPath;
-	igdeComboBoxReference pCBPFTType;
-	igdeButtonReference pBtnPFTTypes;
-	igdeTextFieldReference pEditPFTTypeNumber;
-	igdeTextFieldReference pEditPFTTypeName;
-	igdeTextFieldReference pEditPFTTypeFixCost;
-	igdeTextFieldReference pEditPFTTypeCPM;
+	igdeEditDVector::Ref pEditPFTStartPosition;
+	igdeButton::Ref pBtnPFTStartPosFromCamera;
+	igdeEditDVector::Ref pEditPFTGoalPosition;
+	igdeButton::Ref pBtnPFTGoalPosFromCamera;
+	igdeTextField::Ref pEditPFTLayer;
+	igdeComboBox::Ref pCBPFTSpaceType;
+	igdeTextField::Ref pEditPFTBlockingCost;
+	igdeCheckBox::Ref pChkPFTShowPath;
+	igdeComboBox::Ref pCBPFTType;
+	igdeButton::Ref pBtnPFTTypes;
+	igdeTextField::Ref pEditPFTTypeNumber;
+	igdeTextField::Ref pEditPFTTypeName;
+	igdeTextField::Ref pEditPFTTypeFixCost;
+	igdeTextField::Ref pEditPFTTypeCPM;
 	
 	
-	igdeEditPathReference pEditMusicPath;
-	igdeEditSliderTextReference pEditMusicVolume;
-	igdeButtonReference pBtnMusicPlay;
-	igdeButtonReference pBtnMusicPause;
-	igdeButtonReference pBtnMusicStop;
+	igdeEditPath::Ref pEditMusicPath;
+	igdeEditSliderText::Ref pEditMusicVolume;
+	igdeButton::Ref pBtnMusicPlay;
+	igdeButton::Ref pBtnMusicPause;
+	igdeButton::Ref pBtnMusicStop;
 	
 	
 public:

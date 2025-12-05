@@ -70,6 +70,10 @@ private:
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRLight &pLight;
 	public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRLight> Ref;
+
+
 		WorldComputeElement( deoglRLight &light );
 		virtual void UpdateData( sDataElement &data ) const;
 	};

@@ -39,12 +39,11 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
@@ -170,13 +169,13 @@ void igdeEditorModuleDefinition::UnloadModule(){
 //////////////////////
 
 void igdeEditorModuleDefinition::pLoadFile(){
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( new decDiskFileReader( pFilePath ) );
 	pParseFile( reader );
 }
 
 void igdeEditorModuleDefinition::pParseFile( decBaseFileReader& reader ){
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	int i, j;

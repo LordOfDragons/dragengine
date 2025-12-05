@@ -51,6 +51,10 @@ class meHTVEvaluationEnvironment;
  */
 class meHTVRule : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRule> Ref;
+	
+	
 	/** Rule types. */
 	enum eRuleTypes{
 		/** Result Rule. */

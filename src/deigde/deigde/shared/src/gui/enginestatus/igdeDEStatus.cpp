@@ -30,7 +30,7 @@
 #include "../igdeTextArea.h"
 #include "../igdeButton.h"
 #include "../igdeIconListBox.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeMainWindow.h"
 #include "../event/igdeAction.h"
 #include "../layout/igdeContainerForm.h"
@@ -104,7 +104,7 @@ pDialogEngine( dialogEngine )
 {
 	igdeEnvironment &env = dialogEngine.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference groupBox, panel;
+	igdeContainer::Ref groupBox, panel;
 	
 	
 	helper.GroupBoxStaticFlow( *this, groupBox, "Engine Status:" );

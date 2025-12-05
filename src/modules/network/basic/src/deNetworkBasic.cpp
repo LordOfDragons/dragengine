@@ -48,7 +48,6 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
 #include <dragengine/resources/network/deNetworkMessage.h>
@@ -490,7 +489,7 @@ void deNetworkBasic::pReceiveDatagrams(){
 	
 	while( bnSocket ){
 		while( bnSocket->ReceiveDatagram( *pDatagram, pAddressReceive ) ){
-			decBaseFileReaderReference reader;
+			decBaseFileReader::Ref reader;
 			reader.TakeOver( new deNetworkMessageReader( pDatagram ) );
 			
 			debnConnection * const connection = pFindConnection( bnSocket, pAddressReceive );

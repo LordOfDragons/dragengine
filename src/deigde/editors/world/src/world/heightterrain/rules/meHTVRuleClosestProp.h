@@ -47,6 +47,10 @@
  */
 class meHTVRuleClosestProp : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleClosestProp> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Distance. */

@@ -36,7 +36,7 @@
 #include "../seWindowMain.h"
 #include "../../sky/seSky.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/theme/themeNames.h>
 

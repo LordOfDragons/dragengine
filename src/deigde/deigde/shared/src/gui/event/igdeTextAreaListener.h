@@ -36,6 +36,12 @@ class igdeTextArea;
  * \brief IGDE UI TextArea Listener.
  */
 class DE_DLL_EXPORT igdeTextAreaListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTextAreaListener> Ref;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

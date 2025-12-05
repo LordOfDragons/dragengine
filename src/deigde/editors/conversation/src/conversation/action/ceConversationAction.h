@@ -36,6 +36,10 @@
  */
 class ceConversationAction : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceConversationAction> Ref;
+	
+	
 	/** \brief Action types. */
 	enum eActionTypes{
 		/** \brief Change camera shot. */

@@ -35,6 +35,10 @@
  * \brief Game definition class speaker.
  */
 class DE_DLL_EXPORT igdeGDCSpeaker : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDCSpeaker> Ref;
+
+
 public:
 	/** \brief Properties. */
 	enum eProperties{

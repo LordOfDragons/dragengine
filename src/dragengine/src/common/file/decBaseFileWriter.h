@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<decBaseFileWriter> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

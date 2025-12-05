@@ -25,6 +25,7 @@
 #ifndef _MEHELPERS_H_
 #define _MEHELPERS_H_
 
+#include "../world/object/texture/meObjectTexture.h"
 #include <dragengine/common/math/decMath.h>
 
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
@@ -40,7 +41,6 @@ class igdeGDPropertyList;
 class igdeGDCNavigationSpace;
 class igdeGDCNavigationBlocker;
 
-class deObjectReference;
 class decString;
 class decStringList;
 
@@ -123,10 +123,10 @@ namespace meHelpers{
 	
 	
 	/** \brief Create texture. */
-	void CreateTexture( deObjectReference &texture, meObject *object, const char *textureName );
+	void CreateTexture(meObjectTexture::Ref &texture, meObject *object, const char *textureName );
 	
 	/** \brief Create texture. */
-	void CreateTexture( deObjectReference &texture, meObject *object, const char *textureName,
+	void CreateTexture(meObjectTexture::Ref &texture, meObject *object, const char *textureName,
 		const igdeGDCCTexture * gdctexture );
 };
 

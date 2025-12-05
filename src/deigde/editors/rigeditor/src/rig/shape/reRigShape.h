@@ -44,6 +44,10 @@ class deEngine;
  */
 class reRigShape : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reRigShape> Ref;
+	
+	
 	/** \brief Shape type. */
 	enum eShapeTypes{
 		estSphere,

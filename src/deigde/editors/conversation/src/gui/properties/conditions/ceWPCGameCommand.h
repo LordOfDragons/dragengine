@@ -25,9 +25,9 @@
 #ifndef _CEWPCGAMECOMMAND_H_
 #define _CEWPCGAMECOMMAND_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "ceWPCondition.h"
 
@@ -41,9 +41,9 @@ class ceWPTopic;
  */
 class ceWPCGameCommand : public ceWPCondition{
 private:
-	igdeTextFieldReference pEditCommand;
-	igdeButtonReference pBtnCommand;
-	igdeCheckBoxReference pChkNegate;
+	igdeTextField::Ref pEditCommand;
+	igdeButton::Ref pBtnCommand;
+	igdeCheckBox::Ref pChkNegate;
 	
 	
 	

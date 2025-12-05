@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<decZFileWriter> Ref;
 	
 	
-	
 private:
 	decBaseFileWriter::Ref pWriter;
 	

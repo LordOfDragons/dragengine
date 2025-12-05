@@ -51,7 +51,6 @@
 #include "../../../texture/texunitsconfig/deoglTexUnitsConfig.h"
 #include "../../../vao/deoglVAO.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>
 

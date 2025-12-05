@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<deovrRenderModel> Ref;
 	
 	
-	
 private:
 	deVROpenVR &pOvr;
 	

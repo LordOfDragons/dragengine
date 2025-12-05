@@ -60,7 +60,6 @@ public:
 	typedef deTObjectReference<deDebugDrawer> Ref;
 	
 	
-	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

@@ -231,7 +231,6 @@ void igdeGDSkinManager::VisitMatchingFilter( igdeGDVisitor &visitor, const decSt
 
 void igdeGDSkinManager::UpdateWith( const igdeGDSkinManager &skinManager ){
 	const int count = skinManager.GetSkinCount();
-	deObjectReference skin;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -242,11 +241,11 @@ void igdeGDSkinManager::UpdateWith( const igdeGDSkinManager &skinManager ){
 			skinCheck = GetSkinWithName( otherSkin.GetName() );
 		}
 		
-		skin.TakeOver( new igdeGDSkin( otherSkin ) );
+		const igdeGDSkin::Ref skin(igdeGDSkin::Ref::NewWith(otherSkin));
 		if( skinCheck ){
 			RemoveSkin( skinCheck );
 		}
-		AddSkin( ( igdeGDSkin* )( deObject* )skin );
+		AddSkin(skin);
 	}
 	
 	pCategories->UpdateWith( skinManager.pCategories );
@@ -259,7 +258,6 @@ void igdeGDSkinManager::UpdateWith( const igdeGDSkinManager &skinManager ){
 
 void igdeGDSkinManager::UpdateWithFound( const igdeGDSkinManager &skinManager ){
 	const int count = skinManager.GetSkinCount();
-	deObjectReference refSkin;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -270,8 +268,7 @@ void igdeGDSkinManager::UpdateWithFound( const igdeGDSkinManager &skinManager ){
 			continue;
 		}
 		
-		refSkin.TakeOver( new igdeGDSkin( foundSkin ) );
-		igdeGDSkin * const skin = ( igdeGDSkin* )( deObject* )refSkin;
+		const igdeGDSkin::Ref skin(igdeGDSkin::Ref::NewWith(foundSkin));
 		
 		igdeGDCategory * const autoCategory = pCategories->AutoCategorize( skin->GetPath() );
 		if( autoCategory ){
@@ -286,7 +283,7 @@ class igdeGDSkinManagerFind : public deFileSearchVisitor{
 private:
 	igdeGDSkinManager &pOwner;
 	const char * const pPattern;
-	deObjectReference pSkin;
+	igdeGDSkin::Ref pSkin;
 	
 public:
 	igdeGDSkinManagerFind( igdeGDSkinManager &owner, const char *pattern ) :
@@ -310,9 +307,9 @@ public:
 		}
 		
 		try{
-			pSkin.TakeOver( new igdeGDSkin( fullPath, genName ) );
-			( ( igdeGDSkin* )( deObject* )pSkin )->SetDescription( "Auto-Imported" );
-			pOwner.AddSkin( ( igdeGDSkin* )( deObject* )pSkin );
+			pSkin.TakeOverWith(fullPath, genName);
+			pSkin->SetDescription("Auto-Imported");
+			pOwner.AddSkin(pSkin);
 			
 		}catch( const deException & ){
 		}

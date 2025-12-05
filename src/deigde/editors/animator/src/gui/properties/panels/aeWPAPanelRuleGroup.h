@@ -34,12 +34,12 @@
  */
 class aeWPAPanelRuleGroup : public aeWPAPanelRule{
 private:
-	igdeComboBoxReference pCBApplicationType;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
-	igdeCheckBoxReference pChkUseCurrentState;
+	igdeComboBox::Ref pCBApplicationType;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
+	igdeCheckBox::Ref pChkUseCurrentState;
 	
 	
 	
