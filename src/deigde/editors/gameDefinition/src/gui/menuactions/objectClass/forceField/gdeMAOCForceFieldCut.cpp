@@ -71,11 +71,10 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 		return NULL;
 	}
 	
-	deObjectReference clipOCForceField;
-	clipOCForceField.TakeOver( new gdeOCForceField( *forceField ) );
+	const gdeOCForceField::Ref clipOCForceField(gdeOCForceField::Ref::NewWith(*forceField));
 	
 	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCForceField( ( gdeOCForceField* )( deObject* )clipOCForceField ) );
+	clipData.TakeOver( new gdeClipboardDataOCForceField( clipOCForceField ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

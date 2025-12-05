@@ -40,6 +40,10 @@
  * derived thereof can find the parent using visiting.
  */
 class dedsStyledTextNode : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dedsStyledTextNode> Ref;
+
+
 private:
 	void *pStyle;
 	

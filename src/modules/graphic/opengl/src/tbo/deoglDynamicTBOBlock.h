@@ -41,6 +41,10 @@ class deoglDynamicTBO;
  * SetValid(false). The offset and size of the block are measured in data units.
  */
 class deoglDynamicTBOBlock : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglDynamicTBOBlock> Ref;
+
+
 public:
 	deoglDynamicTBOShared *pSharedTBO;
 	int pOffset;

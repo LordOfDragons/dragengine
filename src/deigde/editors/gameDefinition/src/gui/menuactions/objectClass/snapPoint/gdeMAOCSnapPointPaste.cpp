@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCSnapPointPaste::OnActionSubObject( gdeGameDefinition&, gdeObjec
 	const gdeClipboardDataOCSnapPoint &clipOCSnapPoint =
 		( const gdeClipboardDataOCSnapPoint & )( igdeClipboardData& )clip;
 	
-	deObjectReference snapPoint;
-	snapPoint.TakeOver( new gdeOCSnapPoint( *clipOCSnapPoint.GetSnapPoint() ) );
+	const gdeOCSnapPoint::Ref snapPoint(gdeOCSnapPoint::Ref::NewWith(*clipOCSnapPoint.GetSnapPoint()));
 	
 	igdeUndo * const undo = new gdeUOCAddSnapPoint( &objectClass,
-		( gdeOCSnapPoint* )( deObject* )snapPoint );
+		snapPoint );
 	undo->SetShortInfo( "Paste object class snap point" );
 	return undo;
 }

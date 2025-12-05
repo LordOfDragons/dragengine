@@ -69,11 +69,10 @@ igdeUndo *gdeMAObjectClassCopy::OnAction( gdeGameDefinition &gameDefinition ){
 		return NULL;
 	}
 	
-	deObjectReference clipObjectClass;
-	clipObjectClass.TakeOver( new gdeObjectClass( *objectClass ) );
+	const gdeObjectClass::Ref clipObjectClass(gdeObjectClass::Ref::NewWith(*objectClass));
 	
 	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataObjectClass( ( gdeObjectClass* )( deObject* )clipObjectClass ) );
+	clipData.TakeOver( new gdeClipboardDataObjectClass( clipObjectClass ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

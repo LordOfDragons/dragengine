@@ -558,8 +558,7 @@ public:
 			}
 		}
 		
-		deObjectReference objRef;
-		objRef.TakeOver( new gdeOCInherit( name ) );
+		const gdeOCInherit::Ref objRef(gdeOCInherit::Ref::NewWith(name));
 		gdeOCInherit &inherit = ( gdeOCInherit& )( deObject& )objRef;
 		
 		const gdeObjectClass * const ioc = pPanel.GetGameDefinition()->FindObjectClass( name );
@@ -975,14 +974,13 @@ public:
 			}
 		}
 		
-		deObjectReference texture;
-		texture.TakeOver( new gdeOCComponentTexture( name ) );
+		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
 		
 		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCAddTexture( objectClass, ( gdeOCComponentTexture* )( deObject* )texture ) );
+		undo.TakeOver( new gdeUOCAddTexture( objectClass, texture ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
-		objectClass->SetActiveTexture( ( gdeOCComponentTexture* )( deObject* )texture );
+		objectClass->SetActiveTexture( texture );
 		pPanel.GetGameDefinition()->NotifyOCActiveTextureChanged( objectClass );
 		return NULL;
 	}

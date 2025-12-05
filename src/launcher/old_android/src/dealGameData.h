@@ -44,6 +44,10 @@ class dealFDFileReader;
  * be used as virtual file container for launching games.
  */
 class dealGameData : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGameData> Ref;
+
+
 private:
 	dealLauncher &pLauncher;
 	jniGlobalJObject pObjGameData;

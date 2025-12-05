@@ -39,6 +39,10 @@ class deGraphicContext;
  * \brief Text Box Text.
  */
 class ceTextBoxText : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceTextBoxText> Ref;
+
+
 private:
 	decUnicodeString pName;
 	decUnicodeString pText;

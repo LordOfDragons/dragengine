@@ -35,6 +35,10 @@
  * \brief Object class snap point.
  */
 class gdeOCSnapPoint : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeOCSnapPoint> Ref;
+
+
 private:
 	decString pName;
 	

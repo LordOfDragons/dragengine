@@ -487,9 +487,8 @@ public:
 				continue;
 			}
 			
-			deObjectReference texture;
-			texture.TakeOver( new meHeightTerrainTexture( world->GetEngine(), name ) );
-			return new meUHTAddTexture( world, sector, ( meHeightTerrainTexture* )( deObject* )texture );
+			const meHeightTerrainTexture::Ref texture(meHeightTerrainTexture::Ref::NewWith(world->GetEngine(), name));
+			return new meUHTAddTexture( world, sector, texture );
 		}
 		return NULL;
 	}
@@ -632,9 +631,8 @@ public:
 					continue;
 				}
 				
-				deObjectReference navspace;
-				navspace.TakeOver( new meHeightTerrainNavSpace( *world->GetEngine(), name ) );
-				return new meUHTNavSpaceAdd( sector, ( meHeightTerrainNavSpace* )( deObject* )navspace );
+				const meHeightTerrainNavSpace::Ref navspace(meHeightTerrainNavSpace::Ref::NewWith(*world->GetEngine(), name));
+				return new meUHTNavSpaceAdd( sector, navspace );
 			}
 		}
 		return NULL;
@@ -745,9 +743,8 @@ public:
 				continue;
 			}
 			
-			deObjectReference type;
-			type.TakeOver( new meHeightTerrainNavSpaceType( name ) );
-			return new meUHTNavSpaceTypeAdd( navspace, ( meHeightTerrainNavSpaceType* )( deObject* )type );
+			const meHeightTerrainNavSpaceType::Ref type(meHeightTerrainNavSpaceType::Ref::NewWith(name));
+			return new meUHTNavSpaceTypeAdd( navspace, type );
 		}
 		return NULL;
 	}
@@ -858,7 +855,7 @@ public:
 		
 		deObjectReference refFace;
 		refFace.TakeOver( new meHeightTerrainNavSpaceFace );
-		meHeightTerrainNavSpaceFace * const face = ( meHeightTerrainNavSpaceFace* )( deObject* )refFace;
+		meHeightTerrainNavSpaceFace * const face = refFace;
 		face->GetNavPoints() = pPanel.GetSector()->GetSelectedNavPoints();
 		face->OrderClockwise( world->GetHeightTerrain()->GetSectorResolution() );
 		return new meUHTNavSpaceFaceAdd( pPanel.GetActiveNavSpaceType(), face );
@@ -1056,13 +1053,12 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference refVLayer;
-		refVLayer.TakeOver( new meHTVegetationLayer( world->GetEngine(), name ) );
-		meHTVegetationLayer * const vlayer = ( meHTVegetationLayer* )( deObject* )refVLayer;
+		const meHTVegetationLayer::Ref refVLayer(meHTVegetationLayer::Ref::NewWith(world->GetEngine(), name));
+		meHTVegetationLayer * const vlayer = refVLayer;
 		
 		deObjectReference rule;
 		rule.TakeOver( new meHTVRuleResult );
-		vlayer->AddRule( ( meHTVRuleResult* )( deObject* )rule );
+		vlayer->AddRule( rule );
 		
 		return new meUHTVLayerAdd( world, world->GetHeightTerrain(), vlayer );
 	}
@@ -1167,9 +1163,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference variation;
-		variation.TakeOver( new meHTVVariation( world->GetEngine() ) );
-		return new meUHTVVariationAdd( vlayer, ( meHTVVariation* )( deObject* )variation );
+		const meHTVVariation::Ref variation(meHTVVariation::Ref::NewWith(world->GetEngine()));
+		return new meUHTVVariationAdd( vlayer, variation );
 	}
 	
 	virtual void Update(){

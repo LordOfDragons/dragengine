@@ -41,6 +41,10 @@ class ceCAPlayerChoiceOption;
  * \brief Player Choice Box Option.
  */
 class cePCBOption : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cePCBOption> Ref;
+
+
 private:
 	decUnicodeString pText;
 	ceCAPlayerChoice *pAction;

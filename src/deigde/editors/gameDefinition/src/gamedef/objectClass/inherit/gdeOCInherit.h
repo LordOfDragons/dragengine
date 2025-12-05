@@ -34,6 +34,10 @@
  * \brief Inherit from another game definition class.
  */
 class gdeOCInherit : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeOCInherit> Ref;
+
+
 private:
 	decString pName;
 	decString pPropertyPrefix;

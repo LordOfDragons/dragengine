@@ -150,6 +150,10 @@ private:
 	class LoadObjectResources : public igdeResourceLoaderListener{
 	private:
 		class Texture : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<Texture> Ref;
+
+
 		public:
 			const ChildObject::Ref object;
 			const ChildObjectTexture::Ref texture;

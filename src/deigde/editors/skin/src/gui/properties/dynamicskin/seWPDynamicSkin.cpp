@@ -229,10 +229,9 @@ public:
 			return;
 		}
 		
-		deObjectReference renderable;
-		renderable.TakeOver( new seDynamicSkinRenderable( pPanel.GetSkin()->GetEngine(), name ) );
-		dynamicSkin.AddRenderable( ( seDynamicSkinRenderable* )( deObject* )renderable );
-		dynamicSkin.SetActiveRenderable( ( seDynamicSkinRenderable* )( deObject* )renderable );
+		const seDynamicSkinRenderable::Ref renderable(seDynamicSkinRenderable::Ref::NewWith(pPanel.GetSkin()->GetEngine(), name));
+		dynamicSkin.AddRenderable( renderable );
+		dynamicSkin.SetActiveRenderable( renderable );
 	}
 	
 	virtual void Update(){

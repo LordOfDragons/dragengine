@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Force Field...",
 igdeUndo *gdeMAOCForceFieldAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
 	deObjectReference forceField;
 	forceField.TakeOver( new gdeOCForceField );
-	return new gdeUOCAddForceField( &objectClass, ( gdeOCForceField* )( deObject* )forceField );
+	return new gdeUOCAddForceField( &objectClass, forceField );
 }
 
 void gdeMAOCForceFieldAdd::Update(){

@@ -71,11 +71,10 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 		return NULL;
 	}
 	
-	deObjectReference clipOCNavigationBlocker;
-	clipOCNavigationBlocker.TakeOver( new gdeOCNavigationBlocker( *navBlocker ) );
+	const gdeOCNavigationBlocker::Ref clipOCNavigationBlocker(gdeOCNavigationBlocker::Ref::NewWith(*navBlocker));
 	
 	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCNavBlocker( ( gdeOCNavigationBlocker* )( deObject* )clipOCNavigationBlocker ) );
+	clipData.TakeOver( new gdeClipboardDataOCNavBlocker( clipOCNavigationBlocker ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

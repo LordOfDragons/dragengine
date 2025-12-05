@@ -40,6 +40,10 @@ class deoglRTLogger;
  * Shared TBO containing one or more blocks.
  */
 class deoglDynamicTBOShared : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglDynamicTBOShared> Ref;
+
+
 public:
 	const deObjectReference pTBO;
 	const deObjectReference pTBO2;

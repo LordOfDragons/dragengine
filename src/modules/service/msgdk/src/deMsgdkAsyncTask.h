@@ -34,6 +34,10 @@
  */
 class deMsgdkAsyncTask : public deObject
 {
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deMsgdkAsyncTask> Ref;
+
+
 public:
 	/**
 	 * Invalidator used if owner of task is destroyed to avoid segfaults.

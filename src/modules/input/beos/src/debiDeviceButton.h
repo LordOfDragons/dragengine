@@ -40,6 +40,10 @@ class deInputDeviceButton;
  * \brief Input device button.
  */
 class debiDeviceButton : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debiDeviceButton> Ref;
+
+
 private:
 	deBeOSInput &pModule;
 	

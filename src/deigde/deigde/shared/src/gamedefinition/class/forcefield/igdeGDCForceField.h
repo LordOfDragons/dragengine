@@ -36,6 +36,10 @@
  * \brief Game Definition Class Force Field.
  */
 class DE_DLL_EXPORT igdeGDCForceField : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDCForceField> Ref;
+
+
 public:
 	/** \brief Properties. */
 	enum eProperties{

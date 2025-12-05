@@ -48,6 +48,10 @@ class deParticleEmitterInstance;
  * Particle Emitter Instance Peer.
  */
 class deoglRParticleEmitterInstance : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRParticleEmitterInstance> Ref;
+
+
 public:
 	/** Particle data. */
 	struct sParticle{

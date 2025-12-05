@@ -83,8 +83,7 @@ igdeUndo *gdeMAParticleEmitterAdd::OnAction( gdeGameDefinition &gameDefinition )
 		filetitle = filetitle.GetLeft( delimiter );
 	}
 	
-	deObjectReference particleEmitter;
-	particleEmitter.TakeOver( new gdeParticleEmitter( filename, filetitle ) );
+	const gdeParticleEmitter::Ref particleEmitter(gdeParticleEmitter::Ref::NewWith(filename, filetitle));
 	return new gdeUAddParticleEmitter( &gameDefinition,
-		( gdeParticleEmitter* )( deObject* )particleEmitter );
+		particleEmitter );
 }

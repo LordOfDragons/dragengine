@@ -102,7 +102,7 @@ void fbxAnimation::MatchRig( const fbxRig &rig ){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		( ( fbxAnimationMove* )( deObject* )pMoves.GetAt( i ) )->MatchRig( rig );
+		( pMoves.GetAt( i ) )->MatchRig( rig );
 	}
 }
 

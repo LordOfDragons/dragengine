@@ -42,6 +42,10 @@ class deXSystemInput;
  * \brief X-System input device feedback.
  */
 class dexsiDeviceFeedback : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dexsiDeviceFeedback> Ref;
+
+
 private:
 	deXSystemInput &pModule;
 	

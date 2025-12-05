@@ -230,8 +230,7 @@ void reWindowMain::SetRig( reRig *rig ){
 }
 
 void reWindowMain::CreateNewRig(){
-	deObjectReference refRig;
-	refRig.TakeOver( new reRig( &GetEnvironment() ) );
+	const reRig::Ref refRig(reRig::Ref::NewWith(&GetEnvironment()));
 	reRig * const rig = ( reRig* )refRig.operator->();
 	
 	SetRig( rig );
@@ -303,7 +302,7 @@ void reWindowMain::LoadDocument( const char *filename ){
 	
 	deObjectReference rig;
 	rig.TakeOver( pLoadSaveSystem->LoadRig( filename ) );
-	SetRig( ( reRig* )( deObject* )rig );
+	SetRig( rig );
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -447,7 +446,7 @@ public:
 		
 		deObjectReference rig;
 		rig.TakeOver( pWindow.GetLoadSaveSystem().LoadRig( filename ) );
-		pWindow.SetRig( ( reRig* )( deObject* )rig );
+		pWindow.SetRig( rig );
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };
@@ -963,8 +962,7 @@ public:
 		"Add Constraint", NULL, "Add a constraint", deInputEvent::ekcC ){}
 	
 	virtual igdeUndo *OnAction( reRig *rig ){
-		deObjectReference constraint;
-		constraint.TakeOver( new reRigConstraint( pWindow.GetEngineController().GetEngine() ) );
+		const reRigConstraint::Ref constraint(reRigConstraint::Ref::NewWith(pWindow.GetEngineController().GetEngine()));
 		return new reUAddConstraint( rig, NULL, ( reRigConstraint* )constraint.operator->() );
 	}
 };
@@ -975,8 +973,7 @@ public:
 		"Add Push", NULL, "Add a push", deInputEvent::ekcP ){}
 	
 	virtual igdeUndo *OnAction( reRig *rig ){
-		deObjectReference push;
-		push.TakeOver( new reRigPush( pWindow.GetEngineController().GetEngine() ) );
+		const reRigPush::Ref push(reRigPush::Ref::NewWith(pWindow.GetEngineController().GetEngine()));
 		return new reUAddPush( rig, ( reRigPush* )push.operator->() );
 	}
 };
@@ -1100,8 +1097,7 @@ public:
 		"Add Constraint", NULL, "Add a constraint", deInputEvent::ekcC ){}
 	
 	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
-		deObjectReference constraint;
-		constraint.TakeOver( new reRigConstraint( pWindow.GetEngineController().GetEngine() ) );
+		const reRigConstraint::Ref constraint(reRigConstraint::Ref::NewWith(pWindow.GetEngineController().GetEngine()));
 		return new reUAddConstraint( NULL, bone, ( reRigConstraint* )constraint.operator->() );
 	}
 };

@@ -39,6 +39,10 @@ class deEngine;
  * \brief Profile.
  */
 class projTRProfile : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projTRProfile> Ref;
+
+
 private:
 	decString pName;
 	

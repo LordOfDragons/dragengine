@@ -410,10 +410,9 @@ public:
 			name.Format( "%s #%d", baseName.GetString(), number );
 		}
 		
-		deObjectReference attachment;
-		attachment.TakeOver( new aeAttachment( &pPanel.GetEnvironment(), name ) );
-		animator->AddAttachment( ( aeAttachment* )( deObject* )attachment );
-		animator->SetActiveAttachment( ( aeAttachment* )( deObject* )attachment );
+		const aeAttachment::Ref attachment(aeAttachment::Ref::NewWith(&pPanel.GetEnvironment(), name));
+		animator->AddAttachment( attachment );
+		animator->SetActiveAttachment( attachment );
 	}
 };
 

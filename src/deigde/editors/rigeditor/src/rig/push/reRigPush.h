@@ -41,6 +41,10 @@ class deEngine;
  * \brief Rig Push.
  */
 class reRigPush : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reRigPush> Ref;
+
+
 public:
 	/** \brief Push type. */
 	enum ePushTypes{

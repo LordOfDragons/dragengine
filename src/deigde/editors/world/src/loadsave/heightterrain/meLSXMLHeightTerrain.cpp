@@ -829,8 +829,7 @@ void meLSXMLHeightTerrain::pLoadTexture( decXmlElementTag &root, meHeightTerrain
 }
 
 void meLSXMLHeightTerrain::pLoadNavSpace( decXmlElementTag &root, meHeightTerrainSector &sector ){
-	deObjectReference refNavSpace;
-	refNavSpace.TakeOver( new meHeightTerrainNavSpace( *pLSSys->GetWindowMain()->GetEngine() ) );
+	const meHeightTerrainNavSpace::Ref refNavSpace(meHeightTerrainNavSpace::Ref::NewWith(*pLSSys->GetWindowMain()->GetEngine()));
 	meHeightTerrainNavSpace &navspace = ( meHeightTerrainNavSpace& )( deObject& )refNavSpace;
 	
 	navspace.SetName( GetAttributeString( root, "name" ) );
@@ -903,8 +902,7 @@ void meLSXMLHeightTerrain::pLoadNavSpaceType( decXmlElementTag &root, meHeightTe
 }
 
 void meLSXMLHeightTerrain::pLoadVLayer( decXmlElementTag &root, meHeightTerrain &heightTerrain ){
-	deObjectReference refVLayer;
-	refVLayer.TakeOver( new meHTVegetationLayer( pLSSys->GetWindowMain()->GetEngine() ) );
+	const meHTVegetationLayer::Ref refVLayer(meHTVegetationLayer::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
 	meHTVegetationLayer &vlayer = ( meHTVegetationLayer& )( deObject& )refVLayer;
 	
 	const int count = root.GetElementCount();
@@ -943,8 +941,7 @@ void meLSXMLHeightTerrain::pLoadVLayer( decXmlElementTag &root, meHeightTerrain 
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerVariation( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refVariation;
-	refVariation.TakeOver( new meHTVVariation( pLSSys->GetWindowMain()->GetEngine() ) );
+	const meHTVVariation::Ref refVariation(meHTVVariation::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
 	meHTVVariation &variation = ( meHTVVariation& )( deObject& )refVariation;
 	
 	const int count = root.GetElementCount();
@@ -1189,7 +1186,7 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleCurve( decXmlElementTag &root, meHTVeg
 	deObjectReference refRule;
 	refRule.TakeOver( new meHTVRuleCurve );
 	( ( meHTVRuleCurve& )( deObject& )refRule ).SetCurve( curve );
-	vlayer.AddRule( ( meHTVRuleCurve* )( deObject* )refRule );
+	vlayer.AddRule( refRule );
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleGeometry( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
@@ -1601,9 +1598,8 @@ void meLSXMLHeightTerrain::pLoadVLayerLink( decXmlElementTag &root, meHTVegetati
 		DETHROW( deeInvalidParam );
 	}
 	
-	deObjectReference refLink;
-	refLink.TakeOver( new meHTVRLink( sourceRule, sourceSlot, destinationRule, destinationSlot ) );
-	meHTVRLink * const link = ( meHTVRLink* )( deObject* )refLink;
+	const meHTVRLink::Ref refLink(meHTVRLink::Ref::NewWith(sourceRule, sourceSlot, destinationRule, destinationSlot));
+	meHTVRLink * const link = refLink;
 	
 	sourceRule->GetSlotAt( sourceSlot ).AddLink( link );
 	destinationRule->GetSlotAt( destinationSlot ).AddLink( link );

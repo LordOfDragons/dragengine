@@ -295,10 +295,8 @@ void meWindowMain::SetWorld( meWorld *world ){
 }
 
 void meWindowMain::CreateNewWorld(){
-	deObjectReference refWorld;
-	
-	refWorld.TakeOver( new meWorld( *this, &GetEnvironment() ) );
-	meWorld * const world = ( meWorld* )( deObject* )refWorld;
+	const meWorld::Ref refWorld(meWorld::Ref::NewWith(*this, &GetEnvironment()));
+	meWorld * const world = refWorld;
 	world->SetSaved( false );
 	world->SetChanged( false );
 	world->SetDepChanged( false );

@@ -33,6 +33,10 @@
  * \brief Identifier group identifier.
  */
 class meIDGroupID : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meIDGroupID> Ref;
+
+
 private:
 	decString pID;
 	int pUsageCount;

@@ -34,6 +34,10 @@
  * \brief Conversation Actor Parameter.
  */
 class ceActorParameter : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceActorParameter> Ref;
+
+
 private:
 	decString pName;
 	int pValue;

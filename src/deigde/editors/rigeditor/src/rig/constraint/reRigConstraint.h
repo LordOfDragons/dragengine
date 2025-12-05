@@ -47,6 +47,10 @@ class deEngine;
  * \brief Rig constraint.
  */
 class reRigConstraint : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reRigConstraint> Ref;
+
+
 private:
 	deEngine *pEngine;
 	

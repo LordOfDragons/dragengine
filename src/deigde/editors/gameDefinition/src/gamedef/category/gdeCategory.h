@@ -36,6 +36,10 @@
  * \brief Category.
  */
 class gdeCategory : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeCategory> Ref;
+
+
 private:
 	decString pName;
 	decString pDescription;

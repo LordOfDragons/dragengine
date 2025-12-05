@@ -25,7 +25,6 @@
 #include <stddef.h>
 
 #include "deObject.h"
-#include "deObjectReference.h"
 #include "common/exceptions.h"
 
 

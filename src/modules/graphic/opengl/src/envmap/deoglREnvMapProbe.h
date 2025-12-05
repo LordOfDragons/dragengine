@@ -40,6 +40,10 @@ class deoglEnvironmentMap;
  * Render environment map probe.
  */
 class deoglREnvMapProbe : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglREnvMapProbe> Ref;
+
+
 private:
 	deoglRenderThread &pRenderThread;
 	

@@ -359,7 +359,7 @@ void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
 		
 		for( i=0; i<count; i++ ){
 			refObjectShape.TakeOver( new meObjectShape( pWorld->GetEnvironment(), *shapeList.GetAt( i ) ) );
-			meObjectShape * const objectShape = ( meObjectShape* )( deObject* )refObjectShape;
+			meObjectShape * const objectShape = refObjectShape;
 			objectShape->SetWorld( pWorld );
 			objectShape->SetParentObject( activeObject );
 			pWorld->GetObjectShapes().Add( objectShape );

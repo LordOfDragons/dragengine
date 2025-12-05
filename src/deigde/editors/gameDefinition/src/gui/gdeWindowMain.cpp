@@ -272,9 +272,8 @@ void gdeWindowMain::SetActiveGameDefinition( gdeGameDefinition *gameDefinition )
 }
 
 void gdeWindowMain::CreateNewGameDefinition(){
-	deObjectReference gameDefinition;
-	gameDefinition.TakeOver( new gdeGameDefinition( &GetEnvironment() ) );
-	SetActiveGameDefinition( ( gdeGameDefinition* )( deObject* )gameDefinition );
+	const gdeGameDefinition::Ref gameDefinition(gdeGameDefinition::Ref::NewWith(&GetEnvironment()));
+	SetActiveGameDefinition( gameDefinition );
 }
 
 void gdeWindowMain::LoadGameProject( bool silentErrors ){

@@ -219,7 +219,7 @@ public:
 	virtual igdeUndo *OnAction( seSky *sky ){
 		deObjectReference link;
 		link.TakeOver( new seLink );
-		return new seULinkAdd( sky, ( seLink* )( deObject* )link );
+		return new seULinkAdd( sky, link );
 	}
 };
 

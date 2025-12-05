@@ -37,6 +37,10 @@ class dealLauncher;
  * \brief Game Profile Module Parameter.
  */
 class dealGPMParameter : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGPMParameter> Ref;
+
+
 private:
 	decString pName;
 	decString pValue;

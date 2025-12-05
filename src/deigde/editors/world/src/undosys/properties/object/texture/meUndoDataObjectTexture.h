@@ -38,6 +38,10 @@ class meObject;
  * \brief Object Property Undo Data.
  */
 class meUndoDataObjectTexture : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUndoDataObjectTexture> Ref;
+
+
 private:
 	meObject *pObject;
 	meObjectTexture *pOldTexture;

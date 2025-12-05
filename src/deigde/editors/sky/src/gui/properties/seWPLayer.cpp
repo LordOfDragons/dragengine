@@ -349,9 +349,8 @@ public:
 		"Add a layer to the end of the list." ){ }
 	
 	virtual igdeUndo *OnAction( seSky *sky ){
-		deObjectReference layer;
-		layer.TakeOver( new seLayer( pPanel.GetEnvironment() ) );
-		return new seULayerAdd( sky, ( seLayer* )( deObject* )layer );
+		const seLayer::Ref layer(seLayer::Ref::NewWith(pPanel.GetEnvironment()));
+		return new seULayerAdd( sky, layer );
 	}
 };
 
@@ -631,8 +630,7 @@ public:
 		"Add body to end of list" ){ }
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
-		deObjectReference refBody;
-		refBody.TakeOver( new seBody( pPanel.GetEngine() ) );
+		const seBody::Ref refBody(seBody::Ref::NewWith(pPanel.GetEngine()));
 		return new seUBodyAdd( layer, ( seBody* )refBody.operator->() );
 	}
 };

@@ -41,6 +41,10 @@ class dealLauncher;
  * 
  */
 class dealGPModule : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGPModule> Ref;
+
+
 private:
 	decString pName;
 	dealGPMParameterList pParameterList;

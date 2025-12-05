@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCCameraPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectCl
 	const gdeClipboardDataOCCamera &clipOCCamera =
 		( const gdeClipboardDataOCCamera & )( igdeClipboardData& )clip;
 	
-	deObjectReference camera;
-	camera.TakeOver( new gdeOCCamera( *clipOCCamera.GetCamera() ) );
+	const gdeOCCamera::Ref camera(gdeOCCamera::Ref::NewWith(*clipOCCamera.GetCamera()));
 	
 	igdeUndo * const undo = new gdeUOCAddCamera( &objectClass,
-		( gdeOCCamera* )( deObject* )camera );
+		camera );
 	undo->SetShortInfo( "Paste object class camera" );
 	return undo;
 }

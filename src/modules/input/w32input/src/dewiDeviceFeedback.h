@@ -41,6 +41,10 @@ class deWindowsInput;
  * \brief Windows input device feedback.
  */
 class dewiDeviceFeedback : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dewiDeviceFeedback> Ref;
+
+
 private:
 	deWindowsInput &pModule;
 	

@@ -37,6 +37,10 @@ class meDecal;
  * \brief Decal property undo data.
  */
 class meUndoDataDecalProperty : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUndoDataDecalProperty> Ref;
+
+
 private:
 	meDecal *pDecal;
 	decString pOldValue;

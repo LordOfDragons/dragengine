@@ -455,7 +455,7 @@ public:
 		
 		deObjectReference font;
 		font.TakeOver( generateFont.GenerateFont() );
-		pWindow.SetFont( ( feFont* )( deObject* )font );
+		pWindow.SetFont( font );
 	}
 };
 

@@ -36,6 +36,10 @@
  * \brief Game Definition Class Component Texture.
  */
 class DE_DLL_EXPORT igdeGDCCTexture : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDCCTexture> Ref;
+
+
 private:
 	decString pName;
 	decString pPathSkin;

@@ -292,7 +292,7 @@ void gdeGameDefinition::UpdateBaseGameDefinitions( gdeLoadSaveSystem &loadSaveSy
 			continue;
 		}
 		
-		gdeGameDefinition * const gameDefinition = ( gdeGameDefinition* )( deObject* )refGameDef;
+		gdeGameDefinition * const gameDefinition = refGameDef;
 		gameDefinition->UpdateBaseGameDefinitions( loadSaveSystem );
 		
 		gameDefinition->SetFilePath( path );

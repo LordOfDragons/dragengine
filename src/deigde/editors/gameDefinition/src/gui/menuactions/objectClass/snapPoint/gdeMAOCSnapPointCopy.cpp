@@ -69,11 +69,10 @@ igdeUndo *gdeMAOCSnapPointCopy::OnActionSubObject( gdeGameDefinition &gameDefini
 		return NULL;
 	}
 	
-	deObjectReference clipOCSnapPoint;
-	clipOCSnapPoint.TakeOver( new gdeOCSnapPoint( *snapPoint ) );
+	const gdeOCSnapPoint::Ref clipOCSnapPoint(gdeOCSnapPoint::Ref::NewWith(*snapPoint));
 	
 	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCSnapPoint( ( gdeOCSnapPoint* )( deObject* )clipOCSnapPoint ) );
+	clipData.TakeOver( new gdeClipboardDataOCSnapPoint( clipOCSnapPoint ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

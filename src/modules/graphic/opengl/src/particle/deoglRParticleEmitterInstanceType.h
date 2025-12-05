@@ -43,6 +43,10 @@ class deoglRenderTaskSharedInstance;
  * Render particle emitter instance type.
  */
 class deoglRParticleEmitterInstanceType : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRParticleEmitterInstanceType> Ref;
+
+
 private:
 	deoglRParticleEmitterInstance &pEmitterInstance;
 	const int pIndex;

@@ -42,6 +42,10 @@ class deEngine;
  * \brief Dynamic Skin Renderable.
  */
 class seDynamicSkinRenderable : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seDynamicSkinRenderable> Ref;
+
+
 public:
 	/** Renderable types. */
 	enum eRenderableTypes{

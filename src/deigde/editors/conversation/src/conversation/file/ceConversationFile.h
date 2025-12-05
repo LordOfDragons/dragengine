@@ -38,6 +38,10 @@ class ceConversation;
  * \brief Conversation File.
  */
 class ceConversationFile : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceConversationFile> Ref;
+
+
 private:
 	ceConversation *pConversation;
 	

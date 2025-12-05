@@ -49,6 +49,10 @@ class deBaseModule;
  * the other safe casting.
  */
 class DE_DLL_EXPORT deLoadableModule : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deLoadableModule> Ref;
+
+
 public:
 	/** \brief Error Codes. */
 	enum eErrorCodes{

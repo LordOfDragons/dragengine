@@ -181,7 +181,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 			case 0:{
 				child = ParseExpressionComponent( state, true, false, false );
 				( ( igdeTriggerExpressionComponent& )( deObject& )child ).SetNegate( negate );
-				component.AddChild( ( igdeTriggerExpressionComponent* )( deObject* )child );
+				component.AddChild( child );
 				
 				negate = false;
 				curState = false;
@@ -191,7 +191,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 			case 2:
 				child = ParseExpressionComponent( state, true, false, false );
 				( ( igdeTriggerExpressionComponent& )( deObject& )child ).SetNegate( negate );
-				component.AddChild( ( igdeTriggerExpressionComponent* )( deObject* )child );
+				component.AddChild( child );
 				
 				negate = false;
 				curState = false;
@@ -385,7 +385,7 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	}
 	
 	refComponent->AddReference(); // caller takes over reference
-	return ( igdeTriggerExpressionComponent* )( deObject* )refComponent;
+	return refComponent;
 }
 
 void igdeTriggerExpressionParser::ParseTargetName( decString &name, igdeTriggerExpressionParserState &state, bool quoted ) const{

@@ -71,11 +71,10 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 		return NULL;
 	}
 	
-	deObjectReference clipOCParticleEmitter;
-	clipOCParticleEmitter.TakeOver( new gdeOCParticleEmitter( *particleEmitter ) );
+	const gdeOCParticleEmitter::Ref clipOCParticleEmitter(gdeOCParticleEmitter::Ref::NewWith(*particleEmitter));
 	
 	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCParticleEmitter( ( gdeOCParticleEmitter* )( deObject* )clipOCParticleEmitter ) );
+	clipData.TakeOver( new gdeClipboardDataOCParticleEmitter( clipOCParticleEmitter ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

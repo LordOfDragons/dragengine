@@ -184,7 +184,7 @@ public:
 			return NULL;
 		}
 		
-		sePropertyNode * const node = ( sePropertyNode* )( deObject* )refNode;
+		sePropertyNode * const node = refNode;
 		node->SetPosition( decPoint3( 0, 0, property->GetActiveNodeLayer() ) );
 		
 		return new seUPNGroupAddNode( pView.GetActiveNodeGroup()
@@ -240,9 +240,8 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add text node" ){}
 	
 	virtual sePropertyNode *CreateNode( seSkin &, seProperty & ){
-		deObjectReference refNode;
-		refNode.TakeOver( new sePropertyNodeText( *pView.GetEngine() ) );
-		sePropertyNodeText * const node = ( sePropertyNodeText* )( deObject* )refNode;
+		const sePropertyNodeText::Ref refNode(sePropertyNodeText::Ref::NewWith(*pView.GetEngine()));
+		sePropertyNodeText * const node = refNode;
 		node->SetPath( "/igde/fonts/regular_67px.defont" );
 		node->SetTextSize( 67.0f );
 		node->SetSize( decPoint3( 256, 67, 1 ) );

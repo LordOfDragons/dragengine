@@ -34,6 +34,10 @@ class deoglRComponent;
  * Render component listener.
  */
 class deoglComponentListener : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglComponentListener> Ref;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

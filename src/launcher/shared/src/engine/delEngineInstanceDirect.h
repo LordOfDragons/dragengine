@@ -115,6 +115,10 @@ private:
 	deLogger::Ref pEngineLogger;
 	
 	class cModuleParamState : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cModuleParamState> Ref;
+
+
 	public:
 		deLoadableModule *module;
 		decStringDictionary parameters;

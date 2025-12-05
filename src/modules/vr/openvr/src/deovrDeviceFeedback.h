@@ -41,6 +41,10 @@ class deVROpenVR;
  * VR input device feedback.
  */
 class deovrDeviceFeedback : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deovrDeviceFeedback> Ref;
+
+
 private:
 	deVROpenVR &pOvr;
 	

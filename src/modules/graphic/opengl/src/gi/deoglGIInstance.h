@@ -49,6 +49,10 @@ class decLayerMask;
  * Global illumination instance.
  */
 class deoglGIInstance : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglGIInstance> Ref;
+
+
 private:
 	class cListenerLink{
 	public:

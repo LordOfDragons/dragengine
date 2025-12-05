@@ -40,6 +40,10 @@ class igdeEnvironment;
 class igdeSharedFontList{
 private:
 	class cFont : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cFont> Ref;
+
+
 	private:
 		igdeFont::sConfiguration pConfig;
 		igdeFont::Ref pFont;

@@ -34,6 +34,10 @@
  * \brief Playback Command.
  */
 class cePlaybackCommand : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cePlaybackCommand> Ref;
+
+
 private:
 	decString pCommand;
 	bool pValue;

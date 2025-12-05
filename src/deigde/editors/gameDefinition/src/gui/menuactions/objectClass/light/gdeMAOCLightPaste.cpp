@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCLightPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectCla
 	const gdeClipboardDataOCLight &clipOCLight =
 		( const gdeClipboardDataOCLight & )( igdeClipboardData& )clip;
 	
-	deObjectReference light;
-	light.TakeOver( new gdeOCLight( *clipOCLight.GetLight() ) );
+	const gdeOCLight::Ref light(gdeOCLight::Ref::NewWith(*clipOCLight.GetLight()));
 	
 	igdeUndo * const undo = new gdeUOCAddLight( &objectClass,
-		( gdeOCLight* )( deObject* )light );
+		light );
 	undo->SetShortInfo( "Paste object class light" );
 	return undo;
 }

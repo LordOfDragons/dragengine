@@ -49,6 +49,10 @@ class deModel;
  * rig defining the plant to render.
  */
 class meHTVVariation : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVVariation> Ref;
+
+
 private:
 	meHTVegetationLayer *pVLayer;
 	

@@ -45,6 +45,10 @@ class deDebugDrawer;
  * Debug Drawer Peer.
  */
 class deoglRDebugDrawer : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDebugDrawer> Ref;
+
+
 private:
 	deoglRenderThread &pRenderThread;
 	

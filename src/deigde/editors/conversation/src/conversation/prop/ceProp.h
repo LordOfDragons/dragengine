@@ -39,6 +39,10 @@ class ceConversation;
  * \brief A prop for testing conversations with.
  */
 class ceProp : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceProp> Ref;
+
+
 private:
 	ceConversation *pConversation;
 	

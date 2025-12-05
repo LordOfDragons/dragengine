@@ -50,6 +50,10 @@ class deSkin;
  * Render skin.
  */
 class deoglRSkin : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRSkin> Ref;
+
+
 public:
 	enum ePropertyStates{
 		epsAll,

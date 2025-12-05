@@ -112,6 +112,10 @@ public:
 	 * \warning IGDE Internal Use Only. Do not use.
 	 */
 	class DE_DLL_EXPORT cHeader : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cHeader> Ref;
+
+
 	public:
 		decString text;
 		decString description;

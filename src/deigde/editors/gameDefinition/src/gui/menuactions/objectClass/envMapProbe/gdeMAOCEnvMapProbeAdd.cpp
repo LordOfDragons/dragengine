@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Environment Map Probe...",
 igdeUndo *gdeMAOCEnvMapProbeAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
 	deObjectReference envMapProbe;
 	envMapProbe.TakeOver( new gdeOCEnvMapProbe );
-	return new gdeUOCAddEnvMapProbe( &objectClass, ( gdeOCEnvMapProbe* )( deObject* )envMapProbe );
+	return new gdeUOCAddEnvMapProbe( &objectClass, envMapProbe );
 }
 
 void gdeMAOCEnvMapProbeAdd::Update(){

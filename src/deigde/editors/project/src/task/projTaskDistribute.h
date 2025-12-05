@@ -53,6 +53,10 @@ class decXmlWriter;
 class projTaskDistribute : public igdeStepableTask{
 private:
 	class cProcessDirectory : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cProcessDirectory> Ref;
+
+
 	public:
 		decString path;
 		dePathList directories;

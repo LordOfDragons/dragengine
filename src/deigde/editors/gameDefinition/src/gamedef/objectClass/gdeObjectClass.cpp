@@ -93,85 +93,85 @@ pInheritSubObjects( objectClass.pInheritSubObjects )
 		count = objectClass.pProperties.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeProperty( *objectClass.pProperties.GetAt( i ) ) );
-			pProperties.Add( ( gdeProperty* )( deObject* )objRef );
+			pProperties.Add( objRef );
 		}
 		
 		count = objectClass.pTextureProperties.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeProperty( *objectClass.pTextureProperties.GetAt( i ) ) );
-			pTextureProperties.Add( ( gdeProperty* )( deObject* )objRef );
+			pTextureProperties.Add( objRef );
 		}
 		
 		count = objectClass.pInherits.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCInherit( *objectClass.pInherits.GetAt( i ) ) );
-			pInherits.Add( ( gdeOCInherit* )( deObject* )objRef );
+			pInherits.Add( objRef );
 		}
 		
 		count = objectClass.pBillboards.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCBillboard( *objectClass.pBillboards.GetAt( i ) ) );
-			pBillboards.Add( ( gdeOCBillboard* )( deObject* )objRef );
+			pBillboards.Add( objRef );
 		}
 		
 		count = objectClass.pCameras.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCCamera( *objectClass.pCameras.GetAt( i ) ) );
-			pCameras.Add( ( gdeOCCamera* )( deObject* )objRef );
+			pCameras.Add( objRef );
 		}
 		
 		count = objectClass.pComponents.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCComponent( *objectClass.pComponents.GetAt( i ) ) );
-			pComponents.Add( ( gdeOCComponent* )( deObject* )objRef );
+			pComponents.Add( objRef );
 		}
 		
 		count = objectClass.pEnvMapProbes.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCEnvMapProbe( *objectClass.pEnvMapProbes.GetAt( i ) ) );
-			pEnvMapProbes.Add( ( gdeOCEnvMapProbe* )( deObject* )objRef );
+			pEnvMapProbes.Add( objRef );
 		}
 		
 		count = objectClass.pLights.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCLight( *objectClass.pLights.GetAt( i ) ) );
-			pLights.Add( ( gdeOCLight* )( deObject* )objRef );
+			pLights.Add( objRef );
 		}
 		
 		count = objectClass.pNavigationBlockers.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCNavigationBlocker( *objectClass.pNavigationBlockers.GetAt( i ) ) );
-			pNavigationBlockers.Add( ( gdeOCNavigationBlocker* )( deObject* )objRef );
+			pNavigationBlockers.Add( objRef );
 		}
 		
 		count = objectClass.pNavigationSpaces.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCNavigationSpace( *objectClass.pNavigationSpaces.GetAt( i ) ) );
-			pNavigationSpaces.Add( ( gdeOCNavigationSpace* )( deObject* )objRef );
+			pNavigationSpaces.Add( objRef );
 		}
 		
 		count = objectClass.pParticleEmitters.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCParticleEmitter( *objectClass.pParticleEmitters.GetAt( i ) ) );
-			pParticleEmitters.Add( ( gdeOCParticleEmitter* )( deObject* )objRef );
+			pParticleEmitters.Add( objRef );
 		}
 		
 		count = objectClass.pForceFields.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCForceField( *objectClass.pForceFields.GetAt( i ) ) );
-			pForceFields.Add( ( gdeOCForceField* )( deObject* )objRef );
+			pForceFields.Add( objRef );
 		}
 		
 		count = objectClass.pSnapPoints.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCSnapPoint( *objectClass.pSnapPoints.GetAt( i ) ) );
-			pSnapPoints.Add( ( gdeOCSnapPoint* )( deObject* )objRef );
+			pSnapPoints.Add( objRef );
 		}
 		
 		count = objectClass.pSpeakers.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCSpeaker( *objectClass.pSpeakers.GetAt( i ) ) );
-			pSpeakers.Add( ( gdeOCSpeaker* )( deObject* )objRef );
+			pSpeakers.Add( objRef );
 		}
 		
 		count = objectClass.pWorlds.GetCount();
@@ -182,7 +182,7 @@ pInheritSubObjects( objectClass.pInheritSubObjects )
 		count = objectClass.pTextures.GetCount();
 		for( i=0; i<count; i++ ){
 			objRef.TakeOver( new gdeOCComponentTexture( *objectClass.pTextures.GetAt( i ) ) );
-			pTextures.Add( ( gdeOCComponentTexture* )( deObject* )objRef );
+			pTextures.Add( objRef );
 		}
 		
 	}catch( const deException & ){

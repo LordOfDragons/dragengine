@@ -119,7 +119,7 @@ public:
 		strip.TakeOver( dialog.CreateStrip() );
 		
 		igdeUndo::Ref undo;
-		undo.TakeOver( pLane.UndoStripAdd( ( ceStrip* )( deObject* )strip, decMath::max( pIndex, 0 ) ) );
+		undo.TakeOver( pLane.UndoStripAdd( strip, decMath::max( pIndex, 0 ) ) );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -897,7 +897,7 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 	}
 	
 	igdeUndo::Ref undo;
-	undo.TakeOver( UndoStripReplace( strip, ( ceStrip* )( deObject* )newStrip ) );
+	undo.TakeOver( UndoStripReplace( strip, newStrip ) );
 	pWindow.GetConversation()->GetUndoSystem()->Add( undo );
 }
 

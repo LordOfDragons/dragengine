@@ -88,12 +88,11 @@ igdeUndo *gdeMAObjectClassPaste::OnAction( gdeGameDefinition &gameDefinition ){
 		}
 	}
 	
-	deObjectReference objectClass;
-	objectClass.TakeOver( new gdeObjectClass( *clipObjectClass.GetObjectClass() ) );
+	const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::NewWith(*clipObjectClass.GetObjectClass()));
 	( ( gdeObjectClass& )( deObject& )objectClass ).SetName( name );
 	
 	igdeUndo * const undo = new gdeUAddObjectClass(
-		&gameDefinition, ( gdeObjectClass* )( deObject* )objectClass );
+		&gameDefinition, objectClass );
 	undo->SetShortInfo( "Paste object class" );
 	return undo;
 }

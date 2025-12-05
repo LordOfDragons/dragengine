@@ -728,10 +728,10 @@ public:
 		meHelpers::CreateTexture( texture, object, pTextureName );
 		
 		igdeUndo::Ref undo;
-		undo.TakeOver( new meUObjectAddTexture( object, ( meObjectTexture* )( deObject* )texture ) );
+		undo.TakeOver( new meUObjectAddTexture( object, texture ) );
 		object->GetWorld()->GetUndoSystem()->Add( undo );
 		
-		object->SetActiveTexture( ( meObjectTexture* )( deObject* )texture );
+		object->SetActiveTexture( texture );
 		return NULL;
 	}
 	
@@ -833,9 +833,9 @@ public:
 			meHelpers::CreateTexture( texture, object, name );
 			
 			igdeUndo::Ref undo;
-			undo.TakeOver( new meUObjectAddTexture( object, ( meObjectTexture* )( deObject* )texture ) );
+			undo.TakeOver( new meUObjectAddTexture( object, texture ) );
 			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
-			object->SetActiveTexture( ( meObjectTexture* )( deObject* )texture );
+			object->SetActiveTexture( texture );
 			break;
 		}
 		return NULL;

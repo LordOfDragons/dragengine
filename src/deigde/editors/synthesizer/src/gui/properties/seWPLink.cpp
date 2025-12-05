@@ -164,7 +164,7 @@ public:
 		deObjectReference link;
 		link.TakeOver( new seLink );
 		igdeUndo::Ref undo;
-		undo.TakeOver( new seULinkAdd( synthesizer, ( seLink* )( deObject* )link ) );
+		undo.TakeOver( new seULinkAdd( synthesizer, link ) );
 		synthesizer->GetUndoSystem()->Add( undo );
 	}
 	

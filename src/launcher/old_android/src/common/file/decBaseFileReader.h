@@ -39,6 +39,10 @@ class decDataChunk;
  * \brief File reader interface.
  */
 class decBaseFileReader : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decBaseFileReader> Ref;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

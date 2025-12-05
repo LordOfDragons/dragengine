@@ -86,6 +86,10 @@ private:
 	};
 	
 	class cWOTexture : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cWOTexture> Ref;
+
+
 	public:
 		deSkin::Ref skin;
 		int texture;

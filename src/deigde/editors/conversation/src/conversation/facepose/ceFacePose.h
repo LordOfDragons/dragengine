@@ -38,6 +38,10 @@ class ceConversation;
  * \brief Face Pose.
  */
 class ceFacePose : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceFacePose> Ref;
+
+
 private:
 	ceConversation *pConversation;
 	

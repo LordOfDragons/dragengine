@@ -37,6 +37,10 @@ class meObject;
  * \brief Object Property Undo Data.
  */
 class meUndoDataObjectProperty : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUndoDataObjectProperty> Ref;
+
+
 private:
 	meObject *pObject;
 	decString pOldValue;

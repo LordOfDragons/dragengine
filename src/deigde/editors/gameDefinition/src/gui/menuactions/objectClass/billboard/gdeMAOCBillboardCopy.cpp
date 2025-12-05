@@ -69,11 +69,10 @@ igdeUndo *gdeMAOCBillboardCopy::OnActionSubObject( gdeGameDefinition &gameDefini
 		return NULL;
 	}
 	
-	deObjectReference clipOCBillboard;
-	clipOCBillboard.TakeOver( new gdeOCBillboard( *billboard ) );
+	const gdeOCBillboard::Ref clipOCBillboard(gdeOCBillboard::Ref::NewWith(*billboard));
 	
 	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCBillboard( ( gdeOCBillboard* )( deObject* )clipOCBillboard ) );
+	clipData.TakeOver( new gdeClipboardDataOCBillboard( clipOCBillboard ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

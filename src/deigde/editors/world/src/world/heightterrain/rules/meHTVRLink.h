@@ -40,6 +40,10 @@ class meHTVRule;
  * Link between two height terrain vegeation rules.
  */
 class meHTVRLink : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRLink> Ref;
+
+
 private:
 	meHTVRule *pSrcRule;
 	int pSrcSlot;

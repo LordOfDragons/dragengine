@@ -53,6 +53,10 @@ public:
 	
 #ifdef OS_UNIX
 	class PreloadLibrary : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<PreloadLibrary> Ref;
+
+
 		void * const pHandle;
 	public:
 		PreloadLibrary( const decPath &basePath, const char *filename );

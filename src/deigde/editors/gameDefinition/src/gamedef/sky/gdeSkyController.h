@@ -34,6 +34,10 @@
  * \brief Game definition sky default controller value.
  */
 class gdeSkyController : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeSkyController> Ref;
+
+
 private:
 	decString pName;
 	float pValue;

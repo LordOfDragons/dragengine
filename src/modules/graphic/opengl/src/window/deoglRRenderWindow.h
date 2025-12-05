@@ -61,6 +61,10 @@ class deoglRCanvasView;
  * Render window target.
  */
 class deoglRRenderWindow : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRRenderWindow> Ref;
+
+
 private:
 	deoglRenderThread &pRenderThread;
 	

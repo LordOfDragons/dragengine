@@ -48,6 +48,10 @@ class deDebugDrawer;
  * \brief Rig bone.
  */
 class reRigBone : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reRigBone> Ref;
+
+
 private:
 	deEngine *pEngine;
 	

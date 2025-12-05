@@ -41,6 +41,10 @@ class btCollisionShape;
  * bullet shapes once nobody uses them anymore.
  */
 class debpBulletShape : public deObject {
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debpBulletShape> Ref;
+
+
 private:
 	btCollisionShape *pShape;
 	

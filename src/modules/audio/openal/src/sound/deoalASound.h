@@ -39,6 +39,10 @@ class deoalAudioThread;
  * \brief audio sound.
  */
 class deoalASound : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalASound> Ref;
+
+
 private:
 	deoalAudioThread &pAudioThread;
 	decString pFilename;

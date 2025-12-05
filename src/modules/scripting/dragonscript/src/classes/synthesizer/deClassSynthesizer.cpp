@@ -197,7 +197,7 @@ void deClassSynthesizer::nfSetControllerCount::RunFunction( dsRunTime *rt, dsVal
 	
 	while( synthesizer->GetControllerCount() < count ){
 		controller.TakeOver( new deSynthesizerController );
-		synthesizer->AddController( ( deSynthesizerController* )( deObject* )controller );
+		synthesizer->AddController( controller );
 	}
 }
 

@@ -237,10 +237,9 @@ void seWindowMain::SetSkin( seSkin *skin ){
 }
 
 void seWindowMain::CreateNewSkin(){
-	deObjectReference skin;
-	skin.TakeOver( new seSkin( &GetEnvironment() ) );
+	const seSkin::Ref skin(seSkin::Ref::NewWith(&GetEnvironment()));
 	( ( seSkin& )( deObject& )skin ).SetModelPath( "/igde/models/materialTest/sphere.demodel" );
-	SetSkin( ( seSkin* )( deObject* )skin );
+	SetSkin( skin );
 }
 
 void seWindowMain::LoadSkin( const char *filename ){
@@ -251,7 +250,7 @@ void seWindowMain::LoadSkin( const char *filename ){
 	GetEditorModule().LogInfoFormat( "Loading Skin %s", filename );
 	deObjectReference refSkin;
 	refSkin.TakeOver( pLoadSaveSystem->LoadSkin( filename, GetGameDefinition() ) );
-	seSkin * const skin = ( seSkin* )( deObject* )refSkin;
+	seSkin * const skin = refSkin;
 	
 	// store information
 	skin->SetFilePath( filename );
@@ -522,9 +521,8 @@ public:
 		}
 		
 		// create skin and set it up to match the selected model
-		deObjectReference refSkin;
-		refSkin.TakeOver( new seSkin( &environment ) );
-		seSkin * const skin = ( seSkin* )( deObject* )refSkin;
+		const seSkin::Ref refSkin(seSkin::Ref::NewWith(&environment));
+		seSkin * const skin = refSkin;
 		
 		// set model. this loads the model
 		skin->SetModelPath( filename );
@@ -545,7 +543,7 @@ public:
 		for( i=0; i<textureCount; i++ ){
 			// create texture with the matching name
 			refTexture.TakeOver( new seTexture( engine, model.GetTextureAt( i )->GetName() ) );
-			seTexture * const texture = ( seTexture* )( deObject* )refTexture;
+			seTexture * const texture = refTexture;
 			
 			// create color property with a light gray color
 			refProperty.TakeOver( property = new seProperty( engine ) );
@@ -798,9 +796,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference texture;
-		texture.TakeOver( new seTexture( pWindow.GetEngine(), name ) );
-		return new seUTextureAdd( skin, ( seTexture* )( deObject* )texture );
+		const seTexture::Ref texture(seTexture::Ref::NewWith(pWindow.GetEngine(), name));
+		return new seUTextureAdd( skin, texture );
 	}
 };
 

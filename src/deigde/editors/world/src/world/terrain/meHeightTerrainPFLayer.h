@@ -45,6 +45,10 @@ class igdeEnvironment;
  * \brief Prop field type.
  */
 class meHeightTerrainPFLayer : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHeightTerrainPFLayer> Ref;
+
+
 private:
 	meHeightTerrainSector *pHTSector;
 	

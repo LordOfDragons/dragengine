@@ -37,6 +37,10 @@
  * \brief Object class component.
  */
 class gdeOCComponent : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeOCComponent> Ref;
+
+
 public:
 	/** \brief Properties. */
 	enum eProperties{

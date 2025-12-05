@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCNavSpacePaste::OnActionSubObject( gdeGameDefinition&, gdeObject
 	const gdeClipboardDataOCNavSpace &clipOCNavigationSpace =
 		( const gdeClipboardDataOCNavSpace & )( igdeClipboardData& )clip;
 	
-	deObjectReference navSpace;
-	navSpace.TakeOver( new gdeOCNavigationSpace( *clipOCNavigationSpace.GetNavSpace() ) );
+	const gdeOCNavigationSpace::Ref navSpace(gdeOCNavigationSpace::Ref::NewWith(*clipOCNavigationSpace.GetNavSpace()));
 	
 	igdeUndo * const undo = new gdeUOCAddNavSpace( &objectClass,
-		( gdeOCNavigationSpace* )( deObject* )navSpace );
+		navSpace );
 	undo->SetShortInfo( "Paste object class navigation space" );
 	return undo;
 }

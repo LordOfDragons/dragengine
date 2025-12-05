@@ -128,7 +128,7 @@ void meUObjectAddUsedTextures::Redo(){
 			}
 			
 			meHelpers::CreateTexture( texture, pObject, textureName, gdctex );
-			pTextureList.AddTexture( ( meObjectTexture* )( deObject* )texture );
+			pTextureList.AddTexture( texture );
 		}
 	}
 	

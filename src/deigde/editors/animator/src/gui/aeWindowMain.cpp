@@ -226,9 +226,8 @@ void aeWindowMain::SetAnimator( aeAnimator *animator ){
 }
 
 void aeWindowMain::CreateNewAnimator(){
-	deObjectReference animator;
-	animator.TakeOver( new aeAnimator( *this ) );
-	SetAnimator( ( aeAnimator* )( deObject* )animator );
+	const aeAnimator::Ref animator(aeAnimator::Ref::NewWith(*this));
+	SetAnimator( animator );
 }
 
 void aeWindowMain::SaveAnimator( const char *filename ){
@@ -289,7 +288,7 @@ void aeWindowMain::CreateRule( deAnimatorRuleVisitorIdentify::eRuleTypes type, b
 	}
 	
 	refRule.TakeOver( aeRule::CreateRuleFromType( type ) );
-	aeRule * const rule = ( aeRule* )( deObject* )refRule;
+	aeRule * const rule = refRule;
 	
 	if( parentGroup ){
 		undo.TakeOver( new aeURuleGroupAddRule( parentGroup, rule, index ) );
@@ -757,9 +756,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference controller;
-		controller.TakeOver( new aeController( name ) );
-		return new aeUAddController( animator, ( aeController* )( deObject* )controller );
+		const aeController::Ref controller(aeController::Ref::NewWith(name));
+		return new aeUAddController( animator, controller );
 	}
 };
 
@@ -902,9 +900,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference link;
-		link.TakeOver( new aeLink( name ) );
-		return new aeULinkAdd( animator, ( aeLink* )( deObject* )link );
+		const aeLink::Ref link(aeLink::Ref::NewWith(name));
+		return new aeULinkAdd( animator, link );
 	}
 };
 
@@ -920,10 +917,9 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference newLink;
-		newLink.TakeOver( new aeLink( *link ) );
+		const aeLink::Ref newLink(aeLink::Ref::NewWith(*link));
 		( ( aeLink& )( deObject& )newLink ).SetName( name );
-		return new aeULinkAdd( animator, ( aeLink* )( deObject* )newLink );
+		return new aeULinkAdd( animator, newLink );
 	}
 };
 

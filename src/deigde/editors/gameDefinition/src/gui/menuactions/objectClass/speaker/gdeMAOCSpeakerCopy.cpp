@@ -69,11 +69,10 @@ igdeUndo *gdeMAOCSpeakerCopy::OnActionSubObject( gdeGameDefinition &gameDefiniti
 		return NULL;
 	}
 	
-	deObjectReference clipOCSpeaker;
-	clipOCSpeaker.TakeOver( new gdeOCSpeaker( *speaker ) );
+	const gdeOCSpeaker::Ref clipOCSpeaker(gdeOCSpeaker::Ref::NewWith(*speaker));
 	
 	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCSpeaker( ( gdeOCSpeaker* )( deObject* )clipOCSpeaker ) );
+	clipData.TakeOver( new gdeClipboardDataOCSpeaker( clipOCSpeaker ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

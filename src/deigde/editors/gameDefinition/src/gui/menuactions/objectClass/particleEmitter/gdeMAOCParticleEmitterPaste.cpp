@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCParticleEmitterPaste::OnActionSubObject( gdeGameDefinition&, gd
 	const gdeClipboardDataOCParticleEmitter &clipOCParticleEmitter =
 		( const gdeClipboardDataOCParticleEmitter & )( igdeClipboardData& )clip;
 	
-	deObjectReference particleEmitter;
-	particleEmitter.TakeOver( new gdeOCParticleEmitter( *clipOCParticleEmitter.GetParticleEmitter() ) );
+	const gdeOCParticleEmitter::Ref particleEmitter(gdeOCParticleEmitter::Ref::NewWith(*clipOCParticleEmitter.GetParticleEmitter()));
 	
 	igdeUndo * const undo = new gdeUOCAddParticleEmitter( &objectClass,
-		( gdeOCParticleEmitter* )( deObject* )particleEmitter );
+		particleEmitter );
 	undo->SetShortInfo( "Paste object class particle emitter" );
 	return undo;
 }

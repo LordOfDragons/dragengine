@@ -302,11 +302,10 @@ public:
 				continue;
 			}
 			
-			deObjectReference type;
-			type.TakeOver( new peeType( emitter->GetEngine(), name ) );
+			const peeType::Ref type(peeType::Ref::NewWith(emitter->GetEngine(), name));
 			
 			igdeUndo::Ref undo;
-			undo.TakeOver( new peeUTypeAdd( emitter, ( peeType* )( deObject *)type ) );
+			undo.TakeOver( new peeUTypeAdd( emitter, type ) );
 			emitter->GetUndoSystem()->Add( undo );
 			return;
 		}

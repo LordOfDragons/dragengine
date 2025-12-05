@@ -37,6 +37,10 @@
  * \brief Property.
  */
 class gdeProperty : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeProperty> Ref;
+
+
 public:
 	/** \brief Property type. */
 	enum ePropertyTypes{

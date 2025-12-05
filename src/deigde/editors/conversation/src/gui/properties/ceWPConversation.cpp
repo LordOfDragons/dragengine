@@ -427,9 +427,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference target;
-		target.TakeOver( new ceTarget( name ) );
-		return new ceUCTargetAdd( conversation, ( ceTarget* )( deObject* )target );
+		const ceTarget::Ref target(ceTarget::Ref::NewWith(name));
+		return new ceUCTargetAdd( conversation, target );
 	}
 };
 
@@ -571,9 +570,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference cameraShot;
-		cameraShot.TakeOver( new ceCameraShot( name ) );
-		return new ceUCCShotAdd( conversation, ( ceCameraShot* )( deObject* )cameraShot );
+		const ceCameraShot::Ref cameraShot(ceCameraShot::Ref::NewWith(name));
+		return new ceUCCShotAdd( conversation, cameraShot );
 	}
 };
 
@@ -640,10 +638,9 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference duplicate;
-		duplicate.TakeOver( new ceCameraShot( *cameraShot ) );
+		const ceCameraShot::Ref duplicate(ceCameraShot::Ref::NewWith(*cameraShot));
 		( ( ceCameraShot& )( deObject& )duplicate ).SetName( name );
-		return new ceUCCShotAdd( conversation, ( ceCameraShot* )( deObject* )duplicate );
+		return new ceUCCShotAdd( conversation, duplicate );
 	}
 	
 	virtual void Update( const ceConversation & ){
@@ -996,9 +993,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference gesture;
-		gesture.TakeOver( new ceGesture( name ) );
-		return new ceUCGestureAdd( conversation, ( ceGesture* )( deObject* )gesture );
+		const ceGesture::Ref gesture(ceGesture::Ref::NewWith(name));
+		return new ceUCGestureAdd( conversation, gesture );
 	}
 };
 
@@ -1125,9 +1121,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference facePose;
-		facePose.TakeOver( new ceFacePose( name ) );
-		return new ceUCFacePoseAdd( conversation, ( ceFacePose* )( deObject* )facePose );
+		const ceFacePose::Ref facePose(ceFacePose::Ref::NewWith(name));
+		return new ceUCFacePoseAdd( conversation, facePose );
 	}
 };
 
@@ -1222,13 +1217,12 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference controller;
-		controller.TakeOver( new ceControllerValue( name, 1.0f ) );
+		const ceControllerValue::Ref controller(ceControllerValue::Ref::NewWith(name, 1.0f));
 		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCFPControllerAdd( facePose, ( ceControllerValue* )( deObject* )controller ) );
+		undo.TakeOver( new ceUCFPControllerAdd( facePose, controller ) );
 		conversation->GetUndoSystem()->Add( undo );
 		
-		pPanel.SelectFacePoseController( ( ceControllerValue* )( deObject* )controller );
+		pPanel.SelectFacePoseController( controller );
 		return NULL;
 	}
 	

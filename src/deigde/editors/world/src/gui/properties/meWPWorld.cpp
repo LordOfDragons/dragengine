@@ -397,11 +397,10 @@ public:
 				continue;
 			}
 			
-			deObjectReference type;
-			type.TakeOver( new mePathFindTestType( newValue ) );
-			list.Add( ( mePathFindTestType* )( deObject* )type );
+			const mePathFindTestType::Ref type(mePathFindTestType::Ref::NewWith(newValue));
+			list.Add( type );
 			world->GetPathFindTest()->NotifyTypesChanged();
-			pPanel.SelectPFType( ( mePathFindTestType* )( deObject* )type );
+			pPanel.SelectPFType( type );
 			break;
 		}
 		return NULL;

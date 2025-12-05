@@ -37,6 +37,10 @@ class devkDescriptorPoolPool;
  * Descriptor pool slot. Descriptor set pointer is weak.
  */
 class devkDescriptorPoolSlot : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<devkDescriptorPoolSlot> Ref;
+
+
 public:
 	/** Pool Reference. */
 	typedef devkTPoolReference<devkDescriptorPoolSlot> Ref;

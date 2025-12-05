@@ -80,8 +80,7 @@ igdeUndo *gdeMAObjectClassSubclass::OnAction( gdeGameDefinition &gameDefinition 
 			continue;
 		}
 		
-		deObjectReference subclass;
-		subclass.TakeOver( new gdeObjectClass( name ) );
+		const gdeObjectClass::Ref subclass(gdeObjectClass::Ref::NewWith(name));
 		gdeObjectClass &soc = ( gdeObjectClass& )( deObject& )subclass;
 		
 		soc.SetCategory( objectClass->GetCategory() );
@@ -92,8 +91,7 @@ igdeUndo *gdeMAObjectClassSubclass::OnAction( gdeGameDefinition &gameDefinition 
 		soc.SetPartialHideTags( objectClass->GetPartialHideTags() );
 		soc.SetScaleMode( objectClass->GetScaleMode() );
 		
-		deObjectReference objRefInherit;
-		objRefInherit.TakeOver( new gdeOCInherit( objectClass->GetName() ) );
+		const gdeOCInherit::Ref objRefInherit(gdeOCInherit::Ref::NewWith(objectClass->GetName()));
 		gdeOCInherit& inherit = ( gdeOCInherit& )( deObject& )objRefInherit;
 		inherit.SetPropertyPrefix( objectClass->GetDefaultInheritPropertyPrefix() );
 		soc.GetInherits().Add( &inherit );

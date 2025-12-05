@@ -35,6 +35,10 @@
  * \brief Object class snap point.
  */
 class DE_DLL_EXPORT igdeGDCSnapPoint : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDCSnapPoint> Ref;
+
+
 private:
 	decString pName;
 	

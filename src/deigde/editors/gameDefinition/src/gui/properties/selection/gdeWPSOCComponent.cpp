@@ -680,14 +680,13 @@ public:
 			}
 		}
 		
-		deObjectReference texture;
-		texture.TakeOver( new gdeOCComponentTexture( name ) );
+		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
 		
 		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCCAddTexture( objectClass, component, ( gdeOCComponentTexture* )( deObject* )texture ) );
+		undo.TakeOver( new gdeUOCCAddTexture( objectClass, component, texture ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
-		component->SetActiveTexture( ( gdeOCComponentTexture* )( deObject* )texture );
+		component->SetActiveTexture( texture );
 		pPanel.GetGameDefinition()->NotifyOCComponentActiveTextureChanged( objectClass, component );
 		return NULL;
 	}
@@ -734,7 +733,7 @@ public:
 			const int count = actionsAddFromModel.GetCount();
 			int i;
 			for( i=0; i<count; i++ ){
-				helper.MenuCommand( subMenu, ( igdeAction* )( deObject* )actionsAddFromModel.GetAt( i ) );
+				helper.MenuCommand( subMenu, actionsAddFromModel.GetAt( i ) );
 			}
 			
 			contextMenu.AddChild( subMenu );

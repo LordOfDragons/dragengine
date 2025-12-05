@@ -236,8 +236,7 @@ void gdeLoadSaveGameDefinition::pReadGameDefinition( const decXmlElementTag &roo
 }
 
 void gdeLoadSaveGameDefinition::pReadProperty( const decXmlElementTag &root, gdePropertyList &propertyList ){
-	deObjectReference objRef;
-	objRef.TakeOver( new gdeProperty( GetAttributeString( root, "name" ) ) );
+	const gdeProperty::Ref objRef(gdeProperty::Ref::NewWith(GetAttributeString( root, "name" )));
 	gdeProperty &property = ( gdeProperty& )( deObject& )objRef;
 	
 	pReadProperty( root, property );
@@ -2230,8 +2229,7 @@ gdeCategoryList *list, gdeCategory *parent ){
 		LogErrorMissingTag( root, "name" );
 	}
 	
-	deObjectReference objRef;
-	objRef.TakeOver( new gdeCategory( categoryName ) );
+	const gdeCategory::Ref objRef(gdeCategory::Ref::NewWith(categoryName));
 	gdeCategory &category = ( gdeCategory& )( deObject& )objRef;
 	
 	if( list ){

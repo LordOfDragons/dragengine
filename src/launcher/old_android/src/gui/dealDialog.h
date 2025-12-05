@@ -40,6 +40,10 @@ class dealWidgetLayoutFlow;
  * 
  */
 class dealDialog : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealDialog> Ref;
+
+
 private:
 	dealDisplay &pDisplay;
 	

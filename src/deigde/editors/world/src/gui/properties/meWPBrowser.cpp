@@ -195,9 +195,8 @@ public:
 			undo.TakeOver( new meUObjectTextureSetSkin( texture, newskin ) );
 			
 		}else{
-			deObjectReference refTexture;
-			refTexture.TakeOver( new meObjectTexture( object->GetEnvironment(), pName ) );
-			texture = ( meObjectTexture* )( deObject* )refTexture;
+			const meObjectTexture::Ref refTexture(meObjectTexture::Ref::NewWith(object->GetEnvironment(), pName));
+			texture = refTexture;
 			texture->SetSkinPath( newskin );
 			
 			undo.TakeOver( new meUObjectAddTexture( object, texture ) );
@@ -855,8 +854,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 	const int iconSize = GetPreviewIconSize();
 	icon.TakeOver( new igdeIcon( *pvmgr.GetImageCreating(), iconSize, iconSize ) );
 	
-	deObjectReference listener;
-	listener.TakeOver( new igdeBrowseItemGDPreviewListener( pListItems, item, iconSize ) );
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pListItems, item, iconSize));
 	
 	switch( GetPreviewItemType() ){
 	case meWPBrowser::epitObjectClass:{
@@ -868,7 +866,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 		pvmgr.ClearPreviewObjectClass( gdclass );
 		item->SetIcon( icon );
 		pListItems->ItemChangedAt( pListItems->GetSelection() );
-		pvmgr.CreatePreviewObjectClass( gdclass, ( igdeGDPreviewListener* )( deObject* )listener );
+		pvmgr.CreatePreviewObjectClass( gdclass, listener );
 		}break;
 		
 	case meWPBrowser::epitSkin:{
@@ -880,7 +878,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 		pvmgr.ClearPreviewSkin( gdskin );
 		item->SetIcon( icon );
 		pListItems->ItemChangedAt( pListItems->GetSelection() );
-		pvmgr.CreatePreviewSkin( gdskin, ( igdeGDPreviewListener* )( deObject* )listener );
+		pvmgr.CreatePreviewSkin( gdskin, listener );
 		}break;
 		
 	case meWPBrowser::epitSky:

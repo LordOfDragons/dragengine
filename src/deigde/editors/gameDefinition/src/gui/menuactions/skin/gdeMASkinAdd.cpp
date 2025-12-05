@@ -82,7 +82,6 @@ igdeUndo *gdeMASkinAdd::OnAction( gdeGameDefinition &gameDefinition ){
 		filetitle = filetitle.GetLeft( delimiter );
 	}
 	
-	deObjectReference skin;
-	skin.TakeOver( new gdeSkin( filename, filetitle ) );
-	return new gdeUAddSkin( &gameDefinition, ( gdeSkin* )( deObject* )skin );
+	const gdeSkin::Ref skin(gdeSkin::Ref::NewWith(filename, filetitle));
+	return new gdeUAddSkin( &gameDefinition, skin );
 }

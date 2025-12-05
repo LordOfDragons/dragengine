@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Light...",
 igdeUndo *gdeMAOCLightAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
 	deObjectReference light;
 	light.TakeOver( new gdeOCLight );
-	return new gdeUOCAddLight( &objectClass, ( gdeOCLight* )( deObject* )light );
+	return new gdeUOCAddLight( &objectClass, light );
 }
 
 void gdeMAOCLightAdd::Update(){

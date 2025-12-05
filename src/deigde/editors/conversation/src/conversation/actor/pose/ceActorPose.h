@@ -40,6 +40,10 @@ class deAnimator;
  * Conversation Actor Gesture.
  */
 class ceActorPose : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceActorPose> Ref;
+
+
 private:
 	igdeEnvironment &pEnvironment;
 	deAnimator *pEngAnimator;

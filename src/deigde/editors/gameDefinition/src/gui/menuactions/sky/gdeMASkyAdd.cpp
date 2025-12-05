@@ -82,7 +82,6 @@ igdeUndo *gdeMASkyAdd::OnAction( gdeGameDefinition &gameDefinition ){
 		filetitle = filetitle.GetLeft( delimiter );
 	}
 	
-	deObjectReference sky;
-	sky.TakeOver( new gdeSky( filename, filetitle ) );
-	return new gdeUAddSky( &gameDefinition, ( gdeSky* )( deObject* )sky );
+	const gdeSky::Ref sky(gdeSky::Ref::NewWith(filename, filetitle));
+	return new gdeUAddSky( &gameDefinition, sky );
 }

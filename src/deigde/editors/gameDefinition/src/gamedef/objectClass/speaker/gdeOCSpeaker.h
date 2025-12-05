@@ -35,6 +35,10 @@
  * \brief Object class speaker.
  */
 class gdeOCSpeaker : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeOCSpeaker> Ref;
+
+
 public:
 	/** \brief Properties. */
 	enum eProperties{

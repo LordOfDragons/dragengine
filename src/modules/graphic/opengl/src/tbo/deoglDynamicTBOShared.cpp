@@ -174,9 +174,8 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::AddBlock( deoglDynamicTBO *tbo, deo
 		// if the empty block is larger than the requested size add a new empty block with the
 		// remaining empty space right after this block
 		if( block->GetSize() > tboSize ){
-			deObjectReference emptyBlock;
-			emptyBlock.TakeOver( new deoglDynamicTBOBlock( this,
-				block->GetOffset() + tboSize, block->GetSize() - tboSize ) );
+			const deoglDynamicTBOBlock::Ref emptyBlock(deoglDynamicTBOBlock::Ref::NewWith(this,
+				block->GetOffset() + tboSize, block->GetSize() - tboSize));
 			pBlocks.Insert( emptyBlock, index + 1 );
 		}
 		
@@ -285,15 +284,14 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::pAddEmptyBlock(){
 	int offset = 0;
 	
 	if( count > 0 ){
-		const deoglDynamicTBOBlock &block = *( ( deoglDynamicTBOBlock* )( deObject* )pBlocks.GetAt( count - 1 ) );
+		const deoglDynamicTBOBlock &block = *( pBlocks.GetAt( count - 1 ) );
 		offset = block.GetOffset() + block.GetSize();
 	}
 	
-	deObjectReference block;
-	block.TakeOver( new deoglDynamicTBOBlock( this, offset, 0 ) );
+	const deoglDynamicTBOBlock::Ref block(deoglDynamicTBOBlock::Ref::NewWith(this, offset, 0));
 	pBlocks.Add( block );
 	
-	return ( deoglDynamicTBOBlock* )( deObject* )block; // valid because pBlocks holds reference
+	return block; // valid because pBlocks holds reference
 }
 
 void deoglDynamicTBOShared::pEnsureTBOSize(){

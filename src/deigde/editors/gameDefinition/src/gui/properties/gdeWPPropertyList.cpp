@@ -134,14 +134,13 @@ public:
 				continue;
 			}
 			
-			deObjectReference property;
-			property.TakeOver( new gdeProperty( name ) );
+			const gdeProperty::Ref property(gdeProperty::Ref::NewWith(name));
 			
 			igdeUndo::Ref undo;
-			undo.TakeOver( pPanel.UndoAdd( ( gdeProperty* )( deObject* )property ) );
+			undo.TakeOver( pPanel.UndoAdd( property ) );
 			if( undo ){
 				pPanel.GetUndoSystem()->Add( undo );
-				pPanel.SelectProperty( ( gdeProperty* )( deObject* )property );
+				pPanel.SelectProperty( property );
 			}
 			return;
 		}
@@ -195,11 +194,10 @@ public:
 			return;
 		}
 		
-		deObjectReference clipProperty;
-		clipProperty.TakeOver( new gdeProperty( *property ) );
+		const gdeProperty::Ref clipProperty(gdeProperty::Ref::NewWith(*property));
 		
 		igdeClipboardData::Ref clipData;
-		clipData.TakeOver( new gdeClipboardDataProperty( ( gdeProperty* )( deObject* )clipProperty ) );
+		clipData.TakeOver( new gdeClipboardDataProperty( clipProperty ) );
 		
 		pPanel.GetClipboard()->Set( clipData );
 	}
@@ -263,16 +261,15 @@ public:
 			}
 		}
 		
-		deObjectReference refProperty;
-		refProperty.TakeOver( new gdeProperty( *clip->GetProperty() ) );
-		gdeProperty * const property = ( gdeProperty* )( deObject* )refProperty;
+		const gdeProperty::Ref refProperty(gdeProperty::Ref::NewWith(*clip->GetProperty()));
+		gdeProperty * const property = refProperty;
 		property->SetName( name );
 		
 		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoPaste( property ) );
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
-			pPanel.SelectProperty( ( gdeProperty* )( deObject* )property );
+			pPanel.SelectProperty( property );
 		}
 	}
 	
@@ -622,9 +619,8 @@ public:
 			return;
 		}
 		
-		deObjectReference refFilePattern;
-		refFilePattern.TakeOver( new gdeFilePattern( name, "*.ext", "*.ext" ) );
-		gdeFilePattern * const filePattern = ( gdeFilePattern* )( deObject* )refFilePattern;
+		const gdeFilePattern::Ref refFilePattern(gdeFilePattern::Ref::NewWith(name, "*.ext", "*.ext"));
+		gdeFilePattern * const filePattern = refFilePattern;
 		
 		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoCustomFilePatternAdd( property, filePattern ) );

@@ -357,8 +357,7 @@ pVAPreview( NULL )
 	
 	
 	// lanes
-	deObjectReference lane;
-	lane.TakeOver( new ceWDSLaneWord( *this, 0, "Word", "Speech animation." ) );
+	const ceWDSLaneWord::Ref lane(ceWDSLaneWord::Ref::NewWith(*this, 0, "Word", "Speech animation."));
 	pLanes.Add( lane );
 	lane.TakeOver( new ceWDSLaneFacePose( *this, 1, "Face Pose", "Facial animation." ) );
 	pLanes.Add( lane );

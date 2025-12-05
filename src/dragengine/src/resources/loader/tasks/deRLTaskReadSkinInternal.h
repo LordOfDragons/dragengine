@@ -50,6 +50,10 @@ public:
 	 * for the caller
 	 */
 	class DE_DLL_EXPORT cInternalTask : public deThreadSafeObject{
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<cInternalTask> Ref;
+
+
 	private:
 		deSkinPropertyImage *pPropertyImage;
 		deSkinPropertyNodeImage *pNodeImage;

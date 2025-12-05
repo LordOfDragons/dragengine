@@ -38,6 +38,10 @@
  * If seeking is not supported an exception is thrown.
  */
 class decBaseFileWriter : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decBaseFileWriter> Ref;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

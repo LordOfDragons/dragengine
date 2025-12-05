@@ -60,6 +60,10 @@ class deoglDecalListener;
  * Render decal.
  */
 class deoglRDecal : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDecal> Ref;
+
+
 private:
 	/** World compute element. */
 	class WorldComputeElement: public deoglWorldComputeElement{

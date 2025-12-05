@@ -196,8 +196,7 @@ void saeWindowMain::SetSAnimation( saeSAnimation *sanimation ){
 }
 
 void saeWindowMain::CreateNewSAnimation(){
-	deObjectReference refSAnimation;
-	refSAnimation.TakeOver( new saeSAnimation( &GetEnvironment() ) );
+	const saeSAnimation::Ref refSAnimation(saeSAnimation::Ref::NewWith(&GetEnvironment()));
 	SetSAnimation( ( saeSAnimation* )refSAnimation.operator->() );
 }
 
@@ -511,8 +510,7 @@ public:
 				continue;
 			}
 			
-			deObjectReference phonemeRef;
-			phonemeRef.TakeOver( new saePhoneme( ipa ) );
+			const saePhoneme::Ref phonemeRef(saePhoneme::Ref::NewWith(ipa));
 			return new saeUPhonemeAdd( sanimation, ( saePhoneme* )phonemeRef.operator->() );
 		}
 		
@@ -566,8 +564,7 @@ public:
 				continue;
 			}
 			
-			deObjectReference wordRef;
-			wordRef.TakeOver( new saeWord( name ) );
+			const saeWord::Ref wordRef(saeWord::Ref::NewWith(name));
 			return new saeUWordAdd( sanimation, ( saeWord* )wordRef.operator->() );
 		}
 		

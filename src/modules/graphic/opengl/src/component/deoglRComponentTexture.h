@@ -52,6 +52,10 @@ class deoglRenderPlanMasked;
  * Render component texture.
  */
 class deoglRComponentTexture : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRComponentTexture> Ref;
+
+
 private:
 	deoglRComponent &pComponent;
 	const int pIndex;

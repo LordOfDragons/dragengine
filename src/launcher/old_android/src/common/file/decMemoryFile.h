@@ -34,6 +34,10 @@
  * \brief Memory file.
  */
 class decMemoryFile : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<decMemoryFile> Ref;
+
+
 private:
 	decString pFilename;
 	char *pData;

@@ -39,6 +39,10 @@ class deoglRenderThread;
  * Render capture canvas.
  */
 class deoglRCaptureCanvas : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRCaptureCanvas> Ref;
+
+
 private:
 	deoglRenderThread &pRenderThread;
 	deoglRCanvasView *pCanvasView;

@@ -69,11 +69,10 @@ igdeUndo *gdeMAOCLightCopy::OnActionSubObject( gdeGameDefinition &gameDefinition
 		return NULL;
 	}
 	
-	deObjectReference clipOCLight;
-	clipOCLight.TakeOver( new gdeOCLight( *light ) );
+	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::NewWith(*light));
 	
 	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCLight( ( gdeOCLight* )( deObject* )clipOCLight ) );
+	clipData.TakeOver( new gdeClipboardDataOCLight( clipOCLight ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

@@ -223,7 +223,7 @@ public:
 	virtual igdeUndo *OnAction( seSky *sky ){
 		deObjectReference controller;
 		controller.TakeOver( new seController );
-		return new seUControllerAdd( sky, ( seController* )( deObject* )controller );
+		return new seUControllerAdd( sky, controller );
 	}
 };
 

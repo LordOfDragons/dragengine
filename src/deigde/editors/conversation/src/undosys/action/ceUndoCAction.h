@@ -37,6 +37,10 @@ class ceConversationTopic;
  * Stores an action including the topic it is located under for undo purpose.
  */
 class ceUndoCAction : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUndoCAction> Ref;
+
+
 private:
 	ceConversationAction *pAction;
 	ceConversationTopic *pTopic;

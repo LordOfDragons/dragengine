@@ -39,6 +39,10 @@ class deSkin;
  * \brief Skin resource peer.
  */
 class deoalASkin : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalASkin> Ref;
+
+
 private:
 	deoalAudioThread &pAudioThread;
 	decString pFilename;

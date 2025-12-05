@@ -164,11 +164,10 @@ public:
 				continue;
 			}
 			
-			deObjectReference controller;
-			controller.TakeOver( new gdeSkyController( name, 0.0f ) );
+			const gdeSkyController::Ref controller(gdeSkyController::Ref::NewWith(name, 0.0f));
 			
 			igdeUndo::Ref undo;
-			undo.TakeOver( new gdeUSkyControllerAdd( sky, ( gdeSkyController* )( deObject* )controller ) );
+			undo.TakeOver( new gdeUSkyControllerAdd( sky, controller ) );
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 			
 			pComboBox.SetSelection( pComboBox.IndexOfItem( name ) );

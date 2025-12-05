@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Snap Point...",
 igdeUndo *gdeMAOCSnapPointAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
 	deObjectReference snapPoint;
 	snapPoint.TakeOver( new gdeOCSnapPoint );
-	return new gdeUOCAddSnapPoint( &objectClass, ( gdeOCSnapPoint* )( deObject* )snapPoint );
+	return new gdeUOCAddSnapPoint( &objectClass, snapPoint );
 }
 
 void gdeMAOCSnapPointAdd::Update(){

@@ -119,8 +119,7 @@ deResourceLoader::eResourceType resourceType ){
 
 void igdeResourceLoader::pAddTask( const char *filename,
 deResourceLoader::eResourceType resourceType ){
-	deObjectReference task;
-	task.TakeOver( new igdeResourceLoaderTask( filename, resourceType ) );
+	const igdeResourceLoaderTask::Ref task(igdeResourceLoaderTask::Ref::NewWith(filename, resourceType));
 	pTasks.Add( task );
 	
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();

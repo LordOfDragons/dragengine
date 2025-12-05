@@ -34,6 +34,10 @@
  * \brief File pattern.
  */
 class gdeFilePattern : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeFilePattern> Ref;
+
+
 private:
 	decString pName;
 	decString pPattern;

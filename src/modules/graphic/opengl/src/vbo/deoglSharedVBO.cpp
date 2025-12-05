@@ -94,8 +94,7 @@ pMemUseIBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bu
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
 		// add empty block for the entire vbo space
-		deObjectReference block;
-		block.TakeOver( new deoglSharedVBOBlock( this, 0, size, 0, indexSize ) );
+		const deoglSharedVBOBlock::Ref block(deoglSharedVBOBlock::Ref::NewWith(this, 0, size, 0, indexSize));
 		pBlocks.Add( block );
 		
 	}catch( const deException & ){
@@ -276,10 +275,9 @@ deoglSharedVBOBlock *deoglSharedVBO::AddBlock( int size, int indexCount ){
 		// if empty block is larger than requested size add empty block with remaining empty
 		// space right after this block
 		if( block->GetSize() > size || block->GetIndexCount() > indexCount ){
-			deObjectReference emptyBlock;
-			emptyBlock.TakeOver( new deoglSharedVBOBlock( this,
+			const deoglSharedVBOBlock::Ref emptyBlock(deoglSharedVBOBlock::Ref::NewWith(this,
 				block->GetOffset() + size, block->GetSize() - size,
-				block->GetIndexOffset() + indexCount, block->GetIndexCount() - indexCount ) );
+				block->GetIndexOffset() + indexCount, block->GetIndexCount() - indexCount));
 			pBlocks.Insert( emptyBlock, index + 1 );
 		}
 		

@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Component...",
 igdeUndo *gdeMAOCComponentAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
 	deObjectReference component;
 	component.TakeOver( new gdeOCComponent );
-	return new gdeUOCAddComponent( &objectClass, ( gdeOCComponent* )( deObject* )component );
+	return new gdeUOCAddComponent( &objectClass, component );
 }
 
 void gdeMAOCComponentAdd::Update(){

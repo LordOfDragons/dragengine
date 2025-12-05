@@ -112,7 +112,7 @@ public:
 		( ( meHTVRule& )( deObject& )rule ).SetPosition( pPosition );
 		
 		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleAdd( pView.GetVLayer(), ( meHTVRule* )( deObject* )rule ) );
+		undo.TakeOver( new meUHTVRuleAdd( pView.GetVLayer(), rule ) );
 		pView.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -398,12 +398,11 @@ public:
 			DETHROW( deeInvalidParam );
 		}
 		
-		deObjectReference ruleLink;
-		ruleLink.TakeOver( new meHTVRLink( wvnodeSource.GetRule(), indexSlotSource,
-			wvnodeTarget.GetRule(), indexSlotTarget ) );
+		const meHTVRLink::Ref ruleLink(meHTVRLink::Ref::NewWith(wvnodeSource.GetRule(), indexSlotSource,
+			wvnodeTarget.GetRule(), indexSlotTarget));
 		
 		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVLinkAdd( pView.GetVLayer(), ( meHTVRLink* )( deObject* )ruleLink ) );
+		undo.TakeOver( new meUHTVLinkAdd( pView.GetVLayer(), ruleLink ) );
 		pView.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 	

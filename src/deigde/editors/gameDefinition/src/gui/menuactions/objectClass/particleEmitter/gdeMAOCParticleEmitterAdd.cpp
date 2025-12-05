@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Particle Emitter...",
 igdeUndo *gdeMAOCParticleEmitterAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
 	deObjectReference particleEmitter;
 	particleEmitter.TakeOver( new gdeOCParticleEmitter );
-	return new gdeUOCAddParticleEmitter( &objectClass, ( gdeOCParticleEmitter* )( deObject* )particleEmitter );
+	return new gdeUOCAddParticleEmitter( &objectClass, particleEmitter );
 }
 
 void gdeMAOCParticleEmitterAdd::Update(){

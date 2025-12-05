@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Speaker...",
 igdeUndo *gdeMAOCSpeakerAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
 	deObjectReference speaker;
 	speaker.TakeOver( new gdeOCSpeaker );
-	return new gdeUOCAddSpeaker( &objectClass, ( gdeOCSpeaker* )( deObject* )speaker );
+	return new gdeUOCAddSpeaker( &objectClass, speaker );
 }
 
 void gdeMAOCSpeakerAdd::Update(){

@@ -34,6 +34,10 @@
  * @brief Game Engine Module Parameter.
  */
 class dealEMParameter : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealEMParameter> Ref;
+
+
 private:
 	int pIndex;
 	decString pName;

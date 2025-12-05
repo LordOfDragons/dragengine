@@ -37,6 +37,10 @@ class deoalSkinTexture;
  * \brief Component texture.
  */
 class deoalAComponentTexture : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalAComponentTexture> Ref;
+
+
 private:
 	deoalAComponent &pComponent;
 	const int pIndex;

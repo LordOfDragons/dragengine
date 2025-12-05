@@ -58,6 +58,10 @@ class igdeEnvironment;
  * true if a plant has to be set or false otherwise.
  */
 class meHTVegetationLayer : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVegetationLayer> Ref;
+
+
 private:
 	meHeightTerrain *pHeightTerrain;
 	

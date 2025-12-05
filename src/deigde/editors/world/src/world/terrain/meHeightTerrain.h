@@ -48,6 +48,10 @@ class igdeEnvironment;
  * \brief Height terrain.
  */
 class meHeightTerrain : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHeightTerrain> Ref;
+
+
 private:
 	meWorld &pWorld;
 	deHeightTerrain *pEngHT;

@@ -203,9 +203,8 @@ reRig *reLoadSaveSystem::LoadRig( const char *filename ){
 	fileReader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
 		->OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 	
-	deObjectReference refRig;
-	refRig.TakeOver( new reRig( &pWindowMain.GetEnvironment() ) );
-	reRig * const rig = ( reRig* )( deObject* )refRig;
+	const reRig::Ref refRig(reRig::Ref::NewWith(&pWindowMain.GetEnvironment()));
+	reRig * const rig = refRig;
 	
 	pLSRigs[ lsIndex ]->LoadRig( rig, fileReader );
 	

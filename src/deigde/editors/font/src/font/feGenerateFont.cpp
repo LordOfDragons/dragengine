@@ -108,9 +108,8 @@ void feGenerateFont::SetEnlargeGlpyh( int enlarge ){
 feFont* feGenerateFont::GenerateFont(){
 	pSystemFont = pEnvironment.GetSharedFont( pFontConfig )->GetEngineFont();
 	
-	deObjectReference fontRef;
-	fontRef.TakeOver( new feFont( &pEnvironment ) );
-	feFont * const font = ( feFont* )( deObject* )fontRef;
+	const feFont::Ref fontRef(feFont::Ref::NewWith(&pEnvironment));
+	feFont * const font = fontRef;
 	
 	font->SetLineHeight( pSystemFont->GetLineHeight() + pEnlargeGlyph * 2 );
 	font->SetBaseLine(pSystemFont->GetBaseLine());
@@ -140,7 +139,7 @@ void feGenerateFont::pAddGlyphs( feFont &font ){
 		const deFontGlyph &sfGlyph = pSystemFont->GetGlyph( i );
 		
 		glyphRef.TakeOver( new feFontGlyph );
-		feFontGlyph * const glyph = ( feFontGlyph* )( deObject* )glyphRef;
+		feFontGlyph * const glyph = glyphRef;
 		glyph->SetCode( i );
 		glyph->SetU( 0 );
 		glyph->SetV( 0 );

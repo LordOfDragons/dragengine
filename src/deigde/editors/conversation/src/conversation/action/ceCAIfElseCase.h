@@ -36,6 +36,10 @@ class ceConversationCondition;
  * \brief Player Choice Option.
  */
 class ceCAIfElseCase : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceCAIfElseCase> Ref;
+
+
 private:
 	ceConversationCondition *pCondition;
 	ceConversationActionList pActions;

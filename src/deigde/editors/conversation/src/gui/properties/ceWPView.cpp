@@ -328,8 +328,8 @@ public:
 	virtual igdeUndo *OnAction( ceConversation *conversation ){
 		deObjectReference prop;
 		prop.TakeOver( new ceProp );
-		conversation->AddProp( ( ceProp* )( deObject* )prop );
-		conversation->SetActiveProp( ( ceProp* )( deObject* )prop );
+		conversation->AddProp( prop );
+		conversation->SetActiveProp( prop );
 		return NULL;
 	}
 };
@@ -464,10 +464,9 @@ public:
 	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add Actor" ){ }
 	
 	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		deObjectReference actor;
-		actor.TakeOver( new ceConversationActor( pPanel.GetEnvironment() ) );
-		conversation->AddActor( ( ceConversationActor* )( deObject* )actor );
-		conversation->SetActiveActor( ( ceConversationActor* )( deObject* )actor );
+		const ceConversationActor::Ref actor(ceConversationActor::Ref::NewWith(pPanel.GetEnvironment()));
+		conversation->AddActor( actor );
+		conversation->SetActiveActor( actor );
 		return NULL;
 	}
 };
@@ -687,11 +686,10 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference pose;
-		pose.TakeOver( new ceActorPose( pPanel.GetEnvironment(), name ) );
-		actor->GetPoses().Add( ( ceActorPose* )( deObject* )pose );
+		const ceActorPose::Ref pose(ceActorPose::Ref::NewWith(pPanel.GetEnvironment(), name));
+		actor->GetPoses().Add( pose );
 		conversation->NotifyActorPosesChanged( actor );
-		actor->SetActivePose( ( ceActorPose* )( deObject* )pose );
+		actor->SetActivePose( pose );
 		conversation->NotifyActorActivePoseChanged( actor );
 		return NULL;
 	}
@@ -984,12 +982,11 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference gesture;
-		gesture.TakeOver( new ceActorGesture( pPanel.GetEnvironment(), name ) );
-		pose->GetGestures().Add( ( ceActorGesture* )( deObject* )gesture );
+		const ceActorGesture::Ref gesture(ceActorGesture::Ref::NewWith(pPanel.GetEnvironment(), name));
+		pose->GetGestures().Add( gesture );
 		pPanel.GetActor()->NotifyPoseGesturesChanged( pose );
 		pPanel.UpdateActorGestures();
-		pPanel.SelectActorPoseGesture( ( ceActorGesture* )( deObject* )gesture );
+		pPanel.SelectActorPoseGesture( gesture );
 		return NULL;
 	}
 };
@@ -1089,9 +1086,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference pcommand;
-		pcommand.TakeOver( new cePlaybackCommand( command, false ) );
-		actor->GetCommands().Add( ( cePlaybackCommand* )( deObject* )pcommand );
+		const cePlaybackCommand::Ref pcommand(cePlaybackCommand::Ref::NewWith(command, false));
+		actor->GetCommands().Add( pcommand );
 		conversation->NotifyActorCommandsChanged( actor );
 		return NULL;
 	}
@@ -1280,8 +1276,8 @@ public:
 	virtual igdeUndo *OnAction( ceConversation *conversation ){
 		deObjectReference actor;
 		actor.TakeOver( new ceCoordSystem );
-		conversation->AddCoordSystem( ( ceCoordSystem* )( deObject* )actor );
-		conversation->SetActiveCoordSystem( ( ceCoordSystem* )( deObject* )actor );
+		conversation->AddCoordSystem( actor );
+		conversation->SetActiveCoordSystem( actor );
 		return NULL;
 	}
 };
@@ -1481,9 +1477,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference pcommand;
-		pcommand.TakeOver( new cePlaybackCommand( command, false ) );
-		conversation->GetPlayback()->GetCommands().Add( ( cePlaybackCommand* )( deObject* )pcommand );
+		const cePlaybackCommand::Ref pcommand(cePlaybackCommand::Ref::NewWith(command, false));
+		conversation->GetPlayback()->GetCommands().Add( pcommand );
 		conversation->NotifyPlaybackCommandListChanged();
 		return NULL;
 	}

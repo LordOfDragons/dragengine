@@ -34,6 +34,10 @@
  * GLSL shader preprocessor symbol.
  */
 class deoglShaderPreprocessorSymbol : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglShaderPreprocessorSymbol> Ref;
+
+
 private:
 	decString pName;
 	decString pValue;

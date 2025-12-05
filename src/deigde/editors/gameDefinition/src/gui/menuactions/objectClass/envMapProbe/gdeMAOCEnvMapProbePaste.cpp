@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCEnvMapProbePaste::OnActionSubObject( gdeGameDefinition&, gdeObj
 	const gdeClipboardDataOCEnvMapProbe &clipOCEnvMapProbe =
 		( const gdeClipboardDataOCEnvMapProbe & )( igdeClipboardData& )clip;
 	
-	deObjectReference envMapProbe;
-	envMapProbe.TakeOver( new gdeOCEnvMapProbe( *clipOCEnvMapProbe.GetEnvMapProbe() ) );
+	const gdeOCEnvMapProbe::Ref envMapProbe(gdeOCEnvMapProbe::Ref::NewWith(*clipOCEnvMapProbe.GetEnvMapProbe()));
 	
 	igdeUndo * const undo = new gdeUOCAddEnvMapProbe( &objectClass,
-		( gdeOCEnvMapProbe* )( deObject* )envMapProbe );
+		envMapProbe );
 	undo->SetShortInfo( "Paste object class environment map probe" );
 	return undo;
 }

@@ -42,6 +42,10 @@ class dealGuiTheme;
  * \brief Widget.
  */
 class dealWidget : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealWidget> Ref;
+
+
 public:
 	/** \brief Render context. */
 	struct sRenderContext{

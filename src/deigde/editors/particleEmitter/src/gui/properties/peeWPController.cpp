@@ -223,7 +223,7 @@ public:
 	virtual igdeUndo *OnAction( peeEmitter *emitter ){
 		deObjectReference controller;
 		controller.TakeOver( new peeController );
-		return new peeUControllerAdd( emitter, ( peeController* )( deObject* )controller );
+		return new peeUControllerAdd( emitter, controller );
 	}
 };
 

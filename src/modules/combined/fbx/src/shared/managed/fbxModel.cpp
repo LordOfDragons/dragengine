@@ -204,7 +204,7 @@ void fbxModel::MatchClusters( const fbxRig &rig ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		fbxModelCluster &cluster = *( ( fbxModelCluster* )( deObject* )pClusters.GetAt( i ) );
+		fbxModelCluster &cluster = *( pClusters.GetAt( i ) );
 		
 		connections.RemoveAll();
 		
@@ -230,7 +230,7 @@ void fbxModel::BuildWeights(){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		fbxModelCluster &cluster = *( ( fbxModelCluster* )( deObject* )pClusters.GetAt( i ) );
+		fbxModelCluster &cluster = *( pClusters.GetAt( i ) );
 		if( ! cluster.GetRigBone() ){
 			continue;
 		}

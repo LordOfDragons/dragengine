@@ -260,7 +260,7 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				inheritClassCount = eclass->GetInheritClassCount();
 				for( j=0; j<inheritClassCount; j++ ){
 					refCopy.TakeOver( new igdeGDClassInherit( *eclass->GetInheritClassAt( j ) ) );
-					gdclassExisting->AddInheritClass( ( igdeGDClassInherit* )( deObject* )refCopy );
+					gdclassExisting->AddInheritClass( refCopy );
 				}
 				gdclassExisting->ResolveInheritClasses( *this );
 				

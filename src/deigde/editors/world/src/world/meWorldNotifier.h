@@ -59,6 +59,10 @@ class mePropFieldType;
  * Notifier for changes in a world.
  */
 class meWorldNotifier : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWorldNotifier> Ref;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

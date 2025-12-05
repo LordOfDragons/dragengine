@@ -37,6 +37,10 @@
  * \brief Game definition class navigation space.
  */
 class DE_DLL_EXPORT igdeGDCNavigationSpace : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDCNavigationSpace> Ref;
+
+
 public:
 	/** \brief Properties. */
 	enum eProperties{

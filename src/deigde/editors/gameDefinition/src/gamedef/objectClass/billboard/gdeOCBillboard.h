@@ -35,6 +35,10 @@
  * \brief Object class billboard.
  */
 class gdeOCBillboard : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeOCBillboard> Ref;
+
+
 public:
 	/** \brief Properties. */
 	enum eProperties{

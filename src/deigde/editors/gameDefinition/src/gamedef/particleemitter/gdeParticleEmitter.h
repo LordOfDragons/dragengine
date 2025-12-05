@@ -36,6 +36,10 @@ class gdeGameDefinition;
  * \brief Particle emitter.
  */
 class gdeParticleEmitter : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeParticleEmitter> Ref;
+
+
 private:
 	gdeGameDefinition *pGameDefinition;
 	

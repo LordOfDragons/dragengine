@@ -38,6 +38,10 @@ class deSharedVulkan;
  * Vulkan instance.
  */
 class devkInstance : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<devkInstance> Ref;
+
+
 public:
 	/** Extension. */
 	enum eExtension{

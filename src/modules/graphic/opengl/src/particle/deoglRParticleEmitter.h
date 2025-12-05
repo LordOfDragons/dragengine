@@ -38,6 +38,10 @@ class deoglVBOLayout;
  * Render particle emitter.
  */
 class deoglRParticleEmitter : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRParticleEmitter> Ref;
+
+
 private:
 	deoglRenderThread &pRenderThread;
 	

@@ -71,11 +71,10 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 		return NULL;
 	}
 	
-	deObjectReference clipOCNavigationSpace;
-	clipOCNavigationSpace.TakeOver( new gdeOCNavigationSpace( *navSpace ) );
+	const gdeOCNavigationSpace::Ref clipOCNavigationSpace(gdeOCNavigationSpace::Ref::NewWith(*navSpace));
 	
 	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCNavSpace( ( gdeOCNavigationSpace* )( deObject* )clipOCNavigationSpace ) );
+	clipData.TakeOver( new gdeClipboardDataOCNavSpace( clipOCNavigationSpace ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

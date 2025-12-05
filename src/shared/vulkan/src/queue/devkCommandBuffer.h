@@ -46,6 +46,10 @@ class devkImage;
  * Vulkan command buffer.
  */
 class devkCommandBuffer : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<devkCommandBuffer> Ref;
+
+
 public:
 	/** Reference. */
 	typedef devkTPoolReference<devkCommandBuffer> Ref;

@@ -38,6 +38,10 @@ class decTgaImage;
  * \brief Image.
  */
 class dealImage : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealImage> Ref;
+
+
 private:
 	dealDisplay &pDisplay;
 	

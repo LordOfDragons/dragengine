@@ -45,6 +45,10 @@ class deHeightTerrainNavSpace;
  * \brief Height terrain navigation space.
  */
 class meHeightTerrainNavSpace : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHeightTerrainNavSpace> Ref;
+
+
 private:
 	deEngine &pEngine;
 	deHeightTerrainNavSpace *pEngNavSpace;

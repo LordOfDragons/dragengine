@@ -34,6 +34,10 @@
  * \brief Game definition sky default controller value.
  */
 class DE_DLL_EXPORT igdeGDSkyController : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDSkyController> Ref;
+
+
 private:
 	decString pName;
 	float pValue;

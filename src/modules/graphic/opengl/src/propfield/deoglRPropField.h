@@ -48,6 +48,10 @@ class dePropField;
  * and calls the script to create the instances with 1 density as parameter.
  */
 class deoglRPropField : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRPropField> Ref;
+
+
 private:
 	deoglRenderThread &pRenderThread;
 	deoglRWorld *pParentWorld;

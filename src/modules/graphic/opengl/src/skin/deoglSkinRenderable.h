@@ -34,6 +34,10 @@
  * Skin renderable usage information.
  */
 class deoglSkinRenderable : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglSkinRenderable> Ref;
+
+
 private:
 	decString pName;
 	bool pRequiresTexture;

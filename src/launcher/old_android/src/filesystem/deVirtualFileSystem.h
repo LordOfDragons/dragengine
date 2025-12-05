@@ -56,6 +56,10 @@ class deFileSearchVisitor;
  * container. This container is safe to be modified while in use.
  */
 class deVirtualFileSystem : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deVirtualFileSystem> Ref;
+
+
 private:
 	decObjectOrderedSet pContainers;
 	

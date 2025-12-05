@@ -65,6 +65,10 @@ class decShapeBox;
  * Render light.
  */
 class deoglRLight : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRLight> Ref;
+
+
 private:
 	/** World compute element. */
 	class WorldComputeElement: public deoglWorldComputeElement{

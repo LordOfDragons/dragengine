@@ -337,7 +337,7 @@ void igdeEditorModuleManager::pScanForModules(){
 			
 			// try loading module
 			refModule.TakeOver( new igdeEditorModuleDefinition( *this, modulePath.GetPathNative() ) );
-			igdeEditorModuleDefinition * const module = ( igdeEditorModuleDefinition* )( deObject* )refModule;
+			igdeEditorModuleDefinition * const module = refModule;
 			
 			if( module->GetErrorCode() != igdeEditorModuleDefinition::eecSuccess ){
 				switch( module->GetErrorCode() ){

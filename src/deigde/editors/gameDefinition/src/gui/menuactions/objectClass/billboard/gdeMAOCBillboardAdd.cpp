@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Billboard...",
 igdeUndo *gdeMAOCBillboardAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
 	deObjectReference billboard;
 	billboard.TakeOver( new gdeOCBillboard );
-	return new gdeUOCAddBillboard( &objectClass, ( gdeOCBillboard* )( deObject* )billboard );
+	return new gdeUOCAddBillboard( &objectClass, billboard );
 }
 
 void gdeMAOCBillboardAdd::Update(){

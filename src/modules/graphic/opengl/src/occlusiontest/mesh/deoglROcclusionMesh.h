@@ -45,6 +45,10 @@ class deoglRayTraceField;
  * Occlusion Mesh Peer.
  */
 class deoglROcclusionMesh : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglROcclusionMesh> Ref;
+
+
 public:
 	/** Mesh weight. */
 	struct sWeight{

@@ -179,9 +179,8 @@ void seWindowMain::SetSynthesizer( seSynthesizer *synthesizer ){
 }
 
 void seWindowMain::CreateSynthesizer(){
-	deObjectReference synthesizer;
-	synthesizer.TakeOver( new seSynthesizer( &GetEnvironment(), pLoadSaveSystem ) );
-	SetSynthesizer( ( seSynthesizer* )( deObject* )synthesizer );
+	const seSynthesizer::Ref synthesizer(seSynthesizer::Ref::NewWith(&GetEnvironment(), pLoadSaveSystem));
+	SetSynthesizer( synthesizer );
 }
 
 void seWindowMain::SaveSynthesizer( const char *filename ){
@@ -232,7 +231,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group )
 	}
 	
 	refSource.TakeOver( seSource::CreateSourceFromType( GetEngine(), type ) );
-	seSource * const source = ( seSource* )( deObject* )refSource;
+	seSource * const source = refSource;
 	source->SetName( name );
 	
 	if( insert ){
@@ -285,7 +284,7 @@ void seWindowMain::CreateEffect( deSynthesizerEffectVisitorIdentify::eEffectType
 	}
 	
 	refEffect.TakeOver( seEffect::CreateEffectFromType( GetEngine(), type ) );
-	seEffect * const effect = ( seEffect* )( deObject* )refEffect;
+	seEffect * const effect = refEffect;
 	effectSelect = effect;
 	
 	undo.TakeOver( new seUSourceAddEffect( activeSource, effect, index ) );
@@ -391,7 +390,7 @@ void seWindowMain::GetChangedDocuments( decStringList &list ){
 void seWindowMain::LoadDocument( const char *filename ){
 	deObjectReference synthesizer;
 	synthesizer.TakeOver( pLoadSaveSystem.LoadSynthesizer( filename ) );
-	SetSynthesizer( ( seSynthesizer* )( deObject* )synthesizer );
+	SetSynthesizer( synthesizer );
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -495,7 +494,7 @@ public:
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename ) ){
 			deObjectReference synthesizer2;
 			synthesizer2.TakeOver( pWindow.GetLoadSaveSystem().LoadSynthesizer( filename ) );
-			pWindow.SetSynthesizer( ( seSynthesizer* )( deObject* )synthesizer2 );
+			pWindow.SetSynthesizer( synthesizer2 );
 			pWindow.GetRecentFiles().AddFile( filename );
 		}
 		return NULL;
@@ -602,9 +601,8 @@ public:
 			name.Format( "Controller #%d", number++ );
 		}
 		
-		deObjectReference controller;
-		controller.TakeOver( new seController( name ) );
-		return new seUAddController( synthesizer, ( seController* )( deObject* )controller );
+		const seController::Ref controller(seController::Ref::NewWith(name));
+		return new seUAddController( synthesizer, controller );
 	}
 };
 

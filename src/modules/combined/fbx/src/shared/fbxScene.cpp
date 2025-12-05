@@ -118,7 +118,7 @@ pConnectionMap( NULL )
 		}
 		
 		node.TakeOver( new fbxNode( *this, reader, checkEndOffset ) );
-		pNode->AddNode( ( fbxNode* )( deObject* )node );
+		pNode->AddNode( node );
 	}
 	
 	// footer
@@ -470,7 +470,7 @@ void fbxScene::Prepare( deBaseModule &module ){
 				nodeConnection.GetPropertyAt( 1 )->GetValueAsLong(),
 				nodeConnection.GetPropertyAt( 2 )->GetValueAsLong() ) );
 			pConnections.Add( connection );
-			pConnectionMap->Add( ( fbxConnection* )( deObject* )connection );
+			pConnectionMap->Add( connection );
 			
 		}else if( type == "OP" ){
 			connection.TakeOver( new fbxConnection(
@@ -478,7 +478,7 @@ void fbxScene::Prepare( deBaseModule &module ){
 				nodeConnection.GetPropertyAt( 2 )->GetValueAsLong(),
 				nodeConnection.GetPropertyAt( 3 )->CastString().GetValue() ) );
 			pConnections.Add( connection );
-			pConnectionMap->Add( ( fbxConnection* )( deObject* )connection );
+			pConnectionMap->Add( connection );
 		}
 	}
 }

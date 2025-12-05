@@ -39,6 +39,10 @@ class igdeLoggerHistoryEntry;
  * entries being added to the history.
  */
 class DE_DLL_EXPORT igdeLoggerHistoryListener : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeLoggerHistoryListener> Ref;
+
+
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

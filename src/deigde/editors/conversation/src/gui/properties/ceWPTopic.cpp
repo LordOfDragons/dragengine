@@ -227,9 +227,8 @@ public:
 		}
 		
 		igdeUndo::Ref undo;
-		deObjectReference group;
-		group.TakeOver( new ceConversationFile( name ) );
-		undo.TakeOver( new ceUCFileAdd( conversation, ( ceConversationFile* )( deObject* )group ) );
+		const ceConversationFile::Ref group(ceConversationFile::Ref::NewWith(name));
+		undo.TakeOver( new ceUCFileAdd( conversation, group ) );
 		conversation->GetUndoSystem()->Add( undo );
 	}
 	
@@ -480,9 +479,8 @@ public:
 		}
 		
 		igdeUndo::Ref undo;
-		deObjectReference topic;
-		topic.TakeOver( new ceConversationTopic( name ) );
-		undo.TakeOver( new ceUCTopicAdd( file, ( ceConversationTopic* )( deObject* )topic ) );
+		const ceConversationTopic::Ref topic(ceConversationTopic::Ref::NewWith(name));
+		undo.TakeOver( new ceUCTopicAdd( file, topic ) );
 		pPanel.GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	

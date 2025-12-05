@@ -48,6 +48,10 @@
  * need to add and remove debug information all time.
  */
 class debpDebugInformation : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debpDebugInformation> Ref;
+
+
 private:
 	decString pName;
 	float pElapsedTime;

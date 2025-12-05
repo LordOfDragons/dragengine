@@ -34,6 +34,10 @@
  * \brief Conversation action strip.
  */
 class ceStrip : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceStrip> Ref;
+
+
 private:
 	decString pID;
 	float pPause;

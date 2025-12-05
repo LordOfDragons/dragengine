@@ -44,6 +44,10 @@ class dePhysicsBullet;
  * shape without requiring a visitor.
  */
 class debpShape : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debpShape> Ref;
+
+
 public:
 	/** \brief Shape types. */
 	enum eShapeTypes{

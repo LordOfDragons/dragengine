@@ -69,9 +69,8 @@ igdeUndo *gdeMAObjectClassAdd::OnAction( gdeGameDefinition &gameDefinition ){
 			continue;
 		}
 		
-		deObjectReference objectClass;
-		objectClass.TakeOver( new gdeObjectClass( name ) );
-		return new gdeUAddObjectClass( &gameDefinition, ( gdeObjectClass* )( deObject* )objectClass );
+		const gdeObjectClass::Ref objectClass(gdeObjectClass::Ref::NewWith(name));
+		return new gdeUAddObjectClass( &gameDefinition, objectClass );
 	}
 	
 	return NULL;

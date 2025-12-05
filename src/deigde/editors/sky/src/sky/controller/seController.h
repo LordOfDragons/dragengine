@@ -37,6 +37,10 @@ class seSky;
  * \brief Controller.
  */
 class seController : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seController> Ref;
+
+
 private:
 	seSky *pSky;
 	int pIndex;

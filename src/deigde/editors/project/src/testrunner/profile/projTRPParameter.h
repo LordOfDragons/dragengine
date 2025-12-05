@@ -34,6 +34,10 @@
  * \brief Profile module parameter.
  */
 class projTRPParameter : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projTRPParameter> Ref;
+
+
 private:
 	decString pModule;
 	decString pName;

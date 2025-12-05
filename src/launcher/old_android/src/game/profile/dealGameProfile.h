@@ -40,6 +40,10 @@ class dealLauncher;
  * \brief Game Profile.
  */
 class dealGameProfile : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGameProfile> Ref;
+
+
 private:
 	decString pName;
 	

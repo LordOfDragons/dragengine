@@ -55,6 +55,10 @@ class deDebugDrawerShape;
  * Audio microphone.
  */
 class deoalAMicrophone : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalAMicrophone> Ref;
+
+
 private:
 	deoalAudioThread &pAudioThread;
 	

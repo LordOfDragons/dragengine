@@ -52,6 +52,10 @@ class deoalSharedEffectSlot;
  * Speaker peer.
  */
 class deoalASpeaker : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalASpeaker> Ref;
+
+
 private:
 	deoalAudioThread &pAudioThread;
 	deoalSpeaker *pBackLink;
