@@ -42,7 +42,6 @@
 #include "../property/gdePropertyList.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>

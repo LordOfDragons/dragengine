@@ -35,7 +35,6 @@
 #include "../../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/resources/synthesizer/deSynthesizer.h>
 #include <dragengine/resources/synthesizer/deSynthesizerManager.h>
 #include <dragengine/resources/synthesizer/deSynthesizerLink.h>

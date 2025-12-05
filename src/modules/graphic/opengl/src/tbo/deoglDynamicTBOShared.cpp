@@ -31,7 +31,6 @@
 #include "deoglDynamicTBOBlock.h"
 #include "../renderthread/deoglRTLogger.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 

@@ -36,7 +36,6 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 

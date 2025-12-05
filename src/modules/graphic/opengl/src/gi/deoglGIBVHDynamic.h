@@ -27,7 +27,6 @@
 
 #include "../deoglBasics.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglBVHNode;

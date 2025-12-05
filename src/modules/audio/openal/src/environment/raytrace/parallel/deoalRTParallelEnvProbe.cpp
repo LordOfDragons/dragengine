@@ -46,7 +46,6 @@
 #include "../../../devmode/deoalDevMode.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/threading/deMutexGuard.h>

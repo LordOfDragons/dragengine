@@ -27,8 +27,6 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
-
 #include "../deoglBasics.h"
 
 class deoglDynamicTBO;

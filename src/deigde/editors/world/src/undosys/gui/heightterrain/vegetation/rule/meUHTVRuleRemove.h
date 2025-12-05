@@ -27,8 +27,6 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/deObjectReference.h>
-
 class meHTVegetationLayer;
 class meHTVRule;
 

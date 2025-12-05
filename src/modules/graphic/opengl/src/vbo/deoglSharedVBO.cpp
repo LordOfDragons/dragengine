@@ -37,7 +37,6 @@
 #include "../renderthread/deoglRTChoices.h"
 #include "../vao/deoglVAO.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 

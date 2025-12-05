@@ -173,7 +173,6 @@
     <ClCompile Include="..\..\src\dragengine\src\deEngine.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\deObject.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\deObjectDebug.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\deObjectReference.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTrace.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTracePoint.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTraceValue.cpp" />
@@ -780,7 +779,6 @@
     <ClInclude Include="..\..\src\dragengine\src\deEngine.h" />
     <ClInclude Include="..\..\src\dragengine\src\deObject.h" />
     <ClInclude Include="..\..\src\dragengine\src\deObjectDebug.h" />
-    <ClInclude Include="..\..\src\dragengine\src\deObjectReference.h" />
     <ClInclude Include="..\..\src\dragengine\src\deTObjectReference.h" />
     <ClInclude Include="..\..\src\dragengine\src\doxy_main.h" />
     <ClInclude Include="..\..\src\dragengine\src\dragengine_configuration.h">

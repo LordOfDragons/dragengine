@@ -38,7 +38,6 @@
 #include "../../gui/model/igdeListItem.h"
 #include "../../gui/resources/igdeIcon.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/image/deImage.h>
 

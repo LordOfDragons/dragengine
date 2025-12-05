@@ -45,7 +45,6 @@
 #include "../igdeTagManager.h"
 #include "../property/igdeGDProperty.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/string/decStringSet.h>

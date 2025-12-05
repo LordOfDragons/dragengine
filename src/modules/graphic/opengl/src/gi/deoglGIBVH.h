@@ -30,7 +30,6 @@
 #include "../rendering/task/deoglRenderTask.h"
 #include "../utils/bvh/deoglBVH.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglGIBVHLocal;

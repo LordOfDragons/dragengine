@@ -28,7 +28,6 @@
 #include "../igdeContainer.h"
 #include "../igdeWidget.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>

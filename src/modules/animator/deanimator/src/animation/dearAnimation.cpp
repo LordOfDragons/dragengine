@@ -30,7 +30,6 @@
 #include "../deDEAnimator.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animation/deAnimationMove.h>

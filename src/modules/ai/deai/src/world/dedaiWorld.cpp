@@ -38,7 +38,6 @@
 #include "../devmode/dedaiDeveloperMode.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/navigation/navigator/deNavigator.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>

@@ -498,10 +498,7 @@ void seLoadSaveSky::pReadLink( const decXmlElementTag &root, seSky &sky ){
 
 void seLoadSaveSky::pReadLayer( const decXmlElementTag &root, seSky &sky ){
 	const int elementCount = root.GetElementCount();
-	deObjectReference refLayer;
-	int i;
-	
-	refLayer.TakeOver( new seLayer( *sky.GetEnvironment() ) );
+	const seLayer::Ref refLayer(seLayer::Ref::NewWith( *sky.GetEnvironment());
 	seLayer &layer = ( seLayer& )( deObject& )refLayer;
 	
 	sky.AddLayer( &layer ); // ensures relative path can be properly resolved
@@ -665,10 +662,7 @@ void seLoadSaveSky::pReadTarget( const decXmlElementTag &root, seSky &sky, seLay
 
 void seLoadSaveSky::pReadBody( const decXmlElementTag &root, seSky &sky, seLayer &layer ){
 	const int elementCount = root.GetElementCount();
-	deObjectReference refBody;
-	int i;
-	
-	refBody.TakeOver( new seBody( sky.GetEngine() ) );
+	const seBody::Ref refBody(seBody::Ref::NewWith( sky.GetEngine());
 	seBody &body = ( seBody& )( deObject& )refBody;
 	
 	layer.AddBody( &body ); // ensures relative path can be properly resolved

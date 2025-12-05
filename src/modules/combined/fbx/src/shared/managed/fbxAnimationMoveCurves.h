@@ -29,7 +29,6 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>

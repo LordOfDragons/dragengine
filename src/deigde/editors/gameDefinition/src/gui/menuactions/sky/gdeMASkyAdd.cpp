@@ -36,7 +36,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 

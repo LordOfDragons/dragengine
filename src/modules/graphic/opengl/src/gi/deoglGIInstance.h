@@ -29,7 +29,6 @@
 #include "../decal/deoglDecalListener.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 

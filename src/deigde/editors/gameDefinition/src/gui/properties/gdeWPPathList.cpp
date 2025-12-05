@@ -41,7 +41,6 @@
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 

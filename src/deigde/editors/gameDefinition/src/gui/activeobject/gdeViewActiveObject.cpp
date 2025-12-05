@@ -77,7 +77,6 @@
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deColliderAttachment.h>
@@ -956,11 +955,7 @@ const decString &propertyPrefix, int filter ){
 void gdeViewActiveObject::pInitOCComponents( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCComponentList &list = objectClass.GetComponents();
 	const int count = list.GetCount();
-	deObjectReference vao;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		vao.TakeOver( new gdeVAOComponent( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAOComponent::Ref vao(gdeVAOComponent::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCComponents.Add( vao );
 	}
 }
@@ -968,11 +963,7 @@ void gdeViewActiveObject::pInitOCComponents( const gdeObjectClass &objectClass, 
 void gdeViewActiveObject::pInitOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCBillboardList &list = objectClass.GetBillboards();
 	const int count = list.GetCount();
-	deObjectReference vao;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		vao.TakeOver( new gdeVAOBillboard( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAOBillboard::Ref vao(gdeVAOBillboard::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCBillboards.Add( vao );
 	}
 }
@@ -980,11 +971,7 @@ void gdeViewActiveObject::pInitOCBillboards( const gdeObjectClass &objectClass, 
 void gdeViewActiveObject::pInitOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCCameraList &list = objectClass.GetCameras();
 	const int count = list.GetCount();
-	deObjectReference vao;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		vao.TakeOver( new gdeVAOCamera( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAOCamera::Ref vao(gdeVAOCamera::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCCameras.Add( vao );
 	}
 }
@@ -992,11 +979,7 @@ void gdeViewActiveObject::pInitOCCameras( const gdeObjectClass &objectClass, con
 void gdeViewActiveObject::pInitOCLights( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCLightList &list = objectClass.GetLights();
 	const int count = list.GetCount();
-	deObjectReference vao;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		vao.TakeOver( new gdeVAOLight( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAOLight::Ref vao(gdeVAOLight::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCLights.Add( vao );
 	}
 }
@@ -1004,11 +987,7 @@ void gdeViewActiveObject::pInitOCLights( const gdeObjectClass &objectClass, cons
 void gdeViewActiveObject::pInitOCParticleEmitters( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCParticleEmitterList &list = objectClass.GetParticleEmitters();
 	const int count = list.GetCount();
-	deObjectReference vao;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		vao.TakeOver( new gdeVAOParticleEmitter( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAOParticleEmitter::Ref vao(gdeVAOParticleEmitter::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCParticleEmitters.Add( vao );
 	}
 }
@@ -1016,11 +995,7 @@ void gdeViewActiveObject::pInitOCParticleEmitters( const gdeObjectClass &objectC
 void gdeViewActiveObject::pInitOCForceFields( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCForceFieldList &list = objectClass.GetForceFields();
 	const int count = list.GetCount();
-	deObjectReference vao;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		vao.TakeOver( new gdeVAOForceField( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAOForceField::Ref vao(gdeVAOForceField::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCForceFields.Add( vao );
 	}
 }
@@ -1028,11 +1003,7 @@ void gdeViewActiveObject::pInitOCForceFields( const gdeObjectClass &objectClass,
 void gdeViewActiveObject::pInitOCEnvMapProbes( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCEnvMapProbeList &list = objectClass.GetEnvMapProbes();
 	const int count = list.GetCount();
-	deObjectReference vao;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		vao.TakeOver( new gdeVAOEnvMapProbe( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAOEnvMapProbe::Ref vao(gdeVAOEnvMapProbe::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCEnvMapProbes.Add( vao );
 	}
 }
@@ -1040,11 +1011,7 @@ void gdeViewActiveObject::pInitOCEnvMapProbes( const gdeObjectClass &objectClass
 void gdeViewActiveObject::pInitOCNavigationSpaces( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCNavigationSpaceList &list = objectClass.GetNavigationSpaces();
 	const int count = list.GetCount();
-	deObjectReference aoc;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		aoc.TakeOver( new gdeVAONavSpace( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAONavSpace::Ref aoc(gdeVAONavSpace::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCNavSpaces.Add( aoc );
 	}
 }
@@ -1052,11 +1019,7 @@ void gdeViewActiveObject::pInitOCNavigationSpaces( const gdeObjectClass &objectC
 void gdeViewActiveObject::pInitOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCNavigationBlockerList &list = objectClass.GetNavigationBlockers();
 	const int count = list.GetCount();
-	deObjectReference aoc;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		aoc.TakeOver( new gdeVAONavBlocker( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAONavBlocker::Ref aoc(gdeVAONavBlocker::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCNavBlockers.Add( aoc );
 	}
 }
@@ -1064,11 +1027,7 @@ void gdeViewActiveObject::pInitOCNavigationBlockers( const gdeObjectClass &objec
 void gdeViewActiveObject::pInitOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCSnapPointList &list = objectClass.GetSnapPoints();
 	const int count = list.GetCount();
-	deObjectReference vao;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		vao.TakeOver( new gdeVAOSnapPoint( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAOSnapPoint::Ref vao(gdeVAOSnapPoint::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCSnapPoints.Add( vao );
 	}
 }
@@ -1076,11 +1035,7 @@ void gdeViewActiveObject::pInitOCSnapPoints( const gdeObjectClass &objectClass, 
 void gdeViewActiveObject::pInitOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCSpeakerList &list = objectClass.GetSpeakers();
 	const int count = list.GetCount();
-	deObjectReference vao;
-	int i;
-	
-	for( i=0; i<count; i++ ){
-		vao.TakeOver( new gdeVAOSpeaker( *this, objectClass, propertyPrefix, list.GetAt( i ) ) );
+	const gdeVAOSpeaker::Ref vao(gdeVAOSpeaker::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
 		pOCSpeakers.Add( vao );
 	}
 }

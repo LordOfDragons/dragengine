@@ -31,7 +31,6 @@
 #include "igdeTriggerExpressionParserState.h"
 #include "igdeTriggerExpressionComponent.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 

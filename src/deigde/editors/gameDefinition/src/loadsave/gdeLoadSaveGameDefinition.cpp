@@ -59,7 +59,6 @@
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
@@ -576,11 +575,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClass( const decXmlElementTag &root, 
 }
 
 void gdeLoadSaveGameDefinition::pReadObjectClassInherit( const decXmlElementTag &root, gdeObjectClass &objectClass ){
-	deObjectReference objRef;
-	const int count = root.GetElementCount();
-	int i;
-	
-	objRef.TakeOver( new gdeOCInherit( GetAttributeString( root, "name" ) ) );
+	const gdeOCInherit::Ref objRef(gdeOCInherit::Ref::NewWith( GetAttributeString( root, "name" ));
 	gdeOCInherit &inherit = ( gdeOCInherit& )( deObject& )objRef;
 	
 	for( i=0; i<count; i++ ){
@@ -866,10 +861,7 @@ const decXmlElementTag &root, gdeObjectClass&, gdeOCComponent &component ){
 	}
 	
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
-	int i;
-	
-	objRef.TakeOver( new gdeOCComponentTexture( name ) );
+	const gdeOCComponentTexture::Ref objRef(gdeOCComponentTexture::Ref::NewWith( name ));
 	gdeOCComponentTexture &texture = ( gdeOCComponentTexture& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){
@@ -1866,10 +1858,7 @@ void gdeLoadSaveGameDefinition::pReadObjectClassTexture( const decXmlElementTag 
 	}
 	
 	const int elementCount = root.GetElementCount();
-	deObjectReference objRef;
-	int i;
-	
-	objRef.TakeOver( new gdeOCComponentTexture( name ) );
+	const gdeOCComponentTexture::Ref objRef(gdeOCComponentTexture::Ref::NewWith( name ));
 	gdeOCComponentTexture &texture = ( gdeOCComponentTexture& )( deObject& )objRef;
 	
 	for( i=0; i<elementCount; i++ ){

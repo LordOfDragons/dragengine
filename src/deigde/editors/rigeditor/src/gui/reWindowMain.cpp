@@ -87,7 +87,6 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>

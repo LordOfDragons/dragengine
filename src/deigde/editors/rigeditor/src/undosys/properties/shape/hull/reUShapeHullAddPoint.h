@@ -27,7 +27,6 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class reRigShapeHull;

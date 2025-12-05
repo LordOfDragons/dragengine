@@ -38,7 +38,6 @@
 #include "../visitor/igdeGDVisitor.h"
 #include "../../codec/igdeCodecPropertyString.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/shape/decShape.h>

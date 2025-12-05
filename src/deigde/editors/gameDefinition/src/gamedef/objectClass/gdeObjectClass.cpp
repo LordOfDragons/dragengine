@@ -47,7 +47,6 @@
 
 #include <deigde/gamedefinition/class/igdeGDClass.h>
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -86,13 +85,7 @@ pCanInstantiate( objectClass.pCanInstantiate ),
 pIsAttachableBehavior(objectClass.pIsAttachableBehavior),
 pInheritSubObjects( objectClass.pInheritSubObjects )
 {
-	deObjectReference objRef;
-	int i, count;
-	
-	try{
-		count = objectClass.pProperties.GetCount();
-		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeProperty( *objectClass.pProperties.GetAt( i ) ) );
+	const gdeProperty::Ref objRef(gdeProperty::Ref::NewWith( *objectClass.pProperties.GetAt( i ));
 			pProperties.Add( objRef );
 		}
 		

@@ -32,7 +32,6 @@
 #include "../../../../world/object/meObject.h"
 #include "../../../../world/object/texture/meObjectTexture.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringList.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>

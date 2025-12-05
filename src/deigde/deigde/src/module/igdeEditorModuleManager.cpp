@@ -37,7 +37,6 @@
 #include <deigde/module/igdeEditorModule.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>

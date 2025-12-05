@@ -31,7 +31,6 @@
 #include "../bone/reRigBone.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/resources/rig/deRig.h>

@@ -393,9 +393,6 @@
     <ClCompile Include="..\..\src\dragengine\src\deObjectDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\deObjectReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\errortracing\deErrorTrace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2208,9 +2205,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\deObjectDebug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\deObjectReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\deTObjectReference.h">

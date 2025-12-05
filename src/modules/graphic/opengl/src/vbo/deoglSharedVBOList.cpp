@@ -31,7 +31,6 @@
 #include "deoglSharedVBOBlock.h"
 #include "deoglVBOAttribute.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 

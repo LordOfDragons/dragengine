@@ -34,7 +34,6 @@
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -113,9 +112,7 @@ const char *description ){
 	
 	igdeContainer::AddChild( child );
 	
-	deObjectReference header;
-	try{
-		header.TakeOver( new cHeader( text, icon, description ) );
+	const cHeader::Ref header(cHeader::Ref::NewWith( text, icon, description ));
 		pHeaders.Add( header );
 		
 	}catch( const deException & ){

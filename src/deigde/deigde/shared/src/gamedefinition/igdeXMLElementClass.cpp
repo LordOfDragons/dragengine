@@ -39,7 +39,6 @@
 #include "../environment/igdeEnvironment.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deFileSearchVisitor.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>

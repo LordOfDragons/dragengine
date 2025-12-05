@@ -26,8 +26,6 @@
 #define _DEOGLDYNAMICTBOBLOCK_H_
 
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
-
 class deoglDynamicTBOShared;
 class deoglDynamicTBO;
 

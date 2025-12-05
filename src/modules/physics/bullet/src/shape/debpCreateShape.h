@@ -25,7 +25,6 @@
 #ifndef _DEBPCREATESHAPE_H_
 #define _DEBPCREATESHAPE_H_
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/shape/decShapeVisitor.h>
 
 class debpShape;

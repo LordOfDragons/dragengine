@@ -28,7 +28,6 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/curve/decCurveBezier.h>
 
 class seController;
