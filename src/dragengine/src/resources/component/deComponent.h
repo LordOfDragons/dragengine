@@ -32,7 +32,7 @@
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../occlusionmesh/deOcclusionMesh.h"
 #include "../animator/deAnimator.h"
-#include "../../parallel/deParallelTaskReference.h"
+#include "../../parallel/deParallelTask.h"
 #include "../../common/collection/decObjectOrderedSet.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
@@ -119,7 +119,7 @@ private:
 	deDecal *pDecalTail;
 	int pDecalCount;
 	
-	deParallelTaskReference pAnimatorTask;
+	deParallelTask::Ref pAnimatorTask;
 	
 	deBaseGraphicComponent *pPeerGraphic;
 	deBasePhysicsComponent *pPeerPhysics;

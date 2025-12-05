@@ -26,7 +26,7 @@
 #define _DERLTASKREADVIDEO_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../video/deVideoReference.h"
+#include "../../video/deVideo.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskReadVideo : public deResourceLoaderTask {
 private:
-	deVideoReference pVideo;
+	deVideo::Ref pVideo;
 	bool pSucceeded;
 	
 	

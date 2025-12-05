@@ -26,7 +26,7 @@
 #define _DECANVASIMAGE_H_
 
 #include "deCanvas.h"
-#include "../image/deImageReference.h"
+#include "../image/deImage.h"
 
 
 /**
@@ -39,7 +39,7 @@ public:
 	
 	
 private:
-	deImageReference pImage;
+	deImage::Ref pImage;
 	int pRepeatX;
 	int pRepeatY;
 	

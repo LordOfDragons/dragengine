@@ -26,7 +26,7 @@
 #define _DEEFFEDISTORTIMAGE_H_
 
 #include "deEffect.h"
-#include "../image/deImageReference.h"
+#include "../image/deImage.h"
 #include "../../common/math/decMath.h"
 
 class deEffectChain;
@@ -47,7 +47,7 @@ public:
 	
 	
 private:
-	deImageReference pImage;
+	deImage::Ref pImage;
 	decVector2 pTexCoords[ 4 ];
 	float pStrengthU;
 	float pStrengthV;

@@ -61,7 +61,6 @@
 #include <dragengine/debug/deDebugBlockInfo.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasVisitorIdentify.h>
 #include <dragengine/resources/component/deComponent.h>
@@ -71,7 +70,6 @@
 #include <dragengine/resources/debug/deDebugDrawerShapeFace.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/sound/deMicrophone.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/world/deWorld.h>

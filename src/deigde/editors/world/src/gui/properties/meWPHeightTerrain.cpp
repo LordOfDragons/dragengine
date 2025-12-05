@@ -120,7 +120,6 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/image/deImage.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 
@@ -353,7 +352,7 @@ public:
 				
 			}else if( answer == igdeCommonDialogs::ebYes ){
 				const int resolution = world->GetHeightTerrain()->GetSectorResolution();
-				deImageReference image;
+				deImage::Ref image;
 				image.TakeOver( pPanel.GetEngine()->GetImageManager()->LoadImage( editPath->GetPath(), "/" ) );
 				
 				if( image->GetComponentCount() != 1 ){
@@ -406,7 +405,7 @@ public:
 				
 			}else if( answer == igdeCommonDialogs::ebYes ){
 				const int resolution = world->GetHeightTerrain()->GetSectorResolution();
-				deImageReference image;
+				deImage::Ref image;
 				
 				image.TakeOver( pPanel.GetEngine()->GetImageManager()->LoadImage( editPath->GetPath(), "/" ) );
 				

@@ -26,7 +26,7 @@
 #define _DEANIMATOR_H_
 
 #include "../deResource.h"
-#include "../animation/deAnimationReference.h"
+#include "../animation/deAnimation.h"
 #include "../rig/deRig.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decStringSet.h"
@@ -60,7 +60,7 @@ public:
 	
 private:
 	deRig::Ref pRig;
-	deAnimationReference pAnimation;
+	deAnimation::Ref pAnimation;
 	
 	deAnimatorController **pControllers;
 	int pControllerCount;

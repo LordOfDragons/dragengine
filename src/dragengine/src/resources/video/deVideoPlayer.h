@@ -25,7 +25,7 @@
 #ifndef _DEVIDEOPLAYER_H_
 #define _DEVIDEOPLAYER_H_
 
-#include "deVideoReference.h"
+#include "deVideo.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 
@@ -59,7 +59,7 @@ public:
 	
 	
 private:
-	deVideoReference pVideo;
+	deVideo::Ref pVideo;
 	
 	ePlayState pPlayState;
 	bool pLooping;

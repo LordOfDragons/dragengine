@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class igdeGDSkyController;
 
@@ -52,7 +52,7 @@ private:
 	
 	decObjectOrderedSet pControllers;
 	
-	deImageReference pPreviewImage;
+	deImage::Ref pPreviewImage;
 	
 	
 	

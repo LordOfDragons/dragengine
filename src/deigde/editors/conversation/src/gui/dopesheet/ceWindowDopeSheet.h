@@ -35,8 +35,8 @@
 #include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasImage.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSound.h>
@@ -113,10 +113,10 @@ private:
 	
 	deCanvasView::Ref pCanvasTimeLines;
 	deCanvasView::Ref pCanvasTimeLineLabels;
-	deCanvasPaintReference pCanvasPanelDopeSheet;
-	deCanvasPaintReference pCanvasPanelVAPreview;
-	deCanvasPaintReference pCanvasPanelVAPreviewLine;
-	deCanvasPaintReference pCanvasVAPreviewTime;
+	deCanvasPaint::Ref pCanvasPanelDopeSheet;
+	deCanvasPaint::Ref pCanvasPanelVAPreview;
+	deCanvasPaint::Ref pCanvasPanelVAPreviewLine;
+	deCanvasPaint::Ref pCanvasVAPreviewTime;
 	
 	float pZoomTime;
 	float pPixelPerSecond;

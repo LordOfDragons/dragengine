@@ -34,8 +34,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
-#include <dragengine/resources/canvas/deCanvasTextReference.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
 
 class ceWindowDopeSheet;
 class ceUCAASpeakStripSetPause;
@@ -56,11 +56,11 @@ private:
 	class cStrip : public deObject{
 	public:
 		deCanvasView::Ref handlePause;
-		deCanvasPaintReference handlePauseBg;
+		deCanvasPaint::Ref handlePauseBg;
 		deCanvasView::Ref handleDuration;
-		deCanvasPaintReference handleDurationBg;
-		deCanvasPaintReference stripIdBg;
-		deCanvasTextReference stripId;
+		deCanvasPaint::Ref handleDurationBg;
+		deCanvasPaint::Ref stripIdBg;
+		deCanvasText::Ref stripId;
 		cStrip();
 		
 	protected:
@@ -78,8 +78,8 @@ private:
 	
 	deCanvasView::Ref pCanvas;
 	deCanvasView::Ref pCanvasPanelSheet;
-	deCanvasPaintReference pCanvasBar;
-	deCanvasPaintReference pCanvasBarSelection;
+	deCanvasPaint::Ref pCanvasBar;
+	deCanvasPaint::Ref pCanvasBarSelection;
 	deCanvasView::Ref pCanvasHandles;
 	
 	int pBarHeight;
@@ -233,7 +233,7 @@ public:
 protected:
 	inline const ceStripList &GetEmptyList() const{ return pEmptyList; }
 	void FillIDListLookAt( decStringList &list );
-	void CreateHandle( deCanvasView::Ref &canvas, deCanvasPaintReference &canvasBg, const decPoint &size );
+	void CreateHandle( deCanvasView::Ref &canvas, deCanvasPaint::Ref &canvasBg, const decPoint &size );
 	/*@}*/
 };
 

@@ -43,11 +43,8 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
-#include <dragengine/resources/canvas/deCanvasTextReference.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontManager.h>

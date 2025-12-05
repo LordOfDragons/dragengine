@@ -25,7 +25,7 @@
 #ifndef _DEVIDEOAUDIODECODER_H_
 #define _DEVIDEOAUDIODECODER_H_
 
-#include "deVideoReference.h"
+#include "deVideo.h"
 #include "../../deObject.h"
 
 class deVideoManager;
@@ -48,7 +48,7 @@ public:
 	
 private:
 	deVideoManager &pVideoManager;
-	deVideoReference pVideo;
+	deVideo::Ref pVideo;
 	
 	deBaseVideoAudioDecoder *pPeerVideo;
 	

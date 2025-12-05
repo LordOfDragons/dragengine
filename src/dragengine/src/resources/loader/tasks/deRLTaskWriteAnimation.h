@@ -26,7 +26,7 @@
 #define _DERLTASKWRITEANIMATION_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../animation/deAnimationReference.h"
+#include "../../animation/deAnimation.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskWriteAnimation : public deResourceLoaderTask {
 private:
-	deAnimationReference pAnimation;
+	deAnimation::Ref pAnimation;
 	bool pSucceeded;
 	
 	

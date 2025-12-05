@@ -31,7 +31,7 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/capture/deCaptureCanvas.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class igdeGDPreviewListener;
 class igdeEnvironment;
@@ -58,7 +58,7 @@ private:
 	deCanvasView::Ref pCanvas;
 	
 	eStates pState;
-	deImageReference pImage;
+	deImage::Ref pImage;
 	decObjectOrderedSet pListeners;
 	bool pEnableDebug;
 	

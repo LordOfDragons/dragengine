@@ -27,7 +27,7 @@
 
 #include "igdeGDPreviewCreator.h"
 
-#include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
+#include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/world/deWorld.h>
 
@@ -46,7 +46,7 @@ private:
 	deWorld::Ref pWorld;
 	deCamera::Ref pCamera;
 	igdeWSky *pSky;
-	deCanvasRenderWorldReference pCanvasRenderWorld;
+	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
 	
 	

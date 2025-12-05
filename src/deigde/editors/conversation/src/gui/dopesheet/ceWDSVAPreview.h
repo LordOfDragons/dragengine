@@ -30,8 +30,8 @@
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/canvas/deCanvasImage.h>
+#include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 
 class ceWindowDopeSheet;
@@ -47,14 +47,14 @@ private:
 	ceWindowDopeSheet &pWindow;
 	
 	deCanvasView::Ref pCanvas;
-	deCanvasImageReference pCanvasPreview;
+	deCanvasImage::Ref pCanvasPreview;
 	
 	igdeMouseKeyListener::Ref pMouseKeyListener;
 	
 	float pCurTime;
 	
 	deSpeaker::Ref pSpeaker;
-	deImageReference pImagePreview;
+	deImage::Ref pImagePreview;
 	bool pDirtyPreview;
 	char *pPreviewSamples;
 	

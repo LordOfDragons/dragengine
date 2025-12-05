@@ -29,7 +29,7 @@
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/canvas/deCanvasTextReference.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
@@ -60,7 +60,7 @@ private:
 	deFont::Ref pFontStats;
 	deFontSize::Ref pFontSizeStats;
 	deCanvasView::Ref pCanvasFPS;
-	deCanvasTextReference pCanvasFPSText;
+	deCanvasText::Ref pCanvasFPSText;
 	
 	
 	

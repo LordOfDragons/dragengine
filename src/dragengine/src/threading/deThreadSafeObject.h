@@ -26,6 +26,7 @@
 #define _DETHREADSAFEOBJECT_H_
 
 #include "deMutex.h"
+#include "../deTThreadSafeObjectReference.h"
 
 
 /**
@@ -36,6 +37,12 @@
  * are encouraged to use GetMutex() to provide thread safe access to methods.
  */
 class DE_DLL_EXPORT deThreadSafeObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deThreadSafeObject> Ref;
+	
+	
+
 private:
 	int pRefCount;
 	deMutex pMutex;

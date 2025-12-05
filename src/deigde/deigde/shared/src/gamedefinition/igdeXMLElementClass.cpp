@@ -51,7 +51,6 @@
 #include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -81,7 +80,7 @@ igdeXMLElementClass::~igdeXMLElementClass(){
 igdeGDClass *igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
 const char *filename){
 	try{
-		decXmlDocumentReference document;
+		decXmlDocument::Ref document;
 		document.TakeOver( new decXmlDocument );
 		
 		decXmlParser( GetLogger() ).ParseXml( &reader, document );

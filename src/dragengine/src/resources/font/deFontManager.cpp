@@ -30,7 +30,6 @@
 #include "deFontBuilder.h"
 #include "deFontManager.h"
 #include "../image/deImage.h"
-#include "../image/deImageReference.h"
 #include "../image/deImageManager.h"
 #include "../skin/deSkin.h"
 #include "../skin/deSkinManager.h"
@@ -421,7 +420,7 @@ deFont *deFontManager::LoadDebugFont(){
 		{ 71, 111, 6 }, /* glyph 255 */
 	};
 	
-	deImageReference image;
+	deImage::Ref image;
 	int i;
 	
 	try{

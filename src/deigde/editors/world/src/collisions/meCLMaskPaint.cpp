@@ -42,7 +42,6 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/image/deImage.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/common/exceptions.h>

@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
-#include <dragengine/resources/video/deVideoReference.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/video/deVideo.h>
 #include <dragengine/resources/video/deVideoPlayer.h>
 
 class seDynamicSkin;
@@ -79,12 +79,12 @@ private:
 	decColor pColor;
 	
 	decString pPathImage;
-	deImageReference pEngImage;
+	deImage::Ref pEngImage;
 	
 	// canvas stuff
 	
 	decString pPathVideo;
-	deVideoReference pEngVideo;
+	deVideo::Ref pEngVideo;
 	deVideoPlayer::Ref pEngVideoPlayer;
 	
 	// camera stuff

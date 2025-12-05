@@ -28,7 +28,6 @@
 
 #include "deParallelProcessing.h"
 #include "deParallelTask.h"
-#include "deParallelTaskReference.h"
 #include "deParallelThread.h"
 #include "../deEngine.h"
 #include "../common/exceptions.h"
@@ -92,7 +91,7 @@ void deParallelProcessing::Update(){
 			break;
 		}
 		
-		const deParallelTaskReference task( ( deParallelTask* )pListFinishedTasks.GetAt( 0 ) );
+		const deParallelTask::Ref task( ( deParallelTask* )pListFinishedTasks.GetAt( 0 ) );
 		pListFinishedTasks.RemoveFrom( 0 );
 		pTasks.Remove( ( deParallelTask* )task );
 		
@@ -408,7 +407,7 @@ void deParallelProcessing::FinishAndRemoveTasksOwnedBy( deBaseModule *module ){
 			// invariants to be violated. since removing a task from the system drops the strong
 			// reference we have to guard it here. this has a small performance penalty due to
 			// mutex proteced reference counting but that is necessary
-			const deParallelTaskReference task( ( deParallelTask* )pListFinishedTasks.GetAt( 0 ) );
+			const deParallelTask::Ref task( ( deParallelTask* )pListFinishedTasks.GetAt( 0 ) );
 			pListFinishedTasks.RemoveFrom( 0 );
 			pTasks.Remove( ( deParallelTask* )task );
 			
@@ -549,7 +548,7 @@ void deParallelProcessing::FinishAndRemoveAllTasks(){
 			// invariants to be violated. since removing a task from the system drops the strong
 			// reference we have to guard it here. this has a small performance penalty due to
 			// mutex proteced reference counting but that is necessary
-			const deParallelTaskReference task( ( deParallelTask* )pListFinishedTasks.GetAt( 0 ) );
+			const deParallelTask::Ref task( ( deParallelTask* )pListFinishedTasks.GetAt( 0 ) );
 			pListFinishedTasks.RemoveFrom( 0 );
 			pTasks.Remove( ( deParallelTask* )task );
 			

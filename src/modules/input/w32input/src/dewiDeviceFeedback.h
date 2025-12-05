@@ -31,7 +31,7 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceFeedback.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deInputDeviceFeedback;
 class deWindowsInput;
@@ -49,7 +49,7 @@ private:
 	decString pName;
 	deInputDeviceFeedback::eFeedbackTypes pType;
 	
-	deImageReference pDisplayImage;
+	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	

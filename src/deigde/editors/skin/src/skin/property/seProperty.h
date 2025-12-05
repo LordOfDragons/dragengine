@@ -31,8 +31,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/image/deImageReference.h>
-#include <dragengine/resources/video/deVideoReference.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/video/deVideo.h>
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
 
 class seTexture;
@@ -91,10 +91,10 @@ private:
 	decColor pColor;
 	
 	decString pPathImage;
-	deImageReference pEngImage;
+	deImage::Ref pEngImage;
 	
 	decString pPathVideo;
-	deVideoReference pEngVideo;
+	deVideo::Ref pEngVideo;
 	bool pVideoSharedTime;
 	
 	seMapped::Ref pMappedComponents[ 4 ];

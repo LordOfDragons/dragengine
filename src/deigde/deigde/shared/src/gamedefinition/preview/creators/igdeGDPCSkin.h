@@ -28,7 +28,7 @@
 #include "igdeGDPreviewCreator.h"
 #include "../../../resourceloader/igdeResourceLoaderListener.h"
 
-#include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
+#include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/skin/deSkin.h>
@@ -59,7 +59,7 @@ private:
 	deModel::Ref pLightBoxModel;
 	deSkin::Ref pLightBoxSkin;
 	igdeWSky *pSky;
-	deCanvasRenderWorldReference pCanvasRenderWorld;
+	deCanvasRenderWorld::Ref pCanvasRenderWorld;
 	
 	igdeResourceLoaderListener::Ref pResLoader;
 	bool pResLoadFinished;

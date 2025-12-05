@@ -235,7 +235,7 @@ deImage *igdeGDPreviewManager::GetPreviewObjectClass( igdeGDClass *gdclass ) con
 		return gdclass->GetPreviewImage();
 	}
 	
-	deImageReference image;
+	deImage::Ref image;
 	pLoadFromFile( image, pDirObjectClass, gdclass->GetName() );
 	gdclass->SetPreviewImage( image );
 	return image;
@@ -286,7 +286,7 @@ deImage *igdeGDPreviewManager::GetPreviewSkin( igdeGDSkin *gdskin ) const{
 		return gdskin->GetPreviewImage();
 	}
 	
-	deImageReference image;
+	deImage::Ref image;
 	pLoadFromFile( image, pDirSkin, gdskin->GetName() );
 	gdskin->SetPreviewImage( image );
 	return image;
@@ -337,7 +337,7 @@ deImage *igdeGDPreviewManager::GetPreviewSky( igdeGDSky *gdsky ) const{
 		return gdsky->GetPreviewImage();
 	}
 	
-	deImageReference image;
+	deImage::Ref image;
 	pLoadFromFile( image, pDirSky, gdsky->GetName() );
 	gdsky->SetPreviewImage( image );
 	return image;
@@ -382,7 +382,7 @@ void igdeGDPreviewManager::ClearPreviewSky( igdeGDSky *gdsky ){
 // Private Functions
 //////////////////////
 
-void igdeGDPreviewManager::pLoadFromFile( deImageReference &image, const decString &typedir, const decString &filename ) const{
+void igdeGDPreviewManager::pLoadFromFile( deImage::Ref &image, const decString &typedir, const decString &filename ) const{
 	image = NULL;
 	
 	deVirtualFileSystem * const vfs = pEnvironment.GetFileSystemGame();

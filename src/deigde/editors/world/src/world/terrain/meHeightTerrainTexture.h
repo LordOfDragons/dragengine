@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/skin/deSkin.h>
 
 class meHeightTerrainSector;
@@ -62,7 +62,7 @@ private:
 	
 	// mask
 	decString pPathMask;
-	deImageReference pMaskImage;
+	deImage::Ref pMaskImage;
 	bool pMaskChanged;
 	bool pMaskSaved;
 	

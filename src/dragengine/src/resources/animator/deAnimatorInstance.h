@@ -28,7 +28,7 @@
 #include "rule/deAnimatorRule.h"
 #include "deAnimator.h"
 #include "../deResource.h"
-#include "../animation/deAnimationReference.h"
+#include "../animation/deAnimation.h"
 #include "../component/deComponent.h"
 #include "../../common/math/decMath.h"
 
@@ -73,7 +73,7 @@ public:
 private:
 	deAnimator::Ref pAnimator;
 	deComponent::Ref pComponent;
-	deAnimationReference pAnimation;
+	deAnimation::Ref pAnimation;
 	
 	deAnimatorRule::eBlendModes pBlendMode;
 	float pBlendFactor;

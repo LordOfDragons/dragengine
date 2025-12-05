@@ -54,7 +54,6 @@
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
-#include <dragengine/resources/image/deImageReference.h>
 
 
 
@@ -700,7 +699,7 @@ void projTaskDistribute::pWriteGameXml( decXmlWriter &writer ){
 	const int iconPathCount = iconPathList.GetCount();
 	if( iconPathCount > 0 ){
 		deImageManager &imageManager = *env.GetEngineController()->GetEngine()->GetImageManager();
-		deImageReference icon;
+		deImage::Ref icon;
 		int i;
 		for( i=0; i<iconPathCount; i++ ){
 			icon.TakeOver( imageManager.LoadImage( iconPathList.GetAt( i ), "/" ) );

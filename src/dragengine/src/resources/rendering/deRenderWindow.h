@@ -28,7 +28,7 @@
 #include "../../dragengine_configuration.h"
 
 #include "../deResource.h"
-#include "../image/deImageReference.h"
+#include "../image/deImage.h"
 #include "../canvas/deCanvasView.h"
 #include "../../common/string/decString.h"
 
@@ -119,7 +119,7 @@ private:
 	int pScaleFactor;
 	bool pNotifyScriptOnResize;
 	bool pPaint;
-	deImageReference pIcon;
+	deImage::Ref pIcon;
 	
 	deCanvasView::Ref pCanvasView;
 	

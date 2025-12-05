@@ -751,7 +751,7 @@ void meHeightTerrainSector::LoadVisibilityFromImage(){
 	}
 	
 	const int resolution = pHeightTerrain->GetSectorResolution();
-	deImageReference image;
+	deImage::Ref image;
 	decPath path;
 	
 	if( ! pPathVisImage.IsEmpty() ){
@@ -1525,7 +1525,7 @@ void meHeightTerrainSector::pLoadHeightImage(){
 		const decString baseDir( pHeightTerrain->GetBaseDirectory() );
 		if( pEngine->GetVirtualFileSystem()->ExistsFile( decPath::AbsolutePathUnix( pPathHeightImage, baseDir ) ) ){
 			// load the image
-			deImageReference image;
+			deImage::Ref image;
 			try{
 				image.TakeOver( pEngine->GetImageManager()->LoadImage( pPathHeightImage, baseDir ) );
 				image->RetainImageData(); // keep image data in memory... needs a better solution to avoid double loading

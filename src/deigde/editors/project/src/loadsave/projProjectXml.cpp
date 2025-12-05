@@ -35,7 +35,6 @@
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
@@ -61,7 +60,7 @@ projProjectXml::~projProjectXml(){
 ///////////////
 
 void projProjectXml::ReadFromFile( decBaseFileReader &reader, projProject &project ){
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );

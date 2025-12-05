@@ -31,8 +31,8 @@
 #include <deigde/gui/event/igdeMouseDragListener.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
+#include <dragengine/resources/canvas/deCanvasImage.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 
 class seProperty;
@@ -87,30 +87,30 @@ private:
 	decPoint pBorderSize;
 	
 	deCanvasView::Ref pCanvasContent;
-	deCanvasPaintReference pCanvasContentBackground;
+	deCanvasPaint::Ref pCanvasContentBackground;
 	
-	deCanvasPaintReference pCanvasMarkerBorder;
-	deCanvasImageReference pCanvasMarkerResizeTopLeft;
-	deCanvasImageReference pCanvasMarkerResizeTop;
-	deCanvasImageReference pCanvasMarkerResizeTopRight;
-	deCanvasImageReference pCanvasMarkerResizeLeft;
-	deCanvasImageReference pCanvasMarkerResizeRight;
-	deCanvasImageReference pCanvasMarkerResizeBottomLeft;
-	deCanvasImageReference pCanvasMarkerResizeBottomRight;
-	deCanvasImageReference pCanvasMarkerResizeBottom;
-	deCanvasImageReference pCanvasMarkerRotateTopLeft;
-	deCanvasImageReference pCanvasMarkerRotateTopRight;
-	deCanvasImageReference pCanvasMarkerRotateBottomLeft;
-	deCanvasImageReference pCanvasMarkerRotateBottomRight;
-	deCanvasImageReference pCanvasMarkerShearTop;
-	deCanvasImageReference pCanvasMarkerShearBottom;
-	deCanvasImageReference pCanvasMarkerShearLeft;
-	deCanvasImageReference pCanvasMarkerShearRight;
+	deCanvasPaint::Ref pCanvasMarkerBorder;
+	deCanvasImage::Ref pCanvasMarkerResizeTopLeft;
+	deCanvasImage::Ref pCanvasMarkerResizeTop;
+	deCanvasImage::Ref pCanvasMarkerResizeTopRight;
+	deCanvasImage::Ref pCanvasMarkerResizeLeft;
+	deCanvasImage::Ref pCanvasMarkerResizeRight;
+	deCanvasImage::Ref pCanvasMarkerResizeBottomLeft;
+	deCanvasImage::Ref pCanvasMarkerResizeBottomRight;
+	deCanvasImage::Ref pCanvasMarkerResizeBottom;
+	deCanvasImage::Ref pCanvasMarkerRotateTopLeft;
+	deCanvasImage::Ref pCanvasMarkerRotateTopRight;
+	deCanvasImage::Ref pCanvasMarkerRotateBottomLeft;
+	deCanvasImage::Ref pCanvasMarkerRotateBottomRight;
+	deCanvasImage::Ref pCanvasMarkerShearTop;
+	deCanvasImage::Ref pCanvasMarkerShearBottom;
+	deCanvasImage::Ref pCanvasMarkerShearLeft;
+	deCanvasImage::Ref pCanvasMarkerShearRight;
 	
-	deCanvasPaintReference pCanvasGroupDarkeningTop;
-	deCanvasPaintReference pCanvasGroupDarkeningBottom;
-	deCanvasPaintReference pCanvasGroupDarkeningLeft;
-	deCanvasPaintReference pCanvasGroupDarkeningRight;
+	deCanvasPaint::Ref pCanvasGroupDarkeningTop;
+	deCanvasPaint::Ref pCanvasGroupDarkeningBottom;
+	deCanvasPaint::Ref pCanvasGroupDarkeningLeft;
+	deCanvasPaint::Ref pCanvasGroupDarkeningRight;
 	
 	
 	
@@ -258,8 +258,8 @@ public:
 	
 	
 private:
-	void pCreateMarkerCanvas( deCanvasImageReference &canvas, const char *pathImage, float order ) const;
-	void pCreateDarkeningCanvas( deCanvasPaintReference &canvas, float order ) const;
+	void pCreateMarkerCanvas( deCanvasImage::Ref &canvas, const char *pathImage, float order ) const;
+	void pCreateDarkeningCanvas( deCanvasPaint::Ref &canvas, float order ) const;
 	
 	void pRecreateContentCanvas( const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView );
 	void pUpdateContentCanvasParams( const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView );

@@ -27,7 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deParticleEmitter;
 class deParticleEmitterController;
@@ -44,7 +44,7 @@ private:
 	decString pName;
 	decString pDescription;
 	decString pCategory;
-	deImageReference pPreviewImages[ 3 ];
+	deImage::Ref pPreviewImages[ 3 ];
 	
 	
 	

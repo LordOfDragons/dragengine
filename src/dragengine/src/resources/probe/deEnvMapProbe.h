@@ -26,7 +26,7 @@
 #define _DEENVMAPPROBE_H_
 
 #include "../deResource.h"
-#include "../image/deImageReference.h"
+#include "../image/deImage.h"
 #include "../../common/math/decMath.h"
 #include "../../common/shape/decShapeList.h"
 #include "../../common/string/decString.h"
@@ -75,7 +75,7 @@ private:
 	
 	decLayerMask pLayerMask;
 	
-	deImageReference pImage;
+	deImage::Ref pImage;
 	
 	deWorld *pParentWorld;
 	deEnvMapProbe *pLLWorldPrev;

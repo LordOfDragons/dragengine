@@ -40,7 +40,6 @@
 #include <dragengine/resources/font/deFontManager.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
-#include <dragengine/resources/image/deImageReference.h>
 
 
 
@@ -71,7 +70,7 @@ private:
 	int pGlyphCount;
 	int pImageWidth;
 	int pImageHeight;
-	deImageReference pImage;
+	deImage::Ref pImage;
 	
 	
 	

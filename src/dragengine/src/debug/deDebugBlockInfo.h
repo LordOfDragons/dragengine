@@ -26,8 +26,8 @@
 #define _DEDEBUGBLOCKINFO_H_
 
 #include "../resources/canvas/deCanvasView.h"
-#include "../resources/canvas/deCanvasTextReference.h"
-#include "../resources/canvas/deCanvasPaintReference.h"
+#include "../resources/canvas/deCanvasText.h"
+#include "../resources/canvas/deCanvasPaint.h"
 #include "../resources/font/deFont.h"
 #include "../common/collection/decPointerList.h"
 #include "../common/math/decMath.h"
@@ -50,17 +50,17 @@ private:
 		decColor color;
 		decColor bgColor;
 		deCanvasView::Ref view;
-		deCanvasPaintReference viewBg;
-		deCanvasTextReference viewLabel;
-		deCanvasTextReference viewText;
+		deCanvasPaint::Ref viewBg;
+		deCanvasText::Ref viewLabel;
+		deCanvasText::Ref viewText;
 	};
 	
 	
 	deEngine &pEngine;
 	decPointerList pEntries;
 	deCanvasView::Ref pView;
-	deCanvasPaintReference pViewTitleBg;
-	deCanvasTextReference pViewTitle;
+	deCanvasPaint::Ref pViewTitleBg;
+	deCanvasText::Ref pViewTitle;
 	deFont::Ref pFont;
 	int pPadding;
 	int pSpacing;

@@ -27,7 +27,7 @@
 
 #include "../deCanvasView.h"
 #include "../../deResource.h"
-#include "../../image/deImageReference.h"
+#include "../../image/deImage.h"
 
 class deBaseGraphicCaptureCanvas;
 class deCaptureCanvasManager;
@@ -60,7 +60,7 @@ public:
 	
 private:
 	deCanvasView::Ref pCanvasView;
-	deImageReference pImage;
+	deImage::Ref pImage;
 	bool pCapture;
 	
 	deBaseGraphicCaptureCanvas *pPeerGraphic;

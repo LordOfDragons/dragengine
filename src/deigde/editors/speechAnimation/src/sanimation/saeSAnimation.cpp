@@ -44,7 +44,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animation/deAnimation.h>
-#include <dragengine/resources/animation/deAnimationReference.h>
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimatorManager.h>
@@ -878,7 +877,7 @@ void saeSAnimation::pUpdateComponent(){
 
 void saeSAnimation::pUpdateAnimRig(){
 	deEngine &engine = *GetEngine();
-	deAnimationReference animation;
+	deAnimation::Ref animation;
 	deRig::Ref rig;
 	
 	try{

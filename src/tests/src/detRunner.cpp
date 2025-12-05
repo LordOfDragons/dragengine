@@ -28,7 +28,6 @@
 #include <dragengine/logger/deLoggerConsoleColor.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlComment.h>
 #include <dragengine/common/xmlparser/decXmlPI.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>

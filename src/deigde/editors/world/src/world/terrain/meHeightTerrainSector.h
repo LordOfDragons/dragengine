@@ -31,7 +31,7 @@
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class meBitArray;
 class meHeightTerrain;
@@ -106,7 +106,7 @@ private:
 	float pRadiusOfInfluence;
 	
 	// height image
-	deImageReference pHeightImage;
+	deImage::Ref pHeightImage;
 	int pDataType;
 	
 	decString pPathHeightImage;

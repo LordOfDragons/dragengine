@@ -30,7 +30,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputDeviceAxis.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deBeOSInput;
 class debiDevice;
@@ -50,7 +50,7 @@ private:
 	decString pName;
 	deInputDeviceAxis::eAxisTypes pType;
 	
-	deImageReference pDisplayImage;
+	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	

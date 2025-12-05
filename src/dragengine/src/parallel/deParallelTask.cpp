@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "deParallelTask.h"
-#include "deParallelTaskReference.h"
 #include "deParallelThread.h"
 #include "../common/exceptions.h"
 #include "../threading/deThreadSafeObjectReference.h"

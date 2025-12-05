@@ -26,7 +26,7 @@
 #define _DERLTASKREADLANGUAGEPACK_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../localization/deLanguagePackReference.h"
+#include "../../localization/deLanguagePack.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskReadLanguagePack : public deResourceLoaderTask {
 private:
-	deLanguagePackReference pLanguagePack;
+	deLanguagePack::Ref pLanguagePack;
 	bool pSucceeded;
 	
 	

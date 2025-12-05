@@ -40,7 +40,6 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/image/deImage.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
@@ -251,7 +250,7 @@ deImage *meHeightTerrainTexture::GetOrAddMaskImage(){
 	}
 	
 	const int imageDim =  pSector->GetHeightTerrain()->GetSectorResolution();
-	deImageReference image;
+	deImage::Ref image;
 	image.TakeOver( pEngine->GetImageManager()->CreateImage( imageDim, imageDim, 1, 1, 8 ) );
 	sGrayscale8 * const pixels = image->GetDataGrayscale8();
 	const int pixelCount = imageDim * imageDim;
@@ -307,7 +306,7 @@ void meHeightTerrainTexture::LoadMaskImage(){
 	
 	if( pMaskImage ){
 		// we have to create a copy of the mask to allow editing it
-		const deImageReference loadedImage( pMaskImage );
+		const deImage::Ref loadedImage( pMaskImage );
 		loadedImage->RetainImageData();
 		
 		pMaskImage.TakeOver( pEngine->GetImageManager()->CreateImage( loadedImage->GetWidth(),

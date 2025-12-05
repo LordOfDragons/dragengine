@@ -33,7 +33,6 @@
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlVisitor.h>
@@ -60,7 +59,7 @@ deoglShaderSources::deoglShaderSources(){
 deoglShaderSources::deoglShaderSources( deLogger &logger, decBaseFileReader &reader ){
 	pFilename = reader.GetFilename();
 	
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( &logger ).ParseXml( &reader, xmlDoc );

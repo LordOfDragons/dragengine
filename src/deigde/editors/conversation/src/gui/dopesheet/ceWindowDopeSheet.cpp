@@ -805,7 +805,7 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 	
 	for( i=timeFirst; i<=timeLast; i++ ){
 		if( i - timeFirst == pTimeLines.GetCount() ){
-			deCanvasPaintReference canvas;
+			deCanvasPaint::Ref canvas;
 			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasPaint() );
 			canvas->SetFillColor( decColor( 0.0f, 0.0f, 0.0f ) );
 			//GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetShadow ) );
@@ -816,7 +816,7 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 		if( i - timeFirst == pTimeLineLabels.GetCount() ){
 			deFont * const font = pFontText->GetEngineFont();
 			
-			deCanvasTextReference canvas;
+			deCanvasText::Ref canvas;
 			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
 			canvas->SetFont( font );
 			canvas->SetFontSize( ( float )font->GetLineHeight() );

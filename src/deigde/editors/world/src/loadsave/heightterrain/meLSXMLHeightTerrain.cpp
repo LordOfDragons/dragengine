@@ -71,7 +71,6 @@
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -116,7 +115,7 @@ void meLSXMLHeightTerrain::LoadFromFile( meHeightTerrain &heightTerrain, decBase
 	pLSSys->GetWindowMain()->GetLogger()->LogInfoFormat( LOGSOURCE,
 		"XMLHeightTerrain: load height terrain %s", file.GetFilename() );
 	
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( pLSSys->GetWindowMain()->GetEnvironment().GetLogger() ).ParseXml( &file, xmlDoc );

@@ -75,14 +75,11 @@
 #include <dragengine/resources/canvas/deCanvasRenderWorld.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
-#include <dragengine/resources/canvas/deCanvasTextReference.h>
 #include <dragengine/resources/canvas/deCanvasVisitorIdentify.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/rendering/deRenderWindow.h>
 
 
@@ -1140,7 +1137,7 @@ decVector2 &minBounds, decVector2 &maxBounds ){
 // Private Functions
 //////////////////////
 
-void seViewConstructedView::pCreateMarkerCanvas( deCanvasImageReference &canvas,
+void seViewConstructedView::pCreateMarkerCanvas( deCanvasImage::Ref &canvas,
 const char *pathImage, float order ) const{
 	decPath path;
 	path.SetFromUnix( "/data/modules" );
@@ -1148,7 +1145,7 @@ const char *pathImage, float order ) const{
 	path.AddComponent( "images" );
 	path.AddUnixPath( pathImage );
 	
-	deImageReference image;
+	deImage::Ref image;
 	image.TakeOver( pWindowMain.GetEngine()->GetImageManager()->LoadImage(
 		pWindowMain.GetEnvironment().GetFileSystemIGDE(), path.GetPathUnix(), "/" ) );
 	
@@ -1159,7 +1156,7 @@ const char *pathImage, float order ) const{
 	canvas->SetImage( image );
 }
 
-void seViewConstructedView::pCreateDarkeningCanvas( deCanvasPaintReference &canvas, float order ) const{
+void seViewConstructedView::pCreateDarkeningCanvas( deCanvasPaint::Ref &canvas, float order ) const{
 	const decColor darkeningColor( 0.0f, 0.0f, 0.0f );
 	const float darkeningAlpha = 0.5f; //0.25f
 	

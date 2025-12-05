@@ -36,7 +36,6 @@
 #include "../../logger/deLogger.h"
 #include "../../common/xmlparser/decXmlParser.h"
 #include "../../common/xmlparser/decXmlDocument.h"
-#include "../../common/xmlparser/decXmlDocumentReference.h"
 #include "../../common/xmlparser/decXmlElementTag.h"
 #include "../../common/xmlparser/decXmlCharacterData.h"
 #include "../../common/xmlparser/decXmlAttValue.h"
@@ -342,7 +341,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 	SetDefaultExtension( "" );
 	
 	// parse xml
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	parser.ParseXml( &reader, xmlDoc );

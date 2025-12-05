@@ -31,14 +31,12 @@
 #include "../deResourceLoader.h"
 #include "../../image/deImage.h"
 #include "../../image/deImageManager.h"
-#include "../../image/deImageReference.h"
 #include "../../skin/property/deSkinPropertyConstructed.h"
 #include "../../skin/property/deSkinPropertyImage.h"
 #include "../../skin/property/deSkinPropertyVideo.h"
 #include "../../skin/property/node/deSkinPropertyNodeGroup.h"
 #include "../../video/deVideo.h"
 #include "../../video/deVideoManager.h"
-#include "../../video/deVideoReference.h"
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decPath.h"
@@ -78,7 +76,7 @@ void deRLTaskReadSkinProperty::VisitImage( deSkinPropertyImage &property ){
 	
 	if( path.IsEmpty() ){
 		// TODO has to be done by the graphic module not here
-		deImageReference image;
+		deImage::Ref image;
 		
 		try{
 			image.TakeOver( pEngine.GetImageManager()->LoadDefault() );
@@ -131,7 +129,7 @@ void deRLTaskReadSkinProperty::VisitVideo( deSkinPropertyVideo &property ){
 	}
 	
 	// loaded directly since video uses decoders the responsible module create later on
-	deVideoReference video;
+	deVideo::Ref video;
 	try{
 		video.TakeOver( pEngine.GetVideoManager()->LoadVideo( pVirtualFileSystem, path, pBasePath, false ) );
 		property.SetVideo( video );

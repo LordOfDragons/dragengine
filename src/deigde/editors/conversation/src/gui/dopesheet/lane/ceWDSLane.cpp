@@ -59,9 +59,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/font/deFont.h>
@@ -943,7 +941,7 @@ void ceWDSLane::FillIDListLookAt( decStringList &list ){
 	}
 }
 
-void ceWDSLane::CreateHandle( deCanvasView::Ref &canvas, deCanvasPaintReference &canvasBg, const decPoint &size ){
+void ceWDSLane::CreateHandle( deCanvasView::Ref &canvas, deCanvasPaint::Ref &canvasBg, const decPoint &size ){
 	igdeEnvironment &env = pWindow.GetEnvironment();
 	const decColor colorBackground( env.GetSystemColor( igdeEnvironment::escWidgetBackground ) );
 	const decColor colorBorder( 0.0f, 0.0f, 0.0f ); //env.GetSystemColor( igdeEnvironment::escWidgetShadow ) );
@@ -960,7 +958,7 @@ void ceWDSLane::CreateHandle( deCanvasView::Ref &canvas, deCanvasPaintReference 
 	canvasBg->SetSize( size );
 	canvas->AddCanvas( canvasBg );
 	
-	deCanvasPaintReference canvasKnob;
+	deCanvasPaint::Ref canvasKnob;
 	canvasKnob.TakeOver( canvasManager.CreateCanvasPaint() );
 	canvasKnob->SetFillColor( colorBorder );
 	canvasKnob->SetThickness( 0 );
