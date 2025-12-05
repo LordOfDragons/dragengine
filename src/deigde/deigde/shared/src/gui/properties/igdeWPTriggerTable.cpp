@@ -170,13 +170,10 @@ public:
 				continue;
 			}
 			
-			deObjectReference refTarget;
-			refTarget.TakeOver( new igdeTriggerTarget( name ) );
+			const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::NewWith(name));
+			list->Add(target);
 			
-			igdeTriggerTarget * const target = ( igdeTriggerTarget* )( deObject* )refTarget;
-			list->Add( target );
-			
-			pPanel.SelectTarget( target );
+			pPanel.SelectTarget(target);
 			pPanel.OnAction();
 			return;
 		}

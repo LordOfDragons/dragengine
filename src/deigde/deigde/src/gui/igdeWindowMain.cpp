@@ -786,16 +786,10 @@ bool igdeWindowMain::CreateNewGameProject(){
 }
 
 void igdeWindowMain::CreatePlaceholderGameProject(){
-	deObjectReference refProject;
-	refProject.TakeOver( new igdeGameProject( pEnvironmentIGDE ) );
-	igdeGameProject * const project = ( igdeGameProject* )( deObject* )refProject;
-	
-	deObjectReference refGameDef;
-	refGameDef.TakeOver( CreateNewGameDefinition() );
-	project->SetProjectGameDefinition( ( igdeGameDefinition* )( deObject* )refGameDef );
-	
+	const igdeGameProject::Ref project(igdeGameProject::Ref::NewWith(pEnvironmentIGDE));
+	project->SetProjectGameDefinition(igdeGameDefinition::Ref::New(CreateNewGameDefinition()));
 	project->MergeGameDefinitions();
-	SetGameProject( project );
+	SetGameProject(project);
 	
 	pModuleManager->ActivateProjectManager();
 }
@@ -804,13 +798,12 @@ bool igdeWindowMain::LoadGameProject( const char *filename ){
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Open game project %s", filename );
 	
 	try{
-		deObjectReference refProject;
-		refProject.TakeOver( pLoadSaveSystem->LoadGameProject( filename ) );
-		igdeGameProject * const project = ( igdeGameProject* )( deObject* )refProject;
+		const igdeGameProject::Ref project(igdeGameProject::Ref::New(
+			pLoadSaveSystem->LoadGameProject(filename)));
 		
-		pLoadXMLElementClasses( *project );
-		pFindAndAddSkins( *project );
-		pFindAndAddSkies( *project );
+		pLoadXMLElementClasses(project);
+		pFindAndAddSkins(project);
+		pFindAndAddSkies(project);
 		project->MergeGameDefinitions();
 		
 		SetGameProject( project );
@@ -1951,10 +1944,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 void igdeWindowMain::pAddIGDEEngineModules(){
 	igdeEngineController &engineController = GetEngineController();
 	deModuleSystem *modsys = engineController.GetEngine()->GetModuleSystem();
-	deObjectReference module;
-	
-	module.TakeOver( new igdeScriptModule::cModule( modsys, *this ) );
-	engineController.AddInternalModule( ( deInternalModule* )( deObject* )module );
+	engineController.AddInternalModule(igdeScriptModule::cModule::Ref::NewWith(modsys, *this));
 }
 
 void igdeWindowMain::pLoadTexturePropertyList(){

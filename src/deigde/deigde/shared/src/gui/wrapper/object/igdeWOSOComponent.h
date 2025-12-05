@@ -44,6 +44,11 @@ class deAnimatorController;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOComponent : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOComponent> Ref;
+	
+	
 private:
 	const igdeGDCComponent &pGDComponent;
 	deComponent::Ref pComponent;

@@ -149,16 +149,14 @@ void igdeMainWindow::CreateEngineController(){
 }
 
 void igdeMainWindow::AddNullModules(){
-	deObjectReference module;
+	pEngineController->AddInternalModule(igdeNullScriptModule::cModule::Ref::NewWith(
+		pEngineController->GetEngine()->GetModuleSystem()));
 	
-	module.TakeOver( new igdeNullScriptModule::cModule( pEngineController->GetEngine()->GetModuleSystem() ) );
-	pEngineController->AddInternalModule( ( deInternalModule* )( deObject* )module );
+	pEngineController->AddInternalModule(igdeNullInputModule::cModule::Ref::NewWith(
+		pEngineController->GetEngine()->GetModuleSystem()));
 	
-	module.TakeOver( new igdeNullInputModule::cModule( pEngineController->GetEngine()->GetModuleSystem() ) );
-	pEngineController->AddInternalModule( ( deInternalModule* )( deObject* )module );
-	
-	module.TakeOver( new igdeNullCrashRecoveryModule::cModule( pEngineController->GetEngine()->GetModuleSystem() ) );
-	pEngineController->AddInternalModule( ( deInternalModule* )( deObject* )module );
+	pEngineController->AddInternalModule(igdeNullCrashRecoveryModule::cModule::Ref::NewWith(
+		pEngineController->GetEngine()->GetModuleSystem()));
 }
 
 void igdeMainWindow::ActivateNullModules(){

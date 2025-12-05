@@ -687,7 +687,7 @@ bool igdeTreeList::pHasItem( igdeTreeItem *parent, void *data ) const{
 }
 
 void igdeTreeList::pRemoveItem( igdeTreeItem *item ){
-	const deObjectReference guard( item );
+	const igdeTreeItem::Ref guard(item);
 	
 	if( item->GetPrevious() ){
 		item->GetPrevious()->SetNext( item->GetNext() );

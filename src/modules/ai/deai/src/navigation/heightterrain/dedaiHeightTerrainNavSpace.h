@@ -40,6 +40,10 @@ class deNavigationSpaceFace;
  */
 class dedaiHeightTerrainNavSpace : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dedaiHeightTerrainNavSpace> Ref;
+	
+	
 	struct sEdge{
 		unsigned short vertex1;
 		unsigned short vertex2;

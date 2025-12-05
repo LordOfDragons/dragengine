@@ -697,11 +697,11 @@ void meLSXMLHeightTerrain::pLoadHeightTerrain( decXmlElementTag &root, meHeightT
 			heightTerrain.SetHeightScaling( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "sector" ){
-			deObjectReference htsector;
-			htsector.TakeOver( new meHeightTerrainSector( heightTerrain.GetWorld().GetEngine(),
-				decPoint( GetAttributeInt( *tag, "x" ), GetAttributeInt( *tag, "z" ) ) ) );
-			heightTerrain.AddSector( ( meHeightTerrainSector* )( deObject* )htsector );
-			pLoadSector( *tag, ( meHeightTerrainSector& )( deObject& )htsector );
+			const meHeightTerrainSector::Ref htsector(meHeightTerrainSector::Ref::NewWith(
+				heightTerrain.GetWorld().GetEngine(), decPoint(
+					GetAttributeInt(*tag, "x"), GetAttributeInt(*tag, "z"))));
+			heightTerrain.AddSector(htsector);
+			pLoadSector(*tag, htsector);
 			
 		}else if( tagName == "vegetationLayer" ){
 			pLoadVLayer( *tag, heightTerrain );
@@ -787,10 +787,8 @@ void meLSXMLHeightTerrain::pLoadSector( decXmlElementTag &root, meHeightTerrainS
 }
 
 void meLSXMLHeightTerrain::pLoadTexture( decXmlElementTag &root, meHeightTerrainSector &sector ){
-	deObjectReference refTexture;
-	refTexture.TakeOver( new meHeightTerrainTexture( pLSSys->GetWindowMain()->GetEngine(),
-			GetAttributeString( root, "name" ) ) );
-	meHeightTerrainTexture &texture = ( meHeightTerrainTexture& )( deObject& )refTexture;
+	const meHeightTerrainTexture::Ref texture(meHeightTerrainTexture::Ref::NewWith(
+		pLSSys->GetWindowMain()->GetEngine(), GetAttributeString(root, "name")));
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -803,24 +801,24 @@ void meLSXMLHeightTerrain::pLoadTexture( decXmlElementTag &root, meHeightTerrain
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "skin" ){
-			texture.SetPathSkin( GetCDataString( *tag ) );
+			texture->SetPathSkin( GetCDataString( *tag ) );
 			
 		}else if( tagName == "typeNumber" ){
-			texture.SetTypeNumber( GetCDataInt( *tag ) );
+			texture->SetTypeNumber( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "uvOffset" ){
-			texture.SetProjectionOffsetU( GetAttributeFloat( *tag, "u" ) );
-			texture.SetProjectionOffsetV( GetAttributeFloat( *tag, "v" ) );
+			texture->SetProjectionOffsetU( GetAttributeFloat( *tag, "u" ) );
+			texture->SetProjectionOffsetV( GetAttributeFloat( *tag, "v" ) );
 			
 		}else if( tagName == "uvScaling" ){
-			texture.SetProjectionScalingU( GetAttributeFloat( *tag, "u" ) );
-			texture.SetProjectionScalingV( GetAttributeFloat( *tag, "v" ) );
+			texture->SetProjectionScalingU( GetAttributeFloat( *tag, "u" ) );
+			texture->SetProjectionScalingV( GetAttributeFloat( *tag, "v" ) );
 			
 		}else if( tagName == "uvRotation" ){
-			texture.SetProjectionRotation( GetCDataFloat( *tag ) );
+			texture->SetProjectionRotation( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "mask" ){
-			texture.SetPathMask( GetCDataString( *tag ), true );
+			texture->SetPathMask( GetCDataString( *tag ), true );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );

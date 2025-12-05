@@ -40,6 +40,11 @@ class igdeGDCBillboard;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOBillboard : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOBillboard> Ref;
+	
+	
 private:
 	const igdeGDCBillboard &pGDBillboard;
 	deBillboard::Ref pBillboard;

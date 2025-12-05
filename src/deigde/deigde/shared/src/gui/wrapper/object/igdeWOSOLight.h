@@ -41,6 +41,11 @@ class igdeGDCLight;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOLight : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOLight> Ref;
+	
+	
 private:
 	const igdeGDCLight &pGDLight;
 	deLight::Ref pLight;

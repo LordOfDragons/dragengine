@@ -42,6 +42,11 @@ class igdeWSky;
  * \brief Create preview for game definition object class asynchronously.
  */
 class DE_DLL_EXPORT igdeGDPCObjectClass : public igdeGDPreviewCreator{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPCObjectClass> Ref;
+	
+	
 private:
 	class DE_DLL_EXPORT cAsyncFinished : public igdeWObject::cAsyncLoadFinished {
 	public:

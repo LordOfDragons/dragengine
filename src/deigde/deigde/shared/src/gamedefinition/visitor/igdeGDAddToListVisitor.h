@@ -27,7 +27,7 @@
 
 #include "igdeGDVisitor.h"
 #include "../../gui/igdeIconListBox.h"
-#include "igdeListItem.h"
+#include "../../gui/model/igdeListItem.h"
 
 class deImage;
 class igdeEnvironment;

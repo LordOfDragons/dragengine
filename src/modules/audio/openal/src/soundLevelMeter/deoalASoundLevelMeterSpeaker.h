@@ -39,6 +39,11 @@ class deoalRayTraceResult;
  * \brief Sound level meter tracked speaker.
  */
 class deoalASoundLevelMeterSpeaker : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalASoundLevelMeterSpeaker> Ref;
+	
+	
 private:
 	deoalASoundLevelMeter &pSoundLevelMeter;
 	deoalASpeaker *pSpeaker;

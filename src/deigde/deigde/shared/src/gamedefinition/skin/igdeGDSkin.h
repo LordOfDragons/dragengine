@@ -44,6 +44,11 @@
  * string in absolute form.
  */
 class DE_DLL_EXPORT igdeGDSkin : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDSkin> Ref;
+	
+	
 private:
 	decString pPath;
 	decString pName;

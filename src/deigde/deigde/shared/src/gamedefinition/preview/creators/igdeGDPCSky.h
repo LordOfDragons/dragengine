@@ -40,6 +40,11 @@ class igdeWSky;
  * \brief Create preview for game definition sky asynchronously.
  */
 class DE_DLL_EXPORT igdeGDPCSky : public igdeGDPreviewCreator{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPCSky> Ref;
+	
+	
 private:
 	igdeGDSky *pGDSky;
 	

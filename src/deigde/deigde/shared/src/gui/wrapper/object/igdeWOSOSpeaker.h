@@ -41,6 +41,11 @@ class igdeGDCSpeaker;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOSpeaker : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOSpeaker> Ref;
+	
+	
 private:
 	const igdeGDCSpeaker &pGDSpeaker;
 	deSpeaker::Ref pSpeaker;

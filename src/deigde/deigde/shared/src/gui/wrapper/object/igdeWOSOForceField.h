@@ -40,6 +40,11 @@ class igdeGDCForceField;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOForceField : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOForceField> Ref;
+	
+	
 private:
 	const igdeGDCForceField &pGDForceField;
 	deForceField::Ref pForceField;

@@ -41,6 +41,11 @@ class igdeGDCParticleEmitter;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOParticleEmitter : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOParticleEmitter> Ref;
+	
+	
 private:
 	const igdeGDCParticleEmitter &pGDParticleEmitter;
 	deParticleEmitterInstance::Ref pParticleEmitter;

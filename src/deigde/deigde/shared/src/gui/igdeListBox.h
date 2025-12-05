@@ -28,13 +28,13 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
+#include "model/igdeListItem.h"
 #include "model/igdeListItemSorter.h"
 
 #include <dragengine/common/collection/decIntSet.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
-#include "igdeListItem.h"
 
 class igdeListBoxListener;
 class igdeIcon;

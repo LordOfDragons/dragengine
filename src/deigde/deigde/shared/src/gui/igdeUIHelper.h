@@ -25,31 +25,14 @@
 #ifndef _IGDEUIHELPER_H_
 #define _IGDEUIHELPER_H_
 
-#include "igdeButton.h"
-#include "event/igdeAction.h"
-#include "../environment/igdeEnvironment.h"
-
 #include <stdint.h>
-#include <dragengine/common/math/decMath.h>
-#include <dragengine/common/string/decString.h>
+
 #include "igdeButton.h"
 #include "igdeCheckBox.h"
 #include "igdeColorBox.h"
 #include "igdeComboBox.h"
 #include "igdeComboBoxFilter.h"
-#include "layout/igdeContainer.h"
-#include "layout/igdeContainerBorder.h"
-#include "layout/igdeContainerScroll.h"
-#include "composed/igdeEditDVector.h"
-#include "composed/igdeEditDirectory.h"
-#include "composed/igdeEditPath.h"
-#include "composed/igdeEditPoint.h"
-#include "composed/igdeEditPoint3.h"
-#include "composed/igdeEditPropertyValue.h"
-#include "composed/igdeEditSliderText.h"
-#include "composed/igdeEditTags.h"
-#include "composed/igdeEditVector.h"
-#include "composed/igdeEditVector2.h"
+#include "igdeContainer.h"
 #include "igdeIconListBox.h"
 #include "igdeLabel.h"
 #include "igdeListBox.h"
@@ -61,66 +44,61 @@
 #include "igdeTextArea.h"
 #include "igdeTextField.h"
 #include "igdeToggleButton.h"
-#include "igdeToggleTags.h"
 #include "igdeTreeList.h"
-#include "igdeViewCurveBezier.h"
-#include "igdeWPCamera.h"
-#include "igdeWPSky.h"
-#include "igdeWPTriggerTable.h"
-#include "igdeWPWObject.h"
 #include "igdeWidget.h"
+#include "composed/igdeEditDVector.h"
+#include "composed/igdeEditDirectory.h"
+#include "composed/igdeEditPath.h"
+#include "composed/igdeEditPoint.h"
+#include "composed/igdeEditPoint3.h"
+#include "composed/igdeEditPropertyValue.h"
+#include "composed/igdeEditSliderText.h"
+#include "composed/igdeEditTags.h"
+#include "composed/igdeEditVector.h"
+#include "composed/igdeEditVector2.h"
+#include "composed/igdeToggleTags.h"
+#include "curveedit/igdeViewCurveBezier.h"
+#include "event/igdeAction.h"
+#include "layout/igdeContainerBorder.h"
+#include "layout/igdeContainerScroll.h"
+#include "properties/igdeWPCamera.h"
+#include "properties/igdeWPSky.h"
+#include "properties/igdeWPTriggerTable.h"
+#include "properties/igdeWPWObject.h"
+#include "../environment/igdeEnvironment.h"
+
+#include <dragengine/common/math/decMath.h>
+#include <dragengine/common/string/decString.h>
 
 class igdeAction;
-
 class igdeColorBoxListener;
-
 class igdeComboBoxListener;
-
 class igdeContainer;
-
-class igdeEditDirectoryListener;
-
 class igdeEditDVectorListener;
-
+class igdeEditDirectoryListener;
 class igdeEditPathListener;
-
 class igdeEditPoint3Listener;
-
 class igdeEditPointListener;
-
 class igdeEditPropertyValueListener;
-
 class igdeEditSliderTextListener;
-
 class igdeEditVector2Listener;
-
 class igdeEditVectorListener;
-
 class igdeEnvironment;
 class igdeIcon;
 class igdeIconListBoxListener;
-
 class igdeListBoxListener;
-
 class igdeMenuCascade;
-
 class igdeRecentFiles;
 class igdeScrollBarListener;
-
 class igdeSliderListener;
-
 class igdeSpinTextFieldListener;
-
 class igdeTextAreaListener;
-
 class igdeTextFieldListener;
-
 class igdeToolBar;
 class igdeTreeListListener;
-
 class igdeViewCurveBezierListener;
-
 class igdeWidget;
+
 
 /**
  * \brief UI Helpers.

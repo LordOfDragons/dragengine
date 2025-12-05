@@ -37,6 +37,11 @@ class igdeTriggerListener;
  * \brief Trigger Target.
  */
 class DE_DLL_EXPORT igdeTriggerTarget : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTriggerTarget> Ref;
+	
+	
 private:
 	decString pName;
 	bool pFired;

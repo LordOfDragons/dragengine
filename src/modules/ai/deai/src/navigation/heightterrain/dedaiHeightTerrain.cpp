@@ -114,9 +114,7 @@ void dedaiHeightTerrain::ParametersChanged(){
 }
 
 void dedaiHeightTerrain::SectorAdded( deHeightTerrainSector *sector ){
-	deObjectReference refSector;
-	refSector.TakeOver( new dedaiHeightTerrainSector( *this, *sector ) );
-	pSectors.Add( refSector );
+	pSectors.Add(dedaiHeightTerrainSector::Ref::NewWith(*this, *sector));
 }
 
 void dedaiHeightTerrain::SectorRemoved( int index ){

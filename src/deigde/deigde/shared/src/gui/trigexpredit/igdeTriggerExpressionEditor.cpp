@@ -181,9 +181,7 @@ public:
 	virtual void OnAction(){
 		igdeTriggerExpressionComponent * const component = pEditor.GetSelectedComponent();
 		if( component && component->GetType() != igdeTriggerExpressionComponent::ectTarget ){
-			deObjectReference child;
-			child.TakeOver( new igdeTriggerExpressionComponent );
-			component->AddChild( ( igdeTriggerExpressionComponent* )( deObject* )child );
+			component->AddChild(igdeTriggerExpressionComponent::Ref::NewWith());
 			pEditor.UpdateExpressionFromTree();
 			pEditor.UpdateTree();
 		}

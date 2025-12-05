@@ -46,6 +46,11 @@ class igdeWSky;
  * \brief Create preview for game definition skin asynchronously.
  */
 class DE_DLL_EXPORT igdeGDPCSkin : public igdeGDPreviewCreator{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPCSkin> Ref;
+	
+	
 private:
 	igdeGDSkin *pGDSkin;
 	

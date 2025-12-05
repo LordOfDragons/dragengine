@@ -43,6 +43,11 @@ class deHeightTerrainTexture;
  * Texture layer in a height terrain.
  */
 class meHeightTerrainTexture : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHeightTerrainTexture> Ref;
+	
+	
 private:
 	deEngine *pEngine;
 	deHeightTerrainTexture *pEngTexture;

@@ -35,6 +35,11 @@
  * \brief Create preview listener updating an liste item once finished.
  */
 class DE_DLL_EXPORT igdeBrowseItemGDPreviewListener : public igdeGDPreviewListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeBrowseItemGDPreviewListener> Ref;
+	
+	
 private:
 	igdeIconListBox::Ref pIconListBox;
 	igdeListItem::Ref pListItem;

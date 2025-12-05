@@ -39,6 +39,11 @@ class igdeGDCEnvMapProbe;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOEnvMapProbe : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOEnvMapProbe> Ref;
+	
+	
 private:
 	const igdeGDCEnvMapProbe &pGDEnvMapProbe;
 	deEnvMapProbe::Ref pEnvMapProbe;

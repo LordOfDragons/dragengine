@@ -724,9 +724,8 @@ void igdeXMLGameDefinition::pParseClassBillboard( const decXmlElementTag &root, 
 }
 
 void igdeXMLGameDefinition::pParseClassInherit( const decXmlElementTag &root, igdeGDClass &gdclass ){
-	deObjectReference objRef;
-	objRef.TakeOver( new igdeGDClassInherit( GetAttributeString( root, "name" ) ) );
-	igdeGDClassInherit * const inherit = ( igdeGDClassInherit* )( deObject* )objRef;
+	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::NewWith(
+		GetAttributeString(root, "name")));
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -2398,7 +2397,7 @@ void igdeXMLGameDefinition::pParseRootCategory( const decXmlElementTag &root, ig
 }
 
 void igdeXMLGameDefinition::pParseCategory( const decXmlElementTag &root, igdeGDCategory *parent ){
-	deObjectReference refCategory;
+	igdeGDCategory::Ref category;
 	int i;
 	
 	// first we have to look for the important name tag which is required to construct and add a new category.
@@ -2409,7 +2408,7 @@ void igdeXMLGameDefinition::pParseCategory( const decXmlElementTag &root, igdeGD
 		}
 		
 		if( tag->GetName() == "name" ){
-			if( refCategory ){
+			if(category){
 				continue;
 			}
 			
@@ -2418,14 +2417,13 @@ void igdeXMLGameDefinition::pParseCategory( const decXmlElementTag &root, igdeGD
 				LogErrorGenericProblemValue( *tag, categoryName, "Category with this name exists already" );
 			}
 			
-			refCategory.TakeOver( new igdeGDCategory( categoryName ) );
+			category.TakeOverWith(categoryName);
 		}
 	}
-	if( ! refCategory ){
-		LogErrorMissingTag( root, "name" );
+	if(!category){
+		LogErrorMissingTag(root, "name");
 	}
 	
-	igdeGDCategory * const category = ( igdeGDCategory* )( deObject* )refCategory;
 	parent->AddCategory( category );
 	
 	// now we read all the other tags.
