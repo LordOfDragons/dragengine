@@ -106,7 +106,7 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/model/deModel.h>
-#include <dragengine/resources/model/deModelReference.h>
+#include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelManager.h>
 
@@ -1422,7 +1422,7 @@ void gdeWPSOCComponent::PrepareEngineModelPath(){
 		return;
 	}
 	
-	deModelReference model;
+	deModel::Ref model;
 	try{
 		model.TakeOver( GetEngine()->GetModelManager()->LoadModel( pEngModelPath, "/" ) );
 		

@@ -26,7 +26,7 @@
 #define _DEBILLBOARD_H_
 
 #include "../deResource.h"
-#include "../skin/deSkinReference.h"
+#include "../skin/deSkin.h"
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
 #include "../../common/utils/decLayerMask.h"
@@ -68,7 +68,7 @@ private:
 	decVector pAxis;
 	decVector2 pSize;
 	decVector2 pOffset;
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	deDynamicSkin::Ref pDynamicSkin;
 	bool pLocked;
 	bool pSpherical;

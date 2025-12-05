@@ -29,7 +29,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/image/deImageReference.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class meHeightTerrainSector;
 class deEngine;
@@ -53,7 +53,7 @@ private:
 	int pTypeNumber;
 	
 	decString pPathSkin;
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	
 	// projection
 	decVector2 pProjOffset;

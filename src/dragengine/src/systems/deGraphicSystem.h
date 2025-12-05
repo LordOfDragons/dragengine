@@ -42,7 +42,7 @@
 
 #include "deBaseSystem.h"
 #include "../common/math/decMath.h"
-#include "../resources/canvas/deCanvasViewReference.h"
+#include "../resources/canvas/deCanvasView.h"
 #include "../resources/rendering/deRenderWindow.h"
 
 class deBaseGraphicModule;
@@ -113,8 +113,8 @@ private:
 	deBaseGraphicModule *pActiveModule;
 	deRenderWindow::Ref pRenderWindow;
 	
-	deCanvasViewReference pInputOverlayCanvas;
-	deCanvasViewReference pDebugOverlayCanvas;
+	deCanvasView::Ref pInputOverlayCanvas;
+	deCanvasView::Ref pDebugOverlayCanvas;
 	
 	
 	

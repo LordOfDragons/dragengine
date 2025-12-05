@@ -26,7 +26,7 @@
 #define _DEDSRENDERABLECANVAS_H_
 
 #include "deDSRenderable.h"
-#include "../../../canvas/deCanvasViewReference.h"
+#include "../../../canvas/deCanvasView.h"
 
 
 /**
@@ -44,7 +44,7 @@ class DE_DLL_EXPORT deDSRenderableCanvas : public deDSRenderable{
 private:
 	int pComponentCount;
 	int pBitCount;
-	deCanvasViewReference pCanvas;
+	deCanvasView::Ref pCanvas;
 	
 	
 	

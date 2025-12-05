@@ -27,8 +27,8 @@
 
 #include "deParticleEmitterParameter.h"
 #include "deParticleEmitter.h"
-#include "../model/deModelReference.h"
-#include "../skin/deSkinReference.h"
+#include "../model/deModel.h"
+#include "../skin/deSkin.h"
 #include "../../common/math/decMath.h"
 #include "../../common/curve/decCurveBezier.h"
 #include "../../common/string/decString.h"
@@ -137,9 +137,9 @@ public:
 private:
 	deParticleEmitterParameter pParameters[ epBeamEnd + 1 ];
 	
-	deSkinReference pSkin;
-	deModelReference pModel;
-	deSkinReference pModelSkin;
+	deSkin::Ref pSkin;
+	deModel::Ref pModel;
+	deSkin::Ref pModelSkin;
 	eCastFrom pCastFrom;
 	eSimulationTypes pSimulationType;
 	bool pIntervalAsDistance;

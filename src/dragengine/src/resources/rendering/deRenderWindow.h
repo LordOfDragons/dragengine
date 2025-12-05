@@ -29,7 +29,7 @@
 
 #include "../deResource.h"
 #include "../image/deImageReference.h"
-#include "../canvas/deCanvasViewReference.h"
+#include "../canvas/deCanvasView.h"
 #include "../../common/string/decString.h"
 
 #ifdef OS_UNIX_X11
@@ -122,7 +122,7 @@ private:
 	bool pPaint;
 	deImageReference pIcon;
 	
-	deCanvasViewReference pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 	deBaseGraphicRenderWindow *pPeerGraphic;
 	

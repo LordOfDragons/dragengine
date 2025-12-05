@@ -26,7 +26,7 @@
 #define _DERLTASKWRITEMODEL_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../model/deModelReference.h"
+#include "../../model/deModel.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskWriteModel : public deResourceLoaderTask {
 private:
-	deModelReference pModel;
+	deModel::Ref pModel;
 	bool pSucceeded;
 	
 	

@@ -29,7 +29,7 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/sound/deSpeaker.h>
@@ -46,7 +46,7 @@ class ceWDSVAPreview{
 private:
 	ceWindowDopeSheet &pWindow;
 	
-	deCanvasViewReference pCanvas;
+	deCanvasView::Ref pCanvas;
 	deCanvasImageReference pCanvasPreview;
 	
 	igdeMouseKeyListener::Ref pMouseKeyListener;

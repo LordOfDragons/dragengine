@@ -31,7 +31,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
 
 class seSky;
@@ -58,7 +58,7 @@ private:
 	float pIntensity;
 	float pTransparency;
 	decString pPathSkin;
-	deSkinReference pEngSkin;
+	deSkin::Ref pEngSkin;
 	
 	decVector pLightOrientation;
 	decColor pLightColor;

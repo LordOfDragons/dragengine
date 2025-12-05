@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/capture/deCaptureCanvas.h>
 #include <dragengine/resources/image/deImageReference.h>
 
@@ -55,7 +55,7 @@ private:
 	igdeEnvironment &pEnvironment;
 	
 	deCaptureCanvas::Ref pCaptureCanvas;
-	deCanvasViewReference pCanvas;
+	deCanvasView::Ref pCanvas;
 	
 	eStates pState;
 	deImageReference pImage;

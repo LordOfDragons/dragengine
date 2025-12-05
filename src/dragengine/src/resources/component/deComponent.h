@@ -26,11 +26,11 @@
 #define _DECOMPONENT_H_
 
 #include "../deResource.h"
-#include "../model/deModelReference.h"
-#include "../rig/deRigReference.h"
-#include "../skin/deSkinReference.h"
+#include "../model/deModel.h"
+#include "../rig/deRig.h"
+#include "../skin/deSkin.h"
 #include "../skin/dynamic/deDynamicSkin.h"
-#include "../occlusionmesh/deOcclusionMeshReference.h"
+#include "../occlusionmesh/deOcclusionMesh.h"
 #include "../animator/deAnimator.h"
 #include "../../parallel/deParallelTaskReference.h"
 #include "../../common/collection/decObjectOrderedSet.h"
@@ -82,11 +82,11 @@ public:
 	
 	
 private:
-	deModelReference pModel;
-	deSkinReference pSkin;
-	deRigReference pRig;
-	deOcclusionMeshReference pOcclusionMesh;
-	deModelReference pAudioModel;
+	deModel::Ref pModel;
+	deSkin::Ref pSkin;
+	deRig::Ref pRig;
+	deOcclusionMesh::Ref pOcclusionMesh;
+	deModel::Ref pAudioModel;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;

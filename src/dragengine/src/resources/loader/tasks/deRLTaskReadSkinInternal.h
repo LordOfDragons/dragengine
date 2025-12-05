@@ -26,7 +26,7 @@
 #define _DERLTASKREADSKININTERNAL_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../skin/deSkinReference.h"
+#include "../../skin/deSkin.h"
 #include "../../../common/collection/decThreadSafeObjectOrderedSet.h"
 
 class deSkinPropertyImage;
@@ -71,7 +71,7 @@ public:
 	
 	
 private:
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	decThreadSafeObjectOrderedSet pInternalTasks;
 	
 	

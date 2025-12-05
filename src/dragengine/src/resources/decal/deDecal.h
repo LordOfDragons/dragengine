@@ -26,7 +26,7 @@
 #define _DEDECAL_H_
 
 #include "../deResource.h"
-#include "../skin/deSkinReference.h"
+#include "../skin/deSkin.h"
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
 
@@ -65,7 +65,7 @@ private:
 	decVector pSize;
 	decTexMatrix2 pTransform;
 	
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	int pTexture;
 	deDynamicSkin::Ref pDynamicSkin;
 	

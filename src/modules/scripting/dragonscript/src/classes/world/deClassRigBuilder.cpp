@@ -41,7 +41,7 @@
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/rig/deRigBuilder.h>
 #include <dragengine/resources/rig/deRigConstraint.h>
-#include <dragengine/resources/rig/deRigReference.h>
+#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
 
 #include <libdscript/packages/default/dsClassArray.h>
@@ -125,7 +125,7 @@ void deClassRigBuilder::nfBuild::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deScriptingDragonScript &ds = ( ( deClassRigBuilder* )GetOwnerClass() )->GetDS();
 	const char * const filename = rt->GetValue( 0 )->GetString();
 	deClassRigBuilder_Builder builder( rt, myself );
-	deRigReference rig;
+	deRig::Ref rig;
 	
 	nd.builder = &builder;
 	

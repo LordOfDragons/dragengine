@@ -52,7 +52,7 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundManager.h>
-#include <dragengine/resources/sound/deSoundReference.h>
+#include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/world/deWorld.h>
 
 
@@ -64,7 +64,7 @@ class igdeWOSOSpeakerResLoadComponent : public igdeResourceLoaderListener{
 private:
 	igdeWOSOSpeaker *pOwner;
 	decString pPathSound;
-	deSoundReference pSound;
+	deSound::Ref pSound;
 	int pCounter;
 	bool pSuccess;
 	

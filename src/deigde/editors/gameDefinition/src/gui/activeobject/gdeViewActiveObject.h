@@ -32,9 +32,9 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/debug/deDebugDrawer.h>
-#include <dragengine/resources/model/deModelReference.h>
+#include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/sky/deSkyInstance.h>
 
 class gdeWindowMain;
@@ -78,8 +78,8 @@ private:
 	gdeObjectClass *pObjectClass;
 	
 	deComponent::Ref pPreviewComponent;
-	deModelReference pPreviewModelBox;
-	deSkinReference pPreviewSkin;
+	deModel::Ref pPreviewModelBox;
+	deSkin::Ref pPreviewSkin;
 	deSkyInstance::Ref pPreviewSky;
 	deParticleEmitterInstance::Ref pPreviewParticleEmitter;
 	

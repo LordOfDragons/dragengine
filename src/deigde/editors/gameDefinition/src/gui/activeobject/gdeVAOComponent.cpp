@@ -75,16 +75,16 @@
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelVertex.h>
-#include <dragengine/resources/model/deModelReference.h>
+#include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshManager.h>
-#include <dragengine/resources/occlusionmesh/deOcclusionMeshReference.h>
+#include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
-#include <dragengine/resources/rig/deRigReference.h>
+#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkinManager.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
@@ -208,11 +208,11 @@ void gdeVAOComponent::pCleanUp(){
 
 
 void gdeVAOComponent::pCreateComponent(){
-	deOcclusionMeshReference occlusionMesh;
-	deModelReference audioModel;
-	deModelReference model;
-	deSkinReference skin;
-	deRigReference rig;
+	deOcclusionMesh::Ref occlusionMesh;
+	deModel::Ref audioModel;
+	deModel::Ref model;
+	deSkin::Ref skin;
+	deRig::Ref rig;
 	
 	// load the new resources. if the resource is already in use it is not loaded again just the
 	// reference count increased by one. loading of individual resources is allowed to fail. in
@@ -325,7 +325,7 @@ deComponentTexture &engTexture, int engTextureIndex ){
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
 	
-	deSkinReference occtextureSkin;
+	deSkin::Ref occtextureSkin;
 	deDynamicSkin::Ref gdctDynamicSkin;
 	deSkin *useSkin = NULL;
 	int useTexture = 0;

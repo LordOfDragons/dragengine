@@ -33,7 +33,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasPaintReference.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
 class seProperty;
 class sePropertyNode;
@@ -86,7 +86,7 @@ private:
 	decPoint pOffset;
 	decPoint pBorderSize;
 	
-	deCanvasViewReference pCanvasContent;
+	deCanvasView::Ref pCanvasContent;
 	deCanvasPaintReference pCanvasContentBackground;
 	
 	deCanvasPaintReference pCanvasMarkerBorder;

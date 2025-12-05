@@ -26,7 +26,7 @@
 #define _DERLTASKWRITEOCCLUSIONMESH_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../occlusionmesh/deOcclusionMeshReference.h"
+#include "../../occlusionmesh/deOcclusionMesh.h"
 
 
 /**
@@ -34,7 +34,7 @@
  */
 class DE_DLL_EXPORT deRLTaskWriteOcclusionMesh : public deResourceLoaderTask {
 private:
-	deOcclusionMeshReference pOcclusionMesh;
+	deOcclusionMesh::Ref pOcclusionMesh;
 	bool pSucceeded;
 	
 	

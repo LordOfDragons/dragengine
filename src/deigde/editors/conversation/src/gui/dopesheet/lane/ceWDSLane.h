@@ -33,7 +33,7 @@
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasPaintReference.h>
 #include <dragengine/resources/canvas/deCanvasTextReference.h>
 
@@ -55,9 +55,9 @@ class ceWDSLane : public deObject{
 private:
 	class cStrip : public deObject{
 	public:
-		deCanvasViewReference handlePause;
+		deCanvasView::Ref handlePause;
 		deCanvasPaintReference handlePauseBg;
-		deCanvasViewReference handleDuration;
+		deCanvasView::Ref handleDuration;
 		deCanvasPaintReference handleDurationBg;
 		deCanvasPaintReference stripIdBg;
 		deCanvasTextReference stripId;
@@ -76,11 +76,11 @@ private:
 	decObjectList pStrips;
 	decObjectList pTimeLines;
 	
-	deCanvasViewReference pCanvas;
-	deCanvasViewReference pCanvasPanelSheet;
+	deCanvasView::Ref pCanvas;
+	deCanvasView::Ref pCanvasPanelSheet;
 	deCanvasPaintReference pCanvasBar;
 	deCanvasPaintReference pCanvasBarSelection;
-	deCanvasViewReference pCanvasHandles;
+	deCanvasView::Ref pCanvasHandles;
 	
 	int pBarHeight;
 	igdeMouseKeyListener::Ref pMouseKeyListener;
@@ -233,7 +233,7 @@ public:
 protected:
 	inline const ceStripList &GetEmptyList() const{ return pEmptyList; }
 	void FillIDListLookAt( decStringList &list );
-	void CreateHandle( deCanvasViewReference &canvas, deCanvasPaintReference &canvasBg, const decPoint &size );
+	void CreateHandle( deCanvasView::Ref &canvas, deCanvasPaintReference &canvasBg, const decPoint &size );
 	/*@}*/
 };
 

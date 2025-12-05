@@ -60,10 +60,10 @@
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/rig/deRig.h>
-#include <dragengine/resources/rig/deRigReference.h>
+#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/resources/world/deWorldManager.h>
@@ -823,9 +823,9 @@ void saeSAnimation::pCleanUp(){
 void saeSAnimation::pUpdateComponent(){
 	const igdeGameDefinition * const gamedef = GetGameDefinition();
 	deEngine &engine = *GetEngine();
-	deModelReference displayModel;
-	deSkinReference displaySkin;
-	deRigReference displayRig;
+	deModel::Ref displayModel;
+	deSkin::Ref displaySkin;
+	deRig::Ref displayRig;
 	
 	// try to load the resources if possible
 	try{
@@ -881,7 +881,7 @@ void saeSAnimation::pUpdateComponent(){
 void saeSAnimation::pUpdateAnimRig(){
 	deEngine &engine = *GetEngine();
 	deAnimationReference animation;
-	deRigReference rig;
+	deRig::Ref rig;
 	
 	try{
 		if( ! pAnimationPath.IsEmpty() ){

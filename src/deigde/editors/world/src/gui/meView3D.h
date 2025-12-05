@@ -30,7 +30,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvasTextReference.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 
@@ -59,7 +59,7 @@ private:
 	
 	deFont::Ref pFontStats;
 	deFontSize::Ref pFontSizeStats;
-	deCanvasViewReference pCanvasFPS;
+	deCanvasView::Ref pCanvasFPS;
 	deCanvasTextReference pCanvasFPSText;
 	
 	

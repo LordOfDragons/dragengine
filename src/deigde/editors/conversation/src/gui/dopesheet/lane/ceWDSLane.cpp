@@ -944,7 +944,7 @@ void ceWDSLane::FillIDListLookAt( decStringList &list ){
 	}
 }
 
-void ceWDSLane::CreateHandle( deCanvasViewReference &canvas, deCanvasPaintReference &canvasBg, const decPoint &size ){
+void ceWDSLane::CreateHandle( deCanvasView::Ref &canvas, deCanvasPaintReference &canvasBg, const decPoint &size ){
 	igdeEnvironment &env = pWindow.GetEnvironment();
 	const decColor colorBackground( env.GetSystemColor( igdeEnvironment::escWidgetBackground ) );
 	const decColor colorBorder( 0.0f, 0.0f, 0.0f ); //env.GetSystemColor( igdeEnvironment::escWidgetShadow ) );

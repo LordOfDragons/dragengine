@@ -26,7 +26,7 @@
 #define _DECANVASCANVASVIEW_H_
 
 #include "deCanvas.h"
-#include "deCanvasViewReference.h"
+#include "deCanvasView.h"
 
 
 /**
@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	deCanvasViewReference pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	int pRepeatX;
 	int pRepeatY;
 	

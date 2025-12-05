@@ -297,7 +297,7 @@ void gdeVAOLight::pCreateLight(){
 	
 	// light skin
 	decString path( PropertyString( pOCLight->GetPropertyName( gdeOCLight::epLightSkin ), pOCLight->GetLightSkinPath() ) );
-	deSkinReference skin;
+	deSkin::Ref skin;
 	if( ! path.IsEmpty() ){
 		try{
 			skin.TakeOver( engine.GetSkinManager()->LoadSkin( vfs, path, "/" ) );

@@ -29,7 +29,7 @@
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/font/deFontReference.h>
+#include <dragengine/resources/font/deFont.h>
 
 class saeWindowMain;
 class saeSAnimation;
@@ -42,7 +42,7 @@ class saeSAnimation;
 class saeViewSAnimation : public igdeViewRenderWindow{
 private:
 	saeWindowMain &pWindowMain;
-	deFontReference pFontStats;
+	deFont::Ref pFontStats;
 	
 	saeSAnimation *pSAnimation;
 	

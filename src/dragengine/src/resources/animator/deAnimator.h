@@ -27,7 +27,7 @@
 
 #include "../deResource.h"
 #include "../animation/deAnimationReference.h"
-#include "../rig/deRigReference.h"
+#include "../rig/deRig.h"
 #include "../../common/math/decMath.h"
 #include "../../common/string/decStringSet.h"
 #include "../../common/collection/decObjectOrderedSet.h"
@@ -60,7 +60,7 @@ public:
 	
 	
 private:
-	deRigReference pRig;
+	deRig::Ref pRig;
 	deAnimationReference pAnimation;
 	
 	deAnimatorController **pControllers;

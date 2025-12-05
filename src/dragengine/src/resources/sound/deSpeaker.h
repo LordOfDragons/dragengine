@@ -25,7 +25,7 @@
 #ifndef _DESPEAKER_H_
 #define _DESPEAKER_H_
 
-#include "deSoundReference.h"
+#include "deSound.h"
 #include "../deResource.h"
 #include "../synthesizer/deSynthesizerInstance.h"
 #include "../video/deVideoPlayer.h"
@@ -97,7 +97,7 @@ public:
 	
 private:
 	eSpeakerType pType;
-	deSoundReference pSound;
+	deSound::Ref pSound;
 	deSynthesizerInstance::Ref pSynthesizer;
 	deVideoPlayer::Ref pVideoPlayer;
 	decDVector pPosition;

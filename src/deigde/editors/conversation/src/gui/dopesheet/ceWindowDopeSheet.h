@@ -37,9 +37,9 @@
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/resources/canvas/deCanvasPaintReference.h>
 #include <dragengine/resources/canvas/deCanvasImageReference.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/sound/deSpeaker.h>
-#include <dragengine/resources/sound/deSoundReference.h>
+#include <dragengine/resources/sound/deSound.h>
 
 
 class ceWindowDopeSheetListener;
@@ -111,8 +111,8 @@ private:
 	decObjectList pTimeLineLabels;
 	decObjectList pTimeLines;
 	
-	deCanvasViewReference pCanvasTimeLines;
-	deCanvasViewReference pCanvasTimeLineLabels;
+	deCanvasView::Ref pCanvasTimeLines;
+	deCanvasView::Ref pCanvasTimeLineLabels;
 	deCanvasPaintReference pCanvasPanelDopeSheet;
 	deCanvasPaintReference pCanvasPanelVAPreview;
 	deCanvasPaintReference pCanvasPanelVAPreviewLine;

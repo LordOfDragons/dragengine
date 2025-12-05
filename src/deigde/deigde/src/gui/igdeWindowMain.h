@@ -53,7 +53,7 @@
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/resources/rig/deRigReference.h>
+#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/skin/deSkin.h>
 
@@ -99,7 +99,7 @@ private:
 	igdeGuiTheme::Ref pDefaultGuiTheme;
 	decObjectDictionary pGuiThemes;
 	igdeSharedFontList *pSharedFontList;
-	deRigReference pSharedModelCollisionRig;
+	deRig::Ref pSharedModelCollisionRig;
 	igdeResourceLoader *pResourceLoader;
 	igdeUIHelper *pUIHelper;
 	igdeUIHelper *pUIHelperProperties;

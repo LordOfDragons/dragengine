@@ -26,8 +26,8 @@
 #define _DELIGHT_H_
 
 #include "../deResource.h"
-#include "../canvas/deCanvasViewReference.h"
-#include "../skin/deSkinReference.h"
+#include "../canvas/deCanvasView.h"
+#include "../skin/deSkin.h"
 #include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/collection/decObjectSet.h"
 #include "../../common/math/decMath.h"
@@ -207,8 +207,8 @@ private:
 	float pSpotExponent;
 	decShapeList pShape;
 	
-	deSkinReference pLightSkin;
-	deCanvasViewReference pLightCanvas;
+	deSkin::Ref pLightSkin;
+	deCanvasView::Ref pLightCanvas;
 	deDynamicSkin::Ref pDynamicSkin;
 	decTexMatrix2 pTransform;
 	

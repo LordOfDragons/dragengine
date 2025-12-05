@@ -30,8 +30,8 @@
 
 #include <dragengine/resources/canvas/deCanvasRenderWorldReference.h>
 #include <dragengine/resources/component/deComponent.h>
-#include <dragengine/resources/model/deModelReference.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/model/deModel.h>
+#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/world/deWorld.h>
@@ -53,11 +53,11 @@ private:
 	deCamera::Ref pCamera;
 	deLight::Ref pLight;
 	deComponent::Ref pComponent;
-	deModelReference pModel;
-	deSkinReference pSkin;
+	deModel::Ref pModel;
+	deSkin::Ref pSkin;
 	deDynamicSkin::Ref pDynamicSkin;
-	deModelReference pLightBoxModel;
-	deSkinReference pLightBoxSkin;
+	deModel::Ref pLightBoxModel;
+	deSkin::Ref pLightBoxSkin;
 	igdeWSky *pSky;
 	deCanvasRenderWorldReference pCanvasRenderWorld;
 	

@@ -40,7 +40,7 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshBone.h>
-#include <dragengine/resources/occlusionmesh/deOcclusionMeshReference.h>
+#include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshBuilder.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshManager.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshWeight.h>
@@ -124,7 +124,7 @@ void deClassOcclusionMeshBuilder::nfBuild::RunFunction( dsRunTime *rt, dsValue *
 	const deScriptingDragonScript &ds = ( ( deClassOcclusionMeshBuilder* )GetOwnerClass() )->GetDS();
 	const char * const filename = rt->GetValue( 0 )->GetString();
 	deClassOcclusionMeshBuilder_Builder builder( rt, myself );
-	deOcclusionMeshReference occlusionMesh;
+	deOcclusionMesh::Ref occlusionMesh;
 	
 	nd.builder = &builder;
 	

@@ -32,7 +32,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/resources/rig/deRigReference.h>
+#include <dragengine/resources/rig/deRig.h>
 
 #include <deigde/editableentity/igdeEditableEntity.h>
 #include <deigde/gui/wrapper/igdeWObject.h>
@@ -112,7 +112,7 @@ private:
 	deAnimator *pEngAnimator;
 	deAnimatorInstance *pEngAnimatorInstance;
 	deColliderComponent *pEngCollider;
-	deRigReference pEngRig;
+	deRig::Ref pEngRig;
 	
 	deDebugDrawer *pDDBones;
 	igdeWCoordSysArrows *pDDSBones;
