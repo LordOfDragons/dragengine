@@ -26,7 +26,7 @@
 #define _DETHREADSAFEOBJECT_H_
 
 #include "deMutex.h"
-#include "../deTThreadSafeObjectReference.h"
+#include "deTThreadSafeObjectReference.h"
 
 
 /**

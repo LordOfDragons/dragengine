@@ -3916,6 +3916,9 @@
     <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\dragengine\src\threading\deTThreadSafeObjectReference.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
