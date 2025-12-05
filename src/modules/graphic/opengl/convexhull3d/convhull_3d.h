@@ -82,6 +82,7 @@ void convhull_3d_build(/* input arguments */
 #include <string.h>
 #include <float.h>
 #include <ctype.h>
+#include <string.h>
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
   #define CV_STRNCPY(a,b,c) strncpy_s(a,c+1,b,c);
   #define CV_STRCAT(a,b) strcat_s(a,sizeof(b),b);

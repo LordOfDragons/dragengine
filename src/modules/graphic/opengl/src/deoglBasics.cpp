@@ -14,6 +14,7 @@
 
 
 #ifdef OGL_THREAD_CHECK
+#include <dragengine/common/exceptions.h>
 
 #ifdef OS_UNIX
 static pthread_t pRenderThreadPid = 0;

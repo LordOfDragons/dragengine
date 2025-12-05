@@ -3825,6 +3825,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\..\..\..\src\modules\graphic\opengl\squish\texture_compression_s3tc.txt">
+      <Filter>contrib\squish</Filter>
     </Text>
   </ItemGroup>
 </Project>

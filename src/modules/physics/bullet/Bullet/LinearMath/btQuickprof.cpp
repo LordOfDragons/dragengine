@@ -23,6 +23,7 @@
 #endif
 
 #if defined(SUNOS) || defined(__SUNOS__)
+#include <stdio.h>
 #endif
 #ifdef __APPLE__
 #include <mach/mach_time.h>
@@ -55,6 +56,7 @@
 
 #ifdef BT_LINUX_REALTIME
 //required linking against rt (librt)
+#include <time.h>
 #endif  //BT_LINUX_REALTIME
 
 #endif  //_WIN32
@@ -633,6 +635,7 @@ float CProfileManager::Get_Time_Since_Reset(void)
 	return (float)time / Profile_Get_Tick_Rate();
 }
 
+#include <stdio.h>
 
 void CProfileManager::dumpRecursive(CProfileIterator* profileIterator, int spacing)
 {

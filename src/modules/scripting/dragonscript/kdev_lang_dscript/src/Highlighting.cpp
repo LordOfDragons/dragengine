@@ -2,6 +2,7 @@
 
 #include <language/duchain/declaration.h>
 #include <language/duchain/types/abstracttype.h>
+#include <language/duchain/declaration.h>
 
 
 namespace DragonScript{

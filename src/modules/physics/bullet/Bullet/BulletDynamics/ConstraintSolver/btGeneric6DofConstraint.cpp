@@ -22,6 +22,7 @@ http://gimpact.sf.net
 #include "btGeneric6DofConstraint.h"
 #include "BulletDynamics/Dynamics/btRigidBody.h"
 #include "LinearMath/btTransformUtil.h"
+#include "LinearMath/btTransformUtil.h"
 #include <new>
 
 #define D6_USE_OBSOLETE_METHOD false

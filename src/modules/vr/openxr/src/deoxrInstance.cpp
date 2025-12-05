@@ -585,4 +585,5 @@ void deoxrInstance::pLoadFunctions(){
 			INSTANCE_LEVEL_OPENXR_FUNCTION( name ) \
 		}
 	
+	#include "deoxrFunctionNames.h"
 }

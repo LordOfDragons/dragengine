@@ -361,6 +361,7 @@ bool deoglCapabilities::Verify() const{
 
 #ifdef OS_ANDROID
 
+#include "../renderthread/deoglRTShader.h"
 #include "../shaders/deoglShaderCompiled.h"
 #include "../shaders/deoglShaderDefines.h"
 #include "../shaders/deoglShaderManager.h"

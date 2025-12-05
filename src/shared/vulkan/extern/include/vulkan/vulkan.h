@@ -68,6 +68,7 @@
 
 
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
+#include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
 #include "vulkan_xlib_xrandr.h"
 #endif

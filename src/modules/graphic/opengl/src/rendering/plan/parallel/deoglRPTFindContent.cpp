@@ -71,6 +71,7 @@ deoglRPTFindContent::~deoglRPTFindContent(){
 
 // #define DO_SPECIAL_TIMING 1
 #ifdef DO_SPECIAL_TIMING
+#include <dragengine/common/utils/decTimer.h>
 #define INIT_SPECIAL_TIMING decTimer sttimer;
 #define SPECIAL_TIMER_PRINT(w) if(pPlan.GetDebugTiming()) pPlan.GetRenderThread().GetLogger().LogInfoFormat("RPTFindContent: " w "=%dys", (int)(sttimer.GetElapsedTime()*1e6f));
 #else

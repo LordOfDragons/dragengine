@@ -9,6 +9,7 @@
 #include "ContextBuilder.h"
 #include "dsp_defaultvisitor.h"
 #include "duchainexport.h"
+#include "dsp_defaultvisitor.h"
 
 using KDevelop::AbstractTypeBuilder;
 using KDevelop::AbstractDeclarationBuilder;

@@ -62,6 +62,7 @@
 
 #ifdef DO_TIMING
 	#include <dragengine/common/utils/decTimer.h>
+	#include "../deDEAnimator.h"
 	static decTimer timerTotal;
 	static decTimer timer;
 	

@@ -41,6 +41,7 @@ subject to the following restrictions:
 #include "BulletCollision/CollisionShapes/btSphereShape.h"
 
 #include "BulletDynamics/Dynamics/btActionInterface.h"
+#include "LinearMath/btQuickprof.h"
 #include "LinearMath/btMotionState.h"
 
 #include "LinearMath/btSerializer.h"

@@ -111,6 +111,7 @@ static decTimer dtimer;
 // #define DO_TIMING2
 
 #ifdef DO_TIMING2
+#include <dragengine/common/utils/decTimer.h>
 static decTimer dtimer;
 
 #define DEBUG_RESET_TIMERS2 dtimer.Reset();

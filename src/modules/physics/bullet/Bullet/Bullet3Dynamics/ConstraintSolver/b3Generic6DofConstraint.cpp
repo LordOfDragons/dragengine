@@ -23,6 +23,7 @@ http://gimpact.sf.net
 #include "Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
 
 #include "Bullet3Common/b3TransformUtil.h"
+#include "Bullet3Common/b3TransformUtil.h"
 #include <new>
 
 #define D6_USE_OBSOLETE_METHOD false

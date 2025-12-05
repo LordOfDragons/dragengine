@@ -166,6 +166,7 @@ inline int btIsDoublePrecision()
 		#define ATTRIBUTE_ALIGNED64(a) a __attribute__ ((aligned (64)))
 		#define ATTRIBUTE_ALIGNED128(a) a __attribute__ ((aligned (128)))
 		#ifndef assert
+		#include <assert.h>
 		#endif
 		#ifdef BT_DEBUG
 			#ifdef __SPU__
@@ -194,6 +195,7 @@ inline int btIsDoublePrecision()
 			#define ATTRIBUTE_ALIGNED64(a) a __attribute__ ((aligned (64)))
 			#define ATTRIBUTE_ALIGNED128(a) a __attribute__ ((aligned (128)))
 			#ifndef assert
+			#include <assert.h>
 			#endif
 	#ifdef BT_DEBUG
 			#define btAssert assert
@@ -227,6 +229,7 @@ inline int btIsDoublePrecision()
 						#elif defined (__SSE3__)
 							#include <pmmintrin.h>
 						#else
+							#include <emmintrin.h>
 						#endif
 					#endif //BT_USE_SSE
 				#elif defined( __ARM_NEON__ )
@@ -246,10 +249,12 @@ inline int btIsDoublePrecision()
 				#define ATTRIBUTE_ALIGNED64(a) a __attribute__ ((aligned (64)))
 				#define ATTRIBUTE_ALIGNED128(a) a __attribute__ ((aligned (128)))
 				#ifndef assert
+				#include <assert.h>
 				#endif
 
 				#if defined(DEBUG) || defined (_DEBUG)
 				 #if defined (__i386__) || defined (__x86_64__)
+				#include <stdio.h>
 				 #define btAssert(x)\
 				{\
 				if(!(x))\
@@ -281,6 +286,7 @@ inline int btIsDoublePrecision()
 				#define ATTRIBUTE_ALIGNED64(a) a
 				#define ATTRIBUTE_ALIGNED128(a) a
 				#ifndef assert
+				#include <assert.h>
 				#endif
 
 				#if defined(DEBUG) || defined (_DEBUG)
@@ -374,6 +380,7 @@ inline int btIsDoublePrecision()
 #else//BT_USE_SSE
 
 	#ifdef BT_USE_NEON
+	#include <arm_neon.h>
 
 	typedef float32x4_t btSimdFloat4;
 	#define BT_INFINITY INFINITY
@@ -406,6 +413,7 @@ inline int btIsDoublePrecision()
 #endif  //BT_USE_SSE
 
 #ifdef BT_USE_NEON
+	#include <arm_neon.h>
 
 	typedef float32x4_t btSimdFloat4;
 	#define BT_INFINITY INFINITY
