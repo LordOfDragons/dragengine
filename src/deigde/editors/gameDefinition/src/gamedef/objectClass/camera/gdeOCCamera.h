@@ -35,10 +35,6 @@
  * \brief Object class camera.
  */
 class gdeOCCamera : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCCamera> Ref;
-
-
 private:
 	float pFov, pFovRatio, pImageDistance, pViewDistance;
 	decVector pPosition, pRotation;
@@ -47,6 +43,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeOCCamera> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create camera. */

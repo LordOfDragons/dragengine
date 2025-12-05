@@ -37,10 +37,6 @@ class ceConversation;
  * \brief Conversation coordinate system.
  */
 class ceCoordSystem : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceCoordSystem> Ref;
-
-
 private:
 	ceConversation *pConversation;
 	
@@ -50,6 +46,10 @@ private:
 	decVector pOrientation;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceCoordSystem> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new coordinate system. */

@@ -42,10 +42,6 @@ class dedaiWorld;
  * \brief Navigation layer.
  */
 class dedaiLayer : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedaiLayer> Ref;
-
-
 private:
 	dedaiWorld &pWorld;
 	int pLayer;
@@ -57,6 +53,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dedaiLayer> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create layer. */

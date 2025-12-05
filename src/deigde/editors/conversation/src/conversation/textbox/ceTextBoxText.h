@@ -39,10 +39,6 @@ class deGraphicContext;
  * \brief Text Box Text.
  */
 class ceTextBoxText : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceTextBoxText> Ref;
-
-
 private:
 	decUnicodeString pName;
 	decUnicodeString pText;
@@ -50,6 +46,10 @@ private:
 	deCanvasView *pCanvasView;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceTextBoxText> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create text box text. */

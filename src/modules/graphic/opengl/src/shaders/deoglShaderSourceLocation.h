@@ -34,10 +34,6 @@
  * GLSL shader source location to help debugging.
  */
 class deoglShaderSourceLocation : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglShaderSourceLocation> Ref;
-
-
 private:
 	decString pInputFile;
 	int pInputLine;
@@ -46,6 +42,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglShaderSourceLocation> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader source location. */

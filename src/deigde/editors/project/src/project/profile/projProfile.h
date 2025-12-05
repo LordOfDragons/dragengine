@@ -39,10 +39,6 @@ class projProject;
  * \brief Project profile.
  */
 class projProfile : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projProfile> Ref;
-
-
 private:
 	projProject *pProject;
 	
@@ -73,6 +69,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projProfile> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create profile. */

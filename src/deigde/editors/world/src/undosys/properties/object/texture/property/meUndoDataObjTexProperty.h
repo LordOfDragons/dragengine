@@ -36,10 +36,6 @@ class meObjectTexture;
  * \brief Undo data object texture properties.
  */
 class meUndoDataObjTexProperty : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meUndoDataObjTexProperty> Ref;
-
-
 private:
 	meObjectTexture *pTexture;
 	decString pOldValue;
@@ -49,6 +45,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUndoDataObjTexProperty> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo data. */

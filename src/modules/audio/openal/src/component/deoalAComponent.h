@@ -52,10 +52,6 @@ class deComponent;
  * \brief Component resource peer.
  */
 class deoalAComponent : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalAComponent> Ref;
-
-
 private:
 	deoalAudioThread &pAudioThread;
 	
@@ -114,6 +110,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalAComponent> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create component peer. */

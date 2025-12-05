@@ -42,10 +42,6 @@ class deoalWorldOctreeVisitor;
  * Audio thread world.
  */
 class deoalAWorld : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalAWorld> Ref;
-
-
 private:
 	deoalAudioThread &pAudioThread;
 	
@@ -72,6 +68,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalAWorld> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create world peer. */

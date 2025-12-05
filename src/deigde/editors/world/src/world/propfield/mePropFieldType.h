@@ -48,10 +48,6 @@ class dePropFieldInstance;
  * Defines a type in a prop field including a set of instances.
  */
 class mePropFieldType : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<mePropFieldType> Ref;
-
-
 private:
 	mePropField *pPropField;
 	
@@ -69,6 +65,10 @@ private:
 	int pInstanceCount;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<mePropFieldType> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */

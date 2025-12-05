@@ -36,16 +36,16 @@
  * \brief File Format.
  */
 class dealFileFormat : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dealFileFormat> Ref;
-
-
 private:
 	dealEngineModule::eModuleTypes pType;
 	decString pPattern;
 	bool pSupported;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealFileFormat> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file format. */

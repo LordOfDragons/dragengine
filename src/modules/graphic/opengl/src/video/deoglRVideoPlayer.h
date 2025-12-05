@@ -39,10 +39,6 @@ class deoglTexture;
  * Render video player.
  */
 class deoglRVideoPlayer : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRVideoPlayer> Ref;
-
-
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -59,6 +55,10 @@ private:
 	bool pDirtyTexture;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRVideoPlayer> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create video player target. */

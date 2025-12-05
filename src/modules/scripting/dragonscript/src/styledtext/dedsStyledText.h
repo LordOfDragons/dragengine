@@ -47,14 +47,14 @@ class dedsStyledTextNode;
  * dedsStyledTextRenderer class.
  */
 class dedsStyledText : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedsStyledText> Ref;
-
-
 private:
 	dedsStyledTextNode *pRootNode;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dedsStyledText> Ref;
+
+
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new styled text. */

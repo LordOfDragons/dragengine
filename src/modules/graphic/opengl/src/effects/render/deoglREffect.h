@@ -36,16 +36,16 @@ class deoglRenderPlan;
  * Render effect.
  */
 class deoglREffect : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglREffect> Ref;
-
-
 private:
 	deoglRenderThread &pRenderThread;
 	
 	bool pEnabled;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglREffect> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */

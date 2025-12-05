@@ -39,10 +39,6 @@ class dsRealObject;
  * \brief Navigation information.
  */
 class dedsNavigationInfo : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dedsNavigationInfo> Ref;
-
-
 private:
 	deScriptingDragonScript &pDS;
 	
@@ -53,6 +49,10 @@ private:
 	float pPathFactor;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dedsNavigationInfo> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new navigation information. */

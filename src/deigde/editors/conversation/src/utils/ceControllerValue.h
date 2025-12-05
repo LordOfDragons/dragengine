@@ -34,16 +34,16 @@
  * Controller Value.
  */
 class ceControllerValue : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceControllerValue> Ref;
-
-
 private:
 	int pControllerIndex;
 	decString pController;
 	float pValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceControllerValue> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create controller value. */

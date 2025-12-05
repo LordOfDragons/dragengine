@@ -36,10 +36,6 @@ class sePropertyNode;
  * \brief Undo action property node data.
  */
 class seUPropertyNodeData : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seUPropertyNodeData> Ref;
-
-
 private:
 	sePropertyNode *pNode;
 	decPoint3 pPosition;
@@ -51,6 +47,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seUPropertyNodeData> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

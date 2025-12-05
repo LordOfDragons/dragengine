@@ -37,10 +37,6 @@ class saeSAnimation;
  * Speech Animation Word.
  */
 class saeWord : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<saeWord> Ref;
-
-
 private:
 	saeSAnimation *pSAnimation;
 	
@@ -50,6 +46,10 @@ private:
 	bool pActive;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<saeWord> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create word. */

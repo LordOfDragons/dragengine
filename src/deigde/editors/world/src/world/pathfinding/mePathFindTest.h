@@ -47,10 +47,6 @@ class deDebugDrawer;
  * \brief Path Find Test.
  */
 class mePathFindTest : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<mePathFindTest> Ref;
-
-
 private:
 	deEngine *pEngine;
 	meWorld *pWorld;
@@ -73,6 +69,10 @@ private:
 	mePathFindTestTypeList pTypeList;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<mePathFindTest> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new path find test. */

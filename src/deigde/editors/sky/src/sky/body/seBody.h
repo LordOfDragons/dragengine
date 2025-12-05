@@ -40,10 +40,6 @@ class deEngine;
  * \brief Sky body.
  */
 class seBody : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seBody> Ref;
-
-
 private:
 	deEngine *pEngine;
 	
@@ -61,6 +57,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seBody> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky body. */

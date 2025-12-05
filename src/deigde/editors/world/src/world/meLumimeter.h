@@ -47,10 +47,6 @@ class deDebugDrawerVolume;
  * the engine is not create or updated until it is acquired by the user.
  */
 class meLumimeter : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meLumimeter> Ref;
-
-
 private:
 	deEngine *pEngine;
 	deLumimeter *pLumimeter;
@@ -69,6 +65,10 @@ private:
 	meObject *pHostObject;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meLumimeter> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new lumimeter. */

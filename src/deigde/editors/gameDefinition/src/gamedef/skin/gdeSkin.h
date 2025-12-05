@@ -36,10 +36,6 @@ class gdeGameDefinition;
  * \brief Skin.
  */
 class gdeSkin : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeSkin> Ref;
-
-
 private:
 	gdeGameDefinition *pGameDefinition;
 	
@@ -52,6 +48,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeSkin> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create skin. */

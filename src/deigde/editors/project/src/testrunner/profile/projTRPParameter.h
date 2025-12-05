@@ -34,10 +34,6 @@
  * \brief Profile module parameter.
  */
 class projTRPParameter : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projTRPParameter> Ref;
-
-
 private:
 	decString pModule;
 	decString pName;
@@ -46,6 +42,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projTRPParameter> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create profile module parameter. */

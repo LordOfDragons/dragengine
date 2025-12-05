@@ -45,10 +45,6 @@ class igdeEnvironment;
  * \brief Sky layer.
  */
 class seLayer : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seLayer> Ref;
-
-
 private:
 	igdeEnvironment &pEnvironment;
 	
@@ -84,6 +80,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seLayer> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create layer. */

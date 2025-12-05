@@ -43,10 +43,6 @@ class deLogger;
  * finished successfully or with a failure.
  */
 class DE_DLL_EXPORT igdeResourceLoaderTask : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeResourceLoaderTask> Ref;
-
-
 private:
 	decString pFilename;
 	deResourceLoader::eResourceType pResourceType;
@@ -55,6 +51,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeResourceLoaderTask> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create task. */

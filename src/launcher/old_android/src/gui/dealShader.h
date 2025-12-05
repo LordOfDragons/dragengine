@@ -56,10 +56,6 @@ class dealDisplay;
  * 
  */
 class dealShader : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dealShader> Ref;
-
-
 private:
 	dealDisplay &pDisplay;
 	
@@ -70,6 +66,10 @@ private:
 	decIntList pParameters;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealShader> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create shader. */

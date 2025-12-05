@@ -38,10 +38,6 @@ class decShapeList;
  * Active object view sub object.
  */
 class gdeVAOSubObject : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeVAOSubObject> Ref;
-
-
 protected:
 	gdeViewActiveObject &pView;
 	
@@ -50,6 +46,10 @@ protected:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOSubObject> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create active object component. */

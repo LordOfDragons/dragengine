@@ -36,10 +36,6 @@ class saeSAnimation;
  * Speech Animation Phoneme.
  */
 class saePhoneme : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<saePhoneme> Ref;
-
-
 private:
 	saeSAnimation *pSAnimation;
 	int pEngController;
@@ -54,6 +50,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<saePhoneme> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create phoneme. */

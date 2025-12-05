@@ -42,10 +42,6 @@ class deFileResourceManager;
  * special treatment in single type modules.
  */
 class DE_DLL_EXPORT deFileResource : public deResource{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deFileResource> Ref;
-
-
 private:
 	deVirtualFileSystem *pVirtualFileSystem;
 	decString pFilename;
@@ -56,6 +52,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deFileResource> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file resource. */

@@ -43,10 +43,6 @@ class projProfile;
  * down-sizer tries to apply a logic best fitting the resources matching pattern list.
  */
 class projDownSizer : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<projDownSizer> Ref;
-
-
 private:
 	projProfile *pProfile;
 	
@@ -58,6 +54,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<projDownSizer> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create down sizer. */

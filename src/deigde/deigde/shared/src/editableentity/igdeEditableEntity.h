@@ -60,10 +60,6 @@ class deLogger;
  * and SetSaved methods send notifications if the respective state changed.
  */
 class DE_DLL_EXPORT igdeEditableEntity : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeEditableEntity> Ref;
-
-
 private:
 	igdeEnvironment *pEnvironment;
 	
@@ -77,6 +73,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditableEntity> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**

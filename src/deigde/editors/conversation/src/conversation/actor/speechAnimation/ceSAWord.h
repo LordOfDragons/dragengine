@@ -35,15 +35,15 @@
  * \brief Speech Animation Word.
  */
 class ceSAWord : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceSAWord> Ref;
-
-
 private:
 	decString pName;
 	decUnicodeString pPhonetics;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceSAWord> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new word. */

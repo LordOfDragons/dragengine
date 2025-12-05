@@ -48,10 +48,6 @@ class deDebugDrawer;
  * \brief Rig bone.
  */
 class reRigBone : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<reRigBone> Ref;
-
-
 private:
 	deEngine *pEngine;
 	
@@ -93,6 +89,10 @@ private:
 	bool pVisited;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reRigBone> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new rig controller. */

@@ -34,15 +34,15 @@
  * \brief Playback Variable.
  */
 class cePlaybackVariable : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<cePlaybackVariable> Ref;
-
-
 private:
 	decString pName;
 	int pValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cePlaybackVariable> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new variable. */

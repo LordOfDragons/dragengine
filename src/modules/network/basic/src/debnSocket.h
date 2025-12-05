@@ -46,10 +46,6 @@ class deNetworkMessage;
  * Socket class.
  */
 class debnSocket : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<debnSocket> Ref;
-
-
 private:
 	deNetworkBasic &pNetBasic;
 	debnAddress pAddress;
@@ -68,6 +64,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debnSocket> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create socket. */

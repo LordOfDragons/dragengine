@@ -36,10 +36,6 @@ class meIDGroupID;
  * \brief Identifier group.
  */
 class meIDGroup : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meIDGroup> Ref;
-
-
 private:
 	decString pName;
 	decObjectDictionary pIDs;
@@ -47,6 +43,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meIDGroup> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create id group. */

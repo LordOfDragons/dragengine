@@ -39,10 +39,6 @@ class seController;
  * \brief Sky link.
  */
 class seLink : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<seLink> Ref;
-
-
 private:
 	seSky *pSky;
 	int pIndex;
@@ -59,6 +55,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seLink> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create link. */

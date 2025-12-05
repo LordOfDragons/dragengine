@@ -38,10 +38,6 @@ class ceConversationCondition;
  * \brief Player choice option.
  */
 class ceCAPlayerChoiceOption : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceCAPlayerChoiceOption> Ref;
-
-
 private:
 	decUnicodeString pText;
 	ceConversationCondition *pCondition;
@@ -53,6 +49,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceCAPlayerChoiceOption> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create player choice option. */

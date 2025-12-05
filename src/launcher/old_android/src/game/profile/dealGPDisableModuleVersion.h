@@ -34,15 +34,15 @@
  * \brief Game profile module version disabling.
  */
 class dealGPDisableModuleVersion : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dealGPDisableModuleVersion> Ref;
-
-
 private:
 	decString pName;
 	decString pVersion;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGPDisableModuleVersion> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create disabled module version. */

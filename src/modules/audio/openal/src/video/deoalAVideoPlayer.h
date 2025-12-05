@@ -38,10 +38,6 @@ class deVideo;
  * \brief Audio video player.
  */
 class deoalAVideoPlayer : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalAVideoPlayer> Ref;
-
-
 private:
 	deoalAudioThread &pAudioThread;
 	
@@ -66,6 +62,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalAVideoPlayer> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create microphone. */

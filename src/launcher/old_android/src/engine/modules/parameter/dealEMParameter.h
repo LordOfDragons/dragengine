@@ -34,10 +34,6 @@
  * @brief Game Engine Module Parameter.
  */
 class dealEMParameter : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dealEMParameter> Ref;
-
-
 private:
 	int pIndex;
 	decString pName;
@@ -45,6 +41,10 @@ private:
 	decString pValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealEMParameter> Ref;
+
+
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new engine module parameter. */

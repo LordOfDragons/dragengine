@@ -35,14 +35,14 @@ class dealWidgetOptionBox;
  * \brief Widget option box group.
  */
 class dealWidgetOptionGroup : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dealWidgetOptionGroup> Ref;
-
-
 private:
 	decPointerSet pWidgets;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealWidgetOptionGroup> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create option group. */

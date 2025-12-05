@@ -61,10 +61,6 @@ class deoglRCanvasView;
  * Render window target.
  */
 class deoglRRenderWindow : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRRenderWindow> Ref;
-
-
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -76,6 +72,10 @@ private:
 	private:
 		cGLWindow &pWindow;
 	public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRRenderWindow> Ref;
+
+
 		cGLView( cGLWindow &widow, const BRect &frame );
 		virtual void KeyDown( const char *bytes, int32 numBytes );
 		virtual void KeyUp( const char *bytes, int32 numBytes );

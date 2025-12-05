@@ -45,10 +45,6 @@ class deDebugDrawer;
  * Debug Drawer Peer.
  */
 class deoglRDebugDrawer : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDebugDrawer> Ref;
-
-
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -76,6 +72,10 @@ private:
 	bool pWorldMarkedRemove;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDebugDrawer> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render debug drawer. */

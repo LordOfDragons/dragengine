@@ -36,10 +36,6 @@ class dearAnimationKeyframeVPSList;
 
 /** Animation peer move. */
 class dearAnimationMove : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dearAnimationMove> Ref;
-
-
 private:
 	decString pName;
 	float pPlaytime;
@@ -53,6 +49,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dearAnimationMove> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animation move. */

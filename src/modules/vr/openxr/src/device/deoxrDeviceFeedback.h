@@ -41,10 +41,6 @@ class deVROpenXR;
  * VR input device feedback.
  */
 class deoxrDeviceFeedback : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoxrDeviceFeedback> Ref;
-
-
 private:
 	deVROpenXR &pOxr;
 	
@@ -65,6 +61,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoxrDeviceFeedback> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device feedback. */

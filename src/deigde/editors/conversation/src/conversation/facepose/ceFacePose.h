@@ -38,10 +38,6 @@ class ceConversation;
  * \brief Face Pose.
  */
 class ceFacePose : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceFacePose> Ref;
-
-
 private:
 	ceConversation *pConversation;
 	
@@ -49,6 +45,10 @@ private:
 	ceControllerValueList pControllers;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceFacePose> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new face pose. */

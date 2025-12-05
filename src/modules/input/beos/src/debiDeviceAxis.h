@@ -42,10 +42,6 @@ class deInputDeviceAxis;
  * \brief Input device axis.
  */
 class debiDeviceAxis : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<debiDeviceAxis> Ref;
-
-
 private:
 	deBeOSInput &pModule;
 	
@@ -76,6 +72,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debiDeviceAxis> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device axis. */

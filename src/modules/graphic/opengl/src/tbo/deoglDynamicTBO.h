@@ -43,10 +43,6 @@ class deoglRenderThread;
  * size but never shrinks. This way the usage is as fast as possible.
  */
 class deoglDynamicTBO : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglDynamicTBO> Ref;
-
-
 protected:
 	deoglRenderThread &pRenderThread;
 	const int pComponentCount;
@@ -75,6 +71,10 @@ protected:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglDynamicTBO> Ref;
+
+
 	/** \name Management */
 	/*@{*/
 	/** Render thread. */

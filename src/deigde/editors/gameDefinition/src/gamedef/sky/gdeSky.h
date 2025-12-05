@@ -39,10 +39,6 @@ class gdeSkyController;
  * \brief Sky.
  */
 class gdeSky : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeSky> Ref;
-
-
 private:
 	gdeGameDefinition *pGameDefinition;
 	
@@ -57,6 +53,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeSky> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky. */

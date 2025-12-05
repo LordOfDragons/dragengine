@@ -36,10 +36,6 @@ class deSynthesizerInstance;
  * \brief Audio synthesizer instance.
  */
 class deoalASynthesizerInstance : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalASynthesizerInstance> Ref;
-
-
 private:
 	deoalAudioThread &pAudioThread;
 	
@@ -56,6 +52,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalASynthesizerInstance> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create microphone. */

@@ -41,10 +41,6 @@ class igdeEnvironment;
  * \brief Base class for creating previews for game definition element asynchronously.
  */
 class DE_DLL_EXPORT igdeGDPreviewCreator : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<igdeGDPreviewCreator> Ref;
-
-
 private:
 	enum eStates{
 		esInitial,
@@ -69,6 +65,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPreviewCreator> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview creator. */

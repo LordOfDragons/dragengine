@@ -52,10 +52,6 @@ class deoglTexture;
  * do the video is preloaded by one video player in short time anyways.
  */
 class deoglRVideo : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRVideo> Ref;
-
-
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -73,6 +69,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRVideo> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render video. */

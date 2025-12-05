@@ -42,10 +42,6 @@ class deEngine;
  * \brief Height terrain prop field type.
  */
 class meHeightTerrainPFType : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<meHeightTerrainPFType> Ref;
-
-
 private:
 	meHeightTerrainPFLayer *pPFLayer;
 	
@@ -67,6 +63,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHeightTerrainPFType> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

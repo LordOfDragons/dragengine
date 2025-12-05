@@ -34,15 +34,15 @@
  * \brief Playback Command.
  */
 class cePlaybackCommand : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<cePlaybackCommand> Ref;
-
-
 private:
 	decString pCommand;
 	bool pValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cePlaybackCommand> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new command. */

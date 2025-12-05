@@ -37,10 +37,6 @@ class dealDisplay;
  * \brief Gui theme parameters.
  */
 class dealGuiTheme : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dealGuiTheme> Ref;
-
-
 private:
 	decColor pWidgetBackgroundColor;
 	decColor pWidgetTextColor;
@@ -78,6 +74,10 @@ private:
 	decColor pOptionBoxImageSelectedColorize;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGuiTheme> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create gui theme. */

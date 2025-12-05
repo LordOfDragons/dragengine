@@ -52,10 +52,6 @@ class igdeUndo;
  * Dope sheet lane base class.
  */
 class ceWDSLane : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceWDSLane> Ref;
-
-
 private:
 	class cStrip : public deObject{
 	/** \brief Type holding strong reference. */
@@ -63,6 +59,10 @@ private:
 
 
 	public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWDSLane> Ref;
+
+
 		deCanvasView::Ref handlePause;
 		deCanvasPaint::Ref handlePauseBg;
 		deCanvasView::Ref handleDuration;

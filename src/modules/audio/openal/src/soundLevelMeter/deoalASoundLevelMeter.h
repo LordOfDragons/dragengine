@@ -47,10 +47,6 @@ class deoalASpeaker;
  * \brief Audio microphone.
  */
 class deoalASoundLevelMeter : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalASoundLevelMeter> Ref;
-
-
 private:
 	deoalAudioThread &pAudioThread;
 	
@@ -80,6 +76,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalASoundLevelMeter> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create microphone. */

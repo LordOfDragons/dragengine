@@ -36,10 +36,6 @@
  * \brief Game Definition Class Component Texture.
  */
 class gdeOCComponentTexture : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<gdeOCComponentTexture> Ref;
-
-
 private:
 	decString pName;
 	decString pPathSkin;
@@ -53,6 +49,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeOCComponentTexture> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object class component texture. */

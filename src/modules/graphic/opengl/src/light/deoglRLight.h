@@ -65,15 +65,15 @@ class decShapeBox;
  * Render light.
  */
 class deoglRLight : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRLight> Ref;
-
-
 private:
 	/** World compute element. */
 	class WorldComputeElement: public deoglWorldComputeElement{
 		deoglRLight &pLight;
 	public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRLight> Ref;
+
+
 		WorldComputeElement( deoglRLight &light );
 		virtual void UpdateData( sDataElement &data ) const;
 	};

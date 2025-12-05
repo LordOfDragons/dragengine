@@ -46,10 +46,6 @@ class cePlayback;
  * entity id, actor id, actor index, conversation coordinate system.
  */
 class ceTarget : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceTarget> Ref;
-
-
 private:
 	ceConversation *pConversation;
 	
@@ -62,6 +58,10 @@ private:
 	decVector pOrientation;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceTarget> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new target. */

@@ -42,10 +42,6 @@ class deoglVR;
  * Render camera.
  */
 class deoglRCamera : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRCamera> Ref;
-
-
 private:
 	deoglRenderThread &pRenderThread;
 	deoglRWorld *pParentWorld;
@@ -91,6 +87,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRCamera> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render camera. */

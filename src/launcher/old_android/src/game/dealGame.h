@@ -59,10 +59,6 @@ class dealGameRunParams;
  * running at the same time. This might be changed later on if required.
  */
 class dealGame : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<dealGame> Ref;
-
-
 private:
 	dealLauncher &pLauncher;
 	
@@ -100,6 +96,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGame> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create game. */

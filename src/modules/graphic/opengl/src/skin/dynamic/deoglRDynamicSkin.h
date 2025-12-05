@@ -37,10 +37,6 @@ class deoglRenderThread;
  * Render dynamic skin.
  */
 class deoglRDynamicSkin : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRDynamicSkin> Ref;
-
-
 private:
 	deoglRenderThread &pRenderThread;
 	
@@ -49,6 +45,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDynamicSkin> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render dynamic skin. */

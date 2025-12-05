@@ -33,10 +33,6 @@
  * Speech Animation Phoneme.
  */
 class ceSAPhoneme : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<ceSAPhoneme> Ref;
-
-
 private:
 	int pIPA;
 	float pLength;
@@ -48,6 +44,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceSAPhoneme> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new phoneme. */

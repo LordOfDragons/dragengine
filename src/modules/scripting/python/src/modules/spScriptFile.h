@@ -39,10 +39,6 @@ class ScriptingPython;
  * \brief Python module loaded from a script file.
  */
 class spScriptFile : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<spScriptFile> Ref;
-
-
 private:
 	ScriptingPython &pSP;
 	
@@ -54,6 +50,10 @@ private:
 	PyObject *pPyModule;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<spScriptFile> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new module. */

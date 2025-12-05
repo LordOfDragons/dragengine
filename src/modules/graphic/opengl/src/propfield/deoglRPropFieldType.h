@@ -49,10 +49,6 @@ class dePropFieldType;
  * Render prop field type.
  */
 class deoglRPropFieldType : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRPropFieldType> Ref;
-
-
 private:
 	deoglRPropField &pPropField;
 	
@@ -78,6 +74,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRPropFieldType> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create prop field type. */

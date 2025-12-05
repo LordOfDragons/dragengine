@@ -44,10 +44,6 @@ class deSkyInstance;
  * Render sky instance.
  */
 class deoglRSkyInstance : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglRSkyInstance> Ref;
-
-
 private:
 	deoglRenderThread &pRenderThread;
 	deoglRWorld *pParentWorld;
@@ -76,6 +72,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRSkyInstance> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create sky instance. */

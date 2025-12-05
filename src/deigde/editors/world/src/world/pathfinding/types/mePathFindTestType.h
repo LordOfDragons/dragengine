@@ -34,10 +34,6 @@
  * @brief Path Find Test Type.
  */
 class mePathFindTestType : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<mePathFindTestType> Ref;
-
-
 private:
 	decString pName;
 	int pTypeNumber;
@@ -45,6 +41,10 @@ private:
 	float pCostPerMeter;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<mePathFindTestType> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new path find test type. */

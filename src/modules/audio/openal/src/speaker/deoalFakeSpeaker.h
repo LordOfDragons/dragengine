@@ -35,10 +35,6 @@ class deoalEnvironment;
  * Fake speaker.
  */
 class deoalFakeSpeaker : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoalFakeSpeaker> Ref;
-
-
 private:
 	deoalAudioThread &pAudioThread;
 	deoalEnvironment *pEnvironment;
@@ -46,6 +42,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalFakeSpeaker> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speaker peer. */
