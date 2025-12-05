@@ -44,6 +44,11 @@ class igdeEnvironment;
  * \brief Trigger table panel.
  */
 class DE_DLL_EXPORT igdeWPTriggerTable : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWPTriggerTable> Ref;
+	
+	
 private:
 	igdeTriggerTargetList *pTriggerTargetList;
 	

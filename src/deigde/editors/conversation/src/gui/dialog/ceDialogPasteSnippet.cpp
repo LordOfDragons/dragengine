@@ -40,6 +40,7 @@
 #include "../../conversation/target/ceTarget.h"
 
 #include <deigde/gui/igdeUIHelper.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextArea.h>
@@ -102,6 +103,8 @@ pConversation( conversation )
 	CreateButtonBar( buttonBar, "Generate Actions", "Cancel" );
 	
 	AddContent( content, buttonBar );
+	
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 400)));
 	
 	// update lists
 	UpdateCameraShotLists();
@@ -192,7 +195,6 @@ void ceDialogPasteSnippet::GenerateActions(){
 	const float delayActorSpeak = pEditDelayActorSpeak->GetFloat();
 	const float scaleActorSpeak = pEditScaleActorSpeak->GetFloat();
 	decString actor, lastActor, text;
-	deObjectReference action;
 	bool firstActor = true;
 	int i;
 	
@@ -206,10 +208,9 @@ void ceDialogPasteSnippet::GenerateActions(){
 		
 		// if line starts with a dash generate a comment
 		if( line.GetLength() > 0 && line.GetAt( 0 ) == '#' ){
-			action.TakeOver( new ceCAComment );
-			ceCAComment * const actionComment = action;
-			actionComment->SetComment( line.GetMiddle( 1 ).GetTrimmed() );
-			pActions.Add( actionComment );
+			const ceCAComment::Ref action(ceCAComment::Ref::NewWith());
+			action->SetComment( line.GetMiddle( 1 ).GetTrimmed() );
+			pActions.Add(action);
 			continue;
 		}
 		
@@ -217,18 +218,16 @@ void ceDialogPasteSnippet::GenerateActions(){
 		if( line.GetLength() > 0 && line.GetAt( 0 ) == '!' ){
 			// if we have an actor specified create an actor command
 			if( delimiter == -1 ){
-				action.TakeOver( new ceCAGameCommand );
-				ceCAGameCommand * const actionGameCommand = action;
-				actionGameCommand->SetCommand( line.GetMiddle( 1 ).GetTrimmed() );
-				pActions.Add( actionGameCommand );
+				const ceCAGameCommand::Ref action(ceCAGameCommand::Ref::NewWith());
+				action->SetCommand( line.GetMiddle( 1 ).GetTrimmed() );
+				pActions.Add(action);
 				
 			// else create a game comment
 			}else{
-				action.TakeOver( new ceCAActorCommand );
-				ceCAActorCommand * const actionActorCommand = action;
-				actionActorCommand->SetActor( line.GetLeft( delimiter ).GetTrimmed() );
-				actionActorCommand->SetCommand( line.GetMiddle( delimiter + 1 ).GetTrimmed() );
-				pActions.Add( actionActorCommand );
+				const ceCAActorCommand::Ref action(ceCAActorCommand::Ref::NewWith());
+				action->SetActor( line.GetLeft( delimiter ).GetTrimmed() );
+				action->SetCommand( line.GetMiddle( delimiter + 1 ).GetTrimmed() );
+				pActions.Add(action);
 			}
 			
 			continue;
@@ -252,20 +251,19 @@ void ceDialogPasteSnippet::GenerateActions(){
 		// if the actor changed add a camera shot
 		if( actor != lastActor ){
 			if( firstActor ? hasCameraShot1 : hasCameraShot2 ){
-				action.TakeOver( new ceCACameraShot );
-				ceCACameraShot * const actionCameraShot = action;
-				actionCameraShot->SetName( firstActor ? cameraShot1 : cameraShot2 );
-				actionCameraShot->SetCameraTarget( firstActor ? target2 : target1 );
-				actionCameraShot->SetDuration( 10.0f );
-				actionCameraShot->SetLookAtTarget( firstActor ? target1 : target2 );
-				actionCameraShot->SetDelay( delayCameraShots );
-				pActions.Add( actionCameraShot );
+				const ceCACameraShot::Ref action(ceCACameraShot::Ref::NewWith());
+				action->SetName( firstActor ? cameraShot1 : cameraShot2 );
+				action->SetCameraTarget( firstActor ? target2 : target1 );
+				action->SetDuration( 10.0f );
+				action->SetLookAtTarget( firstActor ? target1 : target2 );
+				action->SetDelay( delayCameraShots );
+				pActions.Add(action);
 			}
 			firstActor = ! firstActor;
 		}
 		
 		// add action speak for the actor
-		action.TakeOver( new ceCAActorSpeak( pConversation->GetEngine() ) );
+		const ceCAActorSpeak::Ref action(ceCAActorSpeak::Ref::NewWith(pConversation->GetEngine()));
 		ceCAActorSpeak * const actionActorSpeak = action;
 		actionActorSpeak->SetActor( actor );
 		actionActorSpeak->SetTextBoxText( decUnicodeString::NewFromUTF8( text ) );
@@ -284,7 +282,6 @@ void ceDialogPasteSnippet::WordsFromText( ceStripList &wordList, const decUnicod
 	const float letterDuration = 0.075f;
 // 	const float phrasePause = 0.5f;
 	const int length = text.GetLength();
-	deObjectReference entry;
 	decUnicodeString word;
 	int i;
 	
@@ -295,9 +292,8 @@ void ceDialogPasteSnippet::WordsFromText( ceStripList &wordList, const decUnicod
 		
 		if( padding.Find( character, 0 ) != -1 ){
 			if( word.GetLength() > 0 ){
-				entry.TakeOver( new ceStrip( word.GetLower().ToUTF8(),
-					letterDuration * ( float )word.GetLength() * scale, 0.0f ) );
-				wordList.Add( entry );
+				wordList.Add(ceStrip::Ref::NewWith(word.GetLower().ToUTF8(),
+					letterDuration * (float)word.GetLength() * scale, 0.0f));
 				word.SetFromUTF8( "" );
 			}
 			

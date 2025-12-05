@@ -38,6 +38,11 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object camera for edit view.
  */
 class gdeVAOCamera : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOCamera> Ref;
+	
+	
 private:
 	gdeOCCamera *pOCCamera;
 	

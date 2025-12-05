@@ -26,6 +26,7 @@
 #include "../../conversation/strip/ceStrip.h"
 
 #include <deigde/gui/igdeUIHelper.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextField.h>
@@ -98,7 +99,7 @@ pAutoResetDuration( true )
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
 	igdeContainer::Ref content;
-	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
+	content.TakeOver(new igdeContainerForm(environment));
 	
 	helper.ComboBoxFilter( content, textLabel, 25, true, "", pCBID, new cComboIdentifier( *this ) );
 	pCBID->SetDefaultSorter();
@@ -115,6 +116,8 @@ pAutoResetDuration( true )
 	CreateButtonBar( buttonBar, "Accept", "Cancel" );
 	
 	AddContent( content, buttonBar );
+	
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(400, 150)));
 }
 
 ceDialogEditStrip::~ceDialogEditStrip(){

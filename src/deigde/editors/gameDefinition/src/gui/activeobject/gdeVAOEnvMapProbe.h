@@ -38,6 +38,11 @@ class igdeWDebugDrawerShape;
  * \brief Game definition active object environment map probe for edit view.
  */
 class gdeVAOEnvMapProbe : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOEnvMapProbe> Ref;
+	
+	
 private:
 	gdeOCEnvMapProbe *pOCEnvMapProbe;
 	

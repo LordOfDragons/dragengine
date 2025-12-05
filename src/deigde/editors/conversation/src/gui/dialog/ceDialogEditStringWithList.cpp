@@ -25,6 +25,7 @@
 #include "ceDialogEditStringWithList.h"
 
 #include <deigde/gui/igdeUIHelper.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -46,7 +47,7 @@ igdeDialog( environment, windowTitle )
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
 	igdeContainer::Ref content;
-	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
+	content.TakeOver(new igdeContainerForm(environment));
 	helper.ComboBoxFilter( content, textLabel, true, "", pCBString, NULL );
 	pCBString->SetDefaultSorter();
 	
@@ -54,6 +55,8 @@ igdeDialog( environment, windowTitle )
 	CreateButtonBar( buttonBar, "Accept", "Cancel" );
 	
 	AddContent( content, buttonBar );
+	
+	SetSize(igdeApplication::app().DisplayScaled(decPoint(400, 150)));
 	
 	// init list
 	const int count = choices.GetCount();

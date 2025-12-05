@@ -37,6 +37,11 @@
  * with a unique name.
  */
 class ceCACameraShot : public ceConversationAction{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceCACameraShot> Ref;
+	
+	
 private:
 	decString pName;
 	float pDuration;

@@ -42,6 +42,11 @@ class decStringSet;
  * \brief Tag list.
  */
 class DE_DLL_EXPORT igdeEditTags : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeEditTags> Ref;
+	
+	
 protected:
 	/** \brief Action adding a tag. */
 	class DE_DLL_EXPORT cActionAdd : public igdeAction{

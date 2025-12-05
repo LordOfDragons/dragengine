@@ -25,8 +25,8 @@
 #ifndef _MEUHTVRULEREMOVE_H_
 #define _MEUHTVRULEREMOVE_H_
 
-#include "../../world/heightterrain/meHTVegetationLayer.h"
-#include "../../world/heightterrain/rules/meHTVRule.h"
+#include "../../../../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../../../../world/heightterrain/rules/meHTVRule.h"
 #include <deigde/undo/igdeUndo.h>
 
 

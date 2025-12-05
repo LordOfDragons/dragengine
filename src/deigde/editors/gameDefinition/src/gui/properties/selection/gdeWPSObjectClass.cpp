@@ -1384,7 +1384,7 @@ const char *gdeWPSObjectClass::GetPropertyValue() const{
 
 gdeOCComponentTexture *gdeWPSObjectClass::GetTexture() const{
 	gdeObjectClass * const objectClass = GetObjectClass();
-	return objectClass ? objectClass->GetActiveTexture() : NULL;
+	return objectClass ? objectClass->GetActiveTexture().Pointer() : nullptr;
 }
 
 

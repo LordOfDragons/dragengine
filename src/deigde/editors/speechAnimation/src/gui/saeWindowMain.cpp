@@ -590,7 +590,6 @@ public:
 			const decStringList lines( input.Split( '\n' ) );
 			const int countLines = lines.GetCount();
 			saeWordList addWordsList;
-			deObjectReference word;
 			int i;
 			
 			for( i=0; i<countLines; i++ ){
@@ -611,9 +610,8 @@ public:
 					break;
 				}
 				
-				word.TakeOver( new saeWord( parts.GetAt( 0 ),
-					decUnicodeString::NewFromUTF8( parts.GetAt( 1 ) ) ) );
-				addWordsList.Add( ( saeWord* )word.operator->() );
+				addWordsList.Add(saeWord::Ref::NewWith(parts.GetAt(0),
+					decUnicodeString::NewFromUTF8(parts.GetAt(1))));
 			}
 			
 			if( i < countLines || addWordsList.GetCount() == 0 ){

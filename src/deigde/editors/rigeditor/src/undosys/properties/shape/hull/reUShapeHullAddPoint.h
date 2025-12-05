@@ -25,7 +25,7 @@
 #ifndef _REUSHAPEHULLADDPOINT_H_
 #define _REUSHAPEHULLADDPOINT_H_
 
-#include "../../../rig/shape/reRigShapeHull.h"
+#include "../../../../rig/shape/reRigShapeHull.h"
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>

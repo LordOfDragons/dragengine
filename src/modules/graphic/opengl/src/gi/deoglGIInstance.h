@@ -48,13 +48,15 @@ class decLayerMask;
  * Global illumination instance.
  */
 class deoglGIInstance : public deObject{
+public:
+	typedef deTObjectReference<deoglGIInstance> Ref;
+	
+	
 private:
 	class cListenerLink{
 	public:
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglGIInstance> Ref;
-
-
+		typedef deTObjectReference<cListenerLink> Ref;
+		
 		deoglGIInstance &instance;
 		
 		cListenerLink( deoglGIInstance &instance );
@@ -72,6 +74,8 @@ private:
 		const cListenerLink pLink;
 		
 	public:
+		typedef deTObjectReference<cComponentListener> Ref;
+		
 		cComponentListener( deoglGIInstance &instance );
 		void ComponentDestroyed( deoglRComponent &component ) override;
 		void ParentWorldChanged( deoglRComponent &component ) override;
@@ -91,6 +95,8 @@ private:
 		const cListenerLink pLink;
 		
 	public:
+		typedef deTObjectReference<cDecalListener> Ref;
+		
 		cDecalListener( deoglGIInstance &instance );
 		virtual void DecalDestroyed( deoglRDecal &decal );
 		virtual void GeometryChanged( deoglRDecal &decal );
@@ -103,6 +109,8 @@ private:
 		const cListenerLink pLink;
 		
 	public:
+		typedef deTObjectReference<cDecalComponentListener> Ref;
+		
 		cDecalComponentListener( deoglGIInstance &instance );
 		virtual void BoundariesChanged( deoglRComponent &component );
 		virtual void RenderStaticChanged( deoglRComponent &component );
@@ -114,7 +122,7 @@ private:
 	deoglGIInstances &pInstances;
 	
 	deoglRComponent *pComponent;
-	deoglComponentListener::Ref pComponentListener;
+	cComponentListener::Ref pComponentListener;
 	
 	deoglRDecal *pDecal;
 	cDecalListener::Ref pDecalListener;

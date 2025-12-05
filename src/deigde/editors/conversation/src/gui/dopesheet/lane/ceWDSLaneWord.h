@@ -33,6 +33,10 @@
  */
 class ceWDSLaneWord : public ceWDSLane{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWDSLaneWord> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dope sheet lane. */

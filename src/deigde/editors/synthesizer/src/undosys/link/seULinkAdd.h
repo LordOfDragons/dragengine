@@ -36,6 +36,11 @@ class seSynthesizer;
  * \brief Undo action add link.
  */
 class seULinkAdd : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seULinkAdd> Ref;
+	
+	
 private:
 	seSynthesizer *pSynthesizer;
 	seLink *pLink;

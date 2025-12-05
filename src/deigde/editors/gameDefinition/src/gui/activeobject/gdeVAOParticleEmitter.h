@@ -41,6 +41,11 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object particleEmitter for edit view.
  */
 class gdeVAOParticleEmitter : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOParticleEmitter> Ref;
+	
+	
 private:
 	gdeOCParticleEmitter *pOCParticleEmitter;
 	

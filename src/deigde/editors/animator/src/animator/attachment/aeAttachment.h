@@ -43,11 +43,11 @@ class deEngine;
  * Attach object.
  */
 class aeAttachment : public deObject{
+	public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<aeAttachment> Ref;
-
-
-public:
+	
+	
 	/** Attach types. */
 	enum eAttachTypes{
 		/** No attaching. */

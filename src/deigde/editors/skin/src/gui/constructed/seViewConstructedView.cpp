@@ -178,13 +178,11 @@ public:
 		const char *description ) : cBaseAction( view, text, icon, description ){}
 	
 	virtual igdeUndo *OnAction( seSkin *skin, seProperty *property ){
-		deObjectReference refNode;
-		refNode.TakeOver( CreateNode( *skin, *property ) );
-		if( ! refNode ){
-			return NULL;
+		const sePropertyNode::Ref node(sePropertyNode::Ref::New(CreateNode(*skin, *property)));
+		if(!node){
+			return nullptr;
 		}
 		
-		sePropertyNode * const node = refNode;
 		node->SetPosition( decPoint3( 0, 0, property->GetActiveNodeLayer() ) );
 		
 		return new seUPNGroupAddNode( pView.GetActiveNodeGroup()
@@ -240,13 +238,12 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add text node" ){}
 	
 	virtual sePropertyNode *CreateNode( seSkin &, seProperty & ){
-		const sePropertyNodeText::Ref refNode(sePropertyNodeText::Ref::NewWith(*pView.GetEngine()));
-		sePropertyNodeText * const node = refNode;
+		const sePropertyNodeText::Ref node(sePropertyNodeText::Ref::NewWith(*pView.GetEngine()));
 		node->SetPath( "/igde/fonts/regular_67px.defont" );
 		node->SetTextSize( 67.0f );
 		node->SetSize( decPoint3( 256, 67, 1 ) );
 		node->SetText( "Text" );
-		refNode->AddReference(); // because we need to hand over a reference
+		node->AddReference(); // because we need to hand over a reference
 		return node;
 	}
 };

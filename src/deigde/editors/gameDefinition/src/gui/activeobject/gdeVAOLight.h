@@ -44,6 +44,11 @@ class deComponent;
  * \todo Use DebugDrawerShape to visualize light cone.
  */
 class gdeVAOLight : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOLight> Ref;
+	
+	
 private:
 	gdeOCLight *pOCLight;
 	

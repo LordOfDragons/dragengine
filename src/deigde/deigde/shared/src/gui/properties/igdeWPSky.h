@@ -56,6 +56,11 @@ class igdeWSky;
  * this widget.
  */
 class DE_DLL_EXPORT igdeWPSky : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWPSky> Ref;
+	
+	
 private:
 	class DE_DLL_EXPORT Controller : public deObject{
 	public:

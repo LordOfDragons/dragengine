@@ -39,6 +39,11 @@ class igdeWDebugDrawerShape;
  * \brief Active object view object class navigation space.
  */
 class gdeVAONavSpace : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAONavSpace> Ref;
+	
+	
 private:
 	gdeOCNavigationSpace *pOCNavSpace;
 	

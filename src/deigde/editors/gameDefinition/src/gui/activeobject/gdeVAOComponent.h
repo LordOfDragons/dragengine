@@ -42,6 +42,11 @@ class deComponentTexture;
  * \brief Game definition active object component for edit view.
  */
 class gdeVAOComponent : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOComponent> Ref;
+	
+	
 private:
 	gdeOCComponent *pOCComponent;
 	

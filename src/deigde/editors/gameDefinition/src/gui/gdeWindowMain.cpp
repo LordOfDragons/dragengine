@@ -272,8 +272,7 @@ void gdeWindowMain::SetActiveGameDefinition( gdeGameDefinition *gameDefinition )
 }
 
 void gdeWindowMain::CreateNewGameDefinition(){
-	const gdeGameDefinition::Ref gameDefinition(gdeGameDefinition::Ref::NewWith(&GetEnvironment()));
-	SetActiveGameDefinition( gameDefinition );
+	SetActiveGameDefinition(gdeGameDefinition::Ref::NewWith(&GetEnvironment()));
 }
 
 void gdeWindowMain::LoadGameProject( bool silentErrors ){

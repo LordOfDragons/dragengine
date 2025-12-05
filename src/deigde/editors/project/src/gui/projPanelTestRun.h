@@ -27,6 +27,7 @@
 
 #include "projPanelRemoteClient.h"
 #include "../project/remote/projRemoteClient.h"
+#include "../project/profile/projProfile.h"
 
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -43,7 +44,6 @@ class projProject;
 class projPanelTestRunListener;
 class projTestRunner;
 class projWindowMain;
-class projProfile;
 
 
 
@@ -68,7 +68,7 @@ private:
 	bool pIsRunning;
 	int pMaxLines;
 	
-	deObjectReference pSelectedProfile;
+	projProfile::Ref pSelectedProfile;
 	
 	igdeAction::Ref pActionStart;
 	igdeAction::Ref pActionQuit;

@@ -654,6 +654,8 @@ class cActionTextureAdd : public cBaseAction{
 	const decString pTextureName;
 	
 public:
+	typedef deTObjectReference<cActionTextureAdd> Ref;
+	
 	cActionTextureAdd( gdeWPSOCComponent &panel ) : cBaseAction( panel, "Add...",
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add texture" ){ }
 	
@@ -733,7 +735,7 @@ public:
 			const int count = actionsAddFromModel.GetCount();
 			int i;
 			for( i=0; i<count; i++ ){
-				helper.MenuCommand( subMenu, actionsAddFromModel.GetAt( i ) );
+				helper.MenuCommand( subMenu, (igdeAction*)actionsAddFromModel.GetAt( i ) );
 			}
 			
 			contextMenu.AddChild( subMenu );

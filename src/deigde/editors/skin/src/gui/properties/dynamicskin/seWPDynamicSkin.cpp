@@ -475,7 +475,7 @@ pSkin( NULL )
 		pSldColorGreen, new cSliderColorGreen( *this ) );
 	helper.EditSliderText( groupBox, "Blue:", "Blue color value", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorBlue, new cSliderColorBlue( *this ) );
-	helper.EditSliderText( groupBox, "ALpha:", "ALpha color value", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.EditSliderText( groupBox, "Alpha:", "Alpha color value", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorAlpha, new cSliderColorAlpha( *this ) );
 	
 	

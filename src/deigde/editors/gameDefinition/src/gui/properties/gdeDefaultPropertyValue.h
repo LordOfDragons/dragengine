@@ -28,8 +28,8 @@
 #include "../../gamedef/property/gdeProperty.h"
 
 #include <deigde/gui/composed/igdeEditPropertyValue.h>
+#include <deigde/gui/composed/igdeEditPropertyValue.h>
 #include <deigde/gamedefinition/property/igdeGDProperty.h>
-#include "composed/igdeEditPropertyValue.h"
 
 class gdeProperty;
 

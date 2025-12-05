@@ -38,11 +38,10 @@ class deSharedVulkan;
  * Vulkan instance.
  */
 class devkInstance : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<devkInstance> Ref;
-
-
 public:
+	/** Reference. */
+	typedef deTObjectReference<devkInstance> Ref;
+	
 	/** Extension. */
 	enum eExtension{
 		extKHRSurface, //<! VK_KHR_surface
@@ -71,9 +70,6 @@ public:
 	};
 	
 	static const int LayerCount = layerValveSteamOverlay32 + 1;
-	
-	/** Reference. */
-	typedef deTObjectReference<devkInstance> Ref;
 	
 	
 private:

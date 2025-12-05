@@ -45,6 +45,11 @@ class decStringSet;
  * or using the context menu.
  */
 class DE_DLL_EXPORT igdeToggleTags : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeToggleTags> Ref;
+	
+	
 protected:
 	/** \brief Action enable all tags. */
 	class DE_DLL_EXPORT cActionEnableAll : public igdeAction{

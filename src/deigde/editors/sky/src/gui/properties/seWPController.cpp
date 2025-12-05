@@ -221,9 +221,7 @@ public:
 		"Add a controller to the end of the list." ){ }
 	
 	virtual igdeUndo *OnAction( seSky *sky ){
-		deObjectReference controller;
-		controller.TakeOver( new seController );
-		return new seUControllerAdd( sky, controller );
+		return new seUControllerAdd(sky, seController::Ref::NewWith());
 	}
 };
 

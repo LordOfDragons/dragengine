@@ -221,9 +221,7 @@ public:
 		"Add a controller to the end of the list." ){ }
 	
 	virtual igdeUndo *OnAction( peeEmitter *emitter ){
-		deObjectReference controller;
-		controller.TakeOver( new peeController );
-		return new peeUControllerAdd( emitter, controller );
+		return new peeUControllerAdd(emitter, peeController::Ref::NewWith());
 	}
 };
 

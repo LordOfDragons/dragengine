@@ -25,9 +25,8 @@
 #ifndef _AEUCONTROLLERSETMINIMUMVALUE_H_
 #define _AEUCONTROLLERSETMINIMUMVALUE_H_
 
+#include "../../animator/controller/aeController.h"
 #include <deigde/undo/igdeUndo.h>
-
-class aeController;
 
 
 /**
@@ -35,7 +34,7 @@ class aeController;
  */
 class aeUControllerSetMinimumValue : public igdeUndo{
 private:
-	deObjectReference pController;
+	const aeController::Ref pController;
 	float pOldValue;
 	float pNewValue;
 	

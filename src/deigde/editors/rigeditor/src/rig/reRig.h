@@ -73,6 +73,10 @@ class deLogger;
  */
 class reRig : public igdeEditableEntity{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reRig> Ref;
+	
+	
 	/** Element modes. */
 	enum eElementModes{
 		/** Bone mode. */

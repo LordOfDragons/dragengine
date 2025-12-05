@@ -41,6 +41,10 @@
  */
 class meHTVRuleGeometry : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleGeometry> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Instance height ( Y-Component of instance position ). */

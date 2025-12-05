@@ -41,6 +41,11 @@ class reWindowMain;
  * \brief Dialog for importing bones.
  */
 class reDialogImportBone : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reDialogImportBone> Ref;
+	
+	
 private:
 	reWindowMain &pWindowMain;
 	

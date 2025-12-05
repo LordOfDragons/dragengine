@@ -98,7 +98,6 @@ void meUObjectAddUsedTextures::Undo(){
 }
 
 void meUObjectAddUsedTextures::Redo(){
-	deObjectReference texture;
 	int i, count;
 	
 	if( pTextureList.GetTextureCount() == 0 ){
@@ -126,6 +125,7 @@ void meUObjectAddUsedTextures::Redo(){
 				gdctex = gdccomptex->GetNamed( textureName );
 			}
 			
+			meObjectTexture::Ref texture;
 			meHelpers::CreateTexture( texture, pObject, textureName, gdctex );
 			pTextureList.AddTexture( texture );
 		}

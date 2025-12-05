@@ -248,9 +248,7 @@ void seWindowMain::LoadSkin( const char *filename ){
 	}
 	
 	GetEditorModule().LogInfoFormat( "Loading Skin %s", filename );
-	deObjectReference refSkin;
-	refSkin.TakeOver( pLoadSaveSystem->LoadSkin( filename, GetGameDefinition() ) );
-	seSkin * const skin = refSkin;
+	const seSkin::Ref skin(seSkin::Ref::New(pLoadSaveSystem->LoadSkin(filename, GetGameDefinition())));
 	
 	// store information
 	skin->SetFilePath( filename );
@@ -536,31 +534,30 @@ public:
 		// create a default texture for each texture defined in the model
 		const deModel &model = *skin->GetEngineComponent()->GetModel();
 		const int textureCount = model.GetTextureCount();
-		deObjectReference refTexture, refProperty;
-		seProperty *property;
+		seProperty::Ref property;
 		int i;
 		
 		for( i=0; i<textureCount; i++ ){
 			// create texture with the matching name
-			refTexture.TakeOver( new seTexture( engine, model.GetTextureAt( i )->GetName() ) );
-			seTexture * const texture = refTexture;
+			const seTexture::Ref texture(seTexture::Ref::NewWith(
+				engine, model.GetTextureAt(i)->GetName()));
 			
 			// create color property with a light gray color
-			refProperty.TakeOver( property = new seProperty( engine ) );
+			property.TakeOverWith(engine);
 			property->SetName( "color" );
 			property->SetValueType( seProperty::evtColor );
 			property->SetColor( decColor( 0.8f, 0.8f, 0.8f ) );
 			texture->AddProperty( property );
 			
 			// create reflectivity property with plastic reflectivity
-			refProperty.TakeOver( property = new seProperty( engine ) );
+			property.TakeOverWith(engine);
 			property->SetName( "reflectivity" );
 			property->SetValueType( seProperty::evtValue );
 			property->SetValue( 0.23f );
 			texture->AddProperty( property );
 			
 			// create roughness property with moderate roughness
-			refProperty.TakeOver( property = new seProperty( engine ) );
+			property.TakeOverWith(engine);
 			property->SetName( "roughness" );
 			property->SetValueType( seProperty::evtValue );
 			property->SetValue( 0.35f );
@@ -1005,8 +1002,7 @@ public:
 		const sePropertyList &propertyList = texture->GetPropertyList();
 		const decString &customName = dialog.GetCustomPropertyName();
 		sePropertyList addPropertyList;
-		deObjectReference refProperty;
-		seProperty *property;
+		seProperty::Ref property;
 		
 		if( customName.IsEmpty() ){
 			const decStringSet selection( dialog.GetSelectedPropertyNames() );
@@ -1019,13 +1015,13 @@ public:
 					continue;
 				}
 				
-				refProperty.TakeOver( property = new seProperty( pWindow.GetEngine(), name ) );
+				property.TakeOverWith(pWindow.GetEngine(), name);
 				property->InitDefaults( knownPropertyList );
 				addPropertyList.Add( property );
 			}
 			
 		}else if( ! propertyList.HasNamed( customName ) ){
-			refProperty.TakeOver( property = new seProperty( pWindow.GetEngine(), customName ) );
+			property.TakeOverWith(pWindow.GetEngine(), customName);
 			property->InitDefaults( knownPropertyList );
 			addPropertyList.Add( property );
 		}

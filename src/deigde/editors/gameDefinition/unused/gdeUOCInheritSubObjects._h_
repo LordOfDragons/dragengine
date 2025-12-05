@@ -23,6 +23,7 @@
 #ifndef _GDEUOCINHERITSUBOBJECTS_H_
 #define _GDEUOCINHERITSUBOBJECTS_H_
 
+#include "../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../gamedef/objectClass/billboard/gdeOCBillboardList.h"
 #include "../../gamedef/objectClass/camera/gdeOCCameraList.h"
 #include "../../gamedef/objectClass/component/gdeOCComponentList.h"
@@ -37,9 +38,6 @@
 
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/deObjectReference.h>
-
-class gdeObjectClass;
 class gdeObjectClassList;
 
 
@@ -49,7 +47,7 @@ class gdeObjectClassList;
  */
 class gdeUOCInheritSubObjects : public igdeUndo{
 private:
-	deObjectReference pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	gdeOCBillboardList pBillboards;
 	gdeOCCameraList pCameras;

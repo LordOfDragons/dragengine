@@ -853,9 +853,7 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference refFace;
-		refFace.TakeOver( new meHeightTerrainNavSpaceFace );
-		meHeightTerrainNavSpaceFace * const face = refFace;
+		const meHeightTerrainNavSpaceFace::Ref face(meHeightTerrainNavSpaceFace::Ref::NewWith());
 		face->GetNavPoints() = pPanel.GetSector()->GetSelectedNavPoints();
 		face->OrderClockwise( world->GetHeightTerrain()->GetSectorResolution() );
 		return new meUHTNavSpaceFaceAdd( pPanel.GetActiveNavSpaceType(), face );
@@ -1053,12 +1051,9 @@ public:
 			return NULL;
 		}
 		
-		const meHTVegetationLayer::Ref refVLayer(meHTVegetationLayer::Ref::NewWith(world->GetEngine(), name));
-		meHTVegetationLayer * const vlayer = refVLayer;
+		const meHTVegetationLayer::Ref vlayer(meHTVegetationLayer::Ref::NewWith(world->GetEngine(), name));
 		
-		deObjectReference rule;
-		rule.TakeOver( new meHTVRuleResult );
-		vlayer->AddRule( rule );
+		vlayer->AddRule(meHTVRuleResult::Ref::NewWith());
 		
 		return new meUHTVLayerAdd( world, world->GetHeightTerrain(), vlayer );
 	}

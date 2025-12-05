@@ -724,12 +724,10 @@ public:
 	cBaseAction( panel, name, NULL, "Add model texture" ), pTextureName( name ){ }
 	
 	virtual igdeUndo *OnAction( meObject *object ){
-		deObjectReference texture;
+		meObjectTexture::Ref texture;
 		meHelpers::CreateTexture( texture, object, pTextureName );
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUObjectAddTexture( object, texture ) );
-		object->GetWorld()->GetUndoSystem()->Add( undo );
+		object->GetWorld()->GetUndoSystem()->Add(meUObjectAddTexture::Ref::NewWith(object, texture));
 		
 		object->SetActiveTexture( texture );
 		return NULL;
@@ -829,12 +827,10 @@ public:
 				continue;
 			}
 			
-			deObjectReference texture;
+			meObjectTexture::Ref texture;
 			meHelpers::CreateTexture( texture, object, name );
 			
-			igdeUndo::Ref undo;
-			undo.TakeOver( new meUObjectAddTexture( object, texture ) );
-			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+			pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectAddTexture::Ref::NewWith(object, texture));
 			object->SetActiveTexture( texture );
 			break;
 		}

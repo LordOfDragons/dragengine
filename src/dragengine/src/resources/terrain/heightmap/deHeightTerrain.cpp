@@ -31,7 +31,6 @@
 #include "deHeightTerrainSector.h"
 #include "../../decal/deDecalList.h"
 #include "../../../deEngine.h"
-#include "../../../deObjectReference.h"
 #include "../../../common/exceptions.h"
 #include "../../../systems/modules/ai/deBaseAIHeightTerrain.h"
 #include "../../../systems/modules/audio/deBaseAudioHeightTerrain.h"

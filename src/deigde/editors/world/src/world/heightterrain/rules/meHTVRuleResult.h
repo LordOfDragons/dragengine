@@ -41,6 +41,10 @@
  */
 class meHTVRuleResult : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleResult> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Probability. */

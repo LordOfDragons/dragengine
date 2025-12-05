@@ -107,13 +107,10 @@ public:
 			return;
 		}
 		
-		deObjectReference rule;
-		rule.TakeOver( CreateRule() );
-		( ( meHTVRule& )( deObject& )rule ).SetPosition( pPosition );
+		const meHTVRule::Ref rule(meHTVRule::Ref::New(CreateRule()));
+		rule->SetPosition(pPosition);
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleAdd( pView.GetVLayer(), rule ) );
-		pView.GetWorld()->GetUndoSystem()->Add( undo );
+		pView.GetWorld()->GetUndoSystem()->Add(meUHTVRuleAdd::Ref::NewWith(pView.GetVLayer(), rule));
 	}
 	
 	virtual void Update(){

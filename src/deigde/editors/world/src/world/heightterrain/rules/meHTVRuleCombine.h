@@ -41,6 +41,10 @@
  */
 class meHTVRuleCombine : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleCombine> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Vector. */

@@ -39,6 +39,11 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object speaker for edit view.
  */
 class gdeVAOSpeaker : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOSpeaker> Ref;
+	
+	
 private:
 	gdeOCSpeaker *pOCSpeaker;
 	

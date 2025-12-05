@@ -37,6 +37,11 @@ class gdeOCBillboard;
  * \brief Active object view object class billboard.
  */
 class gdeVAOBillboard : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOBillboard> Ref;
+	
+	
 private:
 	gdeOCBillboard *pOCBillboard;
 	

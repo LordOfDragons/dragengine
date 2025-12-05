@@ -179,8 +179,7 @@ void seWindowMain::SetSynthesizer( seSynthesizer *synthesizer ){
 }
 
 void seWindowMain::CreateSynthesizer(){
-	const seSynthesizer::Ref synthesizer(seSynthesizer::Ref::NewWith(&GetEnvironment(), pLoadSaveSystem));
-	SetSynthesizer( synthesizer );
+	SetSynthesizer(seSynthesizer::Ref::NewWith(&GetEnvironment(), pLoadSaveSystem));
 }
 
 void seWindowMain::SaveSynthesizer( const char *filename ){
@@ -212,7 +211,6 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group )
 	int index = pSynthesizer->GetSources().GetCount();
 	seSourceGroup *parentGroup = NULL;
 	igdeUndo::Ref undoGroup, undo;
-	deObjectReference refSource;
 	
 	if( activeSource ){
 		parentGroup = activeSource->GetParentGroup();
@@ -230,8 +228,7 @@ deSynthesizerSourceVisitorIdentify::eSourceTypes type, bool insert, bool group )
 		}
 	}
 	
-	refSource.TakeOver( seSource::CreateSourceFromType( GetEngine(), type ) );
-	seSource * const source = refSource;
+	const seSource::Ref source(seSource::Ref::New(seSource::CreateSourceFromType(GetEngine(), type)));
 	source->SetName( name );
 	
 	if( insert ){
@@ -275,22 +272,16 @@ void seWindowMain::CreateEffect( deSynthesizerEffectVisitorIdentify::eEffectType
 	seSource * const activeSource = pSynthesizer->GetActiveSource();
 	seEffect * const activeEffect = activeSource->GetActiveEffect();
 	int index = activeSource->GetEffects().GetCount();
-	seEffect *effectSelect = NULL;
-	deObjectReference refEffect;
-	igdeUndo::Ref undo;
 	
 	if( insert && activeEffect ){
 		index = activeSource->GetEffects().IndexOf( activeEffect );
 	}
 	
-	refEffect.TakeOver( seEffect::CreateEffectFromType( GetEngine(), type ) );
-	seEffect * const effect = refEffect;
-	effectSelect = effect;
+	const seEffect::Ref effect(seEffect::Ref::New(seEffect::CreateEffectFromType(GetEngine(), type)));
 	
-	undo.TakeOver( new seUSourceAddEffect( activeSource, effect, index ) );
-	pSynthesizer->GetUndoSystem()->Add( undo );
+	pSynthesizer->GetUndoSystem()->Add(seUSourceAddEffect::Ref::NewWith(activeSource, effect, index));
 	
-	activeSource->SetActiveEffect( effectSelect );
+	activeSource->SetActiveEffect(effect);
 }
 
 
@@ -388,9 +379,7 @@ void seWindowMain::GetChangedDocuments( decStringList &list ){
 }
 
 void seWindowMain::LoadDocument( const char *filename ){
-	deObjectReference synthesizer;
-	synthesizer.TakeOver( pLoadSaveSystem.LoadSynthesizer( filename ) );
-	SetSynthesizer( synthesizer );
+	SetSynthesizer(seSynthesizer::Ref::New(pLoadSaveSystem.LoadSynthesizer(filename)));
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -492,9 +481,8 @@ public:
 		if( igdeCommonDialogs::GetFileOpen( &pWindow, "Open Synthesizer",
 		*pWindow.GetEnvironment().GetFileSystemGame(),
 		pWindow.GetLoadSaveSystem().GetSynthesizerFilePatterns(), filename ) ){
-			deObjectReference synthesizer2;
-			synthesizer2.TakeOver( pWindow.GetLoadSaveSystem().LoadSynthesizer( filename ) );
-			pWindow.SetSynthesizer( synthesizer2 );
+			pWindow.SetSynthesizer(seSynthesizer::Ref::New(
+				pWindow.GetLoadSaveSystem().LoadSynthesizer(filename)));
 			pWindow.GetRecentFiles().AddFile( filename );
 		}
 		return NULL;

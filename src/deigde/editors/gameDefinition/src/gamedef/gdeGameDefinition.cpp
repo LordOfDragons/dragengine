@@ -245,7 +245,6 @@ void gdeGameDefinition::SetBaseGameDefinitionIDList( const decStringList &ids ){
 
 void gdeGameDefinition::UpdateBaseGameDefinitions( gdeLoadSaveSystem &loadSaveSystem ){
 	const int oldCount = pBaseGameDefinitions.GetCount();
-	deObjectReference refGameDef;
 	decObjectList list;
 	int i, j;
 	
@@ -282,8 +281,9 @@ void gdeGameDefinition::UpdateBaseGameDefinitions( gdeLoadSaveSystem &loadSaveSy
 		GetEnvironment()->GetLogger()->LogInfoFormat( LOGSOURCE,
 			"UpdateBaseGameDefinitions: Loading Game Definition '%s'", path.GetString() );
 		
+		gdeGameDefinition::Ref gameDefinition;
 		try{
-			refGameDef.TakeOver( loadSaveSystem.LoadGameDefinition( path ) );
+			gameDefinition.TakeOver(loadSaveSystem.LoadGameDefinition(path));
 			
 		}catch( const deException &e ){
 			GetEnvironment()->GetLogger()->LogInfoFormat( LOGSOURCE,
@@ -292,7 +292,6 @@ void gdeGameDefinition::UpdateBaseGameDefinitions( gdeLoadSaveSystem &loadSaveSy
 			continue;
 		}
 		
-		gdeGameDefinition * const gameDefinition = refGameDef;
 		gameDefinition->UpdateBaseGameDefinitions( loadSaveSystem );
 		
 		gameDefinition->SetFilePath( path );

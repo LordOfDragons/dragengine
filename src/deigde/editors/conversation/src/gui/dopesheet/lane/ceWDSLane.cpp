@@ -97,30 +97,25 @@ public:
 			return;
 		}
 		
-		igdeDialog::Ref refDialog;
 		decString title, text;
 		title.Format( "Add %s", pLane.GetLabel().GetString() );
 		text.Format( "%s: ", pLane.GetLabel().GetString() );
-		refDialog.TakeOver( new ceDialogEditStrip( pLane.GetWindow().GetEnvironment(), title, text ) );
-		ceDialogEditStrip &dialog = ( ceDialogEditStrip& )( igdeDialog& )refDialog;
+		const ceDialogEditStrip::Ref dialog(ceDialogEditStrip::Ref::NewWith(
+			pLane.GetWindow().GetEnvironment(), title, text));
 		
 		decStringList idList;
 		pLane.FillIDList( idList );
-		dialog.SetIDList( idList );
-		dialog.SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( pLane ) ) );
-		dialog.ResetDuration();
-		dialog.SetAutoResetDuration( true );
+		dialog->SetIDList( idList );
+		dialog->SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( pLane ) ) );
+		dialog->ResetDuration();
+		dialog->SetAutoResetDuration( true );
 		
-		if( ! dialog.Run( &pLane.GetWindow().GetWindowMain() ) ){
+		if( ! dialog->Run( &pLane.GetWindow().GetWindowMain() ) ){
 			return;
 		}
 		
-		deObjectReference strip;
-		strip.TakeOver( dialog.CreateStrip() );
-		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pLane.UndoStripAdd( strip, decMath::max( pIndex, 0 ) ) );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(igdeUndo::Ref::New(
+			pLane.UndoStripAdd(ceStrip::Ref::New(dialog->CreateStrip()), decMath::max(pIndex, 0))));
 	}
 	
 	virtual void Update(){
@@ -828,25 +823,23 @@ void ceWDSLane::RebuildCanvas(){
 			const decColor colorTextBg( 0.75f, 0.75f, 0.75f );
 			const decColor colorTextLine( 0.25f, 0.25f, 0.25f );
 			
-			deObjectReference refStrip;
-			refStrip.TakeOver( new cStrip );
-			cStrip &strip = ( cStrip& )( deObject& )refStrip;
+			const cStrip::Ref strip(cStrip::Ref::NewWith());
 			
-			CreateHandle( strip.handlePause, strip.handlePauseBg, handleSizeHalf );
-			CreateHandle( strip.handleDuration, strip.handleDurationBg, handleSize );
+			CreateHandle( strip->handlePause, strip->handlePauseBg, handleSizeHalf );
+			CreateHandle( strip->handleDuration, strip->handleDurationBg, handleSize );
 			
-			strip.stripIdBg.TakeOver( canvasManager.CreateCanvasPaint() );
-			strip.stripIdBg->SetFillColor( colorTextBg );
-			strip.stripIdBg->SetLineColor( colorTextLine );
-			strip.stripIdBg->SetThickness( 1 );
-			strip.stripIdBg->SetOrder( 0 );
+			strip->stripIdBg.TakeOver( canvasManager.CreateCanvasPaint() );
+			strip->stripIdBg->SetFillColor( colorTextBg );
+			strip->stripIdBg->SetLineColor( colorTextLine );
+			strip->stripIdBg->SetThickness( 1 );
+			strip->stripIdBg->SetOrder( 0 );
 			
-			strip.stripId.TakeOver( canvasManager.CreateCanvasText() );
-			strip.stripId->SetFont( font );
-			strip.stripId->SetFontSize( ( float )font->GetLineHeight() );
-			strip.stripId->SetColor( colorText );
+			strip->stripId.TakeOver( canvasManager.CreateCanvasText() );
+			strip->stripId->SetFont( font );
+			strip->stripId->SetFontSize( ( float )font->GetLineHeight() );
+			strip->stripId->SetColor( colorText );
 			
-			pStrips.Add( refStrip );
+			pStrips.Add(strip);
 		}
 		
 		cStrip &strip = *( ( cStrip* )pStrips.GetAt( i ) );
@@ -890,15 +883,13 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 		return;
 	}
 	
-	deObjectReference newStrip;
-	newStrip.TakeOver( dialog.CreateStrip() );
-	if( ( ceStrip& )( deObject& )newStrip == *strip ){
+	const ceStrip::Ref newStrip(ceStrip::Ref::New(dialog.CreateStrip()));
+	if(*newStrip == *strip){
 		return;
 	}
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( UndoStripReplace( strip, newStrip ) );
-	pWindow.GetConversation()->GetUndoSystem()->Add( undo );
+	pWindow.GetConversation()->GetUndoSystem()->Add(
+		igdeUndo::Ref::New(UndoStripReplace(strip, newStrip)));
 }
 
 float ceWDSLane::DefaultDuration( const decString & ) {

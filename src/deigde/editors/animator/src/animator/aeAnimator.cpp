@@ -722,17 +722,16 @@ void aeAnimator::RebuildRules(){
 	
 	pEngAnimator->RemoveAllRules();
 	
-	deObjectReference engRule;
 	if( pResetState ){
-		engRule.TakeOver( new deAnimatorRuleStateSnapshot );
-		( engRule )->SetUseLastState( true );
-		pEngAnimator->AddRule( engRule );
+		const deAnimatorRuleStateSnapshot::Ref engRule(deAnimatorRuleStateSnapshot::Ref::NewWith());
+		engRule->SetUseLastState(true);
+		pEngAnimator->AddRule(engRule);
 	}
 	
 	for( i=0; i<count; i++ ){
-		engRule.TakeOver( pRules.GetAt( i )->CreateEngineRule() );
-		pEngAnimator->AddRule( engRule );
-		pRules.GetAt( i )->SetEngineRule( engRule );
+		const deAnimatorRule::Ref engRule(deAnimatorRule::Ref::New(pRules.GetAt(i)->CreateEngineRule()));
+		pEngAnimator->AddRule(engRule);
+		pRules.GetAt(i)->SetEngineRule(engRule);
 	}
 }
 

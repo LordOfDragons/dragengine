@@ -480,7 +480,7 @@ void seWPController::SelectActiveController(){
 
 
 void seWPController::UpdateControllerList(){
-	deObjectReference selection( GetController() );
+	const seController::Ref selection(GetController());
 	
 	pListController->RemoveAllItems();
 	

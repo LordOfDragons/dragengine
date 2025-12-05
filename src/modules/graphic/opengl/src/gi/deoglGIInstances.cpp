@@ -125,10 +125,9 @@ deoglGIInstance *deoglGIInstances::GetInstanceWithDecal( deoglRDecal *decal ) co
 }
 
 deoglGIInstance &deoglGIInstances::AddInstance(){
-	const deoglGIInstance::Ref ref(deoglGIInstance::Ref::NewWith(*this));
-	pInstances.Add( ref );
-	
-	return ( deoglGIInstance& )( deObject& )ref;
+	const deoglGIInstance::Ref instance(deoglGIInstance::Ref::NewWith(*this));
+	pInstances.Add(instance);
+	return instance;
 }
 
 deoglGIInstance &deoglGIInstances::NextFreeSlot(){

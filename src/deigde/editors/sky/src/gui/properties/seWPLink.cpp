@@ -217,9 +217,7 @@ public:
 		"Add a link to the end of the list." ){ }
 	
 	virtual igdeUndo *OnAction( seSky *sky ){
-		deObjectReference link;
-		link.TakeOver( new seLink );
-		return new seULinkAdd( sky, link );
+		return new seULinkAdd(sky, seLink::Ref::NewWith());
 	}
 };
 

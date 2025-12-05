@@ -49,6 +49,10 @@ class deLogger;
  */
 class feFont : public igdeEditableEntity{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<feFont> Ref;
+	
+	
 	/** Element modes. */
 	enum eElementModes{
 		/** Bone mode. */

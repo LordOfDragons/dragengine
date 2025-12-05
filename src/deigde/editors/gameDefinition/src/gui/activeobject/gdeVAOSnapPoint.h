@@ -39,6 +39,11 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object snap point for edit view.
  */
 class gdeVAOSnapPoint : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOSnapPoint> Ref;
+	
+	
 private:
 	gdeOCSnapPoint *pOCSnapPoint;
 	

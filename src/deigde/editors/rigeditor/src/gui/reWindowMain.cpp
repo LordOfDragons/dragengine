@@ -299,9 +299,7 @@ void reWindowMain::LoadDocument( const char *filename ){
 		}
 	}
 	
-	deObjectReference rig;
-	rig.TakeOver( pLoadSaveSystem->LoadRig( filename ) );
-	SetRig( rig );
+	SetRig(reRig::Ref::New(pLoadSaveSystem->LoadRig(filename)));
 	GetRecentFiles().AddFile( filename );
 }
 
@@ -443,9 +441,7 @@ public:
 			return;
 		}
 		
-		deObjectReference rig;
-		rig.TakeOver( pWindow.GetLoadSaveSystem().LoadRig( filename ) );
-		pWindow.SetRig( rig );
+		pWindow.SetRig(reRig::Ref::New(pWindow.GetLoadSaveSystem().LoadRig(filename)));
 		pWindow.GetRecentFiles().AddFile( filename );
 	}
 };
@@ -907,9 +903,7 @@ public:
 	cActionBase( window, text, icon, description, mnemonic ){}
 	
 	virtual igdeUndo *OnAction( reRig *rig ){
-		deObjectReference shape;
-		shape.TakeOver( CreateShape() );
-		return new reUAddShape( rig, NULL, ( reRigShape* )shape.operator->() );
+		return new reUAddShape(rig, nullptr, reRigShape::Ref::New(CreateShape()));
 	}
 	
 	virtual reRigShape *CreateShape() = 0;
@@ -1042,9 +1036,7 @@ public:
 	cActionBaseBone( window, text, icon, description, mnemonic ){}
 	
 	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
-		deObjectReference shape;
-		shape.TakeOver( CreateShape() );
-		return new reUAddShape( NULL, bone, ( reRigShape* )shape.operator->() );
+		return new reUAddShape(nullptr, bone, reRigShape::Ref::New(CreateShape()));
 	}
 	
 	virtual reRigShape *CreateShape() = 0;
@@ -1165,28 +1157,21 @@ public:
 		"Import the selected bones from file", deInputEvent::ekcI ){}
 	
 	virtual igdeUndo *OnActionBone( reRig *rig, reRigBone *bone ){
-		igdeDialog::Ref refDialog;
-		refDialog.TakeOver( new reDialogImportBone( pWindow ) );
-		
-		if( ! refDialog->Run( &pWindow ) ){
+		const reDialogImportBone::Ref dialog(reDialogImportBone::Ref::NewWith(pWindow));
+		if( ! dialog->Run( &pWindow ) ){
 			return NULL;
 		}
 		
-		const reDialogImportBone &dialog = ( reDialogImportBone& )( igdeDialog& )refDialog;
-		deObjectReference refImportRig;
-		refImportRig.TakeOver( pWindow.GetLoadSaveSystem().LoadRig( dialog.GetPath() ) );
+		const reUBoneImportFromFile::Ref undo(reUBoneImportFromFile::Ref::NewWith(
+			rig, reRig::Ref::New(pWindow.GetLoadSaveSystem().LoadRig(dialog->GetPath()))));
 		
-		igdeUndo::Ref refUndo;
-		refUndo.TakeOver( new reUBoneImportFromFile( rig, ( reRig* )refImportRig.operator->() ) );
-		reUBoneImportFromFile &undo = ( reUBoneImportFromFile& )( igdeUndo& )refUndo;
+		undo->SetScale( dialog->GetScaling() );
+		undo->SetImportBoneProperties( dialog->GetImportBoneProperties() );
+		undo->SetImportShapes( dialog->GetImportShapes() );
+		undo->SetImportConstraints( dialog->GetImportConstraints() );
 		
-		undo.SetScale( dialog.GetScaling() );
-		undo.SetImportBoneProperties( dialog.GetImportBoneProperties() );
-		undo.SetImportShapes( dialog.GetImportShapes() );
-		undo.SetImportConstraints( dialog.GetImportConstraints() );
-		
-		refUndo->AddReference();
-		return refUndo;
+		undo->AddReference();
+		return undo;
 	}
 };
 

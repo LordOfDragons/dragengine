@@ -258,7 +258,6 @@ igdeXMLElementClass::cMap::~cMap(){ }
 
 igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root, const char *filename){
 	decStringDictionary properties;
-	deObjectReference refMap;
 	int i;
 	
 	const igdeGDClass::Ref gdClass(igdeGDClass::Ref::New(
@@ -271,8 +270,7 @@ igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root
 	basePath.RemoveLastComponent();
 	const decString basePathStr( basePath.GetPathUnix() );
 	
-	refMap.TakeOver( new cMap );
-	cMap &map = ( cMap& )( deObject& )refMap;
+	const cMap::Ref map(cMap::Ref::NewWith());
 	
 	for( i=0; i<root.GetElementCount(); i++ ){
 		const decXmlElementTag * const tag = root.GetElementIfTag( i );
@@ -288,9 +286,9 @@ igdeGDClass *igdeXMLElementClass::pReadElementClass(const decXmlElementTag &root
 		const decString propertyName( GetAttributeString( *tag, "name" ) );
 		decString propertyValue;
 		
-		map.map.RemoveAll();
+		map->map.RemoveAll();
 		
-		if( ! pReadPropertyValue( *tag, propertyValue, &map, filename ) ){
+		if( ! pReadPropertyValue( *tag, propertyValue, map, filename ) ){
 			continue;
 		}
 		
@@ -468,12 +466,10 @@ void igdeXMLElementClass::pReadMap( const decXmlElementTag &root, cMap &map, con
 		}
 		
 		const char * const key = GetAttributeString( *tag, "key" );
-		deObjectReference refChild;
-		refChild.TakeOver( new cMap );
-		cMap &child = ( cMap& )( deObject& )refChild;
+		const cMap::Ref child(cMap::Ref::NewWith());
 		
-		if( pReadPropertyValue( *tag, child.value, &child, filename ) ){
-			map.map.SetAt( key, refChild );
+		if( pReadPropertyValue( *tag, child->value, child, filename ) ){
+			map.map.SetAt( key, child );
 		}
 	}
 }
@@ -574,7 +570,6 @@ igdeGDClass &gdClass, const char *basePath ){
 	
 	igdeGDCCTextureList &textures = gdClass.GetComponentTextures();
 	igdeCodecPropertyString codec;
-	deObjectReference refTexture;
 	deObject* object;
 	int i;
 	
@@ -582,19 +577,18 @@ igdeGDClass &gdClass, const char *basePath ){
 		const decString &key = keys.GetAt( i );
 		const cMap &child = *( ( cMap* )map.map.GetAt( key ) );
 		
-		refTexture.TakeOver( new igdeGDCCTexture );
-		igdeGDCCTexture &texture = ( igdeGDCCTexture& )( deObject& )refTexture;
-		texture.SetName( key );
+		const igdeGDCCTexture::Ref texture(igdeGDCCTexture::Ref::NewWith());
+		texture->SetName( key );
 		
 		if( child.map.GetAt( "skin", &object ) ){
-			texture.SetPathSkin( decPath::AbsolutePathUnix(
+			texture->SetPathSkin( decPath::AbsolutePathUnix(
 				( ( cMap* )object )->value, basePath ).GetPathUnix() );
 		}
 		
 		if( child.map.GetAt( "tint", &object ) ){
 			decColor color;
 			codec.DecodeColor3( ( ( cMap* )object )->value, color );
-			texture.SetColorTint( color );
+			texture->SetColorTint( color );
 		}
 		
 		if( child.map.GetAt( "transform", &object ) ){
@@ -604,22 +598,22 @@ igdeGDClass &gdClass, const char *basePath ){
 			if( child2.map.GetAt( "translate", &object ) ){
 				codec.DecodeVector2( ( ( cMap* )object )->value, translate );
 			}
-			texture.SetOffset( translate );
+			texture->SetOffset( translate );
 			
 			decVector2 scale( 1.0f, 1.0f );
 			if( child2.map.GetAt( "scale", &object ) ){
 				codec.DecodeVector2( ( ( cMap* )object )->value, scale );
 			}
-			texture.SetScale( scale );
+			texture->SetScale( scale );
 			
 			float rotate = 0.0f;
 			if( child2.map.GetAt( "rotate", &object ) ){
 				rotate = ( ( cMap* )object )->value.ToFloat();
 			}
-			texture.SetRotation( rotate );
+			texture->SetRotation( rotate );
 		}
 		
-		textures.Add( &texture );
+		textures.Add(texture);
 	}
 }
 
@@ -629,11 +623,8 @@ igdeGDCComponent &igdeXMLElementClass::pGetLoadedComponent( igdeGDClass &gdClass
 		return *gdClass.GetComponentList().GetAt( 0 );
 	}
 	
-	deObjectReference refComponent;
-	refComponent.TakeOver( new igdeGDCComponent );
-	
-	igdeGDCComponent &component = ( igdeGDCComponent& )( deObject& )refComponent;
-	gdClass.AddComponent( &component );
+	const igdeGDCComponent::Ref component(igdeGDCComponent::Ref::NewWith());
+	gdClass.AddComponent(component);
 	return component;
 }
 */

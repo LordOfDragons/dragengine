@@ -38,11 +38,11 @@ class ceConversation;
  * \brief Camera Shot.
  */
 class ceCameraShot : public deObject{
+	public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<ceCameraShot> Ref;
-
-
-public:
+	
+	
 	/** Camera shot parameters. */
 	enum eParameters{
 		epPositionX,

@@ -39,6 +39,11 @@ class igdeWDebugDrawerShape;
  * \brief Active object view object class navigation blocker.
  */
 class gdeVAONavBlocker : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAONavBlocker> Ref;
+	
+	
 private:
 	gdeOCNavigationBlocker *pOCNavBlocker;
 	

@@ -339,7 +339,6 @@ void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
 	
 	// rebuild the shape list from the currently selected property
 	if( isPropertyShape){
-		deObjectReference refObjectShape;
 		igdeCodecPropertyString codec;
 		decShapeList shapeList;
 		int i, count;
@@ -358,8 +357,8 @@ void meWPSObjectShape::UpdateListProperties( bool retainSelection ){
 		}
 		
 		for( i=0; i<count; i++ ){
-			refObjectShape.TakeOver( new meObjectShape( pWorld->GetEnvironment(), *shapeList.GetAt( i ) ) );
-			meObjectShape * const objectShape = refObjectShape;
+			const meObjectShape::Ref objectShape(meObjectShape::Ref::NewWith(
+				pWorld->GetEnvironment(), *shapeList.GetAt(i)));
 			objectShape->SetWorld( pWorld );
 			objectShape->SetParentObject( activeObject );
 			pWorld->GetObjectShapes().Add( objectShape );

@@ -56,6 +56,11 @@ class igdeCamera;
  * camera exists as long as it is assigned to this widget.
  */
 class DE_DLL_EXPORT igdeWPCamera : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWPCamera> Ref;
+	
+	
 private:
 	igdeCamera *pCamera;
 	

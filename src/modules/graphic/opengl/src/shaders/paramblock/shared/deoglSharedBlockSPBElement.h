@@ -36,10 +36,6 @@ class deoglShaderParameterBlock;
  * OpenGL shared shader parameter block element.
  */
 class deoglSharedBlockSPBElement : public deObject{
-	/** \brief Type holding strong reference. */
-	typedef deTObjectReference<deoglSharedBlockSPBElement> Ref;
-
-
 public:
 	/**
 	 * Stores deoglSharedBlockSPBElement returning it to deoglSharedBlockSPB if out of scope.

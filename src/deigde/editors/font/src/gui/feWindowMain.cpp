@@ -453,9 +453,7 @@ public:
 		generateFont.SetCodeRange( 32, 255 );
 		generateFont.SetFontConfig( config );
 		
-		deObjectReference font;
-		font.TakeOver( generateFont.GenerateFont() );
-		pWindow.SetFont( font );
+		pWindow.SetFont(feFont::Ref::New(generateFont.GenerateFont()));
 	}
 };
 

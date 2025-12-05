@@ -233,7 +233,6 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 	decObjectOrderedSet pendingClasses(classManager.pClasses), retryClasses;
 	int i, j, k, h, inheritClassCount;
 	igdeCodecPropertyString codec;
-	deObjectReference refCopy;
 	decString propertyValue;
 	bool detectRetry = true;
 	
@@ -258,8 +257,8 @@ void igdeGDClassManager::UpdateWithElementClasses( const igdeGDClassManager &cla
 				gdclassExisting->RemoveAllInheritClasses();
 				inheritClassCount = eclass->GetInheritClassCount();
 				for( j=0; j<inheritClassCount; j++ ){
-					refCopy.TakeOver( new igdeGDClassInherit( *eclass->GetInheritClassAt( j ) ) );
-					gdclassExisting->AddInheritClass( refCopy );
+					gdclassExisting->AddInheritClass(igdeGDClassInherit::Ref::NewWith(
+						*eclass->GetInheritClassAt(j)));
 				}
 				gdclassExisting->ResolveInheritClasses( *this );
 				

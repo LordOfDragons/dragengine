@@ -91,15 +91,11 @@ public:
 		}
 		
 		meWindowVegetation &view = pNode.GetWindowVegetation();
-		deObjectReference refRule;
-		refRule.TakeOver( pNode.GetRule()->Copy() );
 		
-		meHTVRule &rule = ( meHTVRule& )( deObject& )refRule;
-		rule.SetPosition( rule.GetPosition() + decVector2( 0.5f, 0.5f ) );
+		const meHTVRule::Ref rule(meHTVRule::Ref::New(pNode.GetRule()->Copy()));
+		rule->SetPosition(rule->GetPosition() + decVector2(0.5f, 0.5f));
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleAdd( view.GetVLayer(), &rule ) );
-		view.GetWorld()->GetUndoSystem()->Add( undo );
+		view.GetWorld()->GetUndoSystem()->Add(meUHTVRuleAdd::Ref::NewWith(view.GetVLayer(), rule));
 	}
 	
 	virtual void Update(){

@@ -161,11 +161,7 @@ public:
 			return;
 		}
 		
-		deObjectReference link;
-		link.TakeOver( new seLink );
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seULinkAdd( synthesizer, link ) );
-		synthesizer->GetUndoSystem()->Add( undo );
+		synthesizer->GetUndoSystem()->Add(seULinkAdd::Ref::NewWith(synthesizer, seLink::Ref::NewWith()));
 	}
 	
 	virtual void Update(){
@@ -362,7 +358,7 @@ void seWPLink::SelectActiveLink(){
 }
 
 void seWPLink::UpdateLinkList(){
-	deObjectReference selection( GetLink() );
+	const seLink::Ref selection(GetLink());
 	
 	pListLink->RemoveAllItems();
 	

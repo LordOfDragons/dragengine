@@ -103,7 +103,7 @@ pBarrierTask( nullptr )
 	const int rayCount = 42;
 	
 	if( true ){
-		deObjectReference task;
+		deoalRTPTTraceSoundRays::Ref task;
 		int i;
 		for( i=0; i<rayCount; i++ ){
 			task.TakeOver( new deoalRTPTTraceSoundRays( *this ) );
@@ -113,7 +113,7 @@ pBarrierTask( nullptr )
 	}
 	
 	if( true ){
-		deObjectReference task;
+		deoalRTPTListen::Ref task;
 		int i;
 		for( i=0; i<rayCount; i++ ){
 			task.TakeOver( new deoalRTPTListen( *this ) );
@@ -123,7 +123,7 @@ pBarrierTask( nullptr )
 	}
 	
 // 	if( true ){
-// 		deObjectReference task;
+// 		deoalRTPTEnvProbeFull::Ref task;
 // 		int i;
 // 		for( i=0; i<taskCount; i++ ){
 // 			task.TakeOver( new deoalRTPTEnvProbeFull( *this ) );
@@ -132,7 +132,7 @@ pBarrierTask( nullptr )
 // 	}
 	
 	if( true ){
-		deObjectReference task;
+		deoalRTPTRoomEstimate::Ref task;
 		int i;
 		for( i=0; i<rayCount; i++ ){
 			task.TakeOver( new deoalRTPTRoomEstimate( *this ) );

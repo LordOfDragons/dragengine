@@ -39,6 +39,11 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object force field for edit view.
  */
 class gdeVAOForceField : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOForceField> Ref;
+	
+	
 private:
 	gdeOCForceField *pOCForceField;
 	

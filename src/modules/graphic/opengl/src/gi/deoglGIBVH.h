@@ -29,7 +29,7 @@
 #include "../collidelist/deoglCollideList.h"
 #include "../rendering/task/deoglRenderTask.h"
 #include "../utils/bvh/deoglBVH.h"
-#include "../tbo/deoglDynamicTBO.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
 
 #include <dragengine/common/math/decMath.h>
 

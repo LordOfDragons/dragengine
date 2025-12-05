@@ -36,6 +36,10 @@
  */
 class meHTVRuleCurve : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleCurve> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Mapped value. */

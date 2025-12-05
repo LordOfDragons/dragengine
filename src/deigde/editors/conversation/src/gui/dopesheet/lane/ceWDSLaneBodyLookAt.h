@@ -33,6 +33,10 @@
  */
 class ceWDSLaneBodyLookAt : public ceWDSLane{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWDSLaneBodyLookAt> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dope sheet lane. */

@@ -25,6 +25,7 @@
 #ifndef _IGDENVBOARD_H_
 #define _IGDENVBOARD_H_
 
+#include "igdeNVNode.h"
 #include "../igdeContainer.h"
 #include "../igdeWidget.h"
 
@@ -33,7 +34,6 @@
 #include <dragengine/common/string/decString.h>
 
 
-class igdeNVNode;
 class igdeNVLink;
 class igdeNVSlot;
 class igdeNVBoardListener;
@@ -56,7 +56,7 @@ private:
 	
 	decObjectOrderedSet pNodes;
 	decObjectOrderedSet pLinks;
-	deObjectReference pActiveNode;
+	igdeNVNode::Ref pActiveNode;
 	
 	decObjectOrderedSet pListeners;
 	

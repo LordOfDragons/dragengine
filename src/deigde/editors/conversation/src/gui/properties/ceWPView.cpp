@@ -326,8 +326,7 @@ public:
 	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add Prop" ){ }
 	
 	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		deObjectReference prop;
-		prop.TakeOver( new ceProp );
+		const ceProp::Ref prop(ceProp::Ref::NewWith());
 		conversation->AddProp( prop );
 		conversation->SetActiveProp( prop );
 		return NULL;
@@ -1274,8 +1273,7 @@ public:
 	panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add Coord-System" ){ }
 	
 	virtual igdeUndo *OnAction( ceConversation *conversation ){
-		deObjectReference actor;
-		actor.TakeOver( new ceCoordSystem );
+		const ceCoordSystem::Ref actor(ceCoordSystem::Ref::NewWith());
 		conversation->AddCoordSystem( actor );
 		conversation->SetActiveCoordSystem( actor );
 		return NULL;

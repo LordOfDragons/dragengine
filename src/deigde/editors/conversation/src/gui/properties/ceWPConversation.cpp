@@ -570,8 +570,7 @@ public:
 			return NULL;
 		}
 		
-		const ceCameraShot::Ref cameraShot(ceCameraShot::Ref::NewWith(name));
-		return new ceUCCShotAdd( conversation, cameraShot );
+		return new ceUCCShotAdd(conversation, ceCameraShot::Ref::NewWith(name));
 	}
 };
 

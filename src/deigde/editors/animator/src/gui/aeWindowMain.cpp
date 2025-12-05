@@ -259,7 +259,6 @@ void aeWindowMain::CreateRule( deAnimatorRuleVisitorIdentify::eRuleTypes type, b
 	aeRule * const activeRule = pAnimator->GetActiveRule();
 	int index = pAnimator->GetRules().GetCount();
 	aeRuleGroup *parentGroup = NULL;
-	deObjectReference refRule;
 	igdeUndo::Ref undo;
 	
 	if( activeRule ){
@@ -287,8 +286,7 @@ void aeWindowMain::CreateRule( deAnimatorRuleVisitorIdentify::eRuleTypes type, b
 		}
 	}
 	
-	refRule.TakeOver( aeRule::CreateRuleFromType( type ) );
-	aeRule * const rule = refRule;
+	const aeRule::Ref rule(aeRule::Ref::New(aeRule::CreateRuleFromType(type)));
 	
 	if( parentGroup ){
 		undo.TakeOver( new aeURuleGroupAddRule( parentGroup, rule, index ) );

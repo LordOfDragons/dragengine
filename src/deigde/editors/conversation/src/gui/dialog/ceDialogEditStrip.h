@@ -40,6 +40,10 @@ class decStringList;
  */
 class ceDialogEditStrip : public igdeDialog{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceDialogEditStrip> Ref;
+	
+	
 	class Listener : public deObject{
 	public:
 		typedef deTObjectReference<Listener> Ref;

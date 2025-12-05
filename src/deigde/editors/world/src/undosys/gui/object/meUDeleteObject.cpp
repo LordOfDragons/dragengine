@@ -47,7 +47,6 @@ pWorld( NULL )
 	
 	const meObjectList &list = world->GetSelectionObject().GetSelected();
 	const int count = list.GetCount();
-	deObjectReference ref;
 	decString text;
 	int i;
 	
@@ -65,8 +64,7 @@ pWorld( NULL )
 		world->AddReference();
 		
 		for( i=0; i<count; i++ ){
-			ref.TakeOver( new meUndoDataObject( list.GetAt( i ) ) );
-			pObjects.Add( ref );
+			pObjects.Add(meUndoDataObject::Ref::NewWith(list.GetAt(i)));
 		}
 		
 		// keep track of object attached to deleted objects
@@ -75,8 +73,7 @@ pWorld( NULL )
 		for( i=0; i<allCount; i++ ){
 			meObject * const object = allObjects.GetAt( i );
 			if( object->GetAttachedTo() && list.Has( object->GetAttachedTo() ) ){
-				ref.TakeOver( new meUndoDataObject( object ) );
-				pAttached.Add( ref );
+				pAttached.Add(meUndoDataObject::Ref::NewWith(object));
 			}
 		}
 		
