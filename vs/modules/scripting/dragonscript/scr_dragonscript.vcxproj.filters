@@ -1357,5 +1357,6 @@
   <ItemGroup>
     <Filter Include="Sources">
       <UniqueIdentifier>{afa68ed1-fd96-44e1-87f1-2f2724231f9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

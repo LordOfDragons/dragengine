@@ -10,6 +10,7 @@
   <ItemGroup>
     <Filter Include="Sources">
       <UniqueIdentifier>{17a5d8e1-af46-4f6e-bde1-c281d69adf09}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\src\modules\service\eossdk\src\convert\deECCommon.cpp">
