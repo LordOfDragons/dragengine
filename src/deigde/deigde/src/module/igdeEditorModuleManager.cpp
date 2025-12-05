@@ -299,7 +299,6 @@ void igdeEditorModuleManager::pCleanUp(){
 
 void igdeEditorModuleManager::pScanForModules(){
 	deLogger &logger = *pWindowMain.GetLogger();
-	deObjectReference refModule;
 	int i;
 	
 	try{
@@ -335,8 +334,8 @@ void igdeEditorModuleManager::pScanForModules(){
 			modulePath.AddUnixPath( "module.xml" );
 			
 			// try loading module
-			refModule.TakeOver( new igdeEditorModuleDefinition( *this, modulePath.GetPathNative() ) );
-			igdeEditorModuleDefinition * const module = refModule;
+			const igdeEditorModuleDefinition::Ref module(
+				igdeEditorModuleDefinition::Ref::NewWith(*this, modulePath.GetPathNative()));
 			
 			if( module->GetErrorCode() != igdeEditorModuleDefinition::eecSuccess ){
 				switch( module->GetErrorCode() ){

@@ -59,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Camera...",
 ///////////////
 
 igdeUndo *gdeMAOCCameraAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference camera;
-	camera.TakeOver( new gdeOCCamera );
-	return new gdeUOCAddCamera( &objectClass, camera );
+	return new gdeUOCAddCamera(&objectClass, gdeOCCamera::Ref::NewWith());
 }
 
 void gdeMAOCCameraAdd::Update(){

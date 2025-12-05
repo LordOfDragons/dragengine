@@ -28,6 +28,7 @@
 #include "billboard/gdeOCBillboardList.h"
 #include "camera/gdeOCCameraList.h"
 #include "component/gdeOCComponentList.h"
+#include "component/gdeOCComponentTexture.h"
 #include "component/gdeOCComponentTextureList.h"
 #include "envmapprobe/gdeOCEnvMapProbeList.h"
 #include "inherit/gdeOCInheritList.h"
@@ -48,7 +49,6 @@
 #include <dragengine/common/string/decStringDictionary.h>
 
 class gdeGameDefinition;
-class gdeOCComponentTexture;
 
 
 
@@ -107,7 +107,7 @@ private:
 	gdeOCWorldList pWorlds;
 	
 	gdeOCComponentTextureList pTextures;
-	deObjectReference pActiveTexture;
+	gdeOCComponentTexture::Ref pActiveTexture;
 	
 	
 	
@@ -404,9 +404,7 @@ public:
 	inline const gdeOCComponentTextureList &GetTextures() const{ return pTextures; }
 	
 	/** Active texture or \em NULL if none. */
-	inline gdeOCComponentTexture *GetActiveTexture() const{
-		return ( gdeOCComponentTexture* )( deObject* )pActiveTexture;
-	}
+	inline const gdeOCComponentTexture::Ref &GetActiveTexture() const{ return pActiveTexture; }
 	
 	/** Set active texture or \em NULL if none. */
 	void SetActiveTexture( gdeOCComponentTexture *texture );

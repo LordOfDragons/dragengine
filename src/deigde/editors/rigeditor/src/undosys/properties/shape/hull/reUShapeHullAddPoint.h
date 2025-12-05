@@ -25,12 +25,10 @@
 #ifndef _REUSHAPEHULLADDPOINT_H_
 #define _REUSHAPEHULLADDPOINT_H_
 
+#include "../../../rig/shape/reRigShapeHull.h"
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
-
-class reRigShapeHull;
-
 
 
 /**
@@ -38,7 +36,7 @@ class reRigShapeHull;
  */
 class reUShapeHullAddPoint : public igdeUndo{
 private:
-	deObjectReference pShape;
+	const reRigShapeHull::Ref pShape;
 	
 	decVector pPoint;
 	int pIndex;

@@ -1431,8 +1431,9 @@ void gdeWPSOCComponent::PrepareEngineModelPath(){
 		
 		pEngModelTexNames.SortAscending();
 		
-		const cActionTextureAdd::Ref action(cActionTextureAdd::Ref::NewWith( *this, pEngModelTexNames.GetAt( i ));
-			pActionsTextureAddFromModel.Add( action );
+		for( i=0; i<count; i++ ){
+			pActionsTextureAddFromModel.Add(cActionTextureAdd::Ref::NewWith(
+				*this, pEngModelTexNames.GetAt(i)));
 		}
 		
 	}catch( const deException & ){

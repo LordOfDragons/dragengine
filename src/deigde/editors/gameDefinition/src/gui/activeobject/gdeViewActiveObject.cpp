@@ -955,88 +955,121 @@ const decString &propertyPrefix, int filter ){
 void gdeViewActiveObject::pInitOCComponents( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCComponentList &list = objectClass.GetComponents();
 	const int count = list.GetCount();
-	const gdeVAOComponent::Ref vao(gdeVAOComponent::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCComponents.Add( vao );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCComponents.Add(gdeVAOComponent::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCBillboards( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCBillboardList &list = objectClass.GetBillboards();
 	const int count = list.GetCount();
-	const gdeVAOBillboard::Ref vao(gdeVAOBillboard::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCBillboards.Add( vao );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCBillboards.Add(gdeVAOBillboard::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCCameras( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCCameraList &list = objectClass.GetCameras();
 	const int count = list.GetCount();
-	const gdeVAOCamera::Ref vao(gdeVAOCamera::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCCameras.Add( vao );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCCameras.Add(gdeVAOCamera::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCLights( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCLightList &list = objectClass.GetLights();
 	const int count = list.GetCount();
-	const gdeVAOLight::Ref vao(gdeVAOLight::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCLights.Add( vao );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCLights.Add(gdeVAOLight::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCParticleEmitters( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCParticleEmitterList &list = objectClass.GetParticleEmitters();
 	const int count = list.GetCount();
-	const gdeVAOParticleEmitter::Ref vao(gdeVAOParticleEmitter::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCParticleEmitters.Add( vao );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCParticleEmitters.Add(gdeVAOParticleEmitter::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCForceFields( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCForceFieldList &list = objectClass.GetForceFields();
 	const int count = list.GetCount();
-	const gdeVAOForceField::Ref vao(gdeVAOForceField::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCForceFields.Add( vao );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCForceFields.Add(gdeVAOForceField::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCEnvMapProbes( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCEnvMapProbeList &list = objectClass.GetEnvMapProbes();
 	const int count = list.GetCount();
-	const gdeVAOEnvMapProbe::Ref vao(gdeVAOEnvMapProbe::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCEnvMapProbes.Add( vao );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCEnvMapProbes.Add(gdeVAOEnvMapProbe::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCNavigationSpaces( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCNavigationSpaceList &list = objectClass.GetNavigationSpaces();
 	const int count = list.GetCount();
-	const gdeVAONavSpace::Ref aoc(gdeVAONavSpace::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCNavSpaces.Add( aoc );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCNavSpaces.Add(gdeVAONavSpace::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCNavigationBlockers( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCNavigationBlockerList &list = objectClass.GetNavigationBlockers();
 	const int count = list.GetCount();
-	const gdeVAONavBlocker::Ref aoc(gdeVAONavBlocker::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCNavBlockers.Add( aoc );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCNavBlockers.Add(gdeVAONavBlocker::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCSnapPoints( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCSnapPointList &list = objectClass.GetSnapPoints();
 	const int count = list.GetCount();
-	const gdeVAOSnapPoint::Ref vao(gdeVAOSnapPoint::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCSnapPoints.Add( vao );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCSnapPoints.Add(gdeVAOSnapPoint::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 
 void gdeViewActiveObject::pInitOCSpeakers( const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCSpeakerList &list = objectClass.GetSpeakers();
 	const int count = list.GetCount();
-	const gdeVAOSpeaker::Ref vao(gdeVAOSpeaker::Ref::NewWith( *this, objectClass, propertyPrefix, list.GetAt( i ));
-		pOCSpeakers.Add( vao );
+	int i;
+	
+	for( i=0; i<count; i++ ){
+		pOCSpeakers.Add(gdeVAOSpeaker::Ref::NewWith(
+			*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 

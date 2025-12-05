@@ -36,11 +36,11 @@
  * \brief Object class force field.
  */
 class gdeOCForceField : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCForceField> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Influence area. */

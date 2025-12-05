@@ -37,11 +37,11 @@
  * \brief Object class navigation space.
  */
 class gdeOCNavigationSpace : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCNavigationSpace> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Path to navigation space file. */

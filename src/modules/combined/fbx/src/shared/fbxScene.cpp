@@ -100,7 +100,6 @@ pConnectionMap( NULL )
 	// - The FBX element metadata (end_offset, prop_count and prop_length) switch from uint32 to uint64.
 	pVersion = reader.ReadUInt();
 	
-	deObjectReference node;
 	while( true ){
 		int checkEndOffset;
 		
@@ -116,8 +115,7 @@ pConnectionMap( NULL )
 			break;
 		}
 		
-		node.TakeOver( new fbxNode( *this, reader, checkEndOffset ) );
-		pNode->AddNode( node );
+		pNode->AddNode(fbxNode::Ref::NewWith(*this, reader, checkEndOffset));
 	}
 	
 	// footer
@@ -452,7 +450,7 @@ void fbxScene::Prepare( deBaseModule &module ){
 	
 	pNodeConnections = pNode->FirstNodeNamed( "Connections" );
 	const int count = pNodeConnections->GetNodeCount();
-	deObjectReference connection;
+	fbxConnection::Ref connection;
 	int i;
 	
 	pConnectionMap = new fbxConnectionMap( count );
@@ -465,17 +463,17 @@ void fbxScene::Prepare( deBaseModule &module ){
 		
 		const decString &type = nodeConnection.GetPropertyAt( 0 )->CastString().GetValue();
 		if( type == "OO" ){
-			connection.TakeOver( new fbxConnection(
+			connection.TakeOverWith(
 				nodeConnection.GetPropertyAt( 1 )->GetValueAsLong(),
-				nodeConnection.GetPropertyAt( 2 )->GetValueAsLong() ) );
+				nodeConnection.GetPropertyAt( 2 )->GetValueAsLong() );
 			pConnections.Add( connection );
 			pConnectionMap->Add( connection );
 			
 		}else if( type == "OP" ){
-			connection.TakeOver( new fbxConnection(
+			connection.TakeOverWith(
 				nodeConnection.GetPropertyAt( 1 )->GetValueAsLong(),
 				nodeConnection.GetPropertyAt( 2 )->GetValueAsLong(),
-				nodeConnection.GetPropertyAt( 3 )->CastString().GetValue() ) );
+				nodeConnection.GetPropertyAt( 3 )->CastString().GetValue() );
 			pConnections.Add( connection );
 			pConnectionMap->Add( connection );
 		}

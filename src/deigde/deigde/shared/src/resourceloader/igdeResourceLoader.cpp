@@ -70,15 +70,14 @@ void igdeResourceLoader::Update(){
 			continue;
 		}
 		
-		const deObjectReference guardTask( pTasks.GetAt( index ) );
+		const igdeResourceLoaderTask::Ref task((igdeResourceLoaderTask*)pTasks.GetAt(index));
 		pTasks.RemoveFrom( index );
-		igdeResourceLoaderTask &task = ( igdeResourceLoaderTask& )( deObject& )guardTask;
 		
 		if( info.GetResource() ){
-			task.NotifyLoadingFinished( logger, info.GetResource() );
+			task->NotifyLoadingFinished( logger, info.GetResource() );
 			
 		}else{
-			task.NotifyLoadingFailed( logger );
+			task->NotifyLoadingFailed( logger );
 		}
 	}
 }

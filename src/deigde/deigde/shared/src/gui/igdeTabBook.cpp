@@ -113,6 +113,7 @@ const char *description ){
 	igdeContainer::AddChild( child );
 	
 	const cHeader::Ref header(cHeader::Ref::NewWith( text, icon, description ));
+	try{
 		pHeaders.Add( header );
 		
 	}catch( const deException & ){

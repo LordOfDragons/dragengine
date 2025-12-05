@@ -25,9 +25,8 @@
 #ifndef _DEBPCREATESHAPE_H_
 #define _DEBPCREATESHAPE_H_
 
+#include "../shape/debpShape.h"
 #include <dragengine/common/shape/decShapeVisitor.h>
-
-class debpShape;
 
 
 
@@ -39,7 +38,7 @@ class debpShape;
  */
 class debpCreateShape : public decShapeVisitor{
 private:
-	deObjectReference pShape;
+	debpShape::Ref pShape;
 	
 	
 	
@@ -58,7 +57,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created shape or NULL if something went wrong. */
-	inline debpShape *GetCreatedShape() const{ return ( debpShape* )( deObject* )pShape; }
+	inline const debpShape::Ref &GetCreatedShape() const{ return pShape; }
 	
 	/** \brief Set created shape or NULL. */
 	void SetCreatedShape( debpShape *shape );

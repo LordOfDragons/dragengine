@@ -59,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Blocker...",
 ///////////////
 
 igdeUndo *gdeMAOCNavBlockerAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference navBlocker;
-	navBlocker.TakeOver( new gdeOCNavigationBlocker );
-	return new gdeUOCAddNavBlocker( &objectClass, navBlocker );
+	return new gdeUOCAddNavBlocker(&objectClass, gdeOCNavigationBlocker::Ref::NewWith());
 }
 
 void gdeMAOCNavBlockerAdd::Update(){

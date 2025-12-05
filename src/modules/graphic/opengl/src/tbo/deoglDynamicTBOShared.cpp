@@ -283,7 +283,7 @@ deoglDynamicTBOBlock *deoglDynamicTBOShared::pAddEmptyBlock(){
 	int offset = 0;
 	
 	if( count > 0 ){
-		const deoglDynamicTBOBlock &block = *( pBlocks.GetAt( count - 1 ) );
+		const deoglDynamicTBOBlock &block = *((deoglDynamicTBOBlock*)pBlocks.GetAt(count - 1));
 		offset = block.GetOffset() + block.GetSize();
 	}
 	

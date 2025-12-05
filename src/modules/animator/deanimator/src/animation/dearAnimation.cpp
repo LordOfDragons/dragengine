@@ -119,10 +119,8 @@ void dearAnimation::pCreateMoves(){
 	
 	pMoves.RemoveAll();
 	
-	deObjectReference move;
 	int i;
 	for( i=0; i<count; i++ ){
-		move.TakeOver( new dearAnimationMove( *pAnimation->GetMove( i ) ) );
-		pMoves.Add( move );
+		pMoves.Add(dearAnimationMove::Ref::NewWith(*pAnimation->GetMove(i)));
 	}
 }

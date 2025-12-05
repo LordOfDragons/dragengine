@@ -45,11 +45,11 @@ class deoglVAO;
  * dynamic way but all data has to fit into one VBO.
  */
 class deoglSharedVBO : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deoglSharedVBO> Ref;
-
-
-public:
+	
+	
 	deoglSharedVBOList *pParentList;
 	GLuint pVBO;
 	GLuint pIBO;

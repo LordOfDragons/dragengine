@@ -103,8 +103,8 @@ igdeTriggerExpression *igdeTriggerExpressionParser::StringToExpression( const ch
 	return expression;
 }
 
-igdeTriggerExpressionComponent *igdeTriggerExpressionParser::ParseExpressionComponent(
-igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, bool initNegate ) const{
+igdeTriggerExpressionComponent::Ref igdeTriggerExpressionParser::ParseExpressionComponent(
+igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, bool initNegate) const{
 	// modes:
 	// 0 => parse trigger/child(0) (negate,curState allowed)
 	// 1 => parse logical operator
@@ -112,28 +112,26 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	// 3 => parse identical logical operator or end of group or end of expression
 	// 4 => exit parser
 	// 5 => exit parser due to exception
-	deObjectReference refComponent, child;
 	bool curState = initCurState;
 	bool negate = initNegate;
 	decString name;
 	int mode = 0;
 	
-	refComponent.TakeOver( new igdeTriggerExpressionComponent );
-	igdeTriggerExpressionComponent &component = ( igdeTriggerExpressionComponent& )( deObject& )refComponent;
+	igdeTriggerExpressionComponent::Ref child, component(
+		igdeTriggerExpressionComponent::Ref::NewWith());
 	
 	while( mode != 4 && mode != 5 && state.HasMoreCharacters() ){
 		const int character = state.GetNextCharacter();
 		
-		if( mode == 2 && ! component.GetTargetName().IsEmpty() ){
-			child.TakeOver( new igdeTriggerExpressionComponent );
-			igdeTriggerExpressionComponent &c = ( igdeTriggerExpressionComponent& )( deObject& )child;
-			c.SetTargetName( component.GetTargetName() );
-			c.SetNegate( component.GetNegate() );
-			c.SetCurState( component.GetCurState() );
-			component.AddChild( &c );
-			component.SetTargetName( "" );
-			component.SetNegate( false );
-			component.SetCurState( false );
+		if( mode == 2 && ! component->GetTargetName().IsEmpty() ){
+			child.TakeOverWith();
+			child->SetTargetName( component->GetTargetName() );
+			child->SetNegate( component->GetNegate() );
+			child->SetCurState( component->GetCurState() );
+			component->AddChild(child);
+			component->SetTargetName( "" );
+			component->SetNegate( false );
+			component->SetCurState( false );
 		}
 		
 		if( character == ' ' || character == '\t' ){
@@ -178,9 +176,9 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 			
 			switch( mode ){
 			case 0:{
-				child = ParseExpressionComponent( state, true, false, false );
-				( ( igdeTriggerExpressionComponent& )( deObject& )child ).SetNegate( negate );
-				component.AddChild( child );
+				child = ParseExpressionComponent(state, true, false, false);
+				child->SetNegate(negate);
+				component->AddChild(child);
 				
 				negate = false;
 				curState = false;
@@ -188,9 +186,9 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				}break;
 				
 			case 2:
-				child = ParseExpressionComponent( state, true, false, false );
-				( ( igdeTriggerExpressionComponent& )( deObject& )child ).SetNegate( negate );
-				component.AddChild( child );
+				child = ParseExpressionComponent(state, true, false, false);
+				child->SetNegate(negate);
+				component->AddChild(child);
 				
 				negate = false;
 				curState = false;
@@ -224,12 +222,12 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 		}else if( character == pSymbolAnd ){
 			switch( mode ){
 			case 1:
-				component.SetType( igdeTriggerExpressionComponent::ectAnd );
+				component->SetType(igdeTriggerExpressionComponent::ectAnd);
 				mode = 2;
 				break;
 				
 			case 3:
-				if( component.GetType() != igdeTriggerExpressionComponent::ectAnd ){
+				if(component->GetType() != igdeTriggerExpressionComponent::ectAnd){
 					if( pExceptionOnErrors ){
 						DETHROW( deeInvalidParam ); // and/or changed inside list
 					}
@@ -249,12 +247,12 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 		}else if( character == pSymbolOr ){
 			switch( mode ){
 			case 1:
-				component.SetType( igdeTriggerExpressionComponent::ectOr );
+				component->SetType(igdeTriggerExpressionComponent::ectOr);
 				mode = 2;
 				break;
 				
 			case 3:
-				if( component.GetType() != igdeTriggerExpressionComponent::ectOr ){
+				if(component->GetType() != igdeTriggerExpressionComponent::ectOr){
 					if( pExceptionOnErrors ){
 						DETHROW( deeInvalidParam ); // and/or changed inside list
 					}
@@ -275,9 +273,9 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 			switch( mode ){
 			case 0:
 				ParseTargetName( name, state, true );
-				component.SetTargetName( name );
-				component.SetNegate( negate );
-				component.SetCurState( curState );
+				component->SetTargetName(name);
+				component->SetNegate(negate);
+				component->SetCurState(curState);
 				
 				negate = false;
 				curState = false;
@@ -287,12 +285,11 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 2:{
 				ParseTargetName( name, state, true );
-				child.TakeOver( new igdeTriggerExpressionComponent );
-				igdeTriggerExpressionComponent &c = ( igdeTriggerExpressionComponent& )( deObject& )child;
-				c.SetTargetName( name );
-				c.SetNegate( negate );
-				c.SetCurState( curState );
-				component.AddChild( &c );
+				child.TakeOverWith();
+				child->SetTargetName(name);
+				child->SetNegate(negate);
+				child->SetCurState(curState);
+				component->AddChild(child);
 				
 				negate = false;
 				curState = false;
@@ -313,9 +310,9 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 			switch( mode ){
 			case 0:
 				ParseTargetName( name, state, false );
-				component.SetTargetName( name.GetString() );
-				component.SetNegate( negate );
-				component.SetCurState( curState );
+				component->SetTargetName(name);
+				component->SetNegate(negate);
+				component->SetCurState(curState);
 				
 				negate = false;
 				curState = false;
@@ -324,12 +321,11 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 				
 			case 2:{
 				ParseTargetName( name, state, false );
-				child.TakeOver( new igdeTriggerExpressionComponent );
-				igdeTriggerExpressionComponent &c = ( igdeTriggerExpressionComponent& )( deObject& )child;
-				c.SetTargetName( name );
-				c.SetNegate( negate );
-				c.SetCurState( curState );
-				component.AddChild( &c );
+				child.TakeOverWith();
+				child->SetTargetName(name);
+				child->SetNegate(negate);
+				child->SetCurState(curState);
+				component->AddChild(child);
 				
 				negate = false;
 				curState = false;
@@ -362,29 +358,27 @@ igdeTriggerExpressionParserState &state, bool requireEnd, bool initCurState, boo
 	if( mode != 5 ){
 		if( mode == 2 ){
 			// missing target after and/or. add an empty one to allow editors to work properly
-			child.TakeOver( new igdeTriggerExpressionComponent );
-			igdeTriggerExpressionComponent &c = ( igdeTriggerExpressionComponent& )( deObject& )child;
-			c.SetNegate( negate );
-			c.SetCurState( curState );
-			component.AddChild( &c );
+			child.TakeOverWith();
+			child->SetNegate(negate);
+			child->SetCurState(curState);
+			component->AddChild(child);
 		}
 		
-		if( component.GetChildCount() == 1 ){
-			const igdeTriggerExpressionComponent &c = *component.GetChildAt( 0 );
-			if( c.GetTargetName().IsEmpty() ){
-				refComponent = component.GetChildAt( 0 );
+		if( component->GetChildCount() == 1 ){
+			child = component->GetChildAt(0);
+			if(child->GetTargetName().IsEmpty()){
+				component = child;
 				
 			}else{
-				component.SetTargetName( c.GetTargetName() );
-				component.SetNegate( c.GetNegate() );
-				component.SetCurState( c.GetCurState() );
-				component.RemoveAllChildren();
+				component->SetTargetName(child->GetTargetName());
+				component->SetNegate(child->GetNegate());
+				component->SetCurState(child->GetCurState());
+				component->RemoveAllChildren();
 			}
 		}
 	}
 	
-	refComponent->AddReference(); // caller takes over reference
-	return refComponent;
+	return component;
 }
 
 void igdeTriggerExpressionParser::ParseTargetName( decString &name, igdeTriggerExpressionParserState &state, bool quoted ) const{

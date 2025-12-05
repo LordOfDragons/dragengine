@@ -132,9 +132,7 @@ void reRigShapeHull::RemovePoint( int index ){
 
 
 reRigShape *reRigShapeHull::Duplicate() const{
-	const reRigShapeHull::Ref ref(reRigShapeHull::Ref::NewWith(GetEngine()));
-	
-	reRigShapeHull * const shape = ref;
+	const reRigShapeHull::Ref shape(reRigShapeHull::Ref::NewWith(GetEngine()));
 	shape->SetPosition( GetPosition() );
 	shape->SetOrientation( GetOrientation() );
 	if( pPointCount > 0 ){

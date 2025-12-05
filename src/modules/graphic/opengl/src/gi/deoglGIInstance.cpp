@@ -282,9 +282,9 @@ void deoglGIInstance::SetComponent( deoglRComponent *component, bool dynamic ){
 	pMaxExtend = component->GetMaximumExtend();
 	
 	if( ! pComponentListener ){
-		pComponentListener.TakeOver( new cComponentListener( *this ) );
+		pComponentListener.TakeOverWith(*this);
 	}
-	component->AddListener( ( deoglComponentListener* )( deObject* )pComponentListener );
+	component->AddListener(pComponentListener);
 	
 	deoglRComponentLOD &lod = component->GetLODAt( -1 );
 	
@@ -333,14 +333,14 @@ void deoglGIInstance::SetDecal( deoglRDecal *decal, bool dynamic ){
 	}
 	
 	if( ! pDecalListener ){
-		pDecalListener.TakeOver( new cDecalListener( *this ) );
+		pDecalListener.TakeOverWith(*this);
 	}
-	decal->AddListener( ( deoglDecalListener* )( deObject* )pDecalListener );
+	decal->AddListener(pDecalListener);
 	
 	if( ! pDecalComponentListener ){
-		pDecalComponentListener.TakeOver( new cDecalComponentListener( *this ) );
+		pDecalComponentListener.TakeOverWith(*this);
 	}
-	decal->GetParentComponent()->AddListener( ( deoglComponentListener* )( deObject* )pDecalComponentListener );
+	decal->GetParentComponent()->AddListener(pDecalComponentListener);
 	
 	if( dynamic ){
 // 		decal.PrepareGIDynamicBVH();
@@ -484,13 +484,13 @@ void deoglGIInstance::Clear(){
 			pComponent->GetRenderThread().GetLogger().LogException( e );
 		}
 		
-		pComponent->RemoveListener( ( deoglComponentListener* )( deObject* )pComponentListener );
+		pComponent->RemoveListener(pComponentListener);
 		pComponent = nullptr;
 		
 	}else if( pDecal ){
-		pDecal->RemoveListener( ( deoglDecalListener* )( deObject* )pDecalListener );
+		pDecal->RemoveListener(pDecalListener);
 		if( pDecal->GetParentComponent() ){
-			pDecal->GetParentComponent()->RemoveListener( ( deoglComponentListener* )( deObject* )pDecalComponentListener );
+			pDecal->GetParentComponent()->RemoveListener(pDecalComponentListener);
 		}
 		pDecal = NULL;
 	}
@@ -534,17 +534,17 @@ void deoglGIInstance::SetDirtyTUCs( bool dirty ){
 	pDirtyTUCs = dirty;
 }
 
-deoglDynamicTBOBlock *deoglGIInstance::GetBlockMaterial(){
+const deoglDynamicTBOBlock::Ref &deoglGIInstance::GetBlockMaterial(){
 	if( ! pBlockMaterial ){
 		pBlockMaterial.TakeOver( pInstances.GetGIState().GetRenderThread().GetGI().GetBVHShared()
 			.GetSharedTBOMaterial()->AddBlock( pTBOMaterial, pTBOMaterial2 ) );
 	}
-	return ( deoglDynamicTBOBlock* )( deObject* )pBlockMaterial;
+	return pBlockMaterial;
 }
 
 void deoglGIInstance::DropBlockMaterial(){
 	if( pBlockMaterial ){
-		( ( deoglDynamicTBOBlock* )( deObject* )pBlockMaterial )->Drop();
+		pBlockMaterial->Drop();
 		pBlockMaterial = NULL;
 	}
 }

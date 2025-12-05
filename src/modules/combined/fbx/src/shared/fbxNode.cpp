@@ -492,10 +492,8 @@ void fbxNode::pRead( fbxScene &scene, decBaseFileReader &reader, int endOffset )
 	const int endOfPropertyList = reader.GetPosition() + propertyListByteCount;
 	
 	int i;
-	deObjectReference property;
 	for( i=0; i<countProperties; i++ ){
-		property.TakeOver( fbxProperty::Read( reader ) );
-		pProperties.Add( property );
+		pProperties.Add(fbxProperty::Ref::New(fbxProperty::Read(reader)));
 	}
 	
 	const int position = reader.GetPosition();
@@ -518,7 +516,6 @@ void fbxNode::pRead( fbxScene &scene, decBaseFileReader &reader, int endOffset )
 	
 	const int markerOffset = scene.GetVersion() < 7500 ? 9 : 17;
 	
-	deObjectReference node;
 	while( true ){
 		int checkEndOffset;
 		
@@ -539,8 +536,7 @@ void fbxNode::pRead( fbxScene &scene, decBaseFileReader &reader, int endOffset )
 			break;
 		}
 		
-		node.TakeOver( new fbxNode( scene, reader, checkEndOffset ) );
-		pNodes.Add( node );
+		pNodes.Add(fbxNode::Ref::NewWith(scene, reader, checkEndOffset));
 	}
 }
 

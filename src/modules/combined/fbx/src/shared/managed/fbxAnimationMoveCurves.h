@@ -27,6 +27,7 @@
 
 
 #include <stdint.h>
+#include "fbxAnimationCurve.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
@@ -38,7 +39,6 @@ class fbxAnimationMove;
 class fbxNode;
 class fbxScene;
 class fbxRigBone;
-class fbxAnimationCurve;
 
 class deBaseModule;
 
@@ -69,9 +69,9 @@ private:
 	int64_t pNodeCurvesID;
 	fbxNode *pNodeModel;
 	int64_t pNodeModelID;
-	deObjectReference pCurveX;
-	deObjectReference pCurveY;
-	deObjectReference pCurveZ;
+	fbxAnimationCurve::Ref pCurveX;
+	fbxAnimationCurve::Ref pCurveY;
+	fbxAnimationCurve::Ref pCurveZ;
 	decVector pDefaultValue;
 	
 	decString pBoneName;
@@ -130,9 +130,9 @@ public:
 	void SetRigBone( fbxRigBone *bone );
 	
 	/** \brief Curves or NULL. */
-	inline fbxAnimationCurve *GetCurveX() const{ return ( fbxAnimationCurve* )( deObject* )pCurveX; }
-	inline fbxAnimationCurve *GetCurveY() const{ return ( fbxAnimationCurve* )( deObject* )pCurveY; }
-	inline fbxAnimationCurve *GetCurveZ() const{ return ( fbxAnimationCurve* )( deObject* )pCurveZ; }
+	inline const fbxAnimationCurve::Ref &GetCurveX() const{ return pCurveX; }
+	inline const fbxAnimationCurve::Ref &GetCurveY() const{ return pCurveY; }
+	inline const fbxAnimationCurve::Ref &GetCurveZ() const{ return pCurveZ; }
 	
 	/** \brief Default value. */
 	inline const decVector &GetDefaultValue() const{ return pDefaultValue; }

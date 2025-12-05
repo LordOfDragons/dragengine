@@ -51,7 +51,7 @@ gdeBaseMAOCSubObject(windowMain, "Add Object Class World...",
 ///////////////
 
 igdeUndo *gdeMAOCWorldAdd::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	return new gdeUOCAddWorld(&objectClass, gdeOCWorld::Ref::New(new gdeOCWorld));
+	return new gdeUOCAddWorld(&objectClass, gdeOCWorld::Ref::NewWith());
 }
 
 void gdeMAOCWorldAdd::Update(){

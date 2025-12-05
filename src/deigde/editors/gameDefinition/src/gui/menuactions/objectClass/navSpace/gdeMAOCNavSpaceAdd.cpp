@@ -59,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Space...",
 ///////////////
 
 igdeUndo *gdeMAOCNavSpaceAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference navSpace;
-	navSpace.TakeOver( new gdeOCNavigationSpace );
-	return new gdeUOCAddNavSpace( &objectClass, navSpace );
+	return new gdeUOCAddNavSpace(&objectClass, gdeOCNavigationSpace::Ref::NewWith());
 }
 
 void gdeMAOCNavSpaceAdd::Update(){

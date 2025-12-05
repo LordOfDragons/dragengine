@@ -93,8 +93,7 @@ pMemUseIBO( parentList->GetRenderThread().GetMemoryManager().GetConsumption().bu
 		OGL_CHECK( renderThread, pglBindVertexArray( 0 ) );
 		
 		// add empty block for the entire vbo space
-		const deoglSharedVBOBlock::Ref block(deoglSharedVBOBlock::Ref::NewWith(this, 0, size, 0, indexSize));
-		pBlocks.Add( block );
+		pBlocks.Add(deoglSharedVBOBlock::Ref::NewWith(this, 0, size, 0, indexSize));
 		
 	}catch( const deException & ){
 		pCleanUp();

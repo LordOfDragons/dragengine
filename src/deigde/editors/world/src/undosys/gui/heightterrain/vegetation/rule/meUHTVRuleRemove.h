@@ -25,11 +25,9 @@
 #ifndef _MEUHTVRULEREMOVE_H_
 #define _MEUHTVRULEREMOVE_H_
 
+#include "../../world/heightterrain/meHTVegetationLayer.h"
+#include "../../world/heightterrain/rules/meHTVRule.h"
 #include <deigde/undo/igdeUndo.h>
-
-class meHTVegetationLayer;
-class meHTVRule;
-
 
 
 /**
@@ -37,8 +35,8 @@ class meHTVRule;
  */
 class meUHTVRuleRemove : public igdeUndo{
 private:
-	deObjectReference pVLayer;
-	deObjectReference pRule;
+	const meHTVegetationLayer::Ref pVLayer;
+	const meHTVRule::Ref pRule;
 	
 	
 	

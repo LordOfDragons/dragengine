@@ -36,11 +36,11 @@
  * \brief Object class light.
  */
 class gdeOCLight : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCLight> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Light type. */

@@ -25,6 +25,7 @@
 #ifndef _REUSHAPEHULLREMOVEPOINT_H_
 #define _REUSHAPEHULLREMOVEPOINT_H_
 
+#include "../../../rig/shape/reRigShapeHull.h"
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -38,7 +39,7 @@ class reRigShapeHull;
  */
 class reUShapeHullRemovePoint : public igdeUndo{
 private:
-	deObjectReference pShape;
+	const reRigShapeHull::Ref pShape;
 	
 	decVector pPoint;
 	int pIndex;

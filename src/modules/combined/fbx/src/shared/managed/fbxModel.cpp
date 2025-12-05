@@ -110,7 +110,6 @@ pCulling( true )
 	pMatrix = pMatrix.QuickMultiply( scene.GetTransformation() );
 	
 	if( pNodeDeformer ){
-		deObjectReference refCluster;
 		decPointerList consDeformer;
 		scene.FindConnections( pDeformerID, consDeformer );
 		
@@ -124,8 +123,7 @@ pCulling( true )
 			fbxNode &node = *scene.NodeWithID( connection.GetSource() );
 			if( node.GetName() == "Deformer"
 			&& node.GetPropertyAt( 2 )->CastString().GetValue() == "Cluster" ){
-				refCluster.TakeOver( new fbxModelCluster( *this, node ) );
-				pClusters.Add( refCluster );
+				pClusters.Add(fbxModelCluster::Ref::NewWith(*this, node));
 			}
 		}
 	}
@@ -203,7 +201,7 @@ void fbxModel::MatchClusters( const fbxRig &rig ){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		fbxModelCluster &cluster = *( pClusters.GetAt( i ) );
+		fbxModelCluster &cluster = *((fbxModelCluster*)pClusters.GetAt(i));
 		
 		connections.RemoveAll();
 		
@@ -229,7 +227,7 @@ void fbxModel::BuildWeights(){
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
-		fbxModelCluster &cluster = *( pClusters.GetAt( i ) );
+		fbxModelCluster &cluster = *((fbxModelCluster*)pClusters.GetAt(i));
 		if( ! cluster.GetRigBone() ){
 			continue;
 		}

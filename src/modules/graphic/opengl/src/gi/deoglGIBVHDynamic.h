@@ -26,13 +26,13 @@
 #define _DEOGLGIBVHDYNAMIC_H_
 
 #include "../deoglBasics.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
 
 #include <dragengine/common/math/decMath.h>
 
 class deoglBVHNode;
 class deoglGIBVHLocal;
 class deoglDynamicTBOFloat32;
-class deoglDynamicTBOBlock;
 
 struct oglModelPosition;
 struct oglModelVertex;
@@ -48,8 +48,8 @@ protected:
 	deoglDynamicTBOFloat32 *pTBONodeBox;
 	deoglDynamicTBOFloat32 *pTBOVertex;
 	
-	deObjectReference pBlockNode;
-	deObjectReference pBlockVertex;
+	deoglDynamicTBOBlock::Ref pBlockNode;
+	deoglDynamicTBOBlock::Ref pBlockVertex;
 	
 	decVector pMinExtend;
 	decVector pMaxExtend;
@@ -111,8 +111,8 @@ public:
 	 * Get block allocating it if absent.
 	 * \note Block node shares TBO index with local BVH while TBO node box is replaced.
 	 */
-	deoglDynamicTBOBlock *GetBlockNode();
-	deoglDynamicTBOBlock *GetBlockVertex();
+	const deoglDynamicTBOBlock::Ref &GetBlockNode();
+	const deoglDynamicTBOBlock::Ref &GetBlockVertex();
 	
 	/** Drop blocks. */
 	void DropBlocks();

@@ -26,10 +26,8 @@
 #ifndef _SEUCONTROLLERSETNAME_H_
 #define _SEUCONTROLLERSETNAME_H_
 
+#include "../../synthesizer/controller/seController.h"
 #include <deigde/undo/igdeUndo.h>
-
-class seController;
-
 
 
 /**
@@ -37,7 +35,7 @@ class seController;
  */
 class seUControllerSetName : public igdeUndo{
 private:
-	deObjectReference pController;
+	const seController::Ref pController;
 	decString pOldValue;
 	decString pNewValue;
 	

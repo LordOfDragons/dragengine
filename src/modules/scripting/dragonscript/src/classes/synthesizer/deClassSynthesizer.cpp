@@ -186,7 +186,6 @@ deClassSynthesizer::nfSetControllerCount::nfSetControllerCount( const sInitData 
 void deClassSynthesizer::nfSetControllerCount::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deSynthesizer *synthesizer = ( ( sSynNatDat* )p_GetNativeData( myself ) )->synthesizer;
 	int count = rt->GetValue( 0 )->GetInt();
-	deObjectReference controller;
 	
 	if( count < 0 ) DSTHROW( dueInvalidParam );
 	
@@ -195,8 +194,7 @@ void deClassSynthesizer::nfSetControllerCount::RunFunction( dsRunTime *rt, dsVal
 	}
 	
 	while( synthesizer->GetControllerCount() < count ){
-		controller.TakeOver( new deSynthesizerController );
-		synthesizer->AddController( controller );
+		synthesizer->AddController(deSynthesizerController::Ref::NewWith());
 	}
 }
 

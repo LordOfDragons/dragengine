@@ -63,11 +63,11 @@ void aeULinkSetCurve::SetNewCurve( const decCurveBezier &curve ){
 
 
 void aeULinkSetCurve::Undo(){
-	( ( aeLink& )( deObject& )pLink ).SetCurve( pOldCurve );
+	pLink->SetCurve( pOldCurve );
 }
 
 void aeULinkSetCurve::Redo(){
-	( ( aeLink& )( deObject& )pLink ).SetCurve( pNewCurve );
+	pLink->SetCurve( pNewCurve );
 }
 
 void aeULinkSetCurve::ProgressiveRedo(){

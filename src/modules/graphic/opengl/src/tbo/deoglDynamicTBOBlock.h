@@ -25,9 +25,9 @@
 #ifndef _DEOGLDYNAMICTBOBLOCK_H_
 #define _DEOGLDYNAMICTBOBLOCK_H_
 
+#include "../tbo/deoglDynamicTBO.h"
 #include <dragengine/deObject.h>
 class deoglDynamicTBOShared;
-class deoglDynamicTBO;
 
 
 /**
@@ -39,16 +39,16 @@ class deoglDynamicTBO;
  * SetValid(false). The offset and size of the block are measured in data units.
  */
 class deoglDynamicTBOBlock : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deoglDynamicTBOBlock> Ref;
-
-
-public:
+	
+	
 	deoglDynamicTBOShared *pSharedTBO;
 	int pOffset;
 	int pSize;
-	deObjectReference pData;
-	deObjectReference pData2;
+	deoglDynamicTBO::Ref pData;
+	deoglDynamicTBO::Ref pData2;
 	bool pEmpty;
 	
 	
@@ -94,8 +94,8 @@ public:
 	void SetSize( int size );
 	
 	/** TBO containing the data to use for the block or NULL if empty. */
-	inline deoglDynamicTBO *GetData() const{ return ( deoglDynamicTBO* )( deObject* )pData; }
-	inline deoglDynamicTBO *GetData2() const{ return ( deoglDynamicTBO* )( deObject* )pData2; }
+	inline const deoglDynamicTBO::Ref &GetData() const{ return pData; }
+	inline const deoglDynamicTBO::Ref &GetData2() const{ return pData2; }
 	
 	/** Set TBO containing the data to use for the block or NULL if empty. */
 	void SetData( deoglDynamicTBO *tbo, deoglDynamicTBO *tbo2 = NULL );

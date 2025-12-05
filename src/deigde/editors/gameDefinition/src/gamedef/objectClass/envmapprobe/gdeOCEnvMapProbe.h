@@ -36,11 +36,11 @@
  * \brief Object class environment map probe.
  */
 class gdeOCEnvMapProbe : public deObject{
+	public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCEnvMapProbe> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Influence area. */

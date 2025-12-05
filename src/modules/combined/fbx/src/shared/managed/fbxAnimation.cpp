@@ -54,12 +54,10 @@ pScene( scene )
 	scene.FindNodesNamed( nodeStacks, "AnimationStack" );
 	
 	const int nodeStackCount = nodeStacks.GetCount();
-	deObjectReference refMove;
 	int i;
 	
 	for( i=0; i<nodeStackCount; i++ ){
-		refMove.TakeOver( new fbxAnimationMove( *this, *( ( fbxNode* )nodeStacks.GetAt( i ) ) ) );
-		pMoves.Add( refMove );
+		pMoves.Add(fbxAnimationMove::Ref::NewWith(*this, *((fbxNode*)nodeStacks.GetAt(i))));
 	}
 	
 	const int moveCount = pMoves.GetCount();
@@ -101,7 +99,7 @@ void fbxAnimation::MatchRig( const fbxRig &rig ){
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		( pMoves.GetAt( i ) )->MatchRig( rig );
+		((fbxAnimationMove*)pMoves.GetAt(i))->MatchRig(rig);
 	}
 }
 

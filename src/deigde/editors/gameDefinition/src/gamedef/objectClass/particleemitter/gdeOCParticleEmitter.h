@@ -35,11 +35,11 @@
  * \brief Object class particle emitter.
  */
 class gdeOCParticleEmitter : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCParticleEmitter> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Path to particle emitter file. */

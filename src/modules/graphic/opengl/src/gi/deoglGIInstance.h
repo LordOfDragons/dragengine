@@ -27,6 +27,7 @@
 
 #include "../component/deoglComponentListener.h"
 #include "../decal/deoglDecalListener.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
@@ -38,7 +39,6 @@ class deoglRDecal;
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOBlock;
 class deoglDynamicTBOFloat16;
 class deoglDynamicTBOUInt32;
 class decLayerMask;
@@ -114,11 +114,11 @@ private:
 	deoglGIInstances &pInstances;
 	
 	deoglRComponent *pComponent;
-	deObjectReference pComponentListener;
+	deoglComponentListener::Ref pComponentListener;
 	
 	deoglRDecal *pDecal;
-	deObjectReference pDecalListener;
-	deObjectReference pDecalComponentListener;
+	cDecalListener::Ref pDecalListener;
+	cDecalComponentListener::Ref pDecalComponentListener;
 	
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
@@ -134,7 +134,7 @@ private:
 	
 	decPointerList pTUCs;
 	bool pDirtyTUCs;
-	deObjectReference pBlockMaterial;
+	deoglDynamicTBOBlock::Ref pBlockMaterial;
 	deoglDynamicTBOUInt32 *pTBOMaterial;
 	deoglDynamicTBOFloat16 *pTBOMaterial2;
 	
@@ -287,7 +287,7 @@ public:
 	inline deoglDynamicTBOFloat16 *GetTBOMaterial2(){ return pTBOMaterial2; }
 	
 	/** Get TBO block for materials. */
-	deoglDynamicTBOBlock *GetBlockMaterial();
+	const deoglDynamicTBOBlock::Ref &GetBlockMaterial();
 	
 	/** Drop TBO blocks. */
 	void DropBlockMaterial();

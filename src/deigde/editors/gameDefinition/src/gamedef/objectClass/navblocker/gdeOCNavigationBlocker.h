@@ -37,11 +37,11 @@
  * \brief Object class navigation blocker.
  */
 class gdeOCNavigationBlocker : public deObject{
+public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeOCNavigationBlocker> Ref;
-
-
-public:
+	
+	
 	/** \brief Properties. */
 	enum eProperties{
 		/** \brief Enabled. */

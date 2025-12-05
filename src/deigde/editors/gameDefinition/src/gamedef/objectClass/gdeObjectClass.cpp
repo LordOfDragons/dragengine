@@ -85,86 +85,81 @@ pCanInstantiate( objectClass.pCanInstantiate ),
 pIsAttachableBehavior(objectClass.pIsAttachableBehavior),
 pInheritSubObjects( objectClass.pInheritSubObjects )
 {
-	const gdeProperty::Ref objRef(gdeProperty::Ref::NewWith( *objectClass.pProperties.GetAt( i ));
-			pProperties.Add( objRef );
+	int i, count;
+	
+	try{
+		count = objectClass.pProperties.GetCount();
+		for( i=0; i<count; i++ ){
+			pProperties.Add(gdeProperty::Ref::NewWith(*objectClass.pProperties.GetAt(i)));
 		}
 		
 		count = objectClass.pTextureProperties.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeProperty( *objectClass.pTextureProperties.GetAt( i ) ) );
-			pTextureProperties.Add( objRef );
+			pTextureProperties.Add(gdeProperty::Ref::NewWith(*objectClass.pTextureProperties.GetAt(i)));
 		}
 		
 		count = objectClass.pInherits.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCInherit( *objectClass.pInherits.GetAt( i ) ) );
-			pInherits.Add( objRef );
+			pInherits.Add(gdeOCInherit::Ref::NewWith(*objectClass.pInherits.GetAt(i)));
 		}
 		
 		count = objectClass.pBillboards.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCBillboard( *objectClass.pBillboards.GetAt( i ) ) );
-			pBillboards.Add( objRef );
+			pBillboards.Add(gdeOCBillboard::Ref::NewWith(*objectClass.pBillboards.GetAt(i)));
 		}
 		
 		count = objectClass.pCameras.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCCamera( *objectClass.pCameras.GetAt( i ) ) );
-			pCameras.Add( objRef );
+			pCameras.Add(gdeOCCamera::Ref::NewWith(*objectClass.pCameras.GetAt(i)));
 		}
 		
 		count = objectClass.pComponents.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCComponent( *objectClass.pComponents.GetAt( i ) ) );
-			pComponents.Add( objRef );
+			pComponents.Add(gdeOCComponent::Ref::NewWith(*objectClass.pComponents.GetAt(i)));
 		}
 		
 		count = objectClass.pEnvMapProbes.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCEnvMapProbe( *objectClass.pEnvMapProbes.GetAt( i ) ) );
-			pEnvMapProbes.Add( objRef );
+			pEnvMapProbes.Add(gdeOCEnvMapProbe::Ref::NewWith(*objectClass.pEnvMapProbes.GetAt(i)));
 		}
 		
 		count = objectClass.pLights.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCLight( *objectClass.pLights.GetAt( i ) ) );
-			pLights.Add( objRef );
+			pLights.Add(gdeOCLight::Ref::NewWith(*objectClass.pLights.GetAt(i)));
 		}
 		
 		count = objectClass.pNavigationBlockers.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCNavigationBlocker( *objectClass.pNavigationBlockers.GetAt( i ) ) );
-			pNavigationBlockers.Add( objRef );
+			pNavigationBlockers.Add(gdeOCNavigationBlocker::Ref::NewWith(
+				*objectClass.pNavigationBlockers.GetAt(i)));
 		}
 		
 		count = objectClass.pNavigationSpaces.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCNavigationSpace( *objectClass.pNavigationSpaces.GetAt( i ) ) );
-			pNavigationSpaces.Add( objRef );
+			pNavigationSpaces.Add(gdeOCNavigationSpace::Ref::NewWith(
+				*objectClass.pNavigationSpaces.GetAt(i)));
 		}
 		
 		count = objectClass.pParticleEmitters.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCParticleEmitter( *objectClass.pParticleEmitters.GetAt( i ) ) );
-			pParticleEmitters.Add( objRef );
+			pParticleEmitters.Add(gdeOCParticleEmitter::Ref::NewWith(
+				*objectClass.pParticleEmitters.GetAt(i)));
 		}
 		
 		count = objectClass.pForceFields.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCForceField( *objectClass.pForceFields.GetAt( i ) ) );
-			pForceFields.Add( objRef );
+			pForceFields.Add(gdeOCForceField::Ref::NewWith(
+				*objectClass.pForceFields.GetAt(i)));
 		}
 		
 		count = objectClass.pSnapPoints.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCSnapPoint( *objectClass.pSnapPoints.GetAt( i ) ) );
-			pSnapPoints.Add( objRef );
+			pSnapPoints.Add(gdeOCSnapPoint::Ref::NewWith(*objectClass.pSnapPoints.GetAt(i)));
 		}
 		
 		count = objectClass.pSpeakers.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCSpeaker( *objectClass.pSpeakers.GetAt( i ) ) );
-			pSpeakers.Add( objRef );
+			pSpeakers.Add(gdeOCSpeaker::Ref::NewWith(*objectClass.pSpeakers.GetAt(i)));
 		}
 		
 		count = objectClass.pWorlds.GetCount();
@@ -174,8 +169,7 @@ pInheritSubObjects( objectClass.pInheritSubObjects )
 		
 		count = objectClass.pTextures.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new gdeOCComponentTexture( *objectClass.pTextures.GetAt( i ) ) );
-			pTextures.Add( objRef );
+			pTextures.Add(gdeOCComponentTexture::Ref::NewWith(*objectClass.pTextures.GetAt(i)));
 		}
 		
 	}catch( const deException & ){
