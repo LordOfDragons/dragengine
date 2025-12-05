@@ -40,6 +40,10 @@ class seSource;
  */
 class seSynthesizerNotifier : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seSynthesizerNotifier> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create synthesizer notifier. */

@@ -47,6 +47,10 @@ private:
 	bool pSelected, pActive;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<feFontGlyph> Ref;
+
+
 	/** @name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new font glyph. */
