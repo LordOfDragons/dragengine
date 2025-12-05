@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<igdeIconListBoxListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

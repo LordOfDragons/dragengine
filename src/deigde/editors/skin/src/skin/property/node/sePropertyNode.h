@@ -45,6 +45,7 @@ class sePropertyNode : public deObject{
 public:
 	typedef deTObjectReference<sePropertyNode> Ref;
 	
+	
 	/** Node types. */
 	enum eNodeTypes{
 		/** Group node. */

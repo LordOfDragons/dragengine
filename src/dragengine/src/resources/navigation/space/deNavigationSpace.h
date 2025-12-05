@@ -110,7 +110,6 @@ public:
 	typedef deTObjectReference<deNavigationSpace> Ref;
 	
 	
-	
 public:
 	/** \brief Space Type. */
 	enum eSpaceTypes{

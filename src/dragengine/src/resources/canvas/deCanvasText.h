@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deCanvasText> Ref;
 	
 	
-	
 private:
 	deFont::Ref pFont;
 	float pFontSize;

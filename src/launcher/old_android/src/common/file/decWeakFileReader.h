@@ -26,7 +26,6 @@
 #define _DECWEAKFILEREADER_H_
 
 #include "decBaseFileReader.h"
-#include "decBaseFileReader.h"
 
 
 /**

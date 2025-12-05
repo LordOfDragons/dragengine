@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<igdeMouseKeyListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<igdeSliderListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

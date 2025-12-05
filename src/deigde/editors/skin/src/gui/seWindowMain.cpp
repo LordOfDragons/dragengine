@@ -65,8 +65,6 @@
 #include <deigde/gui/filedialog/igdeFilePattern.h>
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>

@@ -33,7 +33,6 @@
 #include "igdeUIHelper.h"
 #include "event/igdeColorBoxListener.h"
 #include "menu/igdeMenuCascade.h"
-#include "menu/igdeMenuCascade.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../codec/igdeCodecPropertyString.h"

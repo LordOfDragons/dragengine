@@ -28,7 +28,6 @@
 
 #include "igdeGDClass.h"
 #include "igdeGDClassInherit.h"
-#include "igdeGDClass.h"
 #include "igdeGDClassManager.h"
 #include "component/igdeGDCComponent.h"
 #include "component/igdeGDCCTexture.h"

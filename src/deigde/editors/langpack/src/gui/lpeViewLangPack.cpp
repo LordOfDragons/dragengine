@@ -49,12 +49,9 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
-#include <deigde/gui/event/igdeIconListBoxListener.h>
-#include <deigde/gui/model/igdeListItemSorter.h>
 #include <deigde/gui/model/igdeListItemSorter.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>

@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<igdeNVNode> Ref;
 	
 	
-	
 private:
 	decString pTitle;
 	decString pDescription;

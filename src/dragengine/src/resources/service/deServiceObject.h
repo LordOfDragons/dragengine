@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<deServiceObject> Ref;
 	
 	
-	
 public:
 	/** \brief Value type. */
 	enum eValueType{

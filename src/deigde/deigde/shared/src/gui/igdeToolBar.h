@@ -37,8 +37,6 @@ public:
 	typedef deTObjectReference<igdeToolBar> Ref;
 	
 	
-	
-
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */

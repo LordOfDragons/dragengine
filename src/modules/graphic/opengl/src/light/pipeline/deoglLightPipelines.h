@@ -41,6 +41,7 @@ class deoglLightPipelines : public deObject{
 public:
 	typedef deTObjectReference<deoglLightPipelines> Ref;
 	
+	
 	/** Type. */
 	enum eTypes{
 		etNoShadow, //<! No shadow casting.

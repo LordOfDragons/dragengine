@@ -36,8 +36,6 @@
 #include "../../gui/igdeIconListBox.h"
 #include "../../gui/browse/igdeBrowseItemGDPreviewListener.h"
 #include "../../gui/model/igdeListItem.h"
-#include "../../gui/model/igdeListItem.h"
-#include "../../gui/resources/igdeIcon.h"
 #include "../../gui/resources/igdeIcon.h"
 
 #include <dragengine/deObjectReference.h>

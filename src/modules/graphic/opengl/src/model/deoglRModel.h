@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<deoglRModel> Ref;
 	
 	
-	
 public:
 	struct sExtends{
 		decVector minimum;

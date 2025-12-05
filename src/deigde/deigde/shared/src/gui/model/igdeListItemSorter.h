@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<igdeListItemSorter> Ref;
 	
 	
-	
 private:
 	bool pAscending;
 	

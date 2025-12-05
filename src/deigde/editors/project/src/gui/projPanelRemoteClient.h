@@ -50,6 +50,7 @@ public:
 	
 	typedef deTObjectReference<projPanelRemoteClient> Ref;
 	
+	
 	bool preventUpdate;
 	
 	

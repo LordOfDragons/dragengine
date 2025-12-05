@@ -53,7 +53,6 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/world/deWorld.h>
 
 

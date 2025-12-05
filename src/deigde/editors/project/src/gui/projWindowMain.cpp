@@ -51,7 +51,6 @@
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>

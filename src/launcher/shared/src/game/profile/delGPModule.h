@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<delGPModule> Ref;
 	
 	
-	
 private:
 	decString pName;
 	delGPMParameterList pParameters;

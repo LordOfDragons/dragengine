@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deglSharedIcon> Ref;
 	
 	
-	
 private:
 	FXIcon *pIcon;
 	

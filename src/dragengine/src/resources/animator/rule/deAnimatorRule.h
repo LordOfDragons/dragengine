@@ -62,7 +62,6 @@ public:
 	typedef deTObjectReference<deAnimatorRule> Ref;
 	
 	
-	
 public:
 	/** \brief Blending Modes. */
 	enum eBlendModes{

@@ -230,7 +230,6 @@ debpWorld::~debpWorld(){
 // #define DO_TIMING2
 
 #if defined DO_TIMING || defined DO_TIMING2
-	#include <dragengine/common/utils/decTimer.h>
 #endif
 
 #ifdef DO_TIMING

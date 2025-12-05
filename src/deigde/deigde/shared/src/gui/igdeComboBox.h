@@ -52,7 +52,6 @@ public:
 	typedef deTObjectReference<igdeComboBox> Ref;
 	
 	
-	
 private:
 	bool pEnabled;
 	decObjectList pItems;

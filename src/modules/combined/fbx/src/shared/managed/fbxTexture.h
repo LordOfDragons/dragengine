@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<fbxTexture> Ref;
 	
 	
-	
 private:
 	fbxScene &pScene;
 	fbxNode &pNodeTexture;

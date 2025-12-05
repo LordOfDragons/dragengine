@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<igdeActionRedo> Ref;
 	
 	
-	
 private:
 	igdeEnvironment &pEnvironment;
 	igdeUndoSystem *pUndoSystem;

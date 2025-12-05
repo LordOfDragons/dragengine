@@ -51,8 +51,6 @@ public:
 	typedef deTObjectReference<igdeListBox> Ref;
 	
 	
-	
-
 	/** \brief Selection mode. */
 	enum eSelectionMode{
 		/** \brief Single select. */

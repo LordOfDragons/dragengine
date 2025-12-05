@@ -36,7 +36,6 @@
 #include "../../errortracing/deErrorTrace.h"
 #include "../../errortracing/deErrorTracePoint.h"
 #include "../../errortracing/deErrorTraceValue.h"
-#include "../../app/deOS.h"
 #include "../../common/file/decPath.h"
 #include "../../common/string/decString.h"
 #include "../../common/string/unicode/decUnicodeString.h"

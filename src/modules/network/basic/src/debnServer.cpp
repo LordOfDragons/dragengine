@@ -41,7 +41,6 @@
 #include <dragengine/resources/deResourceManager.h>
 #include <dragengine/resources/network/deServer.h>
 #include <dragengine/resources/network/deConnection.h>
-#include <dragengine/resources/network/deConnection.h>
 #include <dragengine/resources/network/deConnectionManager.h>
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingServer.h>

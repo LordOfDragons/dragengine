@@ -65,6 +65,7 @@ class seSkin : public igdeEditableEntity{
 public:
 	typedef deTObjectReference<seSkin> Ref;
 	
+	
 	enum ePreviewMode{
 		epmModel,
 		epmLight

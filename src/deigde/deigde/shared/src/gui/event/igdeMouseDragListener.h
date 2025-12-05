@@ -39,8 +39,6 @@ public:
 	typedef deTObjectReference<igdeMouseDragListener> Ref;
 	
 	
-	
-
 	/** \brief Drag state. */
 	enum eDragState{
 		/** \brief No dragging in progress. */

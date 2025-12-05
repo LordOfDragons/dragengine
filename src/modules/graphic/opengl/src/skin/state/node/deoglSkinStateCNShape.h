@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deoglSkinStateCNShape> Ref;
 	
 	
-	
 private:
 	const deSkinPropertyNodeShape::eShapeTypes pShapeType;
 	decColor pFillColor;

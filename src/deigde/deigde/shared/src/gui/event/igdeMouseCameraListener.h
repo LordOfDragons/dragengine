@@ -46,8 +46,6 @@ public:
 	typedef deTObjectReference<igdeMouseCameraListener> Ref;
 	
 	
-	
-
 	/** \brief Interaction. */
 	enum eInteraction{
 		/** \brief No interaction. */

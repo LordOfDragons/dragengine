@@ -61,6 +61,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeObjectClass> Ref;
 	
+	
 	/** Scale modes. */
 	enum eScaleModes{
 		/** Fixed size. */

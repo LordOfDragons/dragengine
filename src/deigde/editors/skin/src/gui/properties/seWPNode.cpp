@@ -86,7 +86,6 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/composed/igdeEditSliderTextListener.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -94,10 +93,8 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeTreeListListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/model/igdeTreeItem.h>
-#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 

@@ -39,7 +39,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/resources/canvas/deCanvasPaint.h>

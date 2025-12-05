@@ -41,8 +41,6 @@ public:
 	typedef deTObjectReference<igdeProgressBar> Ref;
 	
 	
-	
-
 	/** \brief Orientation. */
 	enum eOrientation{
 		/** \brief Horizontal. */

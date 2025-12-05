@@ -74,7 +74,6 @@ public:
 	typedef deTObjectReference<meObject> Ref;
 	
 	
-	
 private:
 	class cWOAsyncFinished : public igdeWObject::cAsyncLoadFinished{
 		meObject &pObject;

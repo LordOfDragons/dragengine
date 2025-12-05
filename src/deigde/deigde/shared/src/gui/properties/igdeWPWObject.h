@@ -59,13 +59,14 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeWPWObject> Ref;
 	
+	
 	/** \brief Undo changes done by igdeWPWObject. */
 	class DE_DLL_EXPORT UndoChanges : public igdeUndo{
 	public:
 		/** \brief Type holding strong reference. */
 		typedef deTObjectReference<UndoChanges> Ref;
-		
-		
+	
+	
 	private:
 		const igdeWObject::Ref pObject;
 		

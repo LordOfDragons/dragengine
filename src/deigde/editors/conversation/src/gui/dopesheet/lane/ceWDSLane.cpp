@@ -50,7 +50,6 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/gui/theme/propertyNames.h>
 #include <deigde/undo/igdeUndo.h>

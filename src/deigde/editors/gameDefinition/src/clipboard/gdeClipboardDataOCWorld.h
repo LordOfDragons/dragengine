@@ -38,6 +38,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<gdeClipboardDataOCWorld> Ref;
 	
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	

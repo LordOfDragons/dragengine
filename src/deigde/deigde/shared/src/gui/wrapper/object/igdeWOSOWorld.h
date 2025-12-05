@@ -53,7 +53,8 @@ public:
 	public:
 		/** \brief Type holding strong reference. */
 		typedef deTObjectReference<ChildObjectTexture> Ref;
-		
+	
+	
 		/** \brief Texture name. */
 		const decString name;
 		
@@ -88,7 +89,8 @@ public:
 	public:
 		/** \brief Type holding strong reference. */
 		typedef deTObjectReference<ChildObject> Ref;
-		
+	
+	
 	private:
 		const igdeWObject::Ref pWrapper;
 		decObjectOrderedSet pTextures;

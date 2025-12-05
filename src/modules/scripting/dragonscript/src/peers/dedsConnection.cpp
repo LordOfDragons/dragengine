@@ -36,7 +36,6 @@
 #include <dragengine/resources/network/deConnection.h>
 #include <dragengine/resources/network/deNetworkState.h>
 #include <dragengine/resources/network/deNetworkMessage.h>
-#include <dragengine/resources/network/deNetworkMessage.h>
 
 #include <libdscript/exceptions.h>
 #include <libdscript/libdscript.h>

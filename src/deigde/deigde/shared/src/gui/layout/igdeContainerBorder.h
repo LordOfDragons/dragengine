@@ -46,8 +46,6 @@ public:
 	typedef deTObjectReference<igdeContainerBorder> Ref;
 	
 	
-	
-
 	/** \brief Area. */
 	enum eArea{
 		/** \brief Top side. */

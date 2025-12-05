@@ -35,7 +35,6 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlot.h>
 
 #include <dragengine/common/exceptions.h>
 

@@ -69,7 +69,6 @@ public:
 	typedef deTObjectReference<deoxrDeviceProfile> Ref;
 	
 	
-	
 protected:
 	enum eButtonLabel{
 		eblA,

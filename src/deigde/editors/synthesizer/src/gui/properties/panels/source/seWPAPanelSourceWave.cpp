@@ -38,7 +38,6 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>

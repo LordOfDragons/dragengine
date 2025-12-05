@@ -61,7 +61,6 @@ public:
 	typedef deTObjectReference<deVirtualFileSystem> Ref;
 	
 	
-	
 private:
 	decObjectOrderedSet pContainers;
 	

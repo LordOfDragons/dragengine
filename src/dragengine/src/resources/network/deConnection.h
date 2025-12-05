@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<deConnection> Ref;
 	
 	
-	
 private:
 	decString pLocalAddress;
 	decString pRemoteAddress;

@@ -656,7 +656,6 @@ int glXGetVideoInfoNV (Display *dpy, int screen, GLXVideoDeviceNV VideoDevice, u
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 #include <inttypes.h>
 #elif defined(__sun__) || defined(__digital__)
-#include <inttypes.h>
 #if defined(__STDC__)
 #if defined(__arch64__) || defined(_LP64)
 typedef long int int64_t;
@@ -667,7 +666,6 @@ typedef unsigned long long int uint64_t;
 #endif /* __arch64__ */
 #endif /* __STDC__ */
 #elif defined( __VMS ) || defined(__sgi)
-#include <inttypes.h>
 #elif defined(__SCO__) || defined(__USLC__)
 #include <stdint.h>
 #elif defined(__UNIXOS2__) || defined(__SOL64__)
@@ -675,14 +673,12 @@ typedef long int int32_t;
 typedef long long int int64_t;
 typedef unsigned long long int uint64_t;
 #elif defined(_WIN32) && defined(__GNUC__)
-#include <stdint.h>
 #elif defined(_WIN32)
 typedef __int32 int32_t;
 typedef __int64 int64_t;
 typedef unsigned __int64 uint64_t;
 #else
 /* Fallback if nothing above works */
-#include <inttypes.h>
 #endif
 #endif
 typedef Bool ( *PFNGLXGETSYNCVALUESOMLPROC) (Display *dpy, GLXDrawable drawable, int64_t *ust, int64_t *msc, int64_t *sbc);

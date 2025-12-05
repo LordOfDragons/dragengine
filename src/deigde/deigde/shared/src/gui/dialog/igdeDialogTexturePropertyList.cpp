@@ -33,7 +33,6 @@
 #include "../layout/igdeContainerFlow.h"
 #include "../layout/igdeContainerForm.h"
 #include "../layout/igdeContainerSplitted.h"
-#include "../layout/igdeContainerSplitted.h"
 #include "../model/igdeListItem.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../engine/textureProperties/igdeTextureProperty.h"

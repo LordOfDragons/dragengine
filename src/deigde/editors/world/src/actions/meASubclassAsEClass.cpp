@@ -44,7 +44,6 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 

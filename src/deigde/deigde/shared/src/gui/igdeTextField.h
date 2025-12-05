@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<igdeTextField> Ref;
 	
 	
-	
 private:
 	bool pEnabled;
 	decString pText;

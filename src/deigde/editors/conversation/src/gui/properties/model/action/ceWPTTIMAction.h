@@ -27,7 +27,6 @@
 
 #include "../ceWPTTreeItemModel.h"
 #include "../../../../conversation/action/ceConversationAction.h"
-#include "../../../../conversation/action/ceConversationAction.h"
 
 
 /**

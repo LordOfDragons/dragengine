@@ -45,9 +45,8 @@ class deWindowsInput;
 class dewiDeviceAxis : public deObject{
 public:
 	typedef deTObjectReference<dewiDeviceAxis> Ref;
-
-
-
+	
+	
 private:
 	deWindowsInput &pModule;
 	

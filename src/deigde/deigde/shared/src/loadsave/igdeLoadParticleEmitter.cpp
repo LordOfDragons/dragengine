@@ -33,7 +33,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
@@ -46,8 +45,6 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
-#include <dragengine/resources/model/deModel.h>
-#include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterManager.h>
 #include <dragengine/resources/particle/deParticleEmitterController.h>
@@ -55,7 +52,6 @@
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkin.h>
 
 
 

@@ -54,10 +54,8 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/gui/resources/igdeTextStyle.h>
 #include <deigde/gui/resources/igdeTextStyle.h>
 
 

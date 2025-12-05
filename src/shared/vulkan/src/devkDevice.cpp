@@ -580,7 +580,6 @@ void devkDevice::pLoadFunctions(){
 			DEVICE_LEVEL_VULKAN_FUNCTION(name) \
 		}
 	
-	#include "devkFunctionNames.h"
 	
 	#undef DEVICE_LEVEL_VULKAN_FUNCTION
 	#undef DEVICE_LEVEL_VULKAN_FUNCTION_FROM_EXTENSION

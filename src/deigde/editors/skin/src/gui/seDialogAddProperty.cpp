@@ -37,7 +37,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeLabel.h>
-#include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeContainer.h>
@@ -49,7 +48,6 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/resources/igdeIcon.h>
 
 #include <dragengine/common/exceptions.h>

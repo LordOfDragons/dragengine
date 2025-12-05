@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deVFSCacheDiskDirectory> Ref;
 	
 	
-	
 private:
 	int pMaxCacheSize;
 	int pCacheSize;

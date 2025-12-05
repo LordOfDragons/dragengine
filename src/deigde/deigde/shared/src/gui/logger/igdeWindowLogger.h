@@ -43,8 +43,6 @@ public:
 	typedef deTObjectReference<igdeWindowLogger> Ref;
 	
 	
-	
-
 	/** \brief Warning style name. */
 	static const char *styleWarning;
 	

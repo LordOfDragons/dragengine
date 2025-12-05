@@ -75,12 +75,8 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/nodeview/igdeNVBoardListener.h>
 #include <deigde/gui/nodeview/igdeNVBoardListener.h>
 #include <deigde/gui/nodeview/igdeNVLink.h>
-#include <deigde/gui/nodeview/igdeNVLink.h>
-#include <deigde/gui/nodeview/igdeNVNode.h>
 #include <deigde/gui/nodeview/igdeNVNode.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>

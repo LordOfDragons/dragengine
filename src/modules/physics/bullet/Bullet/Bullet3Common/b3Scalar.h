@@ -124,7 +124,6 @@ inline int b3GetVersion()
 #define B3_ATTRIBUTE_ALIGNED64(a) a __attribute__((aligned(64)))
 #define B3_ATTRIBUTE_ALIGNED128(a) a __attribute__((aligned(128)))
 #ifndef assert
-#include <assert.h>
 #endif
 #ifdef B3_DEBUG
 #ifdef __SPU__
@@ -163,7 +162,6 @@ inline int b3GetVersion()
 #define B3_ATTRIBUTE_ALIGNED64(a) a __attribute__((aligned(64)))
 #define B3_ATTRIBUTE_ALIGNED128(a) a __attribute__((aligned(128)))
 #ifndef assert
-#include <assert.h>
 #endif
 #ifdef B3_DEBUG
 #define b3Assert assert
@@ -194,7 +192,6 @@ inline int b3GetVersion()
 #elif defined(__SSE3__)
 #include <pmmintrin.h>
 #else
-#include <emmintrin.h>
 #endif
 #endif  //B3_USE_SSE
 #elif defined(__armv7__)
@@ -213,12 +210,10 @@ inline int b3GetVersion()
 #define B3_ATTRIBUTE_ALIGNED64(a) a __attribute__((aligned(64)))
 #define B3_ATTRIBUTE_ALIGNED128(a) a __attribute__((aligned(128)))
 #ifndef assert
-#include <assert.h>
 #endif
 
 #if defined(DEBUG) || defined(_DEBUG)
 #if defined(__i386__) || defined(__x86_64__)
-#include <stdio.h>
 #define b3Assert(x)                                                             \
 	{                                                                           \
 		if (!(x))                                                               \
@@ -250,7 +245,6 @@ inline int b3GetVersion()
 ///#define B3_ATTRIBUTE_ALIGNED64(a) a
 ///#define B3_ATTRIBUTE_ALIGNED128(a) a
 #ifndef assert
-#include <assert.h>
 #endif
 
 #if defined(DEBUG) || defined(_DEBUG)
@@ -333,7 +327,6 @@ inline __m128 operator*(const __m128 A, const __m128 B)
 #endif  //B3_USE_SSE_IN_API
 
 #ifdef B3_USE_NEON
-#include <arm_neon.h>
 
 typedef float32x4_t b3SimdFloat4;
 #define B3_INFINITY INFINITY

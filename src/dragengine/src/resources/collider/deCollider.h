@@ -84,7 +84,6 @@ public:
 	typedef deTObjectReference<deCollider> Ref;
 	
 	
-	
 public:
 	/** \brief Collision Response Types. */
 	enum eResponseType{

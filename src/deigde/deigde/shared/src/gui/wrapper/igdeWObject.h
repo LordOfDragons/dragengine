@@ -70,6 +70,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeWObject> Ref;
 	
+	
 	/** \brief Asynchronous loading finished. */
 	class DE_DLL_EXPORT cAsyncLoadFinished{
 	public:

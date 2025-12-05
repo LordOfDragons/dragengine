@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<igdeGuiTheme> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decObjectDictionary pProperties;

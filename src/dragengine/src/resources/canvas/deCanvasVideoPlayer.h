@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<deCanvasVideoPlayer> Ref;
 	
 	
-	
 private:
 	deVideoPlayer::Ref pVideoPlayer;
 	int pRepeatX;

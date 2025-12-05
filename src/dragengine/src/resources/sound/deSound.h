@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<deSound> Ref;
 	
 	
-	
 private:
 	int pBytesPerSample;
 	int pSampleCount;

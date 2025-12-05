@@ -65,8 +65,6 @@
 #include <deigde/gui/event/igdeTreeListListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItem.h>
 #include <deigde/gui/model/igdeTreeItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>

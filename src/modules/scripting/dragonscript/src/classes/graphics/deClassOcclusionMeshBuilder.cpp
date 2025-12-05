@@ -40,7 +40,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshBone.h>
-#include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshBuilder.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshManager.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshWeight.h>

@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<deVideoPlayer> Ref;
 	
 	
-	
 public:
 	/** \brief Play state. */
 	enum ePlayState{

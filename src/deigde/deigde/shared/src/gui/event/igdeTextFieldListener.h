@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<igdeTextFieldListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

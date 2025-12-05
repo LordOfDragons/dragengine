@@ -74,7 +74,6 @@ public:
 	typedef deTObjectReference<deSynthesizerInstance> Ref;
 	
 	
-	
 private:
 	deSynthesizer::Ref pSynthesizer;
 	

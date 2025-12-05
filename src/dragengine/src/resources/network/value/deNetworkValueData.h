@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<deNetworkValueData> Ref;
 	
 	
-	
 private:
 	uint8_t *pData;
 	int pLength;

@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<igdeEditSliderText> Ref;
 	
 	
-	
 protected:
 	/** \brief Slider listener. */
 	class DE_DLL_EXPORT cListenerSlider : public igdeSliderListener{

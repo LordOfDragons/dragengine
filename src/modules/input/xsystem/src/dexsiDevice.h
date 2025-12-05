@@ -49,6 +49,7 @@ public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<dexsiDevice> Ref;
 	
+	
 	/** Source identifier. */
 	enum eSources{
 		/** X11. */

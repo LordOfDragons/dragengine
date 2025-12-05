@@ -30,7 +30,6 @@
 #include "igdeContainer.h"
 #include "native/toolkit.h"
 #include "igdeCommonDialogs.h"
-#include "native/toolkit.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"

@@ -33,7 +33,6 @@
 #include "../../deEngine.h"
 #include "../../common/exceptions.h"
 #include "../../common/file/decBaseFileReader.h"
-#include "../../common/file/decBaseFileReader.h"
 #include "../../common/file/decBaseFileWriter.h"
 #include "../../common/file/decPath.h"
 #include "../../errortracing/deErrorTrace.h"

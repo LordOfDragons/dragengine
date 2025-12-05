@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<igdeTabBook> Ref;
 	
 	
-	
 private:
 	decObjectList pHeaders;
 	int pActivePanel;

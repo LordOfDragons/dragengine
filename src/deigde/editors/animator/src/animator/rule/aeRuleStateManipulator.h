@@ -36,6 +36,7 @@ class aeRuleStateManipulator : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleStateManipulator> Ref;
 	
+	
 private:
 	decVector pMinPosition;
 	decVector pMaxPosition;

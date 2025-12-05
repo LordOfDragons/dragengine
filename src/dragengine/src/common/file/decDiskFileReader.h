@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<decDiskFileReader> Ref;
 	
 	
-	
 private:
 	decString pFilename;
 	FILE *pFile;

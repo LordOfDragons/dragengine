@@ -50,8 +50,6 @@ public:
 	typedef deTObjectReference<igdeDialog> Ref;
 	
 	
-	
-
 	/**
 	 * \brief Accept dialog action calling Accept() on dialog.
 	 */

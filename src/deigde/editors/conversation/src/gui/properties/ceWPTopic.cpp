@@ -130,7 +130,6 @@
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>

@@ -33,7 +33,6 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIcon.h>
 
 class meConfiguration;
 class meIGDEModule;

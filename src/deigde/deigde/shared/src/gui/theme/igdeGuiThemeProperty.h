@@ -42,8 +42,6 @@ public:
 	typedef deTObjectReference<igdeGuiThemeProperty> Ref;
 	
 	
-	
-
 	/** \brief Type. */
 	enum eType{
 		/** \brief Integer value. */

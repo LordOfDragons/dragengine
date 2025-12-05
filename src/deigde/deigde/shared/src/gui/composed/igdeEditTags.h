@@ -30,7 +30,6 @@
 #include "../layout/igdeContainerFlow.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeAction.h"
 
 #include <dragengine/common/string/decStringSet.h>
 

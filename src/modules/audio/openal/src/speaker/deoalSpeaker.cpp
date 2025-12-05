@@ -38,7 +38,6 @@
 #include "../video/deoalAVideoPlayer.h"
 #include "../video/deoalVideoPlayer.h"
 #include "../world/deoalWorld.h"
-#include "../world/deoalWorld.h"
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -47,7 +46,6 @@
 #include <dragengine/resources/sound/deMicrophone.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSound.h>
-#include <dragengine/resources/sound/deSoundDecoder.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
 #include <dragengine/resources/sound/deSoundManager.h>
 #include <dragengine/resources/world/deWorld.h>

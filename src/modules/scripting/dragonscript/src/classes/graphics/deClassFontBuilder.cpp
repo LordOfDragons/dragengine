@@ -38,7 +38,6 @@
 #include <dragengine/resources/font/deFontGlyph.h>
 #include <dragengine/resources/font/deFontBuilder.h>
 #include <dragengine/resources/font/deFontManager.h>
-#include <dragengine/resources/font/deFont.h>
 
 
 class deClassFontBuilder_Builder : public deFontBuilder{

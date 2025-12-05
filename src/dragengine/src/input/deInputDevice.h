@@ -70,7 +70,6 @@ public:
 	typedef deTObjectReference<deInputDevice> Ref;
 	
 	
-	
 public:
 	/** \brief Device types. */
 	enum eDeviceTypes{

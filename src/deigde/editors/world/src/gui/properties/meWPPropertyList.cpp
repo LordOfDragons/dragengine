@@ -53,7 +53,6 @@
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>

@@ -34,11 +34,6 @@
 #include "../../menuactions/action/ifelse/ceWPTMAIfElseCasePasteActions.h"
 #include "../../menuactions/action/ifelse/ceWPTMAIfElseCasePasteSnippet.h"
 #include "../../menuactions/action/ifelse/ceWPTMAIfElseCaseRemoveAllActions.h"
-#include "../../menuactions/action/ifelse/ceWPTMAIfElseCaseAddAction.h"
-#include "../../menuactions/action/ifelse/ceWPTMAIfElseCaseCopyActions.h"
-#include "../../menuactions/action/ifelse/ceWPTMAIfElseCasePasteActions.h"
-#include "../../menuactions/action/ifelse/ceWPTMAIfElseCasePasteSnippet.h"
-#include "../../menuactions/action/ifelse/ceWPTMAIfElseCaseRemoveAllActions.h"
 #include "../../menuactions/action/ifelse/ceWPTMAIfElseCaseRemoveAction.h"
 #include "../../menuactions/action/ifelse/ceWPTMAIfElseCaseMoveAction.h"
 #include "../../menuactions/action/ifelse/ceWPTMAIfElseCaseCutAction.h"
@@ -53,7 +48,6 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 
 #include <dragengine/common/exceptions.h>

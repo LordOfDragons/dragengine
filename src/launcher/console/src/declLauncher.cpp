@@ -44,7 +44,6 @@
 #include <dragengine/logger/deLoggerConsoleColor.h>
 #include <dragengine/logger/deLoggerChain.h>
 #include <dragengine/logger/deLoggerFile.h>
-#include <dragengine/logger/deLogger.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/file/decBaseFileWriter.h>

@@ -40,7 +40,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelBone.h>
-#include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelBuilder.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/model/deModelTexture.h>

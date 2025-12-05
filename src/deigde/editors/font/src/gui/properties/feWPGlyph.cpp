@@ -55,10 +55,7 @@
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
-#include <deigde/gui/event/igdeComboBoxListener.h>
-#include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>

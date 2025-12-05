@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<deCanvasRenderWorld> Ref;
 	
 	
-	
 private:
 	deCamera::Ref pCamera;
 	

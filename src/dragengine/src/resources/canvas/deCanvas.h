@@ -58,7 +58,6 @@ public:
 	typedef deTObjectReference<deCanvas> Ref;
 	
 	
-	
 public:
 	/** \brief Blend modes used to blend canvas over previous content. */
 	enum eBlendModes{

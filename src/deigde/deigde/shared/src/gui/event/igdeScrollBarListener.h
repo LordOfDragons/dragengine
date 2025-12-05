@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<igdeScrollBarListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

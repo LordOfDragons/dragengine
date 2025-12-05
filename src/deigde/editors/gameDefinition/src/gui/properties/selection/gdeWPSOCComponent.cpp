@@ -92,7 +92,6 @@
 #include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
@@ -105,7 +104,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelManager.h>

@@ -53,7 +53,6 @@ public:
 	typedef deTObjectReference<deColliderRig> Ref;
 	
 	
-	
 private:
 	deRig::Ref pRig;
 	

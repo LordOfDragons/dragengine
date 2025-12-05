@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deEffectColorMatrix> Ref;
 	
 	
-	
 private:
 	decColorMatrix pColorMatrix;
 	

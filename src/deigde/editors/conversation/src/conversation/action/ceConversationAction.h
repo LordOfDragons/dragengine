@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<ceConversationAction> Ref;
 	
 	
-	
 	/** \brief Action types. */
 	enum eActionTypes{
 		/** \brief Change camera shot. */

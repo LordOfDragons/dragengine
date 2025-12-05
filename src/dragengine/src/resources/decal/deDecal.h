@@ -58,7 +58,6 @@ public:
 	typedef deTObjectReference<deDecal> Ref;
 	
 	
-	
 private:
 	decVector pPosition;
 	decQuaternion pOrientation;

@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deoglPipelineManager> Ref;
 	
 	
-	
 private:
 	deoglRenderThread &pRenderThread;
 	deoglPipelineState pState;

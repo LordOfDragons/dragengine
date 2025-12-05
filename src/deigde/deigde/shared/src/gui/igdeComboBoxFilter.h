@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<igdeComboBoxFilter> Ref;
 	
 	
-	
 private:
 	decObjectList pFilterItems;
 	bool pFilterCaseInsensitive;

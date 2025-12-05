@@ -46,7 +46,8 @@ public:
 
 	public:
 		typedef deTObjectReference<Invalidator> Ref;
-
+	
+	
 		Invalidator();
 		inline bool IsValid() const{ return pValid; }
 		void Invalidate();

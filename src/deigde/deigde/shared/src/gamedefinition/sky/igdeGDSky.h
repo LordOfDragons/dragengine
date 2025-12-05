@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<igdeGDSky> Ref;
 	
 	
-	
 private:
 	decString pPath;
 	decString pName;

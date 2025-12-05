@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<lpeLangPackListener> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

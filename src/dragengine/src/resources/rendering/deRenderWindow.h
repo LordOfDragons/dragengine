@@ -84,7 +84,6 @@ public:
 	typedef deTObjectReference<deRenderWindow> Ref;
 	
 	
-	
 private:
 	#ifdef OS_ANDROID
 	void *pHostWindow;

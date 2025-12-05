@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<dewiDeviceButton> Ref;
 	
 	
-	
 private:
 	deWindowsInput &pModule;
 	

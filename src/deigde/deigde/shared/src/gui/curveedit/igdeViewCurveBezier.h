@@ -46,8 +46,6 @@ public:
 	typedef deTObjectReference<igdeViewCurveBezier> Ref;
 	
 	
-	
-
 	class DE_DLL_EXPORT cActionResetView : public igdeAction{
 		igdeViewCurveBezier &pView;
 	public:

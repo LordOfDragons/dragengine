@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<ceLangPackEntry> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decUnicodeString pText;

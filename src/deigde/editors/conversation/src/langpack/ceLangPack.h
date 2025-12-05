@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<ceLangPack> Ref;
 	
 	
-	
 private:
 	decString pPath;
 	

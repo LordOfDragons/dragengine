@@ -65,7 +65,6 @@ public:
 	typedef deTObjectReference<deComponent> Ref;
 	
 	
-	
 public:
 	/** \brief Movement hints. */
 	enum eMovementHints{

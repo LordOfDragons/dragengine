@@ -54,7 +54,6 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/rig/deRig.h>
-#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/skin/deSkin.h>
 
 

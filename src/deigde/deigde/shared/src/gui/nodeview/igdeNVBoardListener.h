@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<igdeNVBoardListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

@@ -148,7 +148,6 @@ public:
 	typedef deTObjectReference<deLight> Ref;
 	
 	
-	
 public:
 	/** \brief Light type. */
 	enum eLightTypes{

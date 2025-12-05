@@ -62,6 +62,7 @@ class deoglRWorld : public deObject{
 public:
 	typedef deTObjectReference<deoglRWorld> Ref;
 	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	

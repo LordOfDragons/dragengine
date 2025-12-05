@@ -45,8 +45,6 @@ public:
 	typedef deTObjectReference<igdeColorBox> Ref;
 	
 	
-	
-
 	class DE_DLL_EXPORT cActionCopy : public igdeAction{
 		igdeColorBox &pColorBox;
 	public:

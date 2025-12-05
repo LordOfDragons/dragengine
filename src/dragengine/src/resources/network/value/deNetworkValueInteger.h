@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deNetworkValueInteger> Ref;
 	
 	
-	
 private:
 	eValueFormats pFormat;
 	int64_t pValue;

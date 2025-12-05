@@ -70,7 +70,6 @@
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/sensor/deTouchSensor.h>
-#include <dragengine/resources/sensor/deTouchSensor.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>

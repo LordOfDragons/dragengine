@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<dedsInputDevice> Ref;
 	
 	
-	
 private:
 	deScriptingDragonScript &pDS;
 	

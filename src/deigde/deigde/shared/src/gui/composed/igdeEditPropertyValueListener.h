@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<igdeEditPropertyValueListener> Ref;
 	
 	
-	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

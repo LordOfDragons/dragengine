@@ -1834,12 +1834,9 @@ void deoglRenderThread::pRenderSingleFrame(){
 #include <dragengine/common/xmlparser/decXmlDocument.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
-#include <dragengine/common/file/decMemoryFile.h>
-#include <dragengine/common/file/decMemoryFileReader.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <malloc.h>
-#include <stdio.h>
 
 bool deoglRenderThread::DoesDebugMemoryUsage() const{
 	if( ! pLogger ) return false;

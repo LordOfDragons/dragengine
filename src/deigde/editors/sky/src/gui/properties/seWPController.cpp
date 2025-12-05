@@ -56,7 +56,6 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/composed/igdeEditSliderTextListener.h>
 #include <deigde/gui/event/igdeAction.h>

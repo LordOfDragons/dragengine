@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deEffectOverlayImage> Ref;
 	
 	
-	
 private:
 	deImageReference pImage;
 	decVector2 pTexCoords[ 4 ];

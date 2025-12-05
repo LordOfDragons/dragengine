@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<igdeGDCategory> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decString pDescription;

@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deoglPixelBufferMipMap> Ref;
 	
 	
-	
 private:
 	deoglPixelBuffer::Ref *pPixelBuffers;
 	int pPixelBufferCount;

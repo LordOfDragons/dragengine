@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<igdeListItem> Ref;
 	
 	
-	
 private:
 	decString pText;
 	decString pDescription;

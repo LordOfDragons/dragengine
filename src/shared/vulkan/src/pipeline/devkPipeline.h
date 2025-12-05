@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<devkPipeline> Ref;
 	
 	
-	
 protected:
 	devkDevice &pDevice;
 	const devkPipelineConfiguration pConfiguration;

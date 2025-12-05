@@ -72,7 +72,6 @@
 
 #ifdef PRINT_SHADERS_SPECIAL_MODE
 #include <dragengine/common/file/decDiskFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriter.h>
 class cSpecialPrintShader{
 public:
 	decBaseFileWriter::Ref writer;

@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<deoglLightPipeline> Ref;
 	
 	
-	
 private:
 	const deoglPipeline * const pPipeline;
 	const deoglLightShader::Ref pShader;

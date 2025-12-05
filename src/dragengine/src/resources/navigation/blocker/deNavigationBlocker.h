@@ -54,7 +54,6 @@ public:
 	typedef deTObjectReference<deNavigationBlocker> Ref;
 	
 	
-	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

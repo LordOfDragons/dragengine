@@ -37,7 +37,6 @@
 #include "../../curveedit/igdeDialogCurveBezierCoord.h"
 #include "../../dialog/igdeDialog.h"
 #include "../../menu/igdeMenuCascade.h"
-#include "../../menu/igdeMenuCascade.h"
 #include "../../resources/igdeFont.h"
 #include "../../theme/igdeGuiTheme.h"
 #include "../../theme/propertyNames.h"

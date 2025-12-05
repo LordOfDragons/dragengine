@@ -28,7 +28,6 @@
 
 #include "deoglHeightTerrain.h"
 #include "deoglHTSector.h"
-#include "deoglHTSector.h"
 #include "deoglRHeightTerrain.h"
 
 #include "../../deoglBasics.h"

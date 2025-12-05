@@ -41,6 +41,7 @@ public:
 	/** \brief Strong reference. */
 	typedef deTObjectReference<igdeButton> Ref;
 	
+	
 	/** \brief Button style. */
 	enum eButtonStyle{
 		/** \brief Normal button. */

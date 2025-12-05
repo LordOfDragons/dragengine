@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<deSynthesizerSource> Ref;
 	
 	
-	
 public:
 	/** \brief Mixing modes. */
 	enum eMixModes{

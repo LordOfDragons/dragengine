@@ -61,9 +61,7 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/module/igdeEditorModule.h>
-#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 

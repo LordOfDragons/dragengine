@@ -40,7 +40,6 @@
 #include "../../../configuration/ceConfiguration.h"
 #include "../../../langpack/ceLangPackEntry.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetActor.h"
-#include "../../../undosys/action/actorSpeak/ceUCAASpeakSetActor.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxText.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxTextTranslate.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetMovement.h"

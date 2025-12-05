@@ -45,6 +45,7 @@ class deoglLightShader : public deObject{
 public:
 	typedef deTObjectReference<deoglLightShader> Ref;
 	
+	
 	/** Texture targets. */
 	enum eTextureTargets{
 		ettDepth,

@@ -55,7 +55,6 @@ public:
 	typedef deTObjectReference<igdeTextArea> Ref;
 	
 	
-	
 private:
 	bool pEnabled;
 	decString pText;

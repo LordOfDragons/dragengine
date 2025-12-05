@@ -47,8 +47,6 @@ public:
 	typedef deTObjectReference<igdeGDProperty> Ref;
 	
 	
-	
-
 	/** \brief Property type. */
 	enum ePropertyTypes{
 		/** \brief String value. */

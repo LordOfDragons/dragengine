@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<igdeEditVector> Ref;
 	
 	
-	
 protected:
 	/** \brief Text field listener. */
 	class DE_DLL_EXPORT cListener : public igdeTextFieldListener{

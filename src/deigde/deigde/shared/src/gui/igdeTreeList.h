@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<igdeTreeList> Ref;
 	
 	
-	
 private:
 	bool pEnabled;
 	igdeTreeItem::Ref pFirstChild;

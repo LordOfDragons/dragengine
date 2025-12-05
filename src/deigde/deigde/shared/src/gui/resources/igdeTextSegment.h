@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<igdeTextSegment> Ref;
 	
 	
-	
 private:
 	int pBegin;
 	int pEnd;

@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<igdeClipboardData> Ref;
 	
 	
-	
 private:
 	decString pTypeName;
 	

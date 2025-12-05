@@ -60,7 +60,8 @@ private:
 	class DE_DLL_EXPORT Controller : public deObject{
 	public:
 		typedef deTObjectReference<Controller> Ref;
-		
+	
+	
 		int controller;
 		igdeLabel::Ref label;
 		igdeEditSliderText::Ref slider;

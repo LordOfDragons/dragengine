@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<delGPMParameter> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decString pValue;

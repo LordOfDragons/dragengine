@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<igdeNVBoard> Ref;
 	
 	
-	
 private:
 	decColor pBgColor;
 	bool pEnabled;

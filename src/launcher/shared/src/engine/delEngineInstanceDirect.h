@@ -63,7 +63,8 @@ public:
 	public:
 		/** \brief Type holding strong reference. */
 		typedef deTObjectReference<Factory> Ref;
-		
+	
+	
 		/** \brief Factory constructor. */
 		Factory( deLogger *engineLogger = nullptr );
 		

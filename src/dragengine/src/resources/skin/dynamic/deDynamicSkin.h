@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<deDynamicSkin> Ref;
 	
 	
-	
 private:
 	deDSRenderable **pRenderables;
 	int pRenderableCount;

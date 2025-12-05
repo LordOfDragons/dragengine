@@ -40,6 +40,7 @@ class deoglSkinMapped : public deObject{
 public:
 	typedef deTObjectReference<deoglSkinMapped> Ref;
 	
+	
 private:
 	const deSkinMapped &pMapped;
 	decCurveBezierEvaluator pCurveEvaluator;

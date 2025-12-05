@@ -40,8 +40,6 @@ public:
 	typedef deTObjectReference<igdeTriggerListener> Ref;
 	
 	
-	
-
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create trigger listener. */

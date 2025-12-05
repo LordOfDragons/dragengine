@@ -225,7 +225,6 @@ typedef unsigned int            khronos_uint32_t;
 /*
  * Generic fallback
  */
-#include <stdint.h>
 typedef int32_t                 khronos_int32_t;
 typedef uint32_t                khronos_uint32_t;
 typedef int64_t                 khronos_int64_t;

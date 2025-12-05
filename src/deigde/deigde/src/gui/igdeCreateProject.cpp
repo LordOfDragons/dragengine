@@ -52,7 +52,6 @@
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 

@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<aeGizmoControllerIKPosition> Ref;
 	
 	
-	
 private:
 	aeController &pController;
 	

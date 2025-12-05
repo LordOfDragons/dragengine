@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deSynthesizerEffect> Ref;
 	
 	
-	
 private:
 	deSynthesizer *pSynthesizer;
 	float pStrength;

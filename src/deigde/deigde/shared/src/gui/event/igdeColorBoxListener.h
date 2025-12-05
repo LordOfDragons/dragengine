@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<igdeColorBoxListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

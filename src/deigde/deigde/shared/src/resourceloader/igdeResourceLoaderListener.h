@@ -44,8 +44,6 @@ public:
 	typedef deTObjectReference<igdeResourceLoaderListener> Ref;
 	
 	
-	
-
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create listener. */

@@ -43,8 +43,6 @@ public:
 	typedef deTObjectReference<igdeScrollBar> Ref;
 	
 	
-	
-
 	/** \brief Orientation. */
 	enum eOrientation{
 		/** \brief Horizontal. */

@@ -37,7 +37,6 @@ public:
 	typedef deTObjectReference<deCanvasPaint> Ref;
 	
 	
-	
 public:
 	/** \brief Shape types. */
 	enum eShapeTypes{

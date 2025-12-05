@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<igdeContainer> Ref;
 	
 	
-	
 private:
 	decObjectOrderedSet pChildren;
 	

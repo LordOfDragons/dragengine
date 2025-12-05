@@ -354,7 +354,6 @@ void devkInstance::pLoadFunctions(){
 			INSTANCE_LEVEL_VULKAN_FUNCTION( name ) \
 		}
 	
-	#include "devkFunctionNames.h"
 }
 
 void devkInstance::pFindDevices(){

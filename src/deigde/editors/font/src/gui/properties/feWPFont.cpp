@@ -54,11 +54,8 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
-#include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/composed/igdeEditPoint.h>
-#include <deigde/gui/composed/igdeEditPointListener.h>
 #include <deigde/gui/composed/igdeEditPointListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>

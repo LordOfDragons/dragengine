@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<igdeStatusBar> Ref;
 	
 	
-	
 private:
 	decString pText;
 	

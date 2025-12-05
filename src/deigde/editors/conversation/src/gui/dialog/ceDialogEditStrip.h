@@ -43,7 +43,8 @@ public:
 	class Listener : public deObject{
 	public:
 		typedef deTObjectReference<Listener> Ref;
-		
+	
+	
 		Listener();
 		virtual float DefaultDuration(  const decString &id );
 		

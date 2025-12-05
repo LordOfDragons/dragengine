@@ -71,7 +71,6 @@
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>

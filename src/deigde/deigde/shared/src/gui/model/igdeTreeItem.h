@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<igdeTreeItem> Ref;
 	
 	
-	
 private:
 	decString pText;
 	decString pDescription;

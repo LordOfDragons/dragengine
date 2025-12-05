@@ -48,9 +48,8 @@ class dewiDeviceWinRTController : public dewiDevice{
 public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<dewiDeviceWinRTController> Ref;
-
-
-
+	
+	
 private:
 	const wrgi::RawGameController pController;
 	const wrgi::Gamepad pGamepad;

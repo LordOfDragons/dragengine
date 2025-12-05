@@ -59,7 +59,6 @@ public:
 	typedef deTObjectReference<deSoundLevelMeter> Ref;
 	
 	
-	
 public:
 	/** \brief Meter type. */
 	enum eMeterTypes {

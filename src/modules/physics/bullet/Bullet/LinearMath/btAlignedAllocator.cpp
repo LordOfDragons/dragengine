@@ -131,7 +131,6 @@ int btDumpMemoryLeaks()
 	return totalLeak;
 }
 //this generic allocator provides the total allocated number of bytes
-#include <stdio.h>
 
 struct btDebugPtrMagic
 {

@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<delEngineModule> Ref;
 	
 	
-	
 public:
 	/** \brief Module Status. */
 	enum eModuleStatus{

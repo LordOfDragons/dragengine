@@ -63,7 +63,6 @@ public:
 	typedef deTObjectReference<igdeEditPropertyValue> Ref;
 	
 	
-	
 private:
 	decString pValue;
 	const igdeGDProperty *pGDProperty;

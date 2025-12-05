@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<igdeSpinTextField> Ref;
 	
 	
-	
 private:
 	bool pEnabled;
 	int pColumns;

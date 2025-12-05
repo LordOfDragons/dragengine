@@ -37,7 +37,6 @@ public:
 	typedef deTObjectReference<devkPipelineGraphic> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

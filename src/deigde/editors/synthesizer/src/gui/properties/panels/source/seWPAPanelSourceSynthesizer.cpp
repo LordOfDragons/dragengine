@@ -39,7 +39,6 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>

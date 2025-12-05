@@ -60,7 +60,6 @@ public:
 	typedef deTObjectReference<ceConversationActor> Ref;
 	
 	
-	
 private:
 	struct sGesture{
 		ceGesture *gesture;

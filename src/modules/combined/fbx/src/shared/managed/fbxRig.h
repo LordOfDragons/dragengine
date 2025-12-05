@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<fbxRig> Ref;
 	
 	
-	
 private:
 	fbxScene &pScene;
 	const fbxNode::Ref pNodePose;

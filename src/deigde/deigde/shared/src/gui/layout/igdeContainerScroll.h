@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<igdeContainerScroll> Ref;
 	
 	
-	
 private:
 	bool pCanScrollX;
 	bool pCanScrollY;

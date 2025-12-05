@@ -55,7 +55,6 @@ public:
 	typedef deTObjectReference<deOcclusionMesh> Ref;
 	
 	
-	
 private:
 	deOcclusionMeshBone *pBones;
 	deOcclusionMeshWeight *pWeights;

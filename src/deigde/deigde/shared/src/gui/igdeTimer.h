@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<igdeTimer> Ref;
 	
 	
-	
 private:
 	igdeEnvironment &pEnvironment;
 	void *pNativeTimer;

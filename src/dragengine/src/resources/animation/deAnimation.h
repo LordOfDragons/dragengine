@@ -57,7 +57,6 @@ public:
 	typedef deTObjectReference<deAnimation> Ref;
 	
 	
-	
 private:
 	deAnimationBone **pBones;
 	int pBoneCount;

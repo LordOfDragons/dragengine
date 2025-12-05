@@ -198,7 +198,6 @@ void deoglRComponentLOD::InvalidateVBO(){
 #define SPECIAL_DEBUG_ON 1
 
 #ifdef SPECIAL_DEBUG_ON
-#include <dragengine/common/utils/decTimer.h>
 static decTimer specialTimer;
 int extDebugCompCount = 0;
 float extDebugCompCalculateWeights = 0.0f;

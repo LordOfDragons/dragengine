@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deVFSNull> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

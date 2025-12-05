@@ -31,7 +31,6 @@
 #include "../igdeWidget.h"
 #include "../igdeUIHelper.h"
 #include "../menu/igdeMenuCascade.h"
-#include "../menu/igdeMenuCascade.h"
 
 #include <dragengine/common/exceptions.h>
 

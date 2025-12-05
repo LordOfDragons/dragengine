@@ -46,7 +46,6 @@
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinBuilder.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinTexture.h>
 #include <dragengine/resources/skin/deSkinMapped.h>
 #include <dragengine/resources/skin/property/deSkinPropertyColor.h>

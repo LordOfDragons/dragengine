@@ -31,7 +31,6 @@
 #include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/input/deInputEvent.h>
-#include <dragengine/input/deInputDeviceButton.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>

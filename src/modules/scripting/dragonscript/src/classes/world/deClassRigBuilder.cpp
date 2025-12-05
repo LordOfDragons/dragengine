@@ -41,7 +41,6 @@
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/rig/deRigBuilder.h>
 #include <dragengine/resources/rig/deRigConstraint.h>
-#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
 
 #include <libdscript/packages/default/dsClassArray.h>

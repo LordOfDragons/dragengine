@@ -36,7 +36,6 @@
 #include "../event/igdeAction.h"
 #include "../resources/igdeIcon.h"
 #include "../resources/igdeFont.h"
-#include "../resources/igdeFont.h"
 #include "../theme/igdeGuiTheme.h"
 #include "../../environment/igdeEnvironment.h"
 
@@ -48,7 +47,6 @@
 /*
 
 // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
-#include <deigde/gui/nodeview/igdeNVSlot.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
 // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 	

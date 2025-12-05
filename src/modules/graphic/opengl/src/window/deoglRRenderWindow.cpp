@@ -56,7 +56,6 @@
 #include <dragengine/app/deOSBeOS.h>
 #include <dragengine/systems/deInputSystem.h>
 #include <dragengine/systems/modules/input/deBaseInputModule.h>
-#include "../deGraphicOpenGl.h"
 
 #elif defined OS_MACOS
 #include <dragengine/app/deOSMacOS.h>

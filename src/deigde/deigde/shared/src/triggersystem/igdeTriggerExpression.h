@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<igdeTriggerExpression> Ref;
 	
 	
-	
 private:
 	igdeTriggerExpressionComponent *pRootComponent;
 	bool pResult;

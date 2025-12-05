@@ -30,7 +30,6 @@
 #include "deImageManager.h"
 #include "../../common/exceptions.h"
 #include "../../common/file/decBaseFileReader.h"
-#include "../../common/file/decBaseFileReader.h"
 #include "../../common/utils/decXpmImage.h"
 #include "../../systems/deModuleSystem.h"
 #include "../../systems/modules/deLoadableModule.h"

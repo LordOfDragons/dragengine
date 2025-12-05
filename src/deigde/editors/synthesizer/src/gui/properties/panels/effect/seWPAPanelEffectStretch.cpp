@@ -39,7 +39,6 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>

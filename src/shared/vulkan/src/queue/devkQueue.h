@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<devkQueue> Ref;
 	
 	
-	
 private:
 	devkDevice &pDevice;
 	uint32_t pFamily;

@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<deNetworkMessageReader> Ref;
 	
 	
-	
 private:
 	deNetworkMessage::Ref pMessage;
 	int pPosition;

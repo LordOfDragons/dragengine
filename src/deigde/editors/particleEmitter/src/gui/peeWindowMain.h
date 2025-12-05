@@ -27,7 +27,6 @@
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionUndo.h>

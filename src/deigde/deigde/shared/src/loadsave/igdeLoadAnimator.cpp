@@ -34,7 +34,6 @@
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
@@ -47,7 +46,6 @@
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animation/deAnimation.h>
-#include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/deAnimatorManager.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>

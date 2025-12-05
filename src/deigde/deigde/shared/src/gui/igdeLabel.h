@@ -40,8 +40,6 @@ public:
 	typedef deTObjectReference<igdeLabel> Ref;
 	
 	
-	
-
 	/** \brief Alignment. */
 	enum eAlignment{
 		/** \brief Center alignment. */

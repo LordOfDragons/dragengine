@@ -39,10 +39,7 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/file/decMemoryFileWriter.h>
 #include <dragengine/common/utils/decDateTime.h>

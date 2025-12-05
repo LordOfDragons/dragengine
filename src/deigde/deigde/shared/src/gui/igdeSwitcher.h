@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<igdeSwitcher> Ref;
 	
 	
-	
 private:
 	int pCurrent;
 	

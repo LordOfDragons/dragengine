@@ -37,7 +37,6 @@
 #include "../../../conversation/condition/ceCConditionActorParameter.h"
 #include "../../../configuration/ceConfiguration.h"
 #include "../../../undosys/condition/actorParameter/ceUCCAParamSetActor.h"
-#include "../../../undosys/condition/actorParameter/ceUCCAParamSetActor.h"
 #include "../../../undosys/condition/actorParameter/ceUCCAParamSetOperator.h"
 #include "../../../undosys/condition/actorParameter/ceUCCAParamSetParameter.h"
 #include "../../../undosys/condition/actorParameter/ceUCCAParamSetTestValue.h"

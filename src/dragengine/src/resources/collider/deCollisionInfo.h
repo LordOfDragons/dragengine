@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<deCollisionInfo> Ref;
 	
 	
-	
 private:
 	int pOwnerBone;
 	int pOwnerShape;

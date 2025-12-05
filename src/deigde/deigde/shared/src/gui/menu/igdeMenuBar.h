@@ -37,8 +37,6 @@ public:
 	typedef deTObjectReference<igdeMenuBar> Ref;
 	
 	
-	
-
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create widget. */

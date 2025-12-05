@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<igdeTextStyle> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decColor pColor;

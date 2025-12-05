@@ -45,6 +45,7 @@ class aeController : public deObject{
 public:
 	typedef deTObjectReference<aeController> Ref;
 	
+	
 	enum eVectorSimulation{
 		evsNone,
 		evsPosition,

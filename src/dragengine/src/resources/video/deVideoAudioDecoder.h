@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<deVideoAudioDecoder> Ref;
 	
 	
-	
 private:
 	deVideoManager &pVideoManager;
 	deVideoReference pVideo;

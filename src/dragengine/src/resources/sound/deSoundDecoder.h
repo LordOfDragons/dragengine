@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<deSoundDecoder> Ref;
 	
 	
-	
 private:
 	deSoundManager &pSoundManager;
 	deSound::Ref pSound;

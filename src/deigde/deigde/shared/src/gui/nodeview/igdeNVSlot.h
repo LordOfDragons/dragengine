@@ -49,7 +49,6 @@ public:
 	typedef deTObjectReference<igdeNVSlot> Ref;
 	
 	
-	
 private:
 	decString pText;
 	decString pDescription;

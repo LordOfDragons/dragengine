@@ -31,8 +31,6 @@
 #include "igdeDialogCurveBezierCoord.h"
 #include "../igdeUIHelper.h"
 #include "../dialog/igdeDialog.h"
-#include "../dialog/igdeDialog.h"
-#include "../menu/igdeMenuCascade.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../native/toolkit.h"
 

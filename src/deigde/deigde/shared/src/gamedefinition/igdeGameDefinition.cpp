@@ -42,7 +42,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/logger/deLogger.h>

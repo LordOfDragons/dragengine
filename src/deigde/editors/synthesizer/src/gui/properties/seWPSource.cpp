@@ -50,14 +50,12 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeTreeListListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeTreeItem.h>
 #include <deigde/undo/igdeUndo.h>

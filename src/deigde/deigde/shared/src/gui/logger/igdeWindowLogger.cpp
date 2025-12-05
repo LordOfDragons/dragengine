@@ -31,8 +31,6 @@
 #include "../igdeCommonDialogs.h"
 #include "../igdeTextArea.h"
 #include "../event/igdeAction.h"
-#include "../event/igdeAction.h"
-#include "../resources/igdeTextStyle.h"
 #include "../resources/igdeTextStyle.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../logger/igdeLoggerHistory.h"

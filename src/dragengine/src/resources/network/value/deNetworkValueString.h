@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<deNetworkValueString> Ref;
 	
 	
-	
 private:
 	decString pValue;
 	

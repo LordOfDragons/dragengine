@@ -40,8 +40,6 @@
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/event/igdeScrollBarListener.h>
-#include <deigde/gui/event/igdeScrollBarListener.h>
-#include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 

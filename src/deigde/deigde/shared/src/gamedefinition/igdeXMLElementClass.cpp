@@ -47,7 +47,6 @@
 #include <dragengine/common/curve/decCurveBezierPoint.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>

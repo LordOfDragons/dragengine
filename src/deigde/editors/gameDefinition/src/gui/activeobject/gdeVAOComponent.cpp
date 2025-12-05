@@ -43,7 +43,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/shape/decShape.h>
 #include <dragengine/common/shape/decShapeBox.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
@@ -53,7 +52,6 @@
 #include <dragengine/resources/animator/deAnimatorInstance.h>
 #include <dragengine/resources/animator/deAnimatorInstanceManager.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
-#include <dragengine/resources/animator/deAnimator.h>
 #include <dragengine/resources/animator/controller/deAnimatorController.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleAnimation.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
@@ -75,19 +73,14 @@
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelLOD.h>
 #include <dragengine/resources/model/deModelVertex.h>
-#include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/occlusionmesh/deOcclusionMeshManager.h>
-#include <dragengine/resources/occlusionmesh/deOcclusionMesh.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
-#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/skin/dynamic/deDynamicSkinManager.h>
-#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
 #include <dragengine/resources/skin/dynamic/renderables/deDSRenderableColor.h>
 #include <dragengine/resources/world/deWorld.h>
 

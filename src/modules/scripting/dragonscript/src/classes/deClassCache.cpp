@@ -38,8 +38,6 @@
 #include <dragengine/filesystem/deCacheHelper.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decString.h>
 

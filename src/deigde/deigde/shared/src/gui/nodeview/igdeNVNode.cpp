@@ -36,9 +36,7 @@
 #include "../event/igdeAction.h"
 #include "../resources/igdeIcon.h"
 #include "../resources/igdeFont.h"
-#include "../resources/igdeFont.h"
 #include "../theme/igdeGuiTheme.h"
-#include "../menu/igdeMenuCascade.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../../environment/igdeEnvironment.h"
 

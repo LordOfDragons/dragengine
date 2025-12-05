@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<ceConversationCondition> Ref;
 	
 	
-	
 	/** \brief Condition types. */
 	enum eConditionTypes{
 		/** \brief Logic operator. */

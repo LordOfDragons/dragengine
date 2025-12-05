@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<decXmlDocument> Ref;
 	
 	
-	
 private:
 	decString pEncoding;
 	decString pDocType;

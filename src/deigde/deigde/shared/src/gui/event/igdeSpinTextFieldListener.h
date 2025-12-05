@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<igdeSpinTextFieldListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

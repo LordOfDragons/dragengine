@@ -40,7 +40,6 @@
 #include "../curveedit/igdeViewCurveBezierListener.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
-#include "../event/igdeActionContextMenu.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../filedialog/igdeFilePattern.h"
 #include "../filedialog/igdeFilePatternList.h"

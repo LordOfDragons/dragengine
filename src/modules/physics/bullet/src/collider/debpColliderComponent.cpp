@@ -63,7 +63,6 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/collider/deColliderVisitorIdentify.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
-#include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/component/deComponentBone.h>
 #include <dragengine/resources/model/deModel.h>

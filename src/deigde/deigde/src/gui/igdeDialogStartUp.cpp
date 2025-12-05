@@ -40,7 +40,6 @@
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeLabel.h>
-#include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/event/igdeAction.h>

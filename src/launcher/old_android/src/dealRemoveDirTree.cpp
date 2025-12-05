@@ -33,7 +33,6 @@
 #include "filesystem/deVFSContainer.h"
 #include "filesystem/deCollectFileSearchVisitor.h"
 #include "filesystem/deVirtualFileSystem.h"
-#include "filesystem/deVirtualFileSystem.h"
 #include "logger/deLogger.h"
 
 

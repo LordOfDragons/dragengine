@@ -102,7 +102,6 @@
 #include <dragengine/input/deInputEvent.h>
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
-#include <dragengine/common/math/decMath.h>
 
 class igdeHotKey;
 class igdeWidget;

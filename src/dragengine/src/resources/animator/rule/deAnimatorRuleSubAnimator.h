@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<deAnimatorRuleSubAnimator> Ref;
 	
 	
-	
 private:
 	deAnimator::Ref pSubAnimator;
 	

@@ -53,7 +53,6 @@ public:
 	typedef deTObjectReference<saeSAnimation> Ref;
 	
 	
-	
 public:
 	/** Display modes. */
 	enum eDisplayModes{

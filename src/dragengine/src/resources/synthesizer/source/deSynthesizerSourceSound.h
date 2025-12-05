@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<deSynthesizerSourceSound> Ref;
 	
 	
-	
 private:
 	deSound::Ref pSound;
 	

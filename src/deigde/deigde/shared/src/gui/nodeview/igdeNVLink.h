@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<igdeNVLink> Ref;
 	
 	
-	
 private:
 	igdeNVSlot::Ref pSource;
 	igdeNVSlot::Ref pTarget;

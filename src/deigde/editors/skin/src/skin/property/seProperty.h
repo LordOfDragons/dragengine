@@ -52,6 +52,7 @@ class seProperty : public deObject{
 public:
 	typedef deTObjectReference<seProperty> Ref;
 	
+	
 	/** \brief Value types. */
 	enum eValueTypes{
 		/** \brief Property is defined by a single value. */

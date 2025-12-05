@@ -41,7 +41,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deCollectDirectorySearchVisitor.h>

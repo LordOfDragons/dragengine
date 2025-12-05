@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<igdeActionSelectFile> Ref;
 	
 	
-	
 private:
 	igdeEnvironment &pEnvironment;
 	igdeFilePatternList pFilePatterns;

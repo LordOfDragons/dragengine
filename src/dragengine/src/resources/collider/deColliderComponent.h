@@ -54,7 +54,6 @@ public:
 	typedef deTObjectReference<deColliderComponent> Ref;
 	
 	
-	
 private:
 	deComponent::Ref pComponent;
 	

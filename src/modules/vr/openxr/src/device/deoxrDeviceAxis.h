@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deoxrDeviceAxis> Ref;
 	
 	
-	
 private:
 	deoxrDevice &pDevice;
 	

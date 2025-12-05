@@ -54,7 +54,6 @@ public:
 	typedef deTObjectReference<deParticleEmitterInstance> Ref;
 	
 	
-	
 private:
 	deParticleEmitter::Ref pEmitter;
 	

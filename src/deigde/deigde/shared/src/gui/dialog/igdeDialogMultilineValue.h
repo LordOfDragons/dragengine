@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<igdeDialogMultilineValue> Ref;
 	
 	
-	
 private:
 	igdeTextArea::Ref pEditValue;
 	

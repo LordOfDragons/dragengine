@@ -62,7 +62,6 @@ public:
 	typedef deTObjectReference<deBillboard> Ref;
 	
 	
-	
 private:
 	decDVector pPosition;
 	decVector pAxis;

@@ -58,7 +58,6 @@ public:
 	typedef deTObjectReference<deAnimator> Ref;
 	
 	
-	
 private:
 	deRig::Ref pRig;
 	deAnimationReference pAnimation;

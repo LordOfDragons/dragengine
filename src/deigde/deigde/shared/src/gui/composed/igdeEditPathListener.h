@@ -42,7 +42,6 @@ public:
 	typedef deTObjectReference<igdeEditPathListener> Ref;
 	
 	
-	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

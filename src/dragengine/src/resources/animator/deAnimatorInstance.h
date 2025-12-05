@@ -70,7 +70,6 @@ public:
 	typedef deTObjectReference<deAnimatorInstance> Ref;
 	
 	
-	
 private:
 	deAnimator::Ref pAnimator;
 	deComponent::Ref pComponent;

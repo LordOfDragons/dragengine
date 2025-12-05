@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<deEffect> Ref;
 	
 	
-	
 private:
 	bool pEnabled;
 	deBaseGraphicEffect *pPeerGraphic;

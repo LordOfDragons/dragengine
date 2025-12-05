@@ -60,9 +60,7 @@
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/rig/deRig.h>
-#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigManager.h>
-#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/resources/world/deWorld.h>

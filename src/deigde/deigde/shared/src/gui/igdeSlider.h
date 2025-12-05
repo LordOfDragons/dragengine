@@ -43,8 +43,6 @@ public:
 	typedef deTObjectReference<igdeSlider> Ref;
 	
 	
-	
-
 	/** \brief Orientation. */
 	enum eOrientation{
 		/** \brief Horizontal. */

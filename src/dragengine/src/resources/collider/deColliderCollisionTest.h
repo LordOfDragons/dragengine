@@ -56,7 +56,6 @@ public:
 	typedef deTObjectReference<deColliderCollisionTest> Ref;
 	
 	
-	
 private:
 	deTouchSensor::Ref pTouchSensor;
 	deCollider::Ref pCollider;

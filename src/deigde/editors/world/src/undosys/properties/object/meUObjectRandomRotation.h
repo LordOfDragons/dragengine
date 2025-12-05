@@ -41,7 +41,8 @@ private:
 	class ObjectData : public meUndoDataObject{
 	public:
 		typedef deTObjectReference<ObjectData> Ref;
-		
+	
+	
 	private:
 		decVector pNewRotation;
 		

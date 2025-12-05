@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<meHeightTerrainNavSpaceFace> Ref;
 	
 	
-	
 private:
 	meHeightTerrainNavSpaceType *pType;
 	decIntList pNavPoints;

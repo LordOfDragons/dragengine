@@ -66,7 +66,6 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeTreeItem.h>
 #include <deigde/gui/model/igdeTreeItemSorter.h>
-#include <deigde/gui/model/igdeTreeItemSorter.h>
 
 #include <dragengine/common/exceptions.h>
 

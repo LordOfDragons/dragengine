@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<deCanvasImage> Ref;
 	
 	
-	
 private:
 	deImageReference pImage;
 	int pRepeatX;

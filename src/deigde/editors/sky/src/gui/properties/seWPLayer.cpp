@@ -80,7 +80,6 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
@@ -90,7 +89,6 @@
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -98,7 +96,6 @@
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
-#include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>

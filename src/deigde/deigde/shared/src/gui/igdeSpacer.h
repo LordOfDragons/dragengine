@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<igdeSpacer> Ref;
 	
 	
-	
 private:
 	decPoint pSize;
 	

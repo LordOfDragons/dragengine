@@ -72,7 +72,6 @@ public:
 	typedef deTObjectReference<devkInstance> Ref;
 	
 	
-	
 private:
 	struct sExtension{
 		const char *name;

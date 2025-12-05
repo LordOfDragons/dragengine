@@ -41,6 +41,7 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrAction> Ref;
 	
+	
 	/** Type. */
 	enum eType{
 		etInputBool,

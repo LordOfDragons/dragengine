@@ -26,7 +26,6 @@
 #define _IGDESHAREDFONTSLIST_H_
 
 #include <deigde/gui/resources/igdeFont.h>
-#include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>

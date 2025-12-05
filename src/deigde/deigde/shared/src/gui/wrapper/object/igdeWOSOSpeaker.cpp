@@ -52,7 +52,6 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundManager.h>
-#include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/world/deWorld.h>
 
 

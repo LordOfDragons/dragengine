@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<igdeViewCurveBezierListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

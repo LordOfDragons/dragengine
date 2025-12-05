@@ -39,8 +39,6 @@ public:
 	typedef deTObjectReference<igdeToolBarDock> Ref;
 	
 	
-	
-
 	/** \brief Dock side. */
 	enum eSide{
 		/** \brief Top. */

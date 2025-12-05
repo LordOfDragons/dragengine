@@ -40,6 +40,7 @@ class deoglRFont : public deObject{
 public:
 	typedef deTObjectReference<deoglRFont> Ref;
 	
+	
 private:
 	const decString pFilename;
 	bool pIsColorFont;

@@ -37,20 +37,17 @@
 
 #include <dragengine/deEngine.h>
 #include <dragengine/resources/model/deModel.h>
-#include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
 #include <dragengine/resources/propfield/dePropField.h>
 #include <dragengine/resources/propfield/dePropFieldType.h>
 #include <dragengine/resources/propfield/dePropFieldInstance.h>
 #include <dragengine/resources/propfield/dePropFieldManager.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 #include <dragengine/resources/world/deWorld.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 #include <libdscript/exceptions.h>
 

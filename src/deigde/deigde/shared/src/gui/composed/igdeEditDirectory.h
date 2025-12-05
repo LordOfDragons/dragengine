@@ -28,8 +28,6 @@
 #include "../igdeButton.h"
 #include "../igdeTextField.h"
 #include "../event/igdeAction.h"
-#include "../event/igdeAction.h"
-#include "../event/igdeActionSelectDirectory.h"
 #include "../event/igdeActionSelectDirectory.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
@@ -52,7 +50,6 @@ class DE_DLL_EXPORT igdeEditDirectory : public igdeContainerFlow{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeEditDirectory> Ref;
-	
 	
 	
 protected:

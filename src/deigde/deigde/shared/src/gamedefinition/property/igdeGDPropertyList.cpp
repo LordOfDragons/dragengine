@@ -27,7 +27,6 @@
 #include <string.h>
 
 #include "igdeGDProperty.h"
-#include "igdeGDProperty.h"
 #include "igdeGDPropertyList.h"
 
 #include <dragengine/common/exceptions.h>

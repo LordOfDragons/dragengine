@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<igdeActionSelectDirectory> Ref;
 	
 	
-	
 private:
 	igdeEnvironment &pEnvironment;
 	bool pUseGameVFS;

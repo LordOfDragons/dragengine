@@ -38,6 +38,7 @@ class dewlLoggerJS : public deLogger{
 public:
 	typedef deTObjectReference<dewlLoggerJS> Ref;
 	
+	
 	enum class eSeverity{
 		info,
 		warning,

@@ -53,7 +53,6 @@ public:
 	typedef deTObjectReference<fbxAnimationMoveCurves> Ref;
 	
 	
-	
 public:
 	/** \brief Target property. */
 	enum eTargetProperty{

@@ -28,7 +28,6 @@
 
 #include "igdeGuiTheme.h"
 #include "igdeGuiThemeProperty.h"
-#include "igdeGuiThemeProperty.h"
 
 #include <dragengine/common/exceptions.h>
 

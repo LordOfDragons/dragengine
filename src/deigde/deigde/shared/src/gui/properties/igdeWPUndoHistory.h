@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<igdeWPUndoHistory> Ref;
 	
 	
-	
 private:
 	igdeUndoSystem *pUndoSystem;
 	igdeListBox::Ref pListUndo;

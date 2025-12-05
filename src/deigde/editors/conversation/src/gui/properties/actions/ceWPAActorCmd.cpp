@@ -39,7 +39,6 @@
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../configuration/ceConfiguration.h"
 #include "../../../undosys/action/actorCommand/ceUCAACmdSetActor.h"
-#include "../../../undosys/action/actorCommand/ceUCAACmdSetActor.h"
 #include "../../../undosys/action/actorCommand/ceUCAACmdSetCommand.h"
 
 #include <deigde/environment/igdeEnvironment.h>

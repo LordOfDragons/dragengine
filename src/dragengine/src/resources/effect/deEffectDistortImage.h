@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<deEffectDistortImage> Ref;
 	
 	
-	
 private:
 	deImageReference pImage;
 	decVector2 pTexCoords[ 4 ];

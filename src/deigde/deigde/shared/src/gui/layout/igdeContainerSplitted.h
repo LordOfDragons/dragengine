@@ -43,8 +43,6 @@ public:
 	typedef deTObjectReference<igdeContainerSplitted> Ref;
 	
 	
-	
-
 	/** \brief Side widget placement. */
 	enum eSidePlacement{
 		/** \brief Side left, center right. */

@@ -38,7 +38,6 @@
 #include "../../../conversation/topic/ceConversationTopic.h"
 #include "../../../configuration/ceConfiguration.h"
 #include "../../../undosys/action/setActorParameter/ceUCASetAParamSetActor.h"
-#include "../../../undosys/action/setActorParameter/ceUCASetAParamSetActor.h"
 #include "../../../undosys/action/setActorParameter/ceUCASetAParamSetName.h"
 #include "../../../undosys/action/setActorParameter/ceUCASetAParamSetOp.h"
 #include "../../../undosys/action/setActorParameter/ceUCASetAParamSetValue.h"

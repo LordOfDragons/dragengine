@@ -61,7 +61,6 @@ public:
 	typedef deTObjectReference<fbxProperty> Ref;
 	
 	
-	
 public:
 	/** \brief Type. */
 	enum eType{

@@ -49,6 +49,7 @@ public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<projDialogDistribute> Ref;
 	
+	
 private:
 	projWindowMain &pWindowMain;
 	projProfile *pProfile;

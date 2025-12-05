@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<deSynthesizerController> Ref;
 	
 	
-	
 private:
 	decString pName;
 	float pMinValue;

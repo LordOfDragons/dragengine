@@ -39,8 +39,6 @@ public:
 	typedef deTObjectReference<igdeGroupBox> Ref;
 	
 	
-	
-
 	/** \brief Title alignment. */
 	enum eTitleAlignment{
 		/** \brief Left alignment. */

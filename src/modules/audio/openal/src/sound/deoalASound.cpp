@@ -37,13 +37,10 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/filesystem/deCacheHelper.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/sound/deSound.h>
-#include <dragengine/resources/sound/deSoundDecoder.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
 #include <dragengine/resources/sound/deSoundManager.h>
 

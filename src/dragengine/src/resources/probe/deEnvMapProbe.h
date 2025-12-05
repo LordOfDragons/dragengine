@@ -62,7 +62,6 @@ public:
 	typedef deTObjectReference<deEnvMapProbe> Ref;
 	
 	
-	
 private:
 	decDVector pPosition;
 	decQuaternion pOrientation;

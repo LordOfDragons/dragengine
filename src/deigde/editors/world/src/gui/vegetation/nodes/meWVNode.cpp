@@ -39,8 +39,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/nodeview/igdeNVNodeListener.h>
 #include <deigde/gui/nodeview/igdeNVNodeListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/undo/igdeUndo.h>

@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<deoxrFaceTracker> Ref;
 	
 	
-	
 private:
 	struct sMapping{
 		float *faceExpression;

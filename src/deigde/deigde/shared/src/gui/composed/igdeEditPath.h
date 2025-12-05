@@ -29,8 +29,6 @@
 #include "../igdeTextField.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
-#include "../event/igdeActionContextMenu.h"
-#include "../event/igdeAction.h"
 #include "../event/igdeActionSelectFile.h"
 #include "../filedialog/igdeFilePatternList.h"
 #include "../event/igdeTextFieldListener.h"
@@ -59,7 +57,6 @@ class DE_DLL_EXPORT igdeEditPath : public igdeContainerFlow{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeEditPath> Ref;
-	
 	
 	
 protected:

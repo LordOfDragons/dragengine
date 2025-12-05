@@ -35,7 +35,6 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>

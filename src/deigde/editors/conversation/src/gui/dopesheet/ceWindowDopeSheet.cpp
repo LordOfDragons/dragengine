@@ -64,7 +64,6 @@
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/gui/theme/propertyNames.h>
 #include <deigde/gui/theme/themeNames.h>

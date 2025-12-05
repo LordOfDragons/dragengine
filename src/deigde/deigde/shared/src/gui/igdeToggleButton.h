@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<igdeToggleButton> Ref;
 	
 	
-	
 private:
 	bool pToggled;
 	

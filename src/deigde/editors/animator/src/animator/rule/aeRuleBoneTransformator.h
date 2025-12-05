@@ -37,6 +37,7 @@ class aeRuleBoneTransformator : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleBoneTransformator> Ref;
 	
+	
 private:
 	decVector pMinTranslation, pMaxTranslation, pMinRotation, pMaxRotation;
 	decVector pMinScaling, pMaxScaling, pAxis;

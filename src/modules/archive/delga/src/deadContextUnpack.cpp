@@ -34,7 +34,6 @@
 #include <dragengine/common/file/decWeakFileReader.h>
 #include <dragengine/common/file/decWeakFileWriter.h>
 #include <dragengine/common/file/decMemoryFile.h>
-#include <dragengine/common/file/decMemoryFile.h>
 #include <dragengine/common/file/decMemoryFileReader.h>
 #include <dragengine/common/file/decBaseFileReader.h>
 

@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<igdeCheckBox> Ref;
 	
 	
-	
 private:
 	bool pChecked;
 	

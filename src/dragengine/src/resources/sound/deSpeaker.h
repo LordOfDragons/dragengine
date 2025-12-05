@@ -70,7 +70,6 @@ public:
 	typedef deTObjectReference<deSpeaker> Ref;
 	
 	
-	
 public:
 	/** \brief Speaker type. */
 	enum eSpeakerType{

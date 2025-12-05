@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<igdeListHeader> Ref;
 	
 	
-	
 private:
 	decString pTitle;
 	igdeIcon::Ref pIcon;

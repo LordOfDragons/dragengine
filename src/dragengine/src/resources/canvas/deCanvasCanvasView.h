@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<deCanvasCanvasView> Ref;
 	
 	
-	
 private:
 	deCanvasView::Ref pCanvasView;
 	int pRepeatX;

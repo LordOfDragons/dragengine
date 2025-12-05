@@ -38,6 +38,7 @@ class aeRuleAnimationSelect : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleAnimationSelect> Ref;
 	
+	
 private:
 	decStringList pMoves;
 	

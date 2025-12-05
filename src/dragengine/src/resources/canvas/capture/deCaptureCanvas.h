@@ -58,7 +58,6 @@ public:
 	typedef deTObjectReference<deCaptureCanvas> Ref;
 	
 	
-	
 private:
 	deCanvasView::Ref pCanvasView;
 	deImageReference pImage;

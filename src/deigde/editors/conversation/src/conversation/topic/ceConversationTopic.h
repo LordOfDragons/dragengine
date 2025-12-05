@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<ceConversationTopic> Ref;
 	
 	
-	
 private:
 	ceConversationFile *pFile;
 	

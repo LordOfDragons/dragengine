@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<igdeTreeListListener> Ref;
 	
 	
-	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

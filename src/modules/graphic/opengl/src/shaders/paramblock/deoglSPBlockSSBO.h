@@ -38,6 +38,7 @@ class deoglSPBlockSSBO : public deoglShaderParameterBlock{
 public:
 	typedef deTObjectReference<deoglSPBlockSSBO> Ref;
 	
+	
 	/** Type. */
 	enum eType{
 		/**

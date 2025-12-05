@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<igdeViewRenderWindow> Ref;
 	
 	
-	
 private:
 	deRenderWindow::Ref pRenderWindow;
 	deCanvas::Ref pCanvasRenderWorld;

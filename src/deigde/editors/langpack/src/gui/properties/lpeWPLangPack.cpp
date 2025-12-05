@@ -48,8 +48,6 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeTextAreaListener.h>
-#include <deigde/gui/event/igdeTextAreaListener.h>
-#include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
 #include <deigde/undo/igdeUndo.h>

@@ -40,7 +40,6 @@
 #include <deigde/gui/event/igdeIconListBoxListener.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/model/igdeListItemSorter.h>
-#include <deigde/gui/model/igdeListItemSorter.h>
 
 #include <dragengine/common/exceptions.h>
 

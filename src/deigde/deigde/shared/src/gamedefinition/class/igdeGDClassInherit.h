@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<igdeGDClassInherit> Ref;
 	
 	
-	
 private:
 	decString pName;
 	igdeGDClass::Ref pClass;
