@@ -28,7 +28,6 @@
 
 #include "igdeGDCategory.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 
@@ -217,10 +216,10 @@ void igdeGDCategory::UpdateWith( const igdeGDCategory &category ){
 		igdeGDCategory *matchingCategory = GetCategoryNamed( childCategory.GetName() );
 		
 		if( ! matchingCategory ){
-			deObjectReference newCategory;
-			newCategory.TakeOver( new igdeGDCategory( childCategory.GetName() ) );
+			const igdeGDCategory::Ref newCategory( igdeGDCategory::Ref::NewWith(
+				childCategory.GetName() ) );
 			pCategories.Add( newCategory );
-			matchingCategory = ( igdeGDCategory* )( deObject* )newCategory;
+			matchingCategory = newCategory;
 			matchingCategory->SetParent( this );
 		}
 		
