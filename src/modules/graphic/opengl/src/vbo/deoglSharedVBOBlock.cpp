@@ -95,7 +95,7 @@ void deoglSharedVBOBlock::DelayedRemove(){
 	};
 	
 	pVBO->GetParentList()->GetRenderThread().GetDelayedOperations().AddReleaseObject(
-		deObject::Ref::NewWith(this) );
+		deObject::Ref::New( new cDelayedRemove( this ) ) );
 }
 
 void deoglSharedVBOBlock::SetSize( int size ){

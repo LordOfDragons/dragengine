@@ -50,5 +50,5 @@ pLayoutUBO( *layout ){
 ///////////////
 
 deoglShaderParameterBlock::Ref deoglSharedSPBListUBO::pCreateBlock() const{
-	 return deoglShaderParameterBlock::Ref::NewWith(pLayoutUBO);
+	 return deoglShaderParameterBlock::Ref::New( new deoglSPBlockUBO( pLayoutUBO ) );
 }

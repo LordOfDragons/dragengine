@@ -929,7 +929,8 @@ void deModuleSystem::pInitAssetLibrary(){
 	const decPath rootPath(decPath::CreatePathUnix("/"));
 	
 	if(pEngine->GetOSFileSystem()){
-		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::NewWith(rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true));
+		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSRedirect(
+			rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true)));
 		
 	}else{
 		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSDiskDirectory(

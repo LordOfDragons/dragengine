@@ -244,7 +244,7 @@ public:
 lpeViewLangPack::lpeViewLangPack( lpeWindowMain &windowMain ) :
 igdeContainerBorder( windowMain.GetEnvironment() ),
 pWindowMain( windowMain ),
-pListener( lpeLangPackListener::Ref::NewWith(*this) ),
+pListener( lpeLangPackListener::Ref::New( new lpeViewLangPackListener( *this ) ) ),
 preventUpdate( false )
 {
 	igdeEnvironment &env = GetEnvironment();

@@ -76,7 +76,7 @@ void igdeWOSOWorld::LoadObjectResources::Drop(){
 
 void igdeWOSOWorld::LoadObjectResources::LoadTexture(ChildObject &object, ChildObjectTexture &texture){
 	const decString &path = texture.pathSkin;
-	pTextures.Add(deObject::Ref::NewWith(object, texture));
+	pTextures.Add(deObject::Ref::New(new Texture(object, texture)));
 	if(!pSkins.Has(path)){
 		pSkins.Add(path);
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);

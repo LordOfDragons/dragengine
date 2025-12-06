@@ -118,7 +118,7 @@ pRenderThread( renderThread ),
 
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
-pWorldComputeElement( deoglWorldComputeElement::Ref::NewWith(*this) ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::New( new deoglRComponentWCElement( *this ) ) ),
 pHasEnteredWorld( false ),
 
 pVisible( true ),

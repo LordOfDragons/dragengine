@@ -59,7 +59,7 @@ void deoglHTView::HTListener::SectorsChanged( deoglRHeightTerrain &heightTerrain
 
 deoglHTView::deoglHTView( deoglRHeightTerrain *heightTerrain ) :
 pHeightTerrain( heightTerrain ),
-pHTListener( deoglHeightTerrainListener::Ref::NewWith(*this) ),
+pHTListener( deoglHeightTerrainListener::Ref::New( new HTListener( *this )  ) ),
 pSectors( nullptr ),
 pSectorCount( 0 ),
 pSectorSize( 0 ),

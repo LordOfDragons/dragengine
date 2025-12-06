@@ -1296,8 +1296,8 @@ void deScriptingDragonScript::LogExceptionDS( const duException &exception ){
 
 // private functions
 void deScriptingDragonScript::pCreateParameters(){
-	pParameters.AddParameter(dedsParameter::Ref::NewWith(*this));
-	pParameters.AddParameter(dedsParameter::Ref::NewWith(*this));
+	pParameters.AddParameter(dedsParameter::Ref::New(new dedsPForceDpiAware(*this)));
+	pParameters.AddParameter(dedsParameter::Ref::New(new dedsPLogLevel(*this)));
 }
 
 void deScriptingDragonScript::pLoadBasicPackage(){

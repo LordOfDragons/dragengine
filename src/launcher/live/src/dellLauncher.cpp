@@ -51,8 +51,7 @@
 dellLauncher::Launcher::Launcher() :
 delLauncher( "LauncherLive", "launcher" ){
 	AddFileLogger( "launcher" );
-	SetEngineInstanceFactory( delEngineInstanceDirect::Factory::Ref::New(
-		new delEngineInstanceDirect::Factory ) );
+	SetEngineInstanceFactory( delEngineInstanceDirect::Factory::Ref::NewWith() );
 }
 
 dellLauncher::Launcher::~Launcher(){
@@ -106,7 +105,7 @@ void dellLauncher::Run(){
 	pWorkingDir.SetWorkingDirectory();
 	pUpdateEnvironment();
 	pLauncher = new Launcher;
-	pLauncher->SetEngineInstanceFactory( delEngineInstance::Factory::Ref::NewWith() );
+	pLauncher->SetEngineInstanceFactory( delEngineInstance::Factory::Ref::New( new delEngineInstanceDirect::Factory() ) );
 	
 	dellRunGame( *this ).Run();
 }
@@ -164,7 +163,7 @@ void dellLauncher::pUpdateEnvironment(){
 	pEnvParamsStore.Add( decString( "DELAUNCHER_LOGS=" ) + pathLogs.GetPathNative() );
 	
 	#ifdef OS_UNIX
-	pPreloadLibraries.Add( deObject::Ref::NewWith(pathBase, "lib/libDEFOX-1.7.so") );
+	pPreloadLibraries.Add( deObject::Ref::New( new PreloadLibrary( pathBase, "lib/libDEFOX-1.7.so" ) ) );
 	#endif
 	
 	const int count = pEnvParamsStore.GetCount();
