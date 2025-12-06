@@ -318,7 +318,7 @@ dewiDevice( module, esWindows )
 #endif
 	
 	dewiDeviceButton::Ref sharedButton(dewiDeviceButton::Ref::NewWith(module));
-	sharedButton.SetDisplayImages( "key" );
+	sharedButton->SetDisplayImages( "key" );
 	
 	int buttonIndex = 0;
 	const sKeyTableEntry *iterentry = &vKeyTable[0];

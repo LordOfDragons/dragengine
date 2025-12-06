@@ -101,7 +101,7 @@ debiDevice( module )
 		
 		// create buttons
 		debiDeviceButton::Ref sharedButton(debiDeviceButton::Ref::NewWith(module));
-		sharedButton.SetDisplayImages( "key" );
+		sharedButton->SetDisplayImages( "key" );
 		
 		deObjectReference refButton;
 		int buttonIndex = 0;

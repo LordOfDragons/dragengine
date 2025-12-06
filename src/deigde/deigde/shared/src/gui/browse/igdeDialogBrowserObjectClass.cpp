@@ -82,11 +82,11 @@ bool igdeDialogBrowserObjectClass::SelectObjectClass( igdeWidget *owner, igdeGDC
 	igdeDialogBrowserObjectClass::Ref dialog(igdeDialogBrowserObjectClass::Ref::NewWith(
 		owner->GetEnvironment(), title));
 	if( objectClass ){
-		dialog.SetSelectedObjectClass( objectClass );
+		dialog->SetSelectedObjectClass( objectClass );
 	}
 	
-	if( dialog.Run( owner ) && dialog.GetSelectedObjectClass() ){
-		objectClass = dialog.GetSelectedObjectClass();
+	if( dialog->Run( owner ) && dialog->GetSelectedObjectClass() ){
+		objectClass = dialog->GetSelectedObjectClass();
 		return true;
 		
 	}else{

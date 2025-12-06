@@ -83,11 +83,11 @@ igdeGDParticleEmitter* &particleEmitter, const char *title ){
 	igdeDialogBrowserParticleEmitter::Ref dialog(
 		igdeDialogBrowserParticleEmitter::Ref::NewWith(owner->GetEnvironment(), title));
 	if( particleEmitter ){
-		dialog.SetSelectedParticleEmitter( particleEmitter );
+		dialog->SetSelectedParticleEmitter( particleEmitter );
 	}
 	
-	if( dialog.Run( owner ) && dialog.GetSelectedParticleEmitter() ){
-		particleEmitter = dialog.GetSelectedParticleEmitter();
+	if( dialog->Run( owner ) && dialog->GetSelectedParticleEmitter() ){
+		particleEmitter = dialog->GetSelectedParticleEmitter();
 		return true;
 		
 	}else{

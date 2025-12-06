@@ -62,12 +62,12 @@ dewiDevice( module, esWindows )
 	
 	dewiDeviceAxis::Ref axisX(dewiDeviceAxis::Ref::NewWith(module));
 	AddAxis( axisX );
-	axisX.SetIndex( 0 );
-	axisX.SetAbsolute( false );
-	axisX.SetID( "x" );
-	axisX.SetName( "X" );
-	axisX.SetType( deInputDeviceAxis::eatMouse );
-	axisX.SetDisplayImages( "mouseX" );
+	axisX->SetIndex( 0 );
+	axisX->SetAbsolute( false );
+	axisX->SetID( "x" );
+	axisX->SetName( "X" );
+	axisX->SetType( deInputDeviceAxis::eatMouse );
+	axisX->SetDisplayImages( "mouseX" );
 	
 	refObject.TakeOver( new dewiDeviceAxis( module ) );
 	AddAxis( refObject );

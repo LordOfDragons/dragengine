@@ -63,12 +63,12 @@ debiDevice( module )
 	// add axis
 	debiDeviceAxis::Ref axisX(debiDeviceAxis::Ref::NewWith(module));
 	AddAxis( axisX );
-	axisX.SetIndex( 0 );
-	axisX.SetAbsolute( false );
-	axisX.SetID( "x" );
-	axisX.SetName( "X" );
-	axisX.SetType( deInputDeviceAxis::eatMouse );
-	axisX.SetDisplayImages( "mouseX" );
+	axisX->SetIndex( 0 );
+	axisX->SetAbsolute( false );
+	axisX->SetID( "x" );
+	axisX->SetName( "X" );
+	axisX->SetType( deInputDeviceAxis::eatMouse );
+	axisX->SetDisplayImages( "mouseX" );
 	
 	refObject.TakeOver( new debiDeviceAxis( module ) );
 	AddAxis( refObject );

@@ -82,11 +82,11 @@ bool igdeDialogBrowserSky::SelectSky( igdeWidget *owner, igdeGDSky* &sky, const 
 	igdeDialogBrowserSky::Ref dialog(igdeDialogBrowserSky::Ref::NewWith(
 		owner->GetEnvironment(), title));
 	if( sky ){
-		dialog.SetSelectedSky( sky );
+		dialog->SetSelectedSky( sky );
 	}
 	
-	if( dialog.Run( owner ) && dialog.GetSelectedSky() ){
-		sky = dialog.GetSelectedSky();
+	if( dialog->Run( owner ) && dialog->GetSelectedSky() ){
+		sky = dialog->GetSelectedSky();
 		return true;
 		
 	}else{

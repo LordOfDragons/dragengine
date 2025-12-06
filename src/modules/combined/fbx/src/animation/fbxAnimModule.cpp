@@ -127,21 +127,21 @@ void fbxAnimModule::pLoadAnimation( deAnimation &animation, fbxScene &scene ){
 	
 	fbxNode * const nodePose = scene.FirstNodeNamedOrNull( "Pose" );
 	fbxRig::Ref loadRig(fbxRig::Ref::NewWith(scene, nodePose));
-	// loadRig.DebugPrintStructure( *this, "LoadAnimation ", true );
-	loadAnimation.MatchRig( loadRig );
+	// loadRig->DebugPrintStructure( *this, "LoadAnimation ", true );
+	loadAnimation->MatchRig( *loadRig );
 	
-	//loadAnimation.DebugPrintStructure( *this, "", true );
+	//loadAnimation->DebugPrintStructure( *this, "", true );
 	
-	const int boneCount = loadRig.GetBoneCount();
+	const int boneCount = loadRig->GetBoneCount();
 	deAnimationBone *bone = NULL;
 	int i;
 	for( i=0; i<boneCount; i++ ){
 		bone = new deAnimationBone;
-		bone->SetName( loadRig.GetBoneAt( i )->GetName() );
+		bone->SetName( loadRig->GetBoneAt( i )->GetName() );
 		animation.AddBone( bone );
 	}
 	
-	pLoadMoves( animation, loadAnimation );
+	pLoadMoves( animation, *loadAnimation );
 }
 
 void fbxAnimModule::pLoadMoves( deAnimation &animation, const fbxAnimation &loadAnimation ){

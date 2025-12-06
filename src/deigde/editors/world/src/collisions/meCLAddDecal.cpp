@@ -140,11 +140,11 @@ void meCLAddDecal::RunAction(){
 	}else{
 		meDecal::Ref decal(meDecal::Ref::NewWith(pWorld->GetEnvironment()));
 		
-		decal.SetSkinPath( browseSkin );
-		decal.SetSize( decal.GetDefaultSize( 0.5f ) );
-		decalSize = decal.GetSize();
+		decal->SetSkinPath( browseSkin );
+		decal->SetSize( decal->GetDefaultSize( 0.5f ) );
+		decalSize = decal->GetSize();
 		
-		pUndo.TakeOver( new meUAddDecal( pWorld, &decal ) );
+		pUndo.TakeOver( new meUAddDecal( pWorld, decal ) );
 	}
 	
 	meDecal &decal = *( ( meUAddDecal& )( igdeUndo& )pUndo ).GetDecal();
