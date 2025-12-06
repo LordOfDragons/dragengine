@@ -41,6 +41,11 @@ class meHTVRulePropCount;
  * Undo action to set the search radius of a height terrain vegetation rule prop count.
  */
 class meUHTVRulePCSetRadius : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRulePCSetRadius> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRulePropCount *pRule;

@@ -40,6 +40,10 @@
  */
 class DE_DLL_EXPORT igdeContainerForm : public igdeContainer{
 public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeContainerForm> Ref;
+	
+	
 	/** \brief Stretching. */
 	enum eStretching{
 		/** \brief No stretching. */

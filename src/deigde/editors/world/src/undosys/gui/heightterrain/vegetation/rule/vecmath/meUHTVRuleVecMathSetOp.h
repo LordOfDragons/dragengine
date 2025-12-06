@@ -38,6 +38,11 @@ class meHTVRuleVectorMath;
  * \brief Undo Height Terrain Vegetation Rule Vector Math Set Operator.
  */
 class meUHTVRuleVecMathSetOp : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleVecMathSetOp> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleVectorMath *pRule;

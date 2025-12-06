@@ -41,6 +41,11 @@ class meHTVRuleResult;
  * Undo action to set the variation of a height terrain vegetation rule result.
  */
 class meUHTVRuleResultSetVar : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleResultSetVar> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleResult *pRule;

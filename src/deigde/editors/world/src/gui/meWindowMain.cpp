@@ -2216,12 +2216,12 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 	
 	helper.MenuSeparator( menu );
 	igdeMenuCascade::Ref active(igdeMenuCascade::Ref::NewWith(
-		GetEnvironment(), "Active Object", NULL, "Active object", deInputEvent::ekcA));
+		GetEnvironment(), "Active Object", nullptr, "Active object", deInputEvent::ekcA));
 		
 		menu.AddChild( active );
 		
 		igdeMenuCascade::Ref activeRotate(igdeMenuCascade::Ref::NewWith(
-			GetEnvironment(), "Rotate", NULL, "Rotate active object", deInputEvent::ekcR));
+			GetEnvironment(), "Rotate", nullptr, "Rotate active object", deInputEvent::ekcR));
 			
 			active->AddChild( activeRotate );
 			helper.MenuCommand( activeRotate, pActionObjectRotateL45 );
@@ -2254,13 +2254,13 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleXYZ );
 			
 		igdeMenuCascade::Ref activeLight(igdeMenuCascade::Ref::NewWith(
-			GetEnvironment(), "Light", NULL, "Active object light", deInputEvent::ekcL));
+			GetEnvironment(), "Light", nullptr, "Active object light", deInputEvent::ekcL));
 			
 			active->AddChild( activeLight );
 			helper.MenuCommand( activeLight, pActionObjectLightToggle );
 			
 		igdeMenuCascade::Ref activeShapes(igdeMenuCascade::Ref::NewWith(
-			GetEnvironment(), "Property Shapes", NULL, "Active object property shapes", deInputEvent::ekcS));
+			GetEnvironment(), "Property Shapes", nullptr, "Active object property shapes", deInputEvent::ekcS));
 			
 			active->AddChild( activeShapes );
 			helper.MenuCommand( activeShapes, pActionObjectShapeAddSphere );

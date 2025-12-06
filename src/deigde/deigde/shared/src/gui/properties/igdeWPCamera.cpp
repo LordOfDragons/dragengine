@@ -476,6 +476,8 @@ public:
 class cActionMenuCamera : public igdeActionContextMenu{
 	igdeWPCamera &pPanel;
 public:
+	typedef deTObjectReference<cActionMenuCamera> Ref;
+	
 	cActionMenuCamera( igdeWPCamera &panel ) : igdeActionContextMenu(
 		"...", nullptr, "Camera menu" ), pPanel( panel ){ }
 	

@@ -43,6 +43,11 @@ class meHTVRuleConstant;
  * Undo action to set the vector of a height terrain vegetation rule constant.
  */
 class meUHTVRuleConstSetVector : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleConstSetVector> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleConstant *pRule;

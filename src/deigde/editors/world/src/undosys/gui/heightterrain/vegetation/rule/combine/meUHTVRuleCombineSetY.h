@@ -41,6 +41,11 @@ class meHTVRuleCombine;
  * Undo action to set the y component of a height terrain vegetation rule combine.
  */
 class meUHTVRuleCombineSetY : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleCombineSetY> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleCombine *pRule;

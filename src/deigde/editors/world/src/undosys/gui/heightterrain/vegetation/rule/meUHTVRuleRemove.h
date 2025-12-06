@@ -34,6 +34,11 @@
  * \brief Undo action height terrain vegetation remove rule.
  */
 class meUHTVRuleRemove : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleRemove> Ref;
+	
+	
 private:
 	const meHTVegetationLayer::Ref pVLayer;
 	const meHTVRule::Ref pRule;

@@ -58,7 +58,10 @@ protected:
 		igdeTextField::Ref pTextY;
 		
 	public:
+		typedef deTObjectReference<cListener> Ref;
+		
 		cListener( igdeEditVector2 &editVector2, igdeTextField *textX, igdeTextField *textY );
+		
 		virtual ~cListener();
 		virtual void OnTextChanged( igdeTextField *textField );
 		virtual void OnTextChanging( igdeTextField *textField );

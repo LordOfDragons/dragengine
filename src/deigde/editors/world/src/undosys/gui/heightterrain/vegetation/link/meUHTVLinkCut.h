@@ -41,6 +41,11 @@ class meHTVRLink;
  * Undo action for cutting height terrain vegetation links.
  */
 class meUHTVLinkCut : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVLinkCut> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	

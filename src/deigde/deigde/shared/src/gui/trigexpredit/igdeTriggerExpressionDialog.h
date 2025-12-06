@@ -38,6 +38,11 @@ class igdeTriggerTargetList;
  * \brief Trigger Expression Dialog.
  */
 class DE_DLL_EXPORT igdeTriggerExpressionDialog : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTriggerExpressionDialog> Ref;
+	
+	
 private:
 	igdeWidget::Ref pEditor;
 	

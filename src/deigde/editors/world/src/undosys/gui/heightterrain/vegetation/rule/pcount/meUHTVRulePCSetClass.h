@@ -43,6 +43,11 @@ class meHTVRulePropCount;
  * Undo action to set the prop class of a height terrain vegetation rule prop count.
  */
 class meUHTVRulePCSetClass : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRulePCSetClass> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRulePropCount *pRule;

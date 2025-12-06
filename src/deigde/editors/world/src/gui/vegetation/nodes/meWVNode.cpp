@@ -107,6 +107,8 @@ class cActivationListener : public igdeNVNodeListener{
 	meWVNode &pNode;
 	
 public:
+	typedef deTObjectReference<cActivationListener> Ref;
+	
 	cActivationListener( meWVNode &node ) : pNode( node ){ }
 	
 	virtual void OnActivated( igdeNVNode* ){
@@ -129,6 +131,8 @@ class cDragNodeListener : public igdeNVNodeListener{
 	igdeUndo::Ref &pUndo;
 	
 public:
+	typedef deTObjectReference<cDragNodeListener> Ref;
+	
 	cDragNodeListener( meWVNode &node, igdeUndo::Ref &undo ) :
 		pNode( node ), pUndo( undo ){ }
 	
@@ -178,11 +182,8 @@ pRule( NULL )
 		DETHROW( deeInvalidParam );
 	}
 	
-	cActivationListener::Ref listener(cActivationListener::Ref::NewWith(*this));
-	AddListener( listener );
-	
-	listener.TakeOver( new cDragNodeListener( *this, pUndoMove ) );
-	AddListener( listener );
+	AddListener(cActivationListener::Ref::NewWith(*this));
+	AddListener(cDragNodeListener::Ref::NewWith(*this, pUndoMove));
 	
 	pRule = rule;
 	rule->AddReference();

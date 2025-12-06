@@ -40,6 +40,11 @@ class igdeTexturePropertyList;
  * Dialog showing content of texture property list.
  */
 class DE_DLL_EXPORT igdeDialogTexturePropertyList : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogTexturePropertyList> Ref;
+	
+	
 private:
 	igdeListBox::Ref pListProperties;
 	igdeTextField::Ref pEditName;

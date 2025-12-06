@@ -45,6 +45,11 @@ class igdeTemplate;
  * \brief New game project dialog.
  */
 class igdeDialogNewGameProject : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogNewGameProject> Ref;
+	
+	
 private:
 	igdeWindowMain &pWindowMain;
 	igdeGameProject *pNewProject;
