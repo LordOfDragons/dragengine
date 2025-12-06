@@ -34,6 +34,11 @@
  * \brief Undo action category toggle hidden.
  */
 class gdeUCategoryToggleHidden : public gdeUCategoryBase{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeUCategoryToggleHidden> Ref;
+	
+	
 private:
 	gdeCategory *pCategory;
 	

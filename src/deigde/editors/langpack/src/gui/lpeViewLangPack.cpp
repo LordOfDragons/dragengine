@@ -151,6 +151,9 @@ public:
 
 
 class cListEntries : public igdeIconListBoxListener{
+public:
+	typedef deTObjectReference<cListEntries> Ref;
+	
 protected:
 	enum eSorting{
 		esNameAscending,

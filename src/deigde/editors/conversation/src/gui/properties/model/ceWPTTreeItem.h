@@ -38,6 +38,11 @@ class igdeMenuCascade;
  * Keeps reference to assigned model if present.
  */
 class ceWPTTreeItem : public igdeTreeItem{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWPTTreeItem> Ref;
+	
+	
 private:
 	igdeTreeList *pTreeList;
 	ceWPTTreeItemModel *pModel;

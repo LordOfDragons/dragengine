@@ -59,7 +59,7 @@ pTopic( &topic ),
 pPlayerChoice( &playerChoice ),
 pOption( &option )
 {
-	SetEnabled( option.GetCondition() != NULL );
+	SetEnabled( option.GetCondition() != nullptr );
 }
 
 
@@ -69,6 +69,6 @@ pOption( &option )
 
 void ceWPTMAPChoiceOptionClearCondition::OnAction(){
 	ceUCAPChoiceOptionSetCondition::Ref undo(ceUCAPChoiceOptionSetCondition::Ref::NewWith(
-		pTopic, pPlayerChoice, pOption, NULL));
+		pTopic, pPlayerChoice, pOption, nullptr));
 	GetConversation().GetUndoSystem()->Add( undo );
 }

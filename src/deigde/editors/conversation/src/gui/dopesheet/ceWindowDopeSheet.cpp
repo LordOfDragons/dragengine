@@ -237,6 +237,8 @@ class cMouseKeyListener : public igdeMouseKeyListener{
 	igdeMouseKeyListener::Ref pDragListener;
 	
 public:
+	typedef deTObjectReference<cMouseKeyListener> Ref;
+	
 	cMouseKeyListener( ceWindowDopeSheet &window ) : pWindow( window ){}
 	
 	igdeMouseKeyListener *GetListenerAtPosition( const decPoint &position ) const{

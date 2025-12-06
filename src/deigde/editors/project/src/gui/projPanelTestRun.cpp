@@ -277,7 +277,7 @@ pMaxLines( 500 )
 	AddChild( scroll, eaSide );
 	
 	
-	igdeContainerFlow::Ref groupBox(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
+	igdeContainer::Ref groupBox(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
 	helper.Label( groupBox, "Profile:" );
 	helper.ComboBox( groupBox, "Distribution profile to run.",
 		pCBProfile, new cComboProfile( *this ) );
