@@ -828,8 +828,7 @@ void meLSXMLHeightTerrain::pLoadTexture( decXmlElementTag &root, meHeightTerrain
 }
 
 void meLSXMLHeightTerrain::pLoadNavSpace( decXmlElementTag &root, meHeightTerrainSector &sector ){
-	const meHeightTerrainNavSpace::Ref refNavSpace(meHeightTerrainNavSpace::Ref::NewWith(*pLSSys->GetWindowMain()->GetEngine()));
-	meHeightTerrainNavSpace &navspace = ( meHeightTerrainNavSpace& )( deObject& )refNavSpace;
+	meHeightTerrainNavSpace::Ref navSpace(meHeightTerrainNavSpace::Ref::NewWith(*pLSSys->GetWindowMain()->GetEngine()));
 	
 	navspace.SetName( GetAttributeString( root, "name" ) );
 	
@@ -899,8 +898,7 @@ void meLSXMLHeightTerrain::pLoadNavSpaceType( decXmlElementTag &root, meHeightTe
 }
 
 void meLSXMLHeightTerrain::pLoadVLayer( decXmlElementTag &root, meHeightTerrain &heightTerrain ){
-	const meHTVegetationLayer::Ref refVLayer(meHTVegetationLayer::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
-	meHTVegetationLayer &vlayer = ( meHTVegetationLayer& )( deObject& )refVLayer;
+	meHTVegetationLayer::Ref vLayer(meHTVegetationLayer::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -938,8 +936,7 @@ void meLSXMLHeightTerrain::pLoadVLayer( decXmlElementTag &root, meHeightTerrain 
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerVariation( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	const meHTVVariation::Ref refVariation(meHTVVariation::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
-	meHTVVariation &variation = ( meHTVVariation& )( deObject& )refVariation;
+	meHTVVariation::Ref variation(meHTVVariation::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
 	
 	const int count = root.GetElementCount();
 	int i;

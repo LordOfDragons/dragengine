@@ -317,8 +317,7 @@ dewiDevice( module, esWindows )
 	}
 #endif
 	
-	const dewiDeviceButton::Ref refSharedButton(dewiDeviceButton::Ref::NewWith(module));
-	dewiDeviceButton &sharedButton = ( dewiDeviceButton& )( deObject& )refSharedButton;
+	dewiDeviceButton::Ref sharedButton(dewiDeviceButton::Ref::NewWith(module));
 	sharedButton.SetDisplayImages( "key" );
 	
 	int buttonIndex = 0;
