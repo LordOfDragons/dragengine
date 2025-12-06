@@ -60,7 +60,7 @@
 #ifdef OS_ANDROID
 delLauncher::delLauncher(const sConfig &config) :
 pConfig(config),
-pLoggerHistory(delLoggerHistory::Ref::NewWith(),
+pLoggerHistory(delLoggerHistory::Ref::NewWith()),
 pLogSource(config.loggerSource),
 pEngine(*this, config.engineLogFileTitle),
 pGameManager(*this),
@@ -99,7 +99,7 @@ pPatchManager(*this)
 
 #else
 delLauncher::delLauncher(const char *loggerSource, const char *engineLogFileTitle) :
-pLoggerHistory(delLoggerHistory::Ref::NewWith(),
+pLoggerHistory(delLoggerHistory::Ref::NewWith()),
 pLogSource(loggerSource),
 pEngine(*this, engineLogFileTitle),
 pGameManager(*this),

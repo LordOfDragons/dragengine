@@ -77,7 +77,7 @@ pAutoAdvanceCommands( true ),
 pCameraHandling( echFree ),
 pTextBoxText( NULL ),
 pCamera( NULL ),
-pMainActionStack(cePlaybackActionStack::Ref::NewWith(),
+pMainActionStack(cePlaybackActionStack::Ref::NewWith()),
 pActiveActionStack(pMainActionStack),
 
 pLastPlayedAction( NULL ),

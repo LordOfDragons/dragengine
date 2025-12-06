@@ -19,7 +19,7 @@ deMTSetStatsAndAchievements::deMTSetStatsAndAchievements(deMsgdkServiceMsgdk &se
 deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
-pResultData(deServiceObject::Ref::NewWith(),
+pResultData(deServiceObject::Ref::NewWith()),
 pWaitAchievementsSynced(false)
 {
 	pService.GetModule().LogInfo("deMTSetStatsAndAchievements: Set stats and achievements");

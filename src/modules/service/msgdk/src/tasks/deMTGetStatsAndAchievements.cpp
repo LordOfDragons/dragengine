@@ -20,7 +20,7 @@ deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
 pStatNames(nullptr),
-pResultData(deServiceObject::Ref::NewWith(),
+pResultData(deServiceObject::Ref::NewWith()),
 pWaitAchievementsSynced(false)
 {
 	deServiceObject::Ref so;
