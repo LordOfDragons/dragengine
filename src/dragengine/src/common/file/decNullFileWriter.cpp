@@ -75,5 +75,5 @@ void decNullFileWriter::Write( const void*, int ){
 }
 
 decBaseFileWriter::Ref decNullFileWriter::Duplicate(){
-	return decBaseFileWriter::Ref::New( new decNullFileWriter( pFilename ) );
+	return decBaseFileWriter::Ref::NewWith(pFilename);
 }

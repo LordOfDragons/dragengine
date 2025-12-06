@@ -102,7 +102,7 @@ void deSsdkServiceSteam::CancelRequest( const decUniqueID &id ){
 	
 	pPendingRequests.RemoveFrom( pPendingRequests.IndexOf( pr ) );
 	
-	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 	so->SetStringChildAt( "error", "Cancelled" );
 	so->SetStringChildAt( "message", "Request cancelled" );
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed( pService, id, so );
@@ -175,7 +175,7 @@ const char *function ){
 
 deSsdkPendingRequest::Ref deSsdkServiceSteam::NewPendingRequest(
 const decUniqueID &id, const decString &function, const deServiceObject::Ref &data ){
-	const deSsdkPendingRequest::Ref pr( deSsdkPendingRequest::Ref::New( new deSsdkPendingRequest( data ) ) );
+	const deSsdkPendingRequest::Ref pr( deSsdkPendingRequest::Ref::NewWith(data) );
 	pr->id = id;
 	pr->function = function;
 	pr->data->SetStringChildAt( "function", function );
@@ -197,7 +197,7 @@ void deSsdkServiceSteam::RequestCurrentStats( const decUniqueID &id ){
 }
 
 void deSsdkServiceSteam::GetStats( const decUniqueID &id, const deServiceObject& request ){
-	const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref response( deServiceObject::Ref::NewWith() );
 	deServiceObject::Ref soIn, soResp;
 	int i, count;
 	
@@ -249,7 +249,7 @@ void deSsdkServiceSteam::ResetAllStats( const decUniqueID &id, const deServiceOb
 	
 	DEASSERT_TRUE( SteamUserStats()->ResetAllStats( resetAchievements ) )
 	
-	const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref response( deServiceObject::Ref::NewWith() );
 	response->SetStringChildAt( "function", "resetAllStats" );
 	
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestResponse(
@@ -262,7 +262,7 @@ void deSsdkServiceSteam::RequestEncryptedAppTicket( const decUniqueID &id, const
 		pCROnEncryptedAppTicketResponse.Run(this, SteamUser()->RequestEncryptedAppTicket( nullptr, 0 ) );
 		
 	}else{
-		const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
+		const deServiceObject::Ref response( deServiceObject::Ref::NewWith() );
 		response->SetStringChildAt( "function", "requestEncryptedAppTicket" );
 		response->SetBoolChildAt( "success", true );
 		response->SetStringChildAt( "ticket", pEncAppTicket );
@@ -278,7 +278,7 @@ void deSsdkServiceSteam::LoadUserResource( const decUniqueID &id, const deServic
 	pModule.LogInfoFormat( "deSsdkServiceSteam.LoadUserResource: url=%s handle=%d",
 		url.url.GetString(), handle );
 	
-	const deServiceObject::Ref data( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref data( deServiceObject::Ref::NewWith() );
 	data->SetStringChildAt( "url", url.url );
 	NewPendingRequest( id, "loadUserResource", data );
 	
@@ -302,12 +302,12 @@ deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
 			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/" ) );
 	}
 	
-	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 	so->SetBoolChildAt( "canManualLogin", false );
 	so->SetBoolChildAt( "canAutomaticLogin", true );
 	so->SetBoolChildAt( "canLogout", false );
 	
-	const deServiceObject::Ref soAtp( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref soAtp( deServiceObject::Ref::NewWith() );
 	soAtp->SetStringChildAt( "id", "steam" );
 	soAtp->SetResourceChildAt( "icon", pAuthProviderIcon );
 	soAtp->SetResourceChildAt( "image", pAuthProviderImage );
@@ -318,7 +318,7 @@ deServiceObject::Ref deSsdkServiceSteam::GetUserFeatures(){
 }
 
 deServiceObject::Ref deSsdkServiceSteam::GetUserInfo(){
-	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 	const decString id( deSCCommon::SteamIDToString( SteamUser()->GetSteamID() ) );
 	
 	so->SetStringChildAt( "id", id );
@@ -332,7 +332,7 @@ deServiceObject::Ref deSsdkServiceSteam::GetUserInfo(){
 }
 
 void deSsdkServiceSteam::SetStats( const decUniqueID &id, const deServiceObject &request ){
-	const deServiceObject::Ref response( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref response( deServiceObject::Ref::NewWith() );
 	deServiceObject::Ref soIn, soResp;
 	int i, count;
 	

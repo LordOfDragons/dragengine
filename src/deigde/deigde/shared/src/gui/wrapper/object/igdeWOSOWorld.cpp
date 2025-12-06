@@ -76,7 +76,7 @@ void igdeWOSOWorld::LoadObjectResources::Drop(){
 
 void igdeWOSOWorld::LoadObjectResources::LoadTexture(ChildObject &object, ChildObjectTexture &texture){
 	const decString &path = texture.pathSkin;
-	pTextures.Add(deObject::Ref::New(new Texture(object, texture)));
+	pTextures.Add(deObject::Ref::NewWith(object, texture));
 	if(!pSkins.Has(path)){
 		pSkins.Add(path);
 		pOwner->GetWrapper().GetEnvironment().AsyncLoadResource(path, deResourceLoader::ertSkin, this);
@@ -133,7 +133,7 @@ hasTCTransform(false){
 ////////////////
 
 igdeWOSOWorld::ChildObject::ChildObject(igdeEnvironment &environment) :
-pWrapper(igdeWObject::Ref::New(new igdeWObject(environment))){
+pWrapper(igdeWObject::Ref::NewWith(environment)){
 }
 
 int igdeWOSOWorld::ChildObject::GetTextureCount() const{
@@ -199,7 +199,7 @@ void igdeWOSOWorld::LoadXmlWorld::pReadWorld(const decXmlElementTag &root){
 		
 		const decString &tagName = tag->GetName();
 		if(tagName == "object"){
-			const ChildObject::Ref object(ChildObject::Ref::New(new ChildObject(pEnvironment)));
+			const ChildObject::Ref object(ChildObject::Ref::NewWith(pEnvironment));
 			pReadObject(*tag, object);
 			pOwner.AddChildObject(object);
 		}
@@ -240,8 +240,7 @@ void igdeWOSOWorld::LoadXmlWorld::pReadObject(const decXmlElementTag &root, Chil
 			wo.SetProperty(GetAttributeString(*tag, "key"), ReadMultilineString(*tag));
 			
 		}else if(tagName == "texture"){
-			ChildObjectTexture::Ref texture(ChildObjectTexture::Ref::New(
-				new ChildObjectTexture(GetAttributeString(*tag, "name"))));
+			ChildObjectTexture::Ref texture(ChildObjectTexture::Ref::NewWith(GetAttributeString(*tag, "name")));
 			pReadObjectTexture(*tag, object, texture);
 			object.AddTexture(texture);
 		}
@@ -372,7 +371,7 @@ igdeWOSOWorld::igdeWOSOWorld(igdeWObject &wrapper, const igdeGDCWorld &gdcWorld,
 igdeWOSubObject(wrapper, prefix),
 pGDWorld(gdcWorld),
 pChildAsyncFinished(*this),
-pLoadObjectResources(LoadObjectResources::Ref::New(new LoadObjectResources(*this))),
+pLoadObjectResources(LoadObjectResources::Ref::NewWith(*this)),
 pNoUpdateAnyContentVisibile(false)
 {
 	wrapper.SubObjectFinishedLoading(*this, true);

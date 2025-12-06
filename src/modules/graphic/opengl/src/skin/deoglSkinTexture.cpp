@@ -1118,8 +1118,7 @@ void deoglSkinTexture::pLoadCached( deoglRSkin &skin ){
 				continue;
 			}
 			
-			const deoglPixelBufferMipMap::Ref pixelBufferMipMap(deoglPixelBufferMipMap::Ref::New(
-				new deoglPixelBufferMipMap(pbformat, width, height, depth, maxMipMapLevel)));
+			const deoglPixelBufferMipMap::Ref pixelBufferMipMap(deoglPixelBufferMipMap::Ref::NewWith(pbformat, width, height, depth, maxMipMapLevel));
 			
 			for(j=0; j<pixBufCount; j++){
 				deoglPixelBuffer &pixelBuffer = pixelBufferMipMap->GetPixelBuffer(j);
@@ -1341,10 +1340,9 @@ void deoglSkinTexture::pCompressTextures( deoglRSkin &skin, const deSkinTexture 
 		}
 		
 		const deoglPixelBuffer &basePixelBuffer = pbMipMapSource->GetPixelBuffer( 0 );
-		const deoglPixelBufferMipMap::Ref pbMipMapCompressed( deoglPixelBufferMipMap::Ref::New(
-			new deoglPixelBufferMipMap( pbformat,
+		const deoglPixelBufferMipMap::Ref pbMipMapCompressed( deoglPixelBufferMipMap::Ref::NewWith(pbformat,
 				basePixelBuffer.GetWidth(), basePixelBuffer.GetHeight(),
-				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBufferCount() - 1 ) ) );
+				basePixelBuffer.GetDepth(), pbMipMapSource->GetPixelBufferCount() - 1) );
 		
 		textureCompression.SetDecompressedDataMipMap( pbMipMapSource );
 		textureCompression.SetCompressedDataMipMap( pbMipMapCompressed );
@@ -2216,7 +2214,7 @@ void deoglSkinTexture::pProcessProperty( deoglRSkin &skin, deSkinProperty &prope
 			const deSkinPropertyMapped &mapped = identify.CastToMapped();
 			
 			const deoglSkinCalculatedProperty::Ref calculated(
-				deoglSkinCalculatedProperty::Ref::New( new deoglSkinCalculatedProperty ) );
+				deoglSkinCalculatedProperty::Ref::NewWith() );
 			
 			calculated->SetMappedComponent( 0, mapped.GetRed() );
 			calculated->SetMappedComponent( 1, mapped.GetGreen() );

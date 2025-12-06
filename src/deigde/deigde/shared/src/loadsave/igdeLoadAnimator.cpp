@@ -117,7 +117,7 @@ void igdeLoadAnimator::Load( const decString &pathAnimator, deAnimator &animator
 		basePath.SetFromUnix( "/" );
 	}
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	
@@ -1088,7 +1088,7 @@ deAnimatorRule * igdeLoadAnimator::pReadRuleForeignState( const decXmlElementTag
 }
 
 deAnimatorRule * igdeLoadAnimator::pReadRuleMirror( const decXmlElementTag &root, deAnimator &animator ){
-	const deAnimatorRuleMirror::Ref rule( deAnimatorRuleMirror::Ref::New( new deAnimatorRuleMirror ) );
+	const deAnimatorRuleMirror::Ref rule( deAnimatorRuleMirror::Ref::NewWith() );
 	const int elementCount = root.GetElementCount();
 	decVector vector;
 	int i;

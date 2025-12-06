@@ -100,7 +100,7 @@ pPattern( ".degd" ){
 
 void gdeLoadSaveGameDefinition::LoadGameDefinition( gdeGameDefinition &gameDefinition,
 decBaseFileReader &reader ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

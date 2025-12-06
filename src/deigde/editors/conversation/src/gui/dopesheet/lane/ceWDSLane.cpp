@@ -106,7 +106,7 @@ public:
 		decStringList idList;
 		pLane.FillIDList( idList );
 		dialog->SetIDList( idList );
-		dialog->SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( pLane ) ) );
+		dialog->SetListener( ceDialogEditStrip::Listener::Ref::NewWith(pLane) );
 		dialog->ResetDuration();
 		dialog->SetAutoResetDuration( true );
 		
@@ -872,7 +872,7 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 	decStringList idList;
 	FillIDList( idList );
 	dialog.SetIDList( idList );
-	dialog.SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( *this ) ) );
+	dialog.SetListener( ceDialogEditStrip::Listener::Ref::NewWith(*this) );
 	dialog.SetAutoResetDuration( false );
 	
 	dialog.SetFromStrip( *strip );

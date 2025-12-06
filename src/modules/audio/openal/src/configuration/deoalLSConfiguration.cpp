@@ -191,7 +191,7 @@ float deoalLSConfiguration::pGetCDataFloat( const decXmlElementTag &tag, float d
 
 
 void deoalLSConfiguration::pLoadConfig( decBaseFileReader *file ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( pOal.GetGameEngine()->GetLogger() ).ParseXml( file, xmlDoc );
 	

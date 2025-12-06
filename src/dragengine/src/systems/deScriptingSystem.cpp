@@ -126,8 +126,7 @@ void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
 		pathRedirect.AddComponent(version);
 		pathRedirect.AddUnixPath( dataDir );
 		
-		vfs.AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
-			pathRoot, pathRedirect, osFileSystem, true)));
+		vfs.AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, osFileSystem, true));
 		
 	}else{
 		// build disk path
@@ -143,7 +142,7 @@ void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
 		engine.GetLogger()->LogInfoFormat( LOGSOURCE, "Adding disk container '%s' => '%s'(ro)",
 			pathDisk.GetPathNative().GetString(), vfsPath );
 		
-		vfs.AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(pathRoot, pathDisk, true)));
+		vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, true));
 	}
 	
 	// asset libraries
@@ -155,8 +154,7 @@ void deScriptingSystem::AddVFSSharedDataDir( deVirtualFileSystem &vfs ) const{
 		pathRedirect.AddComponent(version);
 		pathRedirect.AddUnixPath(dataDir);
 		
-		vfs.AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
-			pathRoot, pathRedirect, vfsAssetLibraries, true)));
+		vfs.AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, vfsAssetLibraries, true));
 	}
 }
 

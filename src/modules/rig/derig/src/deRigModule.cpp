@@ -104,7 +104,7 @@ deRigModule::~deRigModule(){
 ///////////////////////
 
 void deRigModule::LoadRig( decBaseFileReader &file, deRig &rig ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetGameEngine()->GetLogger() ).ParseXml( &file, xmlDoc );
 	

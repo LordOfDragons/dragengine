@@ -97,7 +97,7 @@ void deEosSdkFlowInit::ConnectLogin(){
 }
 
 void deEosSdkFlowInit::FinishFlowEvent( EOS_EResult res ){
-	const deServiceObject::Ref event( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref event( deServiceObject::Ref::NewWith() );
 	event->SetStringChildAt( "event", "initialized" );
 	
 	if( res == EOS_EResult::EOS_Success ){

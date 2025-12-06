@@ -311,8 +311,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix( "/config" );
 		
-		pVFS->AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
-			pathRoot, pathRedirect, osFileSystem, true)));
+		pVFS->AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, osFileSystem, true));
 		
 		// share directory (read-only, per module version)
 		pathRedirect.SetFromUnix( "/share/modules" );
@@ -322,8 +321,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix( "/share" );
 		
-		pVFS->AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
-			pathRoot, pathRedirect, osFileSystem, true)));
+		pVFS->AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, osFileSystem, true));
 		
 	}else{
 		// system config directory (read-only, per module version)
@@ -334,8 +332,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix( "/config" );
 		
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(
-			pathRoot, pathDisk, true)));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, true));
 		
 		
 		// user config directory (writeable, shared between module versions)
@@ -346,7 +343,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix( "/config" );
 		
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(pathRoot, pathDisk)));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk));
 		
 		
 		// share directory (read-only, per module version)
@@ -358,8 +355,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix( "/share" );
 		
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(
-			pathRoot, pathDisk, true)));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, true));
 	}
 	
 	// asset libraries
@@ -371,8 +367,7 @@ void deBaseModule::pCreateVFS(){
 		
 		pathRoot.SetFromUnix("/share");
 		
-		pVFS->AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
-			pathRoot, pathRedirect, vfsAssetLibraries, true)));
+		pVFS->AddContainer(deVFSRedirect::Ref::NewWith(pathRoot, pathRedirect, vfsAssetLibraries, true));
 	}
 	
 	// capture directory (writeable, shared between module versions)
@@ -383,7 +378,7 @@ void deBaseModule::pCreateVFS(){
 	
 	pathRoot.SetFromUnix( "/capture" );
 	
-	pVFS->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(pathRoot, pathDisk)));
+	pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk));
 	
 	
 	// global cache directory (writeable, shared between module versions)
@@ -395,8 +390,7 @@ void deBaseModule::pCreateVFS(){
 	
 	pathRoot.SetFromUnix( "/cache/global" );
 	
-	deVFSCacheDiskDirectory::Ref cachedContainer(deVFSCacheDiskDirectory::Ref::New(
-		new deVFSCacheDiskDirectory(pathRoot, pathDisk)));
+	deVFSCacheDiskDirectory::Ref cachedContainer(deVFSCacheDiskDirectory::Ref::NewWith(pathRoot, pathDisk));
 	cachedContainer->SetMaxCacheSize(1000000); // 1000MB
 	pVFS->AddContainer(cachedContainer);
 	
@@ -405,7 +399,7 @@ void deBaseModule::pCreateVFS(){
 	pathRoot.SetFromUnix( "/cache/local" );
 	
 	if( engine.GetCacheAppID().IsEmpty() ){
-		pVFS->AddContainer(deVFSNull::Ref::New(new deVFSNull(pathRoot)));
+		pVFS->AddContainer(deVFSNull::Ref::NewWith(pathRoot));
 		
 	}else{
 		pathDisk.SetFromNative( os.GetPathUserCache() );

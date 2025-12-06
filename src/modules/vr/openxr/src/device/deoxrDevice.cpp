@@ -153,7 +153,7 @@ void deoxrDevice::AddButton( deoxrDeviceButton *button ){
 void deoxrDevice::AddButton( deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
 deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
 const char *name, const char *id, const char *displayText ){
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( *this ) ) );
+	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::NewWith(*this) );
 	button->SetID( id );
 	button->SetName( name );
 	button->SetType( type );
@@ -169,7 +169,7 @@ const char *name, const char *id, const char *displayText ){
 void deoxrDevice::AddButton(deInputDeviceButton::eButtonTypes type, deoxrDeviceComponent *component,
 deVROpenXR::eInputActions actionPress, deVROpenXR::eInputActions actionTouch,
 deVROpenXR::eInputActions actionApproach, const char *name, const char *id, const char *displayText){
-	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(new deoxrDeviceButton(*this)));
+	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::NewWith(*this));
 	button->SetID(id);
 	button->SetName(name);
 	button->SetType(type);
@@ -228,7 +228,7 @@ void deoxrDevice::AddAxis( deoxrDeviceAxis *axis ){
 
 void deoxrDevice::AddAxisTrigger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
 deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const char *displayText ){
-	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
+	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(*this) );
 	axis->SetActionAnalog( pOxr.GetAction( actionAnalog ) );
 	axis->SetType( type );
 	axis->SetRange( 0.0f, 1.0f );
@@ -244,7 +244,7 @@ deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const 
 
 void deoxrDevice::AddAxisFinger( deInputDeviceAxis::eAxisTypes type, deoxrDeviceComponent *component,
 int finger, const char *name, const char *id, const char *displayText ){
-	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
+	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(*this) );
 	axis->SetType( type );
 	axis->SetRange( 0.0f, 1.0f );
 	axis->SetCenter( -1.0f );
@@ -267,7 +267,7 @@ deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const 
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		axis.TakeOver( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
+		axis.TakeOver( deoxrDeviceAxis::Ref::NewWith(*this) );
 		axis->SetActionAnalog( pOxr.GetAction( actionAnalog ) );
 		axis->SetType( deInputDeviceAxis::eatStick );
 		axis->SetComponent( i );
@@ -292,7 +292,7 @@ deVROpenXR::eInputActions actionAnalog, const char *name, const char *id, const 
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		axis.TakeOver( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( *this ) ) );
+		axis.TakeOver( deoxrDeviceAxis::Ref::NewWith(*this) );
 		axis->SetActionAnalog( pOxr.GetAction( actionAnalog ) );
 		axis->SetType( deInputDeviceAxis::eatTouchPad );
 		axis->SetComponent( i );
@@ -379,7 +379,7 @@ void deoxrDevice::AddComponent( deoxrDeviceComponent *component ){
 
 deoxrDeviceComponent *deoxrDevice::AddComponent( deInputDeviceComponent::eComponentTypes type,
 const char *name, const char *id, const char *displayText ){
-	const deoxrDeviceComponent::Ref component( deoxrDeviceComponent::Ref::New( new deoxrDeviceComponent( *this ) ) );
+	const deoxrDeviceComponent::Ref component( deoxrDeviceComponent::Ref::NewWith(*this) );
 	component->SetID( id );
 	component->SetName( name );
 	component->SetType( type );

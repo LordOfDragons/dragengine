@@ -111,7 +111,7 @@ igdeBaseXML( logger, loggerSource ){
 
 void ceLoadSaveConversation::LoadConversation( ceConversation &conversation,
 decBaseFileReader &reader, const char *filename ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

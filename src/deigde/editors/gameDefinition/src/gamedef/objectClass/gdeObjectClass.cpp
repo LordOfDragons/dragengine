@@ -164,7 +164,7 @@ pInheritSubObjects( objectClass.pInheritSubObjects )
 		
 		count = objectClass.pWorlds.GetCount();
 		for(i=0; i<count; i++){
-			pWorlds.Add(gdeOCWorld::Ref::New(new gdeOCWorld(*objectClass.pWorlds.GetAt(i))));
+			pWorlds.Add(gdeOCWorld::Ref::NewWith(*objectClass.pWorlds.GetAt(i)));
 		}
 		
 		count = objectClass.pTextures.GetCount();

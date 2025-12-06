@@ -35,7 +35,7 @@
 ////////////////////////////
 
 seUMappedDuplicate::seUMappedDuplicate( seSkin *skin, const seMapped &mapped ) :
-seUMappedAdd( skin, seMapped::Ref::New( new seMapped( mapped ) ) )
+seUMappedAdd( skin, seMapped::Ref::NewWith(mapped) )
 {
 	pMapped->MakeNameUnique( skin->GetMappedList() );
 	SetShortInfo( "Duplicate Mapped" );

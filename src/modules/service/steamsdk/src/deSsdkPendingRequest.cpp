@@ -32,7 +32,7 @@
 ////////////////////////////
 
 deSsdkPendingRequest::deSsdkPendingRequest( const deServiceObject::Ref &ndata ) :
-data( ndata ? ndata : deServiceObject::Ref::New( new deServiceObject ) ){
+data( ndata ? ndata : deServiceObject::Ref::NewWith() ){
 }
 
 deSsdkPendingRequest::~deSsdkPendingRequest(){

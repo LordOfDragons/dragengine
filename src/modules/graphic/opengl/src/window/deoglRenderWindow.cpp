@@ -176,7 +176,7 @@ void deoglRenderWindow::SyncToRender(){
 			image.CreatePixelBuffer();
 			
 			try{
-				pRRenderWindow->SetIcon( deoglPixelBuffer::Ref::New( new deoglPixelBuffer( image.GetPixelBuffer() ) ) );
+				pRRenderWindow->SetIcon( deoglPixelBuffer::Ref::NewWith(image.GetPixelBuffer()) );
 				
 			}catch( const deException & ){
 				image.ReleasePixelBuffer();

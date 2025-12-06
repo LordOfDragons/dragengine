@@ -99,7 +99,7 @@ aeAnimator *aeLoadSaveSystem::LoadAnimator( const char* filename ){
 		pWndMain->GetEnvironment().GetFileSystemGame()
 			->OpenFileForReading( decPath::CreatePathUnix( filename ) ) ) );
 	
-	const aeAnimator::Ref animator( aeAnimator::Ref::New( new aeAnimator( *pWndMain ) ) );
+	const aeAnimator::Ref animator( aeAnimator::Ref::NewWith(*pWndMain) );
 	
 	animator->SetFilePath( filename );  // required for relative loading
 	

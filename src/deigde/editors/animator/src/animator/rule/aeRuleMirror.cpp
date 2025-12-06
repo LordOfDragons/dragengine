@@ -60,8 +60,7 @@ bool aeRuleMirror::cMatchName::operator!=( const cMatchName &matchName ) const{
 
 aeRuleMirror *aeRuleMirror::CreateDefault(){
 	Ref rule( Ref::New( new aeRuleMirror ) );
-	rule->pMatchNames.Add( aeRuleMirror::cMatchName::Ref::New(
-		new aeRuleMirror::cMatchName( ".l", ".r", deAnimatorRuleMirror::emntLast ) ) );
+	rule->pMatchNames.Add( aeRuleMirror::cMatchName::Ref::NewWith(".l", ".r", deAnimatorRuleMirror::emntLast) );
 	rule->AddReference(); // caller inherits reference
 	return rule;
 }
@@ -214,7 +213,7 @@ void aeRuleMirror::RemoveAllMatchNames(){
 
 
 deAnimatorRule *aeRuleMirror::CreateEngineRule(){
-	const deAnimatorRuleMirror::Ref engRule( deAnimatorRuleMirror::Ref::New( new deAnimatorRuleMirror ) );
+	const deAnimatorRuleMirror::Ref engRule( deAnimatorRuleMirror::Ref::NewWith() );
 	
 	InitEngineRule( engRule );
 	

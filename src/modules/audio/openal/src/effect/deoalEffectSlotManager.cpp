@@ -181,7 +181,7 @@ deoalEffectSlot *deoalEffectSlotManager::pCreateNew(){
 	}
 	
 	try{
-		const deoalEffectSlot::Ref slot( deoalEffectSlot::Ref::New( new deoalEffectSlot( pAudioThread ) ) );
+		const deoalEffectSlot::Ref slot( deoalEffectSlot::Ref::NewWith(pAudioThread) );
 		pSlots.Add( slot );
 		return slot;
 		

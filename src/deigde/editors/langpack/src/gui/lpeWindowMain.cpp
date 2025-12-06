@@ -490,7 +490,7 @@ public:
 			}
 			
 			igdeUndo::Ref undo;
-			const lpeLangPackEntry::Ref entry( lpeLangPackEntry::Ref::New( new lpeLangPackEntry ) );
+			const lpeLangPackEntry::Ref entry( lpeLangPackEntry::Ref::NewWith() );
 			entry->SetName( name );
 			
 			const lpeLangPack * const refLangPack = pWindow.GetReferenceLangPack();

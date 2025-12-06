@@ -143,7 +143,7 @@ const igdeTexturePropertyList &knownPropertyList ){
 		for( i=0; i<mappedCount; i++ ){
 			const deSkinMapped &engMapped = *engSkin->GetMappedAt( i );
 			
-			const seMapped::Ref mapped( seMapped::Ref::New( new seMapped( engMapped.GetName() ) ) );
+			const seMapped::Ref mapped( seMapped::Ref::NewWith(engMapped.GetName()) );
 			
 			mapped->SetCurve( engMapped.GetCurve() );
 			mapped->SetInputType( engMapped.GetInputType() );

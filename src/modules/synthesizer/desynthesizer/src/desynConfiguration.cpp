@@ -198,7 +198,7 @@ int desynConfiguration::pGetCDataInt( const decXmlElementTag &tag, int defaultVa
 
 
 void desynConfiguration::pLoadConfig( decBaseFileReader *file ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( pModule.GetGameEngine()->GetLogger() ).ParseXml( file, xmlDoc );
 	

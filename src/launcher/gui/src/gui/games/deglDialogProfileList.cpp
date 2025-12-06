@@ -379,15 +379,13 @@ FXDialogBox( powner, "Profiles", DECOR_TITLE | DECOR_BORDER | DECOR_RESIZE | DEC
 	int i;
 	
 	for( i=0; i<gameManager.GetProfiles().GetCount(); i++ ){
-		pProfiles.Add( cEditProfile::Ref::New( new cEditProfile(
-			*this, gameManager.GetProfiles().GetAt( i ), nullptr ) ) );
+		pProfiles.Add( cEditProfile::Ref::NewWith(*this, gameManager.GetProfiles().GetAt( i ), nullptr) );
 	}
 	
 	for( i=0; i<gameManager.GetGames().GetCount(); i++ ){
 		delGame * const game = gameManager.GetGames().GetAt( i );
 		if( game->GetCustomProfile() ){
-			pProfiles.Add( cEditProfile::Ref::New( new cEditProfile(
-				*this, game->GetCustomProfile(), game ) ) );
+			pProfiles.Add( cEditProfile::Ref::NewWith(*this, game->GetCustomProfile(), game) );
 		}
 	}
 	
@@ -905,7 +903,7 @@ long deglDialogProfileList::onBtnProfAdd( FXObject*, FXSelector, void* ){
 			
 		}else{
 			try{
-				cEditProfile::Ref profile( cEditProfile::Ref::New( new cEditProfile( *this, name.text() ) ) );
+				cEditProfile::Ref profile( cEditProfile::Ref::NewWith(*this, name.text()) );
 				*profile->GetEdit() = *pWindowMain->GetLauncher()->GetGameManager().GetDefaultProfile();
 				pProfiles.Add( profile );
 				
@@ -937,7 +935,7 @@ long deglDialogProfileList::onBtnProfDup( FXObject*, FXSelector, void* ){
 			
 		}else{
 			try{
-				cEditProfile::Ref profile( cEditProfile::Ref::New( new cEditProfile( *this, name.text() ) ) );
+				cEditProfile::Ref profile( cEditProfile::Ref::NewWith(*this, name.text()) );
 				*profile->GetEdit() = *pGetSelectedProfile()->GetEdit();
 				pProfiles.Add( profile );
 				
@@ -1767,8 +1765,7 @@ long deglDialogProfileList::onBtnDisableModuleVersionAdd( FXObject*, FXSelector,
 	delGPDisableModuleVersionList &list = pGetSelectedProfile()->GetEdit()->GetDisableModuleVersions();
 	if( ! list.HasWith( selectedModule.text(), selectedVersion.text() ) ){
 		try{
-			list.Add( delGPDisableModuleVersion::Ref::New( new delGPDisableModuleVersion(
-				selectedModule.text(), selectedVersion.text() ) ) );
+			list.Add( delGPDisableModuleVersion::Ref::NewWith(selectedModule.text(), selectedVersion.text()) );
 		}catch( const deException &e ){
 			GetWindowMain()->DisplayException( e );
 			return 1;

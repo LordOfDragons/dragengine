@@ -51,7 +51,7 @@ pFreeElementCount( pSize )
 	DEASSERT_TRUE( parameterBlock->GetElementCount() >= 1 )
 	
 	// add empty block for the element space
-	pElements.Add( deObject::Ref::New( new deoglSharedBlockSPBElement( *this, 0, pFreeElementCount ) ) );
+	pElements.Add( deObject::Ref::NewWith(*this, 0, pFreeElementCount) );
 }
 
 deoglSharedBlockSPB::~deoglSharedBlockSPB(){
@@ -79,8 +79,7 @@ deoglSharedBlockSPBElement *deoglSharedBlockSPB::GetElement( int count ){
 	// if empty block is larger than requested size add empty block with
 	// remaining empty space right after this block
 	if( element->GetCount() > count ){
-		const deObject::Ref emptyElement( deObject::Ref::New( new deoglSharedBlockSPBElement(
-			*this, element->GetIndex() + count, element->GetCount() - count ) ) );
+		const deObject::Ref emptyElement( deObject::Ref::NewWith(*this, element->GetIndex() + count, element->GetCount() - count) );
 		
 		if( index + 1 < pElements.GetCount() ){
 			// not the last element filling up to the available space
@@ -240,7 +239,7 @@ void deoglSharedBlockSPB::pCheckSize(){
 		element->SetCount( element->GetCount() + change );
 		
 	}else{
-		pElements.Add( deObject::Ref::New( new deoglSharedBlockSPBElement( *this, pSize, change ) ) );
+		pElements.Add( deObject::Ref::NewWith(*this, pSize, change) );
 	}
 	
 	pFreeElementCount += change;

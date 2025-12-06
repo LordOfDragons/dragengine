@@ -1174,9 +1174,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		devkQueue &queue = pVulkanDevice->GetComputeQueue();
 		const devkCommandPool::Ref commandPool( queue.CreateCommandPool() );
 		const int inputDataCount = 32;
-		devkBuffer::Ref bufferInput( devkBuffer::Ref::New(
-		new devkBuffer( pVulkanDevice, sizeof( uint32_t ) * inputDataCount,
-			VK_BUFFER_USAGE_STORAGE_BUFFER_BIT ) ) );
+		devkBuffer::Ref bufferInput( devkBuffer::Ref::NewWith(pVulkanDevice, sizeof( uint32_t ) * inputDataCount,
+			VK_BUFFER_USAGE_STORAGE_BUFFER_BIT) );
 		int i;
 		uint32_t bufferInputData[ inputDataCount ];
 		for( i=0; i<inputDataCount; i++ ){
@@ -1260,12 +1259,12 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x00000023,0x00000022,0x0000001f,0x00060041,0x00000020,0x00000024,0x0000001b,0x0000001d,
 			0x0000001e,0x0003003e,0x00000024,0x00000023,0x000100fd,0x00010038
 		};
-		decMemoryFile::Ref mfshader( decMemoryFile::Ref::New( new decMemoryFile( "/shaders/vulkantest.spv" ) ) );
-		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test1_spv_data, sizeof( test1_spv_data ) );
+		decMemoryFile::Ref mfshader( decMemoryFile::Ref::NewWith("/shaders/vulkantest.spv") );
+		decBaseFileWriter::Ref::NewWith(mfshader, false)->Write( test1_spv_data, sizeof( test1_spv_data ) );
 		
 		devkShaderModule::Ref shader;
 		VKTLOG( shader.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest.spv",
-			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+			decBaseFileReader::Ref::NewWith(mfshader) ) ), "LoadShader");
 		
 		devkPipelineConfiguration pipelineConfig;
 		pipelineConfig.SetDescriptorSetLayout( dslSSBO );
@@ -1396,12 +1395,12 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x000100fd,0x00010038
 		};
 		
-		mfshader.TakeOver( decMemoryFile::Ref::New( new decMemoryFile( "/shaders/vulkantest2_vert.spv" ) ) );
-		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test2_vert_spv_data, sizeof( test2_vert_spv_data ) );
+		mfshader.TakeOver( decMemoryFile::Ref::NewWith("/shaders/vulkantest2_vert.spv") );
+		decBaseFileWriter::Ref::NewWith(mfshader, false)->Write( test2_vert_spv_data, sizeof( test2_vert_spv_data ) );
 		
 		devkShaderModule::Ref shaderVert;
 		VKTLOG( shaderVert.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest2_vert.spv",
-			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+			decBaseFileReader::Ref::NewWith(mfshader) ) ), "LoadShader");
 		
 		const uint32_t test2_frag_spv_data[] = {
 			0x07230203,0x00010000,0x0008000a,0x00000014,0x00000000,0x00020011,0x00000001,0x0006000b,
@@ -1439,12 +1438,12 @@ void deoglRenderThread::pInitThreadPhase4(){
 			0x0000000f,0x0003003e,0x0000000a,0x00000013,0x000100fd,0x00010038
 		};
 		
-		mfshader.TakeOver( decMemoryFile::Ref::New( new decMemoryFile( "/shaders/vulkantest2_frag.spv" ) ) );
-		decBaseFileWriter::Ref::New( new decMemoryFileWriter( mfshader, false ) )->Write( test2_frag_spv_data, sizeof( test2_frag_spv_data ) );
+		mfshader.TakeOver( decMemoryFile::Ref::NewWith("/shaders/vulkantest2_frag.spv") );
+		decBaseFileWriter::Ref::NewWith(mfshader, false)->Write( test2_frag_spv_data, sizeof( test2_frag_spv_data ) );
 		
 		devkShaderModule::Ref shaderFrag;
 		VKTLOG( shaderFrag.TakeOver( new devkShaderModule( pVulkanDevice, "/shaders/vulkantest2_frag.spv",
-			decBaseFileReader::Ref::New( new decMemoryFileReader( mfshader ) ) ) ), "LoadShader");
+			decBaseFileReader::Ref::NewWith(mfshader) ) ), "LoadShader");
 		
 		struct sVertex{
 			struct{
@@ -1461,8 +1460,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 			{ {  0, -1, 0 }, { 0, 0, 0 }, 0 }
 		};
 		
-		bufferInput.TakeOver( devkBuffer::Ref::New( new devkBuffer( pVulkanDevice,
-			sizeof( vertices ), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT ) ) );
+		bufferInput.TakeOver( devkBuffer::Ref::NewWith(pVulkanDevice,
+			sizeof( vertices ), VK_BUFFER_USAGE_VERTEX_BUFFER_BIT) );
 		VKTLOG( bufferInput->SetData( vertices ), "Buffer SetData" )
 		{
 		VKTLOG(devkCommandBuffer &cbuf = bufferInput->BeginCommandBuffer(commandPool), "Buffer BeginCommandBuffer")

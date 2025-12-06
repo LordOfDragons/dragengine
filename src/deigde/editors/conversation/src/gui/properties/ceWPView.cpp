@@ -794,7 +794,7 @@ public:
 			return nullptr;
 		}
 		
-		const ceActorController::Ref controller( ceActorController::Ref::New( new ceActorController ) );
+		const ceActorController::Ref controller( ceActorController::Ref::NewWith() );
 		controller->SetName( name );
 		pose->GetControllers().Add( controller );
 		conversation->NotifyActorPosesChanged( pPanel.GetActor() );

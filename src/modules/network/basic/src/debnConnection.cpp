@@ -219,7 +219,7 @@ void debnConnection::ProcessMessage( decBaseFileReader &reader ){
 	
 	const int length = reader.GetLength() - reader.GetPosition();
 	
-	deNetworkMessage::Ref message(deNetworkMessage::Ref::New( new deNetworkMessage ));
+	deNetworkMessage::Ref message(deNetworkMessage::Ref::NewWith());
 	message->SetDataLength( length );
 	reader.Read( message->GetBuffer(), length );
 	
@@ -1078,7 +1078,7 @@ void debnConnection::pProcessReliableMessage( int number, decBaseFileReader &rea
 	const int position = reader.GetPosition();
 	const int length = reader.GetLength() - position;
 	
-	deNetworkMessage::Ref message(deNetworkMessage::Ref::New( new deNetworkMessage ));
+	deNetworkMessage::Ref message(deNetworkMessage::Ref::NewWith());
 	message->SetDataLength( length );
 	reader.Read( message->GetBuffer(), length );
 	
@@ -1103,7 +1103,7 @@ void debnConnection::pProcessLinkState( int number, decBaseFileReader &reader ){
 	}
 	
 	// create linked network state
-	deNetworkMessage::Ref message(deNetworkMessage::Ref::New( new deNetworkMessage ));
+	deNetworkMessage::Ref message(deNetworkMessage::Ref::NewWith());
 	message->SetDataLength( reader.ReadUShort() );
 	reader.Read( message->GetBuffer(), message->GetDataLength() );
 	
@@ -1261,8 +1261,7 @@ void debnConnection::pProcessLinkStateLong( int number, decBaseFileReader &reade
 	
 	eCommandCodes code = eccLinkDown;
 	if( bnState ){
-		if( bnState->LinkReadAndVerifyAllValues( deNetworkMessageReader::Ref::New(
-	new deNetworkMessageReader( values ) ) ) ){
+		if( bnState->LinkReadAndVerifyAllValues( deNetworkMessageReader::Ref::NewWith(values) ) ){
 			// create the link if not existing, assign it a new identifier and add it
 			if( ! stateLink ){
 				try{

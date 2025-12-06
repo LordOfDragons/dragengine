@@ -774,7 +774,7 @@ public:
 			return nullptr;
 		}
 		
-		const aeController::Ref duplicate( aeController::Ref::New( new aeController( *controller ) ) );
+		const aeController::Ref duplicate( aeController::Ref::NewWith(*controller) );
 		duplicate->SetName( name );
 		return new aeUAddController( animator, duplicate );
 	}

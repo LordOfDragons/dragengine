@@ -296,7 +296,7 @@ void ceWindowMain::SetConversation( ceConversation *conversation ){
 }
 
 void ceWindowMain::CreateNewConversation(){
-	SetConversation( ceConversation::Ref::New( new ceConversation( &GetEnvironment() ) ) );
+	SetConversation( ceConversation::Ref::NewWith(&GetEnvironment()) );
 }
 
 void ceWindowMain::SaveConversation( const char *filename ){
@@ -353,8 +353,7 @@ void ceWindowMain::LoadCTA( const char *filename ){
 		pLoadSaveSystem->LoadCTA( filename, *activeActor );
 		
 	}else{
-		const ceConversationActor::Ref actor( ceConversationActor::Ref::New(
-		new ceConversationActor( GetEnvironment() ) ) );
+		const ceConversationActor::Ref actor( ceConversationActor::Ref::NewWith(GetEnvironment()) );
 		pLoadSaveSystem->LoadCTA( filename, actor );
 		pConversation->AddActor( actor );
 	}

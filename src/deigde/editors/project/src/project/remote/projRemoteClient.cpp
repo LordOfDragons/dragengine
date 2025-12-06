@@ -75,7 +75,7 @@ pProject(project)
 	
 	pPathLogFile = path.GetPathNative();
 	
-	decDiskFileWriter::Ref::New(new decDiskFileWriter(pPathLogFile, false)); // clear file
+	decDiskFileWriter::Ref::NewWith(pPathLogFile, false); // clear file
 	
 	pLogFileReader.TakeOver(new decDiskFileReader(pPathLogFile));
 	
@@ -396,11 +396,10 @@ void projRemoteClient::NotifyActiveLaunchProfileChanged(){
 //////////////////////
 
 void projRemoteClient::pBuildGameXml(derlRunParameters &params, const projProfile &profile){
-	const decMemoryFile::Ref file(decMemoryFile::Ref::New(new decMemoryFile("run.degame")));
+	const decMemoryFile::Ref file(decMemoryFile::Ref::NewWith("run.degame"));
 	
 	{
-	const decMemoryFileWriter::Ref writer(decMemoryFileWriter::Ref::New(
-		new decMemoryFileWriter(file, false)));
+	const decMemoryFileWriter::Ref writer(decMemoryFileWriter::Ref::NewWith(file, false));
 	decXmlWriter xmlWriter(writer);
 	pBuildGameXml(xmlWriter, profile);
 	}

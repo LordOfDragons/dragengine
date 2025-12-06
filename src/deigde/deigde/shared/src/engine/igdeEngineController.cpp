@@ -225,14 +225,12 @@ const char *pathIGDEData, const char *pathIGDEModuleData ){
 			rootPath.SetFromUnix(baseGameDef.GetVFSPath());
 			logger.LogInfoFormat(LOGSOURCE, "- Adding base game definition '%s' as '%s' (read-only)",
 				diskPath.GetPathNative().GetString(), rootPath.GetPathUnix().GetString());
-			vfs.AddContainer(deVFSDiskDirectory::Ref::New(
-				new deVFSDiskDirectory(rootPath, diskPath, true)));
+			vfs.AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath, true));
 			
 			if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainerCount() > 0){
 				decPath relPath(diskPath.RelativePath(sharePath, true));
 				relPath.SetPrefix("/");
-				vfs.AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
-					rootPath, relPath, vfsAssetLibraries, true)));
+				vfs.AddContainer(deVFSRedirect::Ref::NewWith(rootPath, relPath, vfsAssetLibraries, true));
 			}
 		}
 	}

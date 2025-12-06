@@ -120,12 +120,12 @@ float deMsgdkGameConfig::pGetAttributeFloat(decXmlElementTag &tag, const char *n
 
 void deMsgdkGameConfig::pLoadFromXml(const decString& config)
 {
-	const decMemoryFile::Ref file(decMemoryFile::Ref::New(new decMemoryFile("/MicrosoftGame.config")));
+	const decMemoryFile::Ref file(decMemoryFile::Ref::NewWith("/MicrosoftGame.config"));
 	file->Resize(config.GetLength());
 	memcpy((char*)file->GetPointer(), config.GetString(), file->GetLength());
 
 	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
-	const decMemoryFileReader::Ref reader(decMemoryFileReader::Ref::New(new decMemoryFileReader(file)));
+	const decMemoryFileReader::Ref reader(decMemoryFileReader::Ref::NewWith(file));
 	decXmlParser(pModule.GetGameEngine()->GetLogger()).ParseXml(reader, xmlDoc);
 
 	xmlDoc->StripComments();

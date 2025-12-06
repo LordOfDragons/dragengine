@@ -661,7 +661,7 @@ long deglPanelGames::onPUGameShowLogs( FXObject*, FXSelector, void* ){
 	path.AddComponent( "games" );
 	path.AddComponent( game->GetIdentifier().ToHexString( false ) );
 	
-	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( path ) ) );
+	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::NewWith(path) );
 	if( ! container->ExistsFile( decPath::CreatePathUnix( "/logs" ) ) ){
 		FXMessageBox::information( this, MBOX_OK, "Show Logs",
 			"There are no logs for this game. Logs will be present after running the game" );

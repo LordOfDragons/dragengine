@@ -71,7 +71,7 @@ igdeBaseXML( logger, loggerSource ){
 ///////////////////////
 
 void saeLoadSaveSAnimation::LoadSAnimation( saeSAnimation &sanimation, decBaseFileReader &reader ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

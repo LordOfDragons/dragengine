@@ -124,7 +124,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 			achievementResult, &achievements, &achievementsCount),
 			"deMTGetStatsAndAchievements.pGetAchievements.XblAchievementsManagerResultGetAchievements");
 
-		const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+		const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 		
 		for(i=0; i<achievementsCount; i++){
 			const char * const name = achievements[i].id;

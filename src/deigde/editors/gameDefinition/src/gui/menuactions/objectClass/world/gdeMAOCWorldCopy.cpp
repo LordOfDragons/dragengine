@@ -62,7 +62,7 @@ igdeUndo *gdeMAOCWorldCopy::OnActionSubObject(gdeGameDefinition &gameDefinition,
 	}
 	
 	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(
-		new gdeClipboardDataOCWorld(gdeOCWorld::Ref::New(new gdeOCWorld(*world)))));
+		new gdeClipboardDataOCWorld(gdeOCWorld::Ref::NewWith(*world))));
 	return nullptr;
 }
 

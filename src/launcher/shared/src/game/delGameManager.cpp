@@ -121,9 +121,9 @@ void delGameManager::LoadGames( delEngineInstance &instance ){
 	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
 	const decPath pathDisk( decPath::CreatePathNative( pLauncher.GetPathGames() ) );
 	
-	const deVirtualFileSystem::Ref vfs2( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+	const deVirtualFileSystem::Ref vfs2( deVirtualFileSystem::Ref::NewWith() );
 	vfs2->RemoveAllContainers();
-	vfs2->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
+	vfs2->AddContainer( deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk) );
 	
 	pScanGameDefFiles( instance, vfs2, pathDisk, pathRoot );
 }
@@ -192,7 +192,7 @@ void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decStri
 		}
 		
 	}else{
-		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New( new decDiskFileReader( path ) ) );
+		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::NewWith(path) );
 		
 		try{
 			const delGame::Ref game( delGame::Ref::New( pLauncher.CreateGame() ) );

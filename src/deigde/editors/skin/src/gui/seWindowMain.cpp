@@ -716,7 +716,7 @@ public:
 				igdeCommonDialogs::Error( &pWindow, "Add Mapped", "A mapped with this name exists already." );
 				
 			}else{
-				return new seUMappedAdd( skin, seMapped::Ref::New( new seMapped( name ) ) );
+				return new seUMappedAdd( skin, seMapped::Ref::NewWith(name) );
 			}
 		}
 		

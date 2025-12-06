@@ -139,7 +139,7 @@ void igdeGizmo::SetShapeColor( const char *name, const decColor &color ){
 		
 	}else{
 		const int ddshapeIndex = pModelTextureNames.IndexOf( name );
-		pShapeColors.Add( deObject::Ref::New( new cShapeColor( name, color, ddshapeIndex ) ) );
+		pShapeColors.Add( deObject::Ref::NewWith(name, color, ddshapeIndex) );
 		if( ddshapeIndex != -1 ){
 			pApplyShapeColors();
 		}

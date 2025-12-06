@@ -236,9 +236,8 @@ void deoxrDPHtcViveTracker::CheckAttached(){
 					// tracker has not been seen before the session started and has
 					// been activated. we have to store the role and restart the
 					// session to properly use it
-					const Tracker::Ref newTracker( Tracker::Ref::New( new Tracker(
-						deoxrPath( instance, trackerPaths[ i ].persistentPath ),
-						pTrackers.GetCount() + 1 ) ) );
+					const Tracker::Ref newTracker( Tracker::Ref::NewWith(deoxrPath( instance, trackerPaths[ i ].persistentPath ),
+						pTrackers.GetCount() + 1) );
 					
 					newTracker->pathRole = deoxrPath( instance, trackerPaths[ i ].rolePath );
 					
@@ -480,9 +479,9 @@ const char *roleType, const char *localizedNameSuffix ){
 	const deoxrPath rolePath( GetInstance(), path );
 	const XrPath subactionPath[ 1 ] = { rolePath };
 	
-	pRoleActions.Add( RoleAction::Ref::New( new RoleAction( rolePath,
+	pRoleActions.Add( RoleAction::Ref::NewWith(rolePath,
 		actionSet.AddAction( deoxrAction::etInputPose, actionName,
-			actionLocalizedName, subactionPath, 1 ) ) ) );
+			actionLocalizedName, subactionPath, 1 )) );
 }
 
 const deoxrDPHtcViveTracker::RoleAction * deoxrDPHtcViveTracker::pGetRoleActionWith( const deoxrPath &path ) const{
@@ -658,7 +657,7 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 		}
 		
 		const decBaseFileReader::Ref fileReader( vfs.OpenFileForReading( filePath ) );
-		const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::New( new decXmlDocument ) );
+		const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::NewWith() );
 		decXmlParser( oxr.GetGameEngine()->GetLogger() ).ParseXml( fileReader, xmlDoc );
 		xmlDoc->StripComments();
 		xmlDoc->CleanCharData();
@@ -709,7 +708,7 @@ void deoxrDPHtcViveTracker::pLoadTrackerDatabase(){
 					continue;
 				}
 				
-				pTrackers.Add( Tracker::Ref::New( new Tracker( path, number ) ) );
+				pTrackers.Add( Tracker::Ref::NewWith(path, number) );
 			}
 		}
 		
@@ -767,10 +766,8 @@ void deoxrDPHtcViveTracker::pAddDevice( Tracker &tracker ){
 	tracker.device->SetActionPose( tracker.action );
 	tracker.device->SetSubactionPath( tracker.pathRole );
 	tracker.device->SetID( id );
-	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
-		*pGetSession(), tracker.action, tracker.pathRole, decVector() ) ) );
-// 	tracker.device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace(
-// 		*pGetSession(), tracker.action, tracker.path, decVector() ) ) );
+	tracker.device->SetSpacePose( deoxrSpace::Ref::NewWith(*pGetSession(), tracker.action, tracker.pathRole, decVector()) );
+// 	tracker.device->SetSpacePose( deoxrSpace::Ref::NewWith(// 		*pGetSession(), tracker.action, tracker.path, decVector()) );
 	
 	deoxrDeviceComponent * const trigger = pAddComponentTrigger( tracker.device );
 	pAddAxisTrigger( tracker.device, trigger );

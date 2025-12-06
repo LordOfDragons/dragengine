@@ -39,8 +39,7 @@ public:
 	{
 		SetEmptyRun( true );
 
-		const deVFSMemoryFiles::Ref container(deVFSMemoryFiles::Ref::New(
-			new deVFSMemoryFiles(decPath::CreatePathUnix("/"))));
+		const deVFSMemoryFiles::Ref container(deVFSMemoryFiles::Ref::NewWith(decPath::CreatePathUnix("/")));
 		container->AddMemoryFile(memoryFile);
 		pVFS->AddContainer(container);
 
@@ -248,7 +247,7 @@ void deMTLoadUserResource::OnFinished()
 		return;
 	}
 	
-	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New(new decMemoryFile("/image.png")));
+	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith("/image.png"));
 	memoryFile->Resize((int)bufferSize);
 	size_t bufferUsed;
 	result = XUserGetGamerPictureResult(GetAsyncBlockPtr(),

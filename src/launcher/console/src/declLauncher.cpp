@@ -71,8 +71,7 @@ pConfiguration( NULL ){
 	AddFileLogger( "delauncher-console" );
 	
 	// set launcher to use direct engine instance
-	SetEngineInstanceFactory( delEngineInstanceDirect::Factory::Ref::New(
-		new delEngineInstanceDirect::Factory ) );
+	SetEngineInstanceFactory( delEngineInstanceDirect::Factory::Ref::NewWith() );
 }
 
 declLauncher::~declLauncher(){
@@ -205,28 +204,28 @@ void declLauncher::pInitLogger(){
 	// clear logger chain set up by the shared launcher. we want a custom one
 	GetLogger()->RemoveAllLoggers();
 	
-	const declLoggerFiltered::Ref loggerLauncher( declLoggerFiltered::Ref::New( new declLoggerFiltered ) );
+	const declLoggerFiltered::Ref loggerLauncher( declLoggerFiltered::Ref::NewWith() );
 	GetLogger()->AddLogger( loggerLauncher );
 	
-	const deLoggerChain::Ref loggerLauncherError( deLoggerChain::Ref::New( new deLoggerChain ) );
+	const deLoggerChain::Ref loggerLauncherError( deLoggerChain::Ref::NewWith() );
 	loggerLauncher->SetLoggerError( loggerLauncherError );
 	
-	const deLoggerChain::Ref loggerLauncherWarn( deLoggerChain::Ref::New( new deLoggerChain ) );
+	const deLoggerChain::Ref loggerLauncherWarn( deLoggerChain::Ref::NewWith() );
 	loggerLauncher->SetLoggerWarning( loggerLauncherWarn );
 	
-	const deLoggerChain::Ref loggerLauncherInfo( deLoggerChain::Ref::New( new deLoggerChain ) );
+	const deLoggerChain::Ref loggerLauncherInfo( deLoggerChain::Ref::NewWith() );
 	loggerLauncher->SetLoggerInfo( loggerLauncherInfo );
 	
-	declLoggerFiltered::Ref loggerEngine( declLoggerFiltered::Ref::New( new declLoggerFiltered ) );
+	declLoggerFiltered::Ref loggerEngine( declLoggerFiltered::Ref::NewWith() );
 	loggerEngine->SetLoggerError( loggerLauncherError );
 	loggerEngine->SetLoggerWarning( loggerLauncherWarn );
 	pEngineLogger = loggerEngine;
 	
-	const deLoggerChain::Ref loggerEngineDebug( deLoggerChain::Ref::New( new deLoggerChain ) );
+	const deLoggerChain::Ref loggerEngineDebug( deLoggerChain::Ref::NewWith() );
 	pEngineLoggerDebug = loggerEngineDebug;
 	
 	// console
-	const deLoggerConsoleColor::Ref loggerConsole( deLoggerConsoleColor::Ref::New( new deLoggerConsoleColor ) );
+	const deLoggerConsoleColor::Ref loggerConsole( deLoggerConsoleColor::Ref::NewWith() );
 	loggerLauncherError->AddLogger( loggerConsole );
 	loggerEngineDebug->AddLogger( loggerConsole );
 	

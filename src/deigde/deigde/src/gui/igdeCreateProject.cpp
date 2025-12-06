@@ -315,7 +315,7 @@ void igdeCreateProject::pCreateGameDefinition(){
 	decPath path( pNativePathProject );
 	path.AddUnixPath( pPathGameDefProject );
 	
-	( decDiskFileWriter::Ref::New( new decDiskFileWriter( path.GetPathNative(), false ) ) )
+	( decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false) )
 		->Write( pSharedGameDefContent.GetString(), pSharedGameDefContent.GetLength() );
 }
 
@@ -323,8 +323,7 @@ void igdeCreateProject::pLoadSharedGameDefContent(){
 	decPath path;
 	path.SetFromNative( pWindowMain.GetConfiguration().GetPathShares() );
 	path.AddComponent( "newproject.degd" );
-	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New(
-	new decDiskFileReader( path.GetPathNative() ) ) );
+	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::NewWith(path.GetPathNative()) );
 	
 	const int contentLen = reader->GetLength();
 	pSharedGameDefContent.Set( ' ', contentLen );
@@ -440,7 +439,7 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	
 	// find files
 	if( ! file.GetPattern().IsEmpty() ){
-		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New( new deVirtualFileSystem ));
+		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 		
 		deCollectFileSearchVisitor collect( file.GetPattern() );
 		pVFS->SearchFiles( decPath::CreatePathUnix( VFS_DIR_TEMPLATE ), collect );

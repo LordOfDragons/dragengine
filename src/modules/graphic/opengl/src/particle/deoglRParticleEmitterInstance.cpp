@@ -91,7 +91,7 @@ pRenderThread( renderThread ),
 pEmitter( NULL ),
 pParentWorld( NULL ),
 pOctreeNode( NULL ),
-pWorldComputeElement( deoglWorldComputeElement::Ref::New( new WorldComputeElement( *this ) ) ),
+pWorldComputeElement( deoglWorldComputeElement::Ref::NewWith(*this) ),
 
 pBurstTime( 0.0f ),
 

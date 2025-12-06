@@ -102,7 +102,7 @@ void declActionDelgaHelper::Install(){
 	const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
 		new deVFSDiskDirectory( decPath::CreatePathNative( pLauncher.GetPathGames() ) ) ) );
 	
-	const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New( new decDiskFileReader( pFilename ) ) );
+	const decBaseFileReader::Ref reader( decBaseFileReader::Ref::NewWith(pFilename) );
 	
 	decPath target( decPath::CreatePathUnix( "/" ) );
 	target.AddComponent( decPath::CreatePathNative( pFilename ).GetLastComponent() );

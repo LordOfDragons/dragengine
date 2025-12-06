@@ -115,7 +115,7 @@ void meLSXMLHeightTerrain::LoadFromFile( meHeightTerrain &heightTerrain, decBase
 	pLSSys->GetWindowMain()->GetLogger()->LogInfoFormat( LOGSOURCE,
 		"XMLHeightTerrain: load height terrain %s", file.GetFilename() );
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( pLSSys->GetWindowMain()->GetEnvironment().GetLogger() ).ParseXml( &file, xmlDoc );
 	

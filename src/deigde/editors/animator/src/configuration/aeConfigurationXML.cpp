@@ -64,7 +64,7 @@ aeConfigurationXML::~aeConfigurationXML(){
 ///////////////
 
 void aeConfigurationXML::ReadFromFile( decBaseFileReader &reader, aeConfiguration &config ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

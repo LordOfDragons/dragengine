@@ -776,7 +776,7 @@ void delEngineInstanceThreaded::GetModuleParams( delEngineModule &module ){
 			
 			ReadString16FromPipe( string );
 			
-			parameters.Add( delEMParameter::Ref::New( new delEMParameter( i, info, string ) ) );
+			parameters.Add( delEMParameter::Ref::NewWith(i, info, string) );
 			
 		}catch( const deException &e ){
 			GetLauncher().GetLogger()->LogError( GetLauncher().GetLogSource(),
@@ -1193,8 +1193,7 @@ int delEngineInstanceThreaded::IsGameRunning(){
 				ReadString16FromPipe( paramName );
 				ReadString16FromPipe( paramValue );
 				
-				module->GetParameters().Add( delGPMParameter::Ref::New(
-					new delGPMParameter( paramName, paramValue ) ) );
+				module->GetParameters().Add( delGPMParameter::Ref::NewWith(paramName, paramValue) );
 			}
 			
 			// write any byte to pipe to signal process can exit now

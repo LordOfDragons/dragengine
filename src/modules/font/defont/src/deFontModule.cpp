@@ -95,7 +95,7 @@ deFontModule::~deFontModule() {
 ///////////////////////
 
 void deFontModule::LoadFont( decBaseFileReader &file, deFont &font ) {
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetGameEngine()->GetLogger() ).ParseXml( &file, xmlDoc );
 	

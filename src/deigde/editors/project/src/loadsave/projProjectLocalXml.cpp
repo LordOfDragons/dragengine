@@ -60,7 +60,7 @@ projProjectLocalXml::~projProjectLocalXml(){
 ///////////////
 
 void projProjectLocalXml::ReadFromFile( decBaseFileReader &reader, projProject &project ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

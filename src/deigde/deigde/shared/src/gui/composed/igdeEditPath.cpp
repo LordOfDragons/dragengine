@@ -519,7 +519,7 @@ void igdeEditPath::ValidatePath(){
 				path = decPath::AbsolutePathNative( pText->GetText(), pBasePath );
 			}
 			
-			decDiskFileReader::Ref::New( new decDiskFileReader( path.GetPathNative() ) );
+			decDiskFileReader::Ref::NewWith(path.GetPathNative());
 			pText->SetInvalidValue( false );
 		}
 		

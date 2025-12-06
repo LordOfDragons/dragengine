@@ -95,7 +95,7 @@ void ceLoadSaveLangPack::LoadLangPack( ceLangPack &langpack, decBaseFileReader &
 	for( i=0; i<entryCount; i++ ){
 		const deLanguagePackEntry &engEntry = engLangPack->GetEntryAt( i );
 		
-		const ceLangPackEntry::Ref entry( ceLangPackEntry::Ref::New( new ceLangPackEntry ) );
+		const ceLangPackEntry::Ref entry( ceLangPackEntry::Ref::NewWith() );
 		entry->SetName( engEntry.GetName() );
 		entry->SetText( engEntry.GetText() );
 		langpack.AddEntry( entry );

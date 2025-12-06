@@ -65,7 +65,7 @@ igdeUndo *gdeMAOCWorldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClas
 		(const gdeClipboardDataOCWorld &)(igdeClipboardData&)clip;
 	
 	igdeUndo * const undo = new gdeUOCAddWorld(&objectClass,
-		gdeOCWorld::Ref::New(new gdeOCWorld(*clipOCWorld.GetWorld())));
+		gdeOCWorld::Ref::NewWith(*clipOCWorld.GetWorld()));
 	undo->SetShortInfo("Paste object class world");
 	return undo;
 }

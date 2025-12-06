@@ -135,7 +135,7 @@ public:
 			undo.TakeOver( new lpeULangPackEntrySetText( entry, text ) );
 			
 		}else{
-			lpeLangPackEntry::Ref newEntry( lpeLangPackEntry::Ref::New( new lpeLangPackEntry ) );
+			lpeLangPackEntry::Ref newEntry( lpeLangPackEntry::Ref::NewWith() );
 			newEntry->SetName( entry->GetName() );
 			newEntry->SetText( text );
 			undo.TakeOver( new lpeULangPackEntryAdd( pView.GetLangPack(), newEntry, entry ) );
@@ -244,7 +244,7 @@ public:
 lpeViewLangPack::lpeViewLangPack( lpeWindowMain &windowMain ) :
 igdeContainerBorder( windowMain.GetEnvironment() ),
 pWindowMain( windowMain ),
-pListener( lpeLangPackListener::Ref::New( new lpeViewLangPackListener( *this ) ) ),
+pListener( lpeLangPackListener::Ref::NewWith(*this) ),
 preventUpdate( false )
 {
 	igdeEnvironment &env = GetEnvironment();

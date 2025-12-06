@@ -236,7 +236,7 @@ ceLangPack::Ref ceLoadSaveSystem::LoadLangPack( const char *filename ){
 	const int lsIndex = IndexOfLSLangPackMatching( filename );
 	DEASSERT_TRUE( lsIndex != -1 )
 	
-	const ceLangPack::Ref langpack( ceLangPack::Ref::New( new ceLangPack( filename ) ) );
+	const ceLangPack::Ref langpack( ceLangPack::Ref::NewWith(filename) );
 	GetLSLangPackAt( lsIndex )->LoadLangPack( langpack, decBaseFileReader::Ref::New(
 		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 			decPath::CreatePathUnix( filename ) ) ) );

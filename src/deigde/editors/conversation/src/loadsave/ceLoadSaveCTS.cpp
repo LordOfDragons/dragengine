@@ -74,7 +74,7 @@ igdeBaseXML( logger, loggerSource ){
 ///////////////////////
 
 void ceLoadSaveCTS::LoadCTS( ceConversation &conversation, decBaseFileReader &reader ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

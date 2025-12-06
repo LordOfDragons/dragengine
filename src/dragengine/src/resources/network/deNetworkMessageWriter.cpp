@@ -115,5 +115,5 @@ void deNetworkMessageWriter::Write( const void *buffer, int size ){
 }
 
 decBaseFileWriter::Ref deNetworkMessageWriter::Duplicate(){
-	return decBaseFileWriter::Ref::New( new deNetworkMessageWriter( *this ) );
+	return decBaseFileWriter::Ref::NewWith(*this);
 }

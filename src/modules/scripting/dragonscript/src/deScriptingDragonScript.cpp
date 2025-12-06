@@ -1296,8 +1296,8 @@ void deScriptingDragonScript::LogExceptionDS( const duException &exception ){
 
 // private functions
 void deScriptingDragonScript::pCreateParameters(){
-	pParameters.AddParameter(dedsParameter::Ref::New(new dedsPForceDpiAware(*this)));
-	pParameters.AddParameter(dedsParameter::Ref::New(new dedsPLogLevel(*this)));
+	pParameters.AddParameter(dedsParameter::Ref::NewWith(*this));
+	pParameters.AddParameter(dedsParameter::Ref::NewWith(*this));
 }
 
 void deScriptingDragonScript::pLoadBasicPackage(){
@@ -1925,8 +1925,7 @@ decString deScriptingDragonScript::BuildFullName( const dsClass *theClass ) cons
 void deScriptingDragonScript::pAddVFSContainerHideScriptDirectory(){
 	pRemoveVFSContainerHideScriptDirectory();
 	
-	const deVFSNull::Ref container( deVFSNull::Ref::New(
-		new deVFSNull( decPath::CreatePathUnix( pInitScriptDirectory ) ) ) );
+	const deVFSNull::Ref container( deVFSNull::Ref::NewWith(decPath::CreatePathUnix( pInitScriptDirectory )) );
 	container->SetHidden( true );
 	container->AddHiddenPath( decPath::CreatePathUnix( "/" ) );
 	pVFSContainerHideScriptDirectory = container;

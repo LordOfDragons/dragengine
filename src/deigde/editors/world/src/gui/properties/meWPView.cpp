@@ -250,10 +250,10 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelper();
-		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 1.0f, "Set to 1")));
-		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 0.1f, "Set to 0.1")));
-		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 0.01f, "Set to 0.01")));
-		helper.MenuCommand(contextMenu, igdeAction::Ref::New(new cActionSetSensitivity(pPanel, 10.0f, "Set to 10")));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::NewWith(pPanel, 1.0f, "Set to 1"));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::NewWith(pPanel, 0.1f, "Set to 0.1"));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::NewWith(pPanel, 0.01f, "Set to 0.01"));
+		helper.MenuCommand(contextMenu, igdeAction::Ref::NewWith(pPanel, 10.0f, "Set to 10"));
 	}
 };
 

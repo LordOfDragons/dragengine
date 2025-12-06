@@ -82,7 +82,7 @@ deoglSharedSPBElement *deoglSharedSPBList::AddElement(){
 		}
 	}
 	
-	const deoglSharedSPB::Ref spb( deoglSharedSPB::Ref::New( new deoglSharedSPB( pCreateBlock() ) ) );
+	const deoglSharedSPB::Ref spb( deoglSharedSPB::Ref::NewWith(pCreateBlock()) );
 	pSPBs.Add( spb );
 	
 	return spb->AddElement();

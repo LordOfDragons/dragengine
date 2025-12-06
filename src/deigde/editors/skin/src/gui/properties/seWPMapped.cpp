@@ -484,7 +484,7 @@ public:
 seWPMapped::seWPMapped( seWindowProperties &windowProperties ) :
 igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
 pWindowProperties( windowProperties ),
-pListener( seWPMappedListener::Ref::New( new seWPMappedListener( *this ) ) ),
+pListener( seWPMappedListener::Ref::NewWith(*this) ),
 pSkin( nullptr )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();

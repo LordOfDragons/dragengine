@@ -931,7 +931,7 @@ void meObject::WOAsyncFinished(){
 		const int textureCount = component->GetTextureCount();
 		int i;
 		for( i=0; i<textureCount; i++ ){
-			pWOTextures.Add( deObject::Ref::New( new cWOTexture( component->GetTextureAt( i ) ) ) );
+			pWOTextures.Add( deObject::Ref::NewWith(component->GetTextureAt( i )) );
 		}
 	}
 	

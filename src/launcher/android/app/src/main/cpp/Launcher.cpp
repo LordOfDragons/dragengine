@@ -24,8 +24,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved){
 }
 
 Launcher::Launcher(const sConfig &config) : delLauncher(config),
-pFDContainer(FDVFSContainer::Ref::New(new FDVFSContainer(
-    decPath::CreatePathUnix("/fds")))){
+pFDContainer(FDVFSContainer::Ref::NewWith(decPath::CreatePathUnix("/fds"))){
 }
 
 Launcher::~Launcher(){

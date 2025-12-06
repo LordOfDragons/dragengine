@@ -123,5 +123,5 @@ void deoglSkinStateCNGroup::Render( deoglSkinState &state, const deoglRenderCanv
 }
 
 deoglSkinStateConstructedNode::Ref deoglSkinStateCNGroup::Copy() const{
-	return deoglSkinStateConstructedNode::Ref::New( new deoglSkinStateCNGroup( *this ) );
+	return deoglSkinStateConstructedNode::Ref::NewWith(*this);
 }

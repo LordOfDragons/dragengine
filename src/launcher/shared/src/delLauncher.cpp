@@ -404,15 +404,13 @@ void delLauncher::pInitVFS(){
 	// as we want to read the config files one by one and mapping both containers to
 	// the same path would shadow the system config files.
 	if(! pPathConfigSystem.IsEmpty()){
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(
-			decPath::CreatePathUnix("/config/system"),
-			decPath::CreatePathNative(pPathConfigSystem), true)));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/config/system"),
+			decPath::CreatePathNative(pPathConfigSystem), true));
 	}
 	
 	if(! pPathConfigUser.IsEmpty()){
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(
-			decPath::CreatePathUnix("/config/user"),
-			decPath::CreatePathNative(pPathConfigUser), false)));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/config/user"),
+			decPath::CreatePathNative(pPathConfigUser), false));
 	}
 	
 	// add the data directory. currently there exists only one which is the system shares
@@ -420,15 +418,13 @@ void delLauncher::pInitVFS(){
 	// the shares container is set to read-write as the launcher has to potentiall install
 	// new games or uninstall them
 	if(! pPathShares.IsEmpty()){
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(
-			decPath::CreatePathUnix("/data"),
-			decPath::CreatePathNative(pPathShares), false)));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/data"),
+			decPath::CreatePathNative(pPathShares), false));
 	}
 	
 	// add the logs directory. this is read-write
 	if(! pPathLogs.IsEmpty()){
-		pVFS->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(
-			decPath::CreatePathUnix("/logs"),
-			decPath::CreatePathNative(pPathLogs), false)));
+		pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix("/logs"),
+			decPath::CreatePathNative(pPathLogs), false));
 	}
 }

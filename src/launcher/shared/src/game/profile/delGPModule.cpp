@@ -98,7 +98,7 @@ delGPModule &delGPModule::operator=( const delGPModule &module ){
 	pParameters.RemoveAll();
 	
 	for( i=0; i<count; i++ ){
-		pParameters.Add ( delGPMParameter::Ref::New( new delGPMParameter( *parameters.GetAt ( i ) ) ) );
+		pParameters.Add ( delGPMParameter::Ref::NewWith(*parameters.GetAt ( i )) );
 	}
 	
 	return *this;

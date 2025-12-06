@@ -74,7 +74,7 @@ void ceSpeechAnimationXML::ReadFromFile( const decString &pathSAnimation, decBas
 		basePath.SetFromUnix( "/" );
 	}
 	
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

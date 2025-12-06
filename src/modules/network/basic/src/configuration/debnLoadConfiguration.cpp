@@ -79,7 +79,7 @@ void debnLoadConfiguration::LoadConfig( debnConfiguration &configuration ){
 //////////////////////
 
 void debnLoadConfiguration::pLoadConfiguration( debnConfiguration &configuration, decBaseFileReader &reader ){
-	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::New( new decXmlDocument ) );
+	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::NewWith() );
 	decXmlParser( pNetwork.GetGameEngine()->GetLogger() ).ParseXml( &reader, xmlDoc );
 	
 	xmlDoc->StripComments();

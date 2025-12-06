@@ -70,7 +70,7 @@ dealEngineConfigXML::~dealEngineConfigXML(){
 ///////////////
 
 void dealEngineConfigXML::ReadFromFile( decBaseFileReader &reader, dealLauncher &launcher ){
-	decXmlDocument::Ref xmldoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmldoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser parser( &launcher.GetLogger() );
 	

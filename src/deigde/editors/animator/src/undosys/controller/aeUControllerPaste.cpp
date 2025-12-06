@@ -48,7 +48,7 @@ pAnimator( animator )
 	
 	int i;
 	for( i=0; i<controllerCount; i++ ){
-		pControllerList.Add( aeController::Ref::New( new aeController( *controllerList.GetAt( i ) ) ) );
+		pControllerList.Add( aeController::Ref::NewWith(*controllerList.GetAt( i )) );
 	}
 	
 	pIndex = animator->GetControllers().GetCount();

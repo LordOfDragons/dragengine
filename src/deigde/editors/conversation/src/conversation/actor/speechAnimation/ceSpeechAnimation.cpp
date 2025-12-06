@@ -160,14 +160,14 @@ void ceSpeechAnimation::CreateAnimator(){
 	
 	// use the existing animation state
 	const deAnimatorRuleStateSnapshot::Ref ruleReset(
-		deAnimatorRuleStateSnapshot::Ref::New( new deAnimatorRuleStateSnapshot ) );
+		deAnimatorRuleStateSnapshot::Ref::NewWith() );
 	ruleReset->SetUseLastState( true );
 	pEngAnimator->AddRule( ruleReset );
 	
 	// add rule for neutral vertex position sets
 	if( pNeutralVertexPositionSets.GetCount() > 0 ){
 		const deAnimatorRuleStateManipulator::Ref rule(
-			deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
+			deAnimatorRuleStateManipulator::Ref::NewWith() );
 		rule->SetEnableRotation( false );
 		rule->GetListVertexPositionSets() = pNeutralVertexPositionSets;
 		pEngAnimator->AddRule( rule );
@@ -194,7 +194,7 @@ void ceSpeechAnimation::CreateAnimator(){
 			// add an animation rule for the new viseme
 			if( ! phoneme.GetVertexPositionSet().IsEmpty() ){
 				const deAnimatorRuleStateManipulator::Ref rule(
-					deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
+					deAnimatorRuleStateManipulator::Ref::NewWith() );
 				rule->GetListVertexPositionSets().Add( phoneme.GetVertexPositionSet() );
 				rule->SetEnableRotation( false );
 				rule->SetMaximumVertexPositionSet( 1.0f );
@@ -203,7 +203,7 @@ void ceSpeechAnimation::CreateAnimator(){
 				
 			}else if( ! phoneme.GetMoveName().IsEmpty() ){
 				const deAnimatorRuleAnimation::Ref rule(
-					deAnimatorRuleAnimation::Ref::New( new deAnimatorRuleAnimation ) );
+					deAnimatorRuleAnimation::Ref::NewWith() );
 				rule->SetMoveName( phoneme.GetMoveName() );
 				rule->SetBlendMode( deAnimatorRule::ebmOverlay );
 				rule->GetTargetBlendFactor().AddLink( linkIndex );

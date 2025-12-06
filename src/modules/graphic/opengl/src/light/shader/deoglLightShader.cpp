@@ -213,7 +213,7 @@ void deoglLightShader::PrepareShader(cShaderPreparedListener *listener){
 
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
-	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::New(new deoglSPBlockUBO(pRenderThread)));
+	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::NewWith(pRenderThread));
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetCompact(false);
 	spb->SetParameterCount(EIUT_COUNT);
@@ -230,7 +230,7 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBInstParam() const{
 }
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
-	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::New(new deoglSPBlockUBO(pRenderThread)));
+	const deoglSPBlockUBO::Ref spb(deoglSPBlockUBO::Ref::NewWith(pRenderThread));
 	spb->SetRowMajor(pRenderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetCompact(false);
 	spb->SetParameterCount(ELUT_COUNT);
@@ -247,7 +247,7 @@ deoglSPBlockUBO::Ref deoglLightShader::CreateSPBLightParam() const{
 }
 
 deoglSPBlockUBO::Ref deoglLightShader::CreateSPBOccQueryParam( deoglRenderThread &renderThread ){
-	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::NewWith(renderThread) );
 	spb->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	spb->SetParameterCount( 1 );
 	spb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 );

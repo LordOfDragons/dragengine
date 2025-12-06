@@ -165,7 +165,7 @@ void deoxrApiLayer::pLoadLibrary(){
 }
 
 void deoxrApiLayer::pReadConfig(){
-	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New( new decDiskFileReader( pConfigFile ) ) );
+	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::NewWith(pConfigFile) );
 	const int contentLength = reader->GetLength();
 	decString content;
 	content.Set( ' ', contentLength );

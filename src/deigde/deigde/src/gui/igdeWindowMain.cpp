@@ -1709,12 +1709,12 @@ void igdeWindowMain::pInitLogger(){
 		pLoggerHistory->SetHistorySize( 250 );
 	}
 	
-	const deLoggerChain::Ref loggerChain( deLoggerChain::Ref::New( new deLoggerChain ) );
+	const deLoggerChain::Ref loggerChain( deLoggerChain::Ref::NewWith() );
 	
 	loggerChain->AddLogger( pLoggerHistory );
 	
 	//no console logging to support console use in scripts
-// 	loggerChain->AddLogger( deLoggerConsoleColor::Ref::New( new deLoggerConsoleColor ) );
+// 	loggerChain->AddLogger( deLoggerConsoleColor::Ref::NewWith() );
 	
 	loggerChain->AddLogger( deLoggerFile::Ref::New( new deLoggerFile(
 		decBaseFileWriter::Ref::New( pVFS->OpenFileForWriting(
@@ -2098,13 +2098,12 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 		
 		const decPath diskPath(decPath::CreatePathNative(gameDefinition->GetBasePath()));
 		const decPath rootPath(decPath::CreatePathUnix(gameDefinition->GetVFSPath()));
-		vfs->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(rootPath, diskPath, true)));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath, true));
 		
 		if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainerCount() > 0){
 			decPath relPath(diskPath.RelativePath(sharePath, true));
 			relPath.SetPrefix("/");
-			vfs->AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
-				rootPath, relPath, vfsAssetLibraries, true)));
+			vfs->AddContainer(deVFSRedirect::Ref::NewWith(rootPath, relPath, vfsAssetLibraries, true));
 		}
 		
 		igdeGDClassManager foundClasses;

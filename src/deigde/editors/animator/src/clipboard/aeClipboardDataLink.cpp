@@ -45,7 +45,7 @@ const char * const aeClipboardDataLink::TYPE_NAME = "link";
 aeClipboardDataLink::aeClipboardDataLink( aeLink *link ) :
 igdeClipboardData( TYPE_NAME )
 {
-	pLinks.Add( aeLink::Ref::New( new aeLink( *link ) ) );
+	pLinks.Add( aeLink::Ref::NewWith(*link) );
 }
 
 aeClipboardDataLink::aeClipboardDataLink( const aeLinkList &links ) :
@@ -55,7 +55,7 @@ igdeClipboardData( TYPE_NAME )
 	int i;
 	
 	for( i=0; i<count; i++ ){
-		pLinks.Add( aeLink::Ref::New( new aeLink( *links.GetAt( i ) ) ) );
+		pLinks.Add( aeLink::Ref::NewWith(*links.GetAt( i )) );
 	}
 }
 

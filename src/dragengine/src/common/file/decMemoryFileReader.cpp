@@ -129,5 +129,5 @@ void decMemoryFileReader::Read( void *buffer, int size ){
 }
 
 decBaseFileReader::Ref decMemoryFileReader::Duplicate(){
-	return decBaseFileReader::Ref::New( new decMemoryFileReader( *this ) );
+	return decBaseFileReader::Ref::NewWith(*this);
 }

@@ -56,7 +56,7 @@ pStatNames( nullptr ),
 pAchievementNames( nullptr ),
 pStatsReceived( false ),
 pAchievementsReceived( false ),
-pResultData( deServiceObject::Ref::New( new deServiceObject ) )
+pResultData( deServiceObject::Ref::NewWith() )
 {
 	deServiceObject::Ref so;
 	
@@ -110,7 +110,7 @@ deEosSdkFlowGetStatsAndAchievements::~deEosSdkFlowGetStatsAndAchievements(){
 void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 	const int count = pStats.GetCount();
 	if( count == 0 ){
-		pResultData->SetChildAt( "stats", deServiceObject::Ref::New( new deServiceObject ) );
+		pResultData->SetChildAt( "stats", deServiceObject::Ref::NewWith() );
 		pStatsReceived = true;
 		return;
 	}
@@ -137,7 +137,7 @@ void deEosSdkFlowGetStatsAndAchievements::QueryStats(){
 void deEosSdkFlowGetStatsAndAchievements::QueryPlayerAchievements(){
 	const int count = pAchievements.GetCount();
 	if( count == 0 ){
-		pResultData->SetChildAt( "achievements", deServiceObject::Ref::New( new deServiceObject ) );
+		pResultData->SetChildAt( "achievements", deServiceObject::Ref::NewWith() );
 		pAchievementsReceived = true;
 		return;
 	}
@@ -186,7 +186,7 @@ const EOS_Stats_OnQueryStatsCompleteCallbackInfo &data ){
 		EOS_EResult result;
 		int i;
 		
-		const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+		const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 		
 		for( i=0; i<count; i++ ){
 			const char * const name = pStatNames[ i ];
@@ -252,7 +252,7 @@ const EOS_Achievements_OnQueryPlayerAchievementsCompleteCallbackInfo &data ){
 		EOS_EResult result;
 		int i;
 		
-		const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+		const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 		
 		for( i=0; i<count; i++ ){
 			const char * const name = pAchievementNames[ i ];

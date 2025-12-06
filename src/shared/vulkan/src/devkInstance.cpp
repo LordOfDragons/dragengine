@@ -127,7 +127,7 @@ VkPhysicalDevice devkInstance::GetPhysicalDeviceAt( int index ) const{
 }
 
 devkDevice::Ref devkInstance::CreateDevice( int index, const devkDevice::DeviceConfig &config ){
-	return devkDevice::Ref::New( new devkDevice( *this, GetPhysicalDeviceAt( index ), config ) );
+	return devkDevice::Ref::NewWith(*this, GetPhysicalDeviceAt( index ), config);
 }
 
 devkDevice::Ref devkInstance::CreateDeviceHeadlessComputeOnly( int index ){

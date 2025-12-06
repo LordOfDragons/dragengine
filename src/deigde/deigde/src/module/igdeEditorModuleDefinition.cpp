@@ -174,7 +174,7 @@ void igdeEditorModuleDefinition::pLoadFile(){
 }
 
 void igdeEditorModuleDefinition::pParseFile( decBaseFileReader& reader ){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	int i, j;
 	

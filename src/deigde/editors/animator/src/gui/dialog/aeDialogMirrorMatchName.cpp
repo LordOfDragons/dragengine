@@ -81,9 +81,8 @@ void aeDialogMirrorMatchName::Set( const aeRuleMirror::cMatchName &matchName ){
 }
 
 aeRuleMirror::cMatchName::Ref aeDialogMirrorMatchName::CreateMatchName() const{
-	return aeRuleMirror::cMatchName::Ref::New( new aeRuleMirror::cMatchName(
-		pEditFirst->GetText(), pEditSecond->GetText(), ( deAnimatorRuleMirror::eMatchNameType )
-			( intptr_t )pCBType->GetSelectedItem()->GetData() ) );
+	return aeRuleMirror::cMatchName::Ref::NewWith(pEditFirst->GetText(), pEditSecond->GetText(), ( deAnimatorRuleMirror::eMatchNameType )
+			( intptr_t )pCBType->GetSelectedItem()->GetData());
 }
 
 void aeDialogMirrorMatchName::OnDialogShown(){

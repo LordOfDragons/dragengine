@@ -818,7 +818,7 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 		
 		searchPath.SetFromNative( basePath );
 		searchPath.AddUnixPath( directory );
-		vfs->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(searchPath)));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(searchPath));
 		
 		deCollectDirectorySearchVisitor collect;
 		vfs->SearchFiles( decPath::CreatePathUnix( "/" ), collect );
@@ -929,8 +929,7 @@ void deModuleSystem::pInitAssetLibrary(){
 	const decPath rootPath(decPath::CreatePathUnix("/"));
 	
 	if(pEngine->GetOSFileSystem()){
-		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSRedirect(
-			rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true)));
+		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::NewWith(rootPath, decPath::CreatePathUnix("/share"), pEngine->GetOSFileSystem(), true));
 		
 	}else{
 		pVFSAssetLibraries->AddContainer(deVFSContainer::Ref::New(new deVFSDiskDirectory(

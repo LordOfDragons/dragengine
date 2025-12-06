@@ -43,7 +43,7 @@
 
 deoglFont::deoglFont(deGraphicOpenGl &ogl, deFont &font) :
 pFont(font),
-pRFont(deoglRFont::Ref::New(new deoglRFont(ogl.GetRenderThread(), font))){
+pRFont(deoglRFont::Ref::NewWith(ogl.GetRenderThread(), font)){
 }
 
 deoglFont::~deoglFont(){

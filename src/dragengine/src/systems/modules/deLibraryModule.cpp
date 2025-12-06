@@ -341,7 +341,7 @@ void deLibraryModule::pParseXML( const char *filename, decBaseFileReader &reader
 	SetDefaultExtension( "" );
 	
 	// parse xml
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	parser.ParseXml( &reader, xmlDoc );
 	
