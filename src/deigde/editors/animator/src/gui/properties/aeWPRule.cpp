@@ -129,7 +129,7 @@ public:
 		"Copy rule to clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		aeClipboardDataRule::Ref cdata(aeClipboardDataRule::Ref::New( new aeClipboardDataRule( rule ) ));
+		aeClipboardDataRule::Ref cdata(aeClipboardDataRule::Ref::NewWith(rule));
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
 		return NULL;
 	}
@@ -142,7 +142,7 @@ public:
 		"Cut rule into clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator, aeRule *rule ){
-		aeClipboardDataRule::Ref cdata(aeClipboardDataRule::Ref::New( new aeClipboardDataRule( rule ) ));
+		aeClipboardDataRule::Ref cdata(aeClipboardDataRule::Ref::NewWith(rule));
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
 		
 		if( rule->GetParentGroup() ){
@@ -258,8 +258,7 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const aeWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
-			new igdeMenuCascade( menu.GetEnvironment(), "Add" ) ));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::NewWith(menu.GetEnvironment(), "Add"));
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddAnim() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddAnimDiff() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddAnimSelect() );
@@ -368,8 +367,7 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	content->AddChild( pSwitcher );
 	
-	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New(
-		new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild( panel );
 	
 	panel.TakeOver( pPanelAnim = new aeWPAPanelRuleAnimation( *this ) );
@@ -487,7 +485,7 @@ void aeWPRule::UpdateRuleTree(){
 			aeRule * const rule = list.GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::New( new igdeTreeItem( "" ) ));
+				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::NewWith(""));
 				pTreeRule->AppendItem( NULL, newItem );
 				nextItem = newItem;
 			}
@@ -549,7 +547,7 @@ void aeWPRule::UpdateRuleTreeItem( igdeTreeItem *item, aeRule *rule ){
 			aeRule * const rule2 = list.GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::New( new igdeTreeItem( "" ) ));
+				igdeTreeItem::Ref newItem(igdeTreeItem::Ref::NewWith(""));
 				pTreeRule->AppendItem( item, newItem );
 				nextItem = newItem;
 			}

@@ -209,8 +209,8 @@ void meCLVisibilityPaint::Paint(){
 void meCLVisibilityPaint::EndSession(){
 	// check if we have any changes at all
 	if( pOldVis ){
-		meUHTPaintVisibility::Ref undo(meUHTPaintVisibility::Ref::New(new meUHTPaintVisibility( pDrawMode, pWorld, decPoint( pAreaSector.x1, pAreaSector.y1 ),
-			decPoint( pAreaGrid.x1, pAreaGrid.y1 ), decPoint( pModifyWidth, pModifyHeight ), pOldVis )));
+		meUHTPaintVisibility::Ref undo(meUHTPaintVisibility::Ref::NewWith(
+			pDrawMode, pWorld, decPoint( pAreaSector.x1, pAreaSector.y1 ), decPoint( pAreaGrid.x1, pAreaGrid.y1 ), decPoint( pModifyWidth, pModifyHeight ), pOldVis));
 // 		pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "Visibility Paint: Adding Undo with %i bytes memory consumption.\n", undo->GetMemoryConsumption() );
 		pWorld->GetUndoSystem()->Add( undo, false );
 	}

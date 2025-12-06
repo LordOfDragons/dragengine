@@ -125,8 +125,8 @@ public:
 			return;
 		}
 		
-		aeURuleGroupSetApplicationType::Ref undo(aeURuleGroupSetApplicationType::Ref::New(
-			new aeURuleGroupSetApplicationType( rule, value ) ));
+		aeURuleGroupSetApplicationType::Ref undo(aeURuleGroupSetApplicationType::Ref::NewWith(
+			rule, value));
 		animator->GetUndoSystem()->Add( undo );
 	}
 };

@@ -398,8 +398,7 @@ public:
 		const meHTVRLink::Ref ruleLink(meHTVRLink::Ref::NewWith(wvnodeSource.GetRule(), indexSlotSource,
 			wvnodeTarget.GetRule(), indexSlotTarget));
 		
-		meUHTVLinkAdd::Ref undo(meUHTVLinkAdd::Ref::New(
-			new meUHTVLinkAdd( pView.GetVLayer(), ruleLink ) ));
+		meUHTVLinkAdd::Ref undo(meUHTVLinkAdd::Ref::NewWith(pView.GetVLayer(), ruleLink));
 		pView.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -413,7 +412,7 @@ public:
 			return;
 		}
 		
-		meUHTVLinkCut::Ref undo(meUHTVLinkCut::Ref::New( new meUHTVLinkCut( pView.GetVLayer() ) ));
+		meUHTVLinkCut::Ref undo(meUHTVLinkCut::Ref::NewWith(pView.GetVLayer()));
 		( ( meUHTVLinkCut& )( igdeUndo& )undo ).AddLinkToCut( ruleLink );
 		pView.GetWorld()->GetUndoSystem()->Add( undo );
 	}

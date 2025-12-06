@@ -193,8 +193,7 @@ public:
 		
 		const gdeProperty::Ref clipProperty(gdeProperty::Ref::NewWith(*property));
 		
-		gdeClipboardDataProperty::Ref clipData(gdeClipboardDataProperty::Ref::New(
-			new gdeClipboardDataProperty( clipProperty ) ));
+		gdeClipboardDataProperty::Ref clipData(gdeClipboardDataProperty::Ref::NewWith(clipProperty));
 		
 		pPanel.GetClipboard()->Set( clipData );
 	}

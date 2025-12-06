@@ -132,8 +132,8 @@ pSkin( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(400))));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
 	
 	pWindowProperties = new seWindowProperties( *this );
@@ -779,7 +779,7 @@ public:
 		"Add texture", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnAction( seSkin *skin ){
-		seDialogAddTexture::Ref dialog(seDialogAddTexture::Ref::New( new seDialogAddTexture( pWindow ) ));
+		seDialogAddTexture::Ref dialog(seDialogAddTexture::Ref::NewWith(pWindow));
 		if( ! dialog->Run( &pWindow ) ){
 			return NULL;
 		}
@@ -988,8 +988,7 @@ public:
 		"Add property", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnActionTexture( seSkin*, seTexture *texture ){
-		seDialogAddProperty::Ref refDialog(seDialogAddProperty::Ref::New(
-			new seDialogAddProperty( pWindow ) ));
+		seDialogAddProperty::Ref refDialog(seDialogAddProperty::Ref::NewWith(pWindow));
 		if( ! refDialog->Run( &pWindow ) ){
 			return NULL;
 		}

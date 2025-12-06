@@ -169,7 +169,7 @@ void igdeEditorModuleDefinition::UnloadModule(){
 //////////////////////
 
 void igdeEditorModuleDefinition::pLoadFile(){
-	decDiskFileReader::Ref reader(decDiskFileReader::Ref::New( new decDiskFileReader( pFilePath ) ));
+	decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(pFilePath));
 	pParseFile( reader );
 }
 

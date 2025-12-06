@@ -135,8 +135,8 @@ public:
 			return;
 		}
 		
-		aeUAnimatorSetRigPath::Ref undo(aeUAnimatorSetRigPath::Ref::New(
-			new aeUAnimatorSetRigPath( animator, editPath->GetPath() ) ));
+		aeUAnimatorSetRigPath::Ref undo(aeUAnimatorSetRigPath::Ref::NewWith(
+			animator, editPath->GetPath()));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -154,8 +154,8 @@ public:
 			return;
 		}
 		
-		aeUAnimatorSetAnimationPath::Ref undo(aeUAnimatorSetAnimationPath::Ref::New(
-			new aeUAnimatorSetAnimationPath( animator, editPath->GetPath() ) ));
+		aeUAnimatorSetAnimationPath::Ref undo(aeUAnimatorSetAnimationPath::Ref::NewWith(
+			animator, editPath->GetPath()));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -218,8 +218,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		aeClipboardDataBones::Ref clip(aeClipboardDataBones::Ref::New(
-			new aeClipboardDataBones( animator->GetListBones() ) ));
+		aeClipboardDataBones::Ref clip(aeClipboardDataBones::Ref::NewWith(animator->GetListBones()));
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
 		return nullptr;
 	}
@@ -394,8 +393,8 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position sets" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		aeClipboardDataVertexPositionSets::Ref clip(aeClipboardDataVertexPositionSets::Ref::New(
-			new aeClipboardDataVertexPositionSets( animator->GetListVertexPositionSets() ) ));
+		aeClipboardDataVertexPositionSets::Ref clip(aeClipboardDataVertexPositionSets::Ref::NewWith(
+			animator->GetListVertexPositionSets()));
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
 		return nullptr;
 	}

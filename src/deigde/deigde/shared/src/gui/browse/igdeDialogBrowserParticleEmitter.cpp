@@ -80,8 +80,8 @@ void igdeDialogBrowserParticleEmitter::SetSelectedParticleEmitter( igdeGDParticl
 
 bool igdeDialogBrowserParticleEmitter::SelectParticleEmitter( igdeWidget *owner,
 igdeGDParticleEmitter* &particleEmitter, const char *title ){
-	igdeDialogBrowserParticleEmitter::Ref refDialog(igdeDialogBrowserParticleEmitter::Ref::New(
-		new igdeDialogBrowserParticleEmitter( owner->GetEnvironment(), title ) ));
+	igdeDialogBrowserParticleEmitter::Ref refDialog(igdeDialogBrowserParticleEmitter::Ref::NewWith(
+		owner->GetEnvironment(), title));
 	igdeDialogBrowserParticleEmitter &dialog = ( igdeDialogBrowserParticleEmitter& )( igdeDialog& )refDialog;
 	if( particleEmitter ){
 		dialog.SetSelectedParticleEmitter( particleEmitter );

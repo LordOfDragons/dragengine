@@ -67,8 +67,8 @@ public:
 			return;
 		}
 		
-		meUHTVRuleCombineSetX::Ref undo(meUHTVRuleCombineSetX::Ref::New(new meUHTVRuleCombineSetX( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleCombine(), value )));
+		meUHTVRuleCombineSetX::Ref undo(meUHTVRuleCombineSetX::Ref::NewWith(
+			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleCombine(), value));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -86,8 +86,8 @@ public:
 			return;
 		}
 		
-		meUHTVRuleCombineSetY::Ref undo(meUHTVRuleCombineSetY::Ref::New(new meUHTVRuleCombineSetY( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleCombine(), value )));
+		meUHTVRuleCombineSetY::Ref undo(meUHTVRuleCombineSetY::Ref::NewWith(
+			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleCombine(), value));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -105,8 +105,8 @@ public:
 			return;
 		}
 		
-		meUHTVRuleCombineSetZ::Ref undo(meUHTVRuleCombineSetZ::Ref::New(new meUHTVRuleCombineSetZ( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleCombine(), value )));
+		meUHTVRuleCombineSetZ::Ref undo(meUHTVRuleCombineSetZ::Ref::NewWith(
+			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleCombine(), value));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -132,8 +132,8 @@ pRuleCombine( rule )
 	SetTitle( "Combine" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(new meWVNodeSlot( env, "Vector", "Vector composed of the input values",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleCombine::eosVector )));
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
+		env, "Vector", "Vector composed of the input values", false, *this, meWVNodeSlot::estVector, meHTVRuleCombine::eosVector));
 	AddSlot( slot );
 	
 	slot.TakeOver( new meWVNodeSlot( env, "X", "X component of vector",

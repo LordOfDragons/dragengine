@@ -265,7 +265,7 @@ public:
 		
 		decStringDictionary properties;
 		properties.SetAt( property, pPanel.GetPropertyValue() );
-		meCDProperties::Ref clip(meCDProperties::Ref::New( new meCDProperties( properties ) ));
+		meCDProperties::Ref clip(meCDProperties::Ref::NewWith(properties));
 		pPanel.GetClipboard()->Set( clip );
 	}
 	
@@ -289,8 +289,7 @@ public:
 			return;
 		}
 		
-		meCDProperties::Ref clip(meCDProperties::Ref::New(
-			new meCDProperties( pPanel.GetProperties() ) ));
+		meCDProperties::Ref clip(meCDProperties::Ref::NewWith(pPanel.GetProperties()));
 		pPanel.GetClipboard()->Set( clip );
 	}
 	

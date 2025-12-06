@@ -77,8 +77,8 @@ public:
 			return;
 		}
 		
-		ceUCAActorAddSetActor::Ref undo(ceUCAActorAddSetActor::Ref::New(
-			new ceUCAActorAddSetActor( topic, action, comboBox->GetText() ) ));
+		ceUCAActorAddSetActor::Ref undo(ceUCAActorAddSetActor::Ref::NewWith(
+			topic, action, comboBox->GetText()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -96,8 +96,8 @@ public:
 			return;
 		}
 		
-		ceUCAActorAddSetAliasID::Ref undo(ceUCAActorAddSetAliasID::Ref::New(
-			new ceUCAActorAddSetAliasID( topic, action, comboBox->GetText() ) ));
+		ceUCAActorAddSetAliasID::Ref undo(ceUCAActorAddSetAliasID::Ref::NewWith(
+			topic, action, comboBox->GetText()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

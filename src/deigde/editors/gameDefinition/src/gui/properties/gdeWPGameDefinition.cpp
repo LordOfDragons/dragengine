@@ -185,8 +185,8 @@ public:
 			return;
 		}
 		
-		gdeUGDSetDescription::Ref undo(gdeUGDSetDescription::Ref::New(
-			new gdeUGDSetDescription( gameDefinition, textArea->GetText() ) ));
+		gdeUGDSetDescription::Ref undo(gdeUGDSetDescription::Ref::NewWith(
+			gameDefinition, textArea->GetText()));
 		gameDefinition->GetUndoSystem()->Add( undo );
 	}
 };

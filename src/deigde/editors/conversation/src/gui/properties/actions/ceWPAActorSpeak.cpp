@@ -90,8 +90,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetActor::Ref undo(ceUCAASpeakSetActor::Ref::New(
-			new ceUCAASpeakSetActor( topic, action, comboBox->GetText() ) ));
+		ceUCAASpeakSetActor::Ref undo(ceUCAASpeakSetActor::Ref::NewWith(
+			topic, action, comboBox->GetText()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -109,8 +109,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxText::Ref undo(ceUCAASpeakSetTextBoxText::Ref::New(new ceUCAASpeakSetTextBoxText( topic, action,
-			decUnicodeString::NewFromUTF8( textField->GetText() ) )));
+		ceUCAASpeakSetTextBoxText::Ref undo(ceUCAASpeakSetTextBoxText::Ref::NewWith(
+			topic, action, decUnicodeString::NewFromUTF8( textField->GetText() )));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -138,8 +138,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxText::Ref undo(ceUCAASpeakSetTextBoxText::Ref::New(
-			new ceUCAASpeakSetTextBoxText( topic, action, decUnicodeString::NewFromUTF8( text ) ) ));
+		ceUCAASpeakSetTextBoxText::Ref undo(ceUCAASpeakSetTextBoxText::Ref::NewWith(
+			topic, action, decUnicodeString::NewFromUTF8( text )));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -157,8 +157,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxTextTranslate::Ref undo(ceUCAASpeakSetTextBoxTextTranslate::Ref::New(
-			new ceUCAASpeakSetTextBoxTextTranslate( topic, action, textField->GetText() ) ));
+		ceUCAASpeakSetTextBoxTextTranslate::Ref undo(ceUCAASpeakSetTextBoxTextTranslate::Ref::NewWith(
+			topic, action, textField->GetText()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -249,8 +249,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxText::Ref undo(ceUCAASpeakSetTextBoxText::Ref::New(
-			new ceUCAASpeakSetTextBoxText( topic, action, entry->GetText() ) ));
+		ceUCAASpeakSetTextBoxText::Ref undo(ceUCAASpeakSetTextBoxText::Ref::NewWith(
+			topic, action, entry->GetText()));
 		conversation->GetUndoSystem()->Add( undo );
 	}
 	
@@ -325,8 +325,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxTextStyle::Ref undo(ceUCAASpeakSetTextBoxTextStyle::Ref::New(
-			new ceUCAASpeakSetTextBoxTextStyle( topic, action, textField->GetText() ) ));
+		ceUCAASpeakSetTextBoxTextStyle::Ref undo(ceUCAASpeakSetTextBoxTextStyle::Ref::NewWith(
+			topic, action, textField->GetText()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -344,8 +344,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetMovement::Ref undo(ceUCAASpeakSetMovement::Ref::New(
-			new ceUCAASpeakSetMovement( topic, action, textField->GetText() ) ));
+		ceUCAASpeakSetMovement::Ref undo(ceUCAASpeakSetMovement::Ref::NewWith(
+			topic, action, textField->GetText()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -363,8 +363,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetPathSound::Ref undo(ceUCAASpeakSetPathSound::Ref::New(
-			new ceUCAASpeakSetPathSound( topic, action, editPath->GetPath() ) ));
+		ceUCAASpeakSetPathSound::Ref undo(ceUCAASpeakSetPathSound::Ref::NewWith(
+			topic, action, editPath->GetPath()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -383,8 +383,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetMinSpeechTime::Ref undo(ceUCAASpeakSetMinSpeechTime::Ref::New(
-			new ceUCAASpeakSetMinSpeechTime( topic, action, time ) ));
+		ceUCAASpeakSetMinSpeechTime::Ref undo(ceUCAASpeakSetMinSpeechTime::Ref::NewWith(
+			topic, action, time));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -403,8 +403,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakToggleUseSpeechAnimation::Ref undo(ceUCAASpeakToggleUseSpeechAnimation::Ref::New(
-			new ceUCAASpeakToggleUseSpeechAnimation( topic, action ) ));
+		ceUCAASpeakToggleUseSpeechAnimation::Ref undo(ceUCAASpeakToggleUseSpeechAnimation::Ref::NewWith(
+			topic, action));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

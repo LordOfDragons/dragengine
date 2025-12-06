@@ -73,7 +73,6 @@ pIndex( index )
 ///////////////
 
 void ceWPTMAIfElseCaseMove::OnAction(){
-	ceUCAIfElseCaseMove::Ref undo(ceUCAIfElseCaseMove::Ref::New(
-		new ceUCAIfElseCaseMove( pTopic, pIfElse, pIfCase, pIndex ) ));
+	ceUCAIfElseCaseMove::Ref undo(ceUCAIfElseCaseMove::Ref::NewWith(pTopic, pIfElse, pIfCase, pIndex));
 	pConversation->GetUndoSystem()->Add( undo );
 }

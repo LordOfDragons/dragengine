@@ -305,8 +305,7 @@ void igdeEditorModuleManager::pScanForModules(){
 		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New( new deVirtualFileSystem ));
 		
 		const decPath searchPath( decPath::CreatePathNative( pPathModules ) );
-		deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(
-			new deVFSDiskDirectory( searchPath ) ));
+		deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(searchPath));
 		vfs->AddContainer( container );
 		
 		deCollectDirectorySearchVisitor collectDirectories;

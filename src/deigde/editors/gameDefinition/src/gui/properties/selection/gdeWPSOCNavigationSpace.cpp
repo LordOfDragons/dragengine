@@ -165,8 +165,8 @@ public:
 			return;
 		}
 		
-		gdeUOCNavSpaceSetPath::Ref undo(gdeUOCNavSpaceSetPath::Ref::New(
-			new gdeUOCNavSpaceSetPath( pPanel.GetObjectClass(), navspace, editPath->GetPath() ) ));
+		gdeUOCNavSpaceSetPath::Ref undo(gdeUOCNavSpaceSetPath::Ref::NewWith(
+			pPanel.GetObjectClass(), navspace, editPath->GetPath()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -340,8 +340,8 @@ public:
 			return;
 		}
 		
-		gdeUOCNavSpaceSetPropertyName::Ref undo(gdeUOCNavSpaceSetPropertyName::Ref::New(new gdeUOCNavSpaceSetPropertyName(
-			pPanel.GetObjectClass(), pPanel.GetNavigationSpace(), propertyName, comboBox->GetText() )));
+		gdeUOCNavSpaceSetPropertyName::Ref undo(gdeUOCNavSpaceSetPropertyName::Ref::NewWith(
+			pPanel.GetObjectClass(), pPanel.GetNavigationSpace(), propertyName, comboBox->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

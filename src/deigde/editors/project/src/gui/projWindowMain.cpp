@@ -258,8 +258,8 @@ void projWindowMain::LoadProject(){
 void projWindowMain::LoadProjectLocal( projProject &project ){
 	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 	
-	deVFSDiskDirectory::Ref directory(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory( 
-		decPath::CreatePathNative( gameProject.GetDirectoryPath() ) )));
+	deVFSDiskDirectory::Ref directory(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathNative( gameProject.GetDirectoryPath() )));
 	
 	decBaseFileReader::Ref reader;
 	decPath path( decPath::CreatePathUnix( gameProject.GetPathLocal() ) );
@@ -283,8 +283,7 @@ void projWindowMain::SaveProject(){
 		return;
 	}
 	
-	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New(
-		new decDiskFileWriter( pProject->GetFilePath(), false ) ));
+	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::NewWith(pProject->GetFilePath(), false));
 	projProjectXml( GetLogger(), LOGSOURCE ).WriteToFile( writer, *pProject );
 	pProject->SetChanged( false );
 }
@@ -296,8 +295,8 @@ void projWindowMain::SaveProjectLocal(){
 	
 	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 	
-	deVFSDiskDirectory::Ref directory(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory( 
-		decPath::CreatePathNative( gameProject.GetDirectoryPath() ) )));
+	deVFSDiskDirectory::Ref directory(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathNative( gameProject.GetDirectoryPath() )));
 	
 	decBaseFileWriter::Ref writer;
 	decPath path( decPath::CreatePathUnix( gameProject.GetPathLocal() ) );
@@ -640,8 +639,7 @@ public:
 			return;
 		}
 		
-		projUProfileRemove::Ref undo(projUProfileRemove::Ref::New(
-			new projUProfileRemove( project, profile ) ));
+		projUProfileRemove::Ref undo(projUProfileRemove::Ref::NewWith(project, profile));
 		project->GetUndoSystem()->Add( undo );
 	}
 	
@@ -738,8 +736,8 @@ public:
 			return;
 		}
 		
-		projDialogDistribute::Ref dialog(projDialogDistribute::Ref::New(
-			new projDialogDistribute( pWindow, project->GetActiveProfile() ) ));
+		projDialogDistribute::Ref dialog(projDialogDistribute::Ref::NewWith(
+			pWindow, project->GetActiveProfile()));
 		dialog->Run( &pWindow );
 	}
 	

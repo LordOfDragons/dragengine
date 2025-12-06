@@ -64,8 +64,8 @@ public:
 			return;
 		}
 		
-		meUHTVRuleCompSetVector::Ref undo(meUHTVRuleCompSetVector::Ref::New(new meUHTVRuleCompSetVector( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleComponents(), editVector->GetVector() )));
+		meUHTVRuleCompSetVector::Ref undo(meUHTVRuleCompSetVector::Ref::NewWith(
+			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleComponents(), editVector->GetVector()));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -91,8 +91,8 @@ pRuleComponents( rule )
 	SetTitle( "Components" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(new meWVNodeSlot( env, "X", "X component of vector",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosX )));
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
+		env, "X", "X component of vector", false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosX));
 	AddSlot( slot );
 	
 	slot.TakeOver( new meWVNodeSlot( env, "Y", "Y component of vector",

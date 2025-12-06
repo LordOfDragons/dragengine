@@ -241,8 +241,8 @@ public:
 			return;
 		}
 		
-		gdeUOCSetDescription::Ref undo(gdeUOCSetDescription::Ref::New(
-			new gdeUOCSetDescription( objectClass, textArea->GetText() ) ));
+		gdeUOCSetDescription::Ref undo(gdeUOCSetDescription::Ref::NewWith(
+			objectClass, textArea->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -563,8 +563,7 @@ public:
 			inherit.SetPropertyPrefix( ioc->GetDefaultInheritPropertyPrefix() );
 		}
 		
-		gdeUOCAddInherit::Ref undo(gdeUOCAddInherit::Ref::New(
-			new gdeUOCAddInherit( objectClass, &inherit ) ));
+		gdeUOCAddInherit::Ref undo(gdeUOCAddInherit::Ref::NewWith(objectClass, &inherit));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
 		pPanel.SelectInherit( &inherit );
@@ -843,8 +842,7 @@ public:
 		decStringDictionary values( objectClass->GetPropertyValues() );
 		values.SetAt( key, value );
 		
-		gdeUOCSetPropertyValues::Ref undo(gdeUOCSetPropertyValues::Ref::New(
-			new gdeUOCSetPropertyValues( objectClass, values ) ));
+		gdeUOCSetPropertyValues::Ref undo(gdeUOCSetPropertyValues::Ref::NewWith(objectClass, values));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -973,8 +971,7 @@ public:
 		
 		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
 		
-		gdeUOCAddTexture::Ref undo(gdeUOCAddTexture::Ref::New(
-			new gdeUOCAddTexture( objectClass, texture ) ));
+		gdeUOCAddTexture::Ref undo(gdeUOCAddTexture::Ref::NewWith(objectClass, texture));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
 		objectClass->SetActiveTexture( texture );
@@ -1046,8 +1043,8 @@ public:
 			return;
 		}
 		
-		gdeUOCTextureSetPathSkin::Ref undo(gdeUOCTextureSetPathSkin::Ref::New(
-			new gdeUOCTextureSetPathSkin( pPanel.GetObjectClass(), texture, editPath->GetPath() ) ));
+		gdeUOCTextureSetPathSkin::Ref undo(gdeUOCTextureSetPathSkin::Ref::NewWith(
+			pPanel.GetObjectClass(), texture, editPath->GetPath()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -1101,8 +1098,8 @@ public:
 			return;
 		}
 		
-		gdeUOCTextureSetColorTint::Ref undo(gdeUOCTextureSetColorTint::Ref::New(
-			new gdeUOCTextureSetColorTint( pPanel.GetObjectClass(), texture, colorBox->GetColor() ) ));
+		gdeUOCTextureSetColorTint::Ref undo(gdeUOCTextureSetColorTint::Ref::NewWith(
+			pPanel.GetObjectClass(), texture, colorBox->GetColor()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

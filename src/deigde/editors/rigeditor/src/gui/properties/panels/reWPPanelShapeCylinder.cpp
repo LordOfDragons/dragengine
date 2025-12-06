@@ -73,8 +73,8 @@ public:
 			return;
 		}
 		
-		reUSetShapeCylinderHalfHeight::Ref undo(reUSetShapeCylinderHalfHeight::Ref::New(
-			new reUSetShapeCylinderHalfHeight( cylinder, value ) ));
+		reUSetShapeCylinderHalfHeight::Ref undo(reUSetShapeCylinderHalfHeight::Ref::NewWith(
+			cylinder, value));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -98,8 +98,8 @@ public:
 			return;
 		}
 		
-		reUSetShapeCylinderTopRadius::Ref undo(reUSetShapeCylinderTopRadius::Ref::New(
-			new reUSetShapeCylinderTopRadius( cylinder, value ) ));
+		reUSetShapeCylinderTopRadius::Ref undo(reUSetShapeCylinderTopRadius::Ref::NewWith(
+			cylinder, value));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -123,8 +123,8 @@ public:
 			return;
 		}
 		
-		reUSetShapeCylinderBottomRadius::Ref undo(reUSetShapeCylinderBottomRadius::Ref::New(
-			new reUSetShapeCylinderBottomRadius( cylinder, value ) ));
+		reUSetShapeCylinderBottomRadius::Ref undo(reUSetShapeCylinderBottomRadius::Ref::NewWith(
+			cylinder, value));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}

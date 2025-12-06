@@ -83,7 +83,7 @@ void ceWPTTreeItem::AddItem( ceWPTTreeItemModel *model ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::New( new ceWPTTreeItem( pTreeList ) ));
+	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::NewWith(pTreeList));
 	pTreeList->AppendItem( this, item );
 	( ( ceWPTTreeItem& )( igdeTreeItem& )item ).SetModel( model );
 }
@@ -102,7 +102,7 @@ void ceWPTTreeItem::InsertItem( ceWPTTreeItemModel *model, int position ){
 		}
 	}
 	
-	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::New( new ceWPTTreeItem( pTreeList ) ));
+	ceWPTTreeItem::Ref item(ceWPTTreeItem::Ref::NewWith(pTreeList));
 	
 	if( beforeItem ){
 		pTreeList->InsertItemBefore( beforeItem, item );

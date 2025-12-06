@@ -68,8 +68,8 @@ public:
 	pDialog( dialog ){ }
 	
 	virtual void OnAction(){
-		igdeDialogTexturePropertyList::Ref dialog(igdeDialogTexturePropertyList::Ref::New(
-			new igdeDialogTexturePropertyList( pDialog.GetEnvironment() ) ));
+		igdeDialogTexturePropertyList::Ref dialog(igdeDialogTexturePropertyList::Ref::NewWith(
+			pDialog.GetEnvironment()));
 		dialog->Run( &pDialog );
 	}
 };
@@ -93,8 +93,8 @@ pWindowMain( windowMain )
 	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabel::Ref header(igdeLabel::Ref::New(
-		new igdeLabel( env, "Multi-Select properties or enter custom name." ) ));
+	igdeLabel::Ref header(igdeLabel::Ref::NewWith(
+		env, "Multi-Select properties or enter custom name."));
 	
 	
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) );

@@ -81,8 +81,8 @@ public:
 			return;
 		}
 		
-		ceUCASetAParamSetActor::Ref undo(ceUCASetAParamSetActor::Ref::New(
-			new ceUCASetAParamSetActor( topic, action, comboBox->GetText() ) ));
+		ceUCASetAParamSetActor::Ref undo(ceUCASetAParamSetActor::Ref::NewWith(
+			topic, action, comboBox->GetText()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -100,8 +100,8 @@ public:
 			return;
 		}
 		
-		ceUCASetAParamSetName::Ref undo(ceUCASetAParamSetName::Ref::New(
-			new ceUCASetAParamSetName( topic, action, textField->GetText() ) ));
+		ceUCASetAParamSetName::Ref undo(ceUCASetAParamSetName::Ref::NewWith(
+			topic, action, textField->GetText()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -125,8 +125,7 @@ public:
 			return;
 		}
 		
-		ceUCASetAParamSetOp::Ref undo(ceUCASetAParamSetOp::Ref::New(
-			new ceUCASetAParamSetOp( topic, action, newOperator ) ));
+		ceUCASetAParamSetOp::Ref undo(ceUCASetAParamSetOp::Ref::NewWith(topic, action, newOperator));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -145,8 +144,7 @@ public:
 			return;
 		}
 		
-		ceUCASetAParamSetValue::Ref undo(ceUCASetAParamSetValue::Ref::New(
-			new ceUCASetAParamSetValue( topic, action, value ) ));
+		ceUCASetAParamSetValue::Ref undo(ceUCASetAParamSetValue::Ref::NewWith(topic, action, value));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -164,8 +162,8 @@ public:
 			return;
 		}
 		
-		ceUCASetAParamSetValueVariable::Ref undo(ceUCASetAParamSetValueVariable::Ref::New(
-			new ceUCASetAParamSetValueVariable( topic, action, textField->GetText() ) ));
+		ceUCASetAParamSetValueVariable::Ref undo(ceUCASetAParamSetValueVariable::Ref::NewWith(
+			topic, action, textField->GetText()));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

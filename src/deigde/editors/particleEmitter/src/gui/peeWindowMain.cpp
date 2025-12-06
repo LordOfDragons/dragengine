@@ -103,15 +103,15 @@ pEmitter( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(360))));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(360)));
 	AddChild( splitted );
 	
 	pWindowProperties = new peeWindowProperties( *this );
 	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
 	
-	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espBottom,
-		igdeApplication::app().DisplayScaled(260))));
+	igdeContainerSplitted::Ref splitted2(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espBottom, igdeApplication::app().DisplayScaled(260)));
 	splitted->AddChild( splitted2, igdeContainerSplitted::eaCenter );
 	
 	pWindowCurves = new peeWindowCurves( *this );

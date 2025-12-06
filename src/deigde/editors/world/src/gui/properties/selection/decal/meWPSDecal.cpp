@@ -287,7 +287,7 @@ public:
 			return;
 		}
 		
-		meUDecalSkin::Ref undo(meUDecalSkin::Ref::New( new meUDecalSkin( decal, editPath->GetPath() ) ));
+		meUDecalSkin::Ref undo(meUDecalSkin::Ref::NewWith(decal, editPath->GetPath()));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -335,8 +335,7 @@ public:
 			return;
 		}
 		
-		meUDecalColorTint::Ref undo(meUDecalColorTint::Ref::New(
-			new meUDecalColorTint( decal, colorBox->GetColor() ) ));
+		meUDecalColorTint::Ref undo(meUDecalColorTint::Ref::NewWith(decal, colorBox->GetColor()));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };

@@ -66,8 +66,8 @@ public:
 			return;
 		}
 		
-		meUHTVRuleResultSetProb::Ref undo(meUHTVRuleResultSetProb::Ref::New(new meUHTVRuleResultSetProb( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleResult(), value )));
+		meUHTVRuleResultSetProb::Ref undo(meUHTVRuleResultSetProb::Ref::NewWith(
+			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleResult(), value));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -85,8 +85,8 @@ public:
 			return;
 		}
 		
-		meUHTVRuleResultSetVar::Ref undo(meUHTVRuleResultSetVar::Ref::New(new meUHTVRuleResultSetVar( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleResult(), value )));
+		meUHTVRuleResultSetVar::Ref undo(meUHTVRuleResultSetVar::Ref::NewWith(
+			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleResult(), value));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -112,8 +112,8 @@ pRuleResult( rule )
 	SetTitle( "Result" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(new meWVNodeSlot( env, "Probability", "Probability in the range from 0 to 1",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability )));
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
+		env, "Probability", "Probability in the range from 0 to 1", true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability));
 	helper.EditFloat( slot, "Probability if slot is not connected.",
 		pEditProbability, new cTextProbability( *this ) );
 	AddSlot( slot );

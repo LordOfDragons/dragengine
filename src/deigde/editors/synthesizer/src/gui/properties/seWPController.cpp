@@ -256,8 +256,7 @@ public:
 		decCurveBezier curve;
 		CreateCurve( *controller, curve );
 		
-		seUControllerSetCurve::Ref undo(seUControllerSetCurve::Ref::New(
-			new seUControllerSetCurve( controller, curve ) ));
+		seUControllerSetCurve::Ref undo(seUControllerSetCurve::Ref::NewWith(controller, curve));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 		pEditCurve->ResetView();
 		return NULL;

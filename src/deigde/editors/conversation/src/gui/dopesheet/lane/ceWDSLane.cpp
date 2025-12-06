@@ -461,8 +461,8 @@ public:
 			return;
 		}
 		
-		igdeMenuCascade::Ref contextMenu(igdeMenuCascade::Ref::New(
-			new igdeMenuCascade( pLane.GetWindow().GetEnvironment() ) ));
+		igdeMenuCascade::Ref contextMenu(igdeMenuCascade::Ref::NewWith(
+			pLane.GetWindow().GetEnvironment()));
 		
 		pLane.OnContextMenu( contextMenu, position );
 		

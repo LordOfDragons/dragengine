@@ -292,7 +292,7 @@ public:
 			return;
 		}
 		
-		seUMappedSetName::Ref undo(seUMappedSetName::Ref::New( new seUMappedSetName( mapped, value ) ));
+		seUMappedSetName::Ref undo(seUMappedSetName::Ref::NewWith(mapped, value));
 		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -315,8 +315,7 @@ public:
 			return;
 		}
 		
-		seUMappedSetInputType::Ref undo(seUMappedSetInputType::Ref::New(
-			new seUMappedSetInputType( mapped, type ) ));
+		seUMappedSetInputType::Ref undo(seUMappedSetInputType::Ref::NewWith(mapped, type));
 		skin->GetUndoSystem()->Add( undo );
 	}
 };
@@ -466,8 +465,8 @@ public:
 			return;
 		}
 		
-		seUMappedSetRenderableComponent::Ref undo(seUMappedSetRenderableComponent::Ref::New(
-			new seUMappedSetRenderableComponent( mapped, component ) ));
+		seUMappedSetRenderableComponent::Ref undo(seUMappedSetRenderableComponent::Ref::NewWith(
+			mapped, component));
 		skin->GetUndoSystem()->Add( undo );
 	}
 };

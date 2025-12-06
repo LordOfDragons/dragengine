@@ -71,8 +71,8 @@ igdeUndo *gdeMAOCNavSpaceCopy::OnActionSubObject( gdeGameDefinition &gameDefinit
 	
 	const gdeOCNavigationSpace::Ref clipOCNavigationSpace(gdeOCNavigationSpace::Ref::NewWith(*navSpace));
 	
-	gdeClipboardDataOCNavSpace::Ref clipData(gdeClipboardDataOCNavSpace::Ref::New(
-		new gdeClipboardDataOCNavSpace( clipOCNavigationSpace ) ));
+	gdeClipboardDataOCNavSpace::Ref clipData(gdeClipboardDataOCNavSpace::Ref::NewWith(
+		clipOCNavigationSpace));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

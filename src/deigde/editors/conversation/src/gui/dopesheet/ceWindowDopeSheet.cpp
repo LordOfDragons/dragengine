@@ -397,7 +397,7 @@ pVAPreview( NULL )
 	panel2->AddChild( panel3 );
 	
 	pDopeSheet.TakeOver( new cDopeSheet( *this ) );
-	cMouseKeyListener::Ref mklistener(cMouseKeyListener::Ref::New( new cMouseKeyListener( *this ) ));
+	cMouseKeyListener::Ref mklistener(cMouseKeyListener::Ref::NewWith(*this));
 	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).AddListener( mklistener );
 	panel2->AddChild( pDopeSheet );
 	

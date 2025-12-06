@@ -260,8 +260,8 @@ public:
 			triggerTargetList = &dummyList;
 		}
 		
-		igdeTriggerExpressionDialog::Ref refDialog(igdeTriggerExpressionDialog::Ref::New(new igdeTriggerExpressionDialog( pWidget.GetEnvironment(),
-			*triggerTargetList, pWidget.GetTriggerExpressionParser() )));
+		igdeTriggerExpressionDialog::Ref refDialog(igdeTriggerExpressionDialog::Ref::NewWith(
+			pWidget.GetEnvironment(), *triggerTargetList, pWidget.GetTriggerExpressionParser()));
 		igdeTriggerExpressionDialog &dialog = ( igdeTriggerExpressionDialog& )( igdeDialog& )refDialog;
 		
 		dialog.SetExpression( pWidget.GetValue() );

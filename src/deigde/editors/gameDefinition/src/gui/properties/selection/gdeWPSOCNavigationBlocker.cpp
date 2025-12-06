@@ -340,8 +340,8 @@ public:
 			return;
 		}
 		
-		gdeUOCNavBlockerSetPropertyName::Ref undo(gdeUOCNavBlockerSetPropertyName::Ref::New(new gdeUOCNavBlockerSetPropertyName(
-			pPanel.GetObjectClass(), pPanel.GetNavigationBlocker(), propertyName, comboBox->GetText() )));
+		gdeUOCNavBlockerSetPropertyName::Ref undo(gdeUOCNavBlockerSetPropertyName::Ref::NewWith(
+			pPanel.GetObjectClass(), pPanel.GetNavigationBlocker(), propertyName, comboBox->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

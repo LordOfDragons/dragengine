@@ -489,8 +489,7 @@ void deNetworkBasic::pReceiveDatagrams(){
 	
 	while( bnSocket ){
 		while( bnSocket->ReceiveDatagram( *pDatagram, pAddressReceive ) ){
-			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::New(
-				new deNetworkMessageReader( pDatagram ) ));
+			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(pDatagram));
 			
 			debnConnection * const connection = pFindConnection( bnSocket, pAddressReceive );
 			const eCommandCodes command = ( eCommandCodes )reader->ReadByte();

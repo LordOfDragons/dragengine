@@ -734,8 +734,7 @@ public:
 			return;
 		}
 		
-		seUPropertyNodeSetMapped::Ref undo(seUPropertyNodeSetMapped::Ref::New(
-			new seUPropertyNodeSetMapped( node, type, newMapped ) ));
+		seUPropertyNodeSetMapped::Ref undo(seUPropertyNodeSetMapped::Ref::NewWith(node, type, newMapped));
 		skin->GetUndoSystem()->Add( undo );
 	}
 };

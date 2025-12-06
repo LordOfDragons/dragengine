@@ -70,8 +70,7 @@ public:
 			return;
 		}
 		
-		reUSetShapeSphereRadius::Ref undo(reUSetShapeSphereRadius::Ref::New(
-			new reUSetShapeSphereRadius( sphere, value ) ));
+		reUSetShapeSphereRadius::Ref undo(reUSetShapeSphereRadius::Ref::NewWith(sphere, value));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}

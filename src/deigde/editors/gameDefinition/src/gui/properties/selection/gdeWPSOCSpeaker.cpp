@@ -187,8 +187,8 @@ public:
 			return;
 		}
 		
-		gdeUOCSpeakerSetPathSound::Ref undo(gdeUOCSpeakerSetPathSound::Ref::New(new gdeUOCSpeakerSetPathSound(
-			pPanel.GetObjectClass(), speaker, editPath->GetPath() )));
+		gdeUOCSpeakerSetPathSound::Ref undo(gdeUOCSpeakerSetPathSound::Ref::NewWith(
+			pPanel.GetObjectClass(), speaker, editPath->GetPath()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -352,8 +352,8 @@ public:
 			return;
 		}
 		
-		gdeUOCSpeakerSetPropertyName::Ref undo(gdeUOCSpeakerSetPropertyName::Ref::New(new gdeUOCSpeakerSetPropertyName(
-			pPanel.GetObjectClass(), pPanel.GetSpeaker(), propertyName, comboBox->GetText() )));
+		gdeUOCSpeakerSetPropertyName::Ref undo(gdeUOCSpeakerSetPropertyName::Ref::NewWith(
+			pPanel.GetObjectClass(), pPanel.GetSpeaker(), propertyName, comboBox->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -388,8 +388,8 @@ public:
 			return;
 		}
 		
-		gdeUOCSpeakerSetTriggerName::Ref undo(gdeUOCSpeakerSetTriggerName::Ref::New(new gdeUOCSpeakerSetTriggerName(
-			pPanel.GetObjectClass(), speaker, triggerName, comboBox->GetText() )));
+		gdeUOCSpeakerSetTriggerName::Ref undo(gdeUOCSpeakerSetTriggerName::Ref::NewWith(
+			pPanel.GetObjectClass(), speaker, triggerName, comboBox->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

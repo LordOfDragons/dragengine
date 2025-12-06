@@ -106,8 +106,8 @@ pRuleCV( rule )
 	SetTitle( "Closest Vegetation" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(new meWVNodeSlot( env, "Distance", "Distance in meters from closest vegetation",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestVegetation::eosDistance )));
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
+		env, "Distance", "Distance in meters from closest vegetation", false, *this, meWVNodeSlot::estValue, meHTVRuleClosestVegetation::eosDistance));
 	AddSlot( slot );
 	
 	slot.TakeOver( new meWVNodeSlot( env, "Direction", "Direction (normalized vector) towards closest vegetation",

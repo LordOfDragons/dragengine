@@ -80,8 +80,7 @@ public:
 			return;
 		}
 		
-		ceUCAWaitSetInterval::Ref undo(ceUCAWaitSetInterval::Ref::New(
-			new ceUCAWaitSetInterval( topic, action, interval ) ));
+		ceUCAWaitSetInterval::Ref undo(ceUCAWaitSetInterval::Ref::NewWith(topic, action, interval));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

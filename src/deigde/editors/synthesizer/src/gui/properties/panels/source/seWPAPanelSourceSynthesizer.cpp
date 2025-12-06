@@ -70,8 +70,8 @@ public:
 			return;
 		}
 		
-		seUSourceSynthSetPathSynthesizer::Ref undo(seUSourceSynthSetPathSynthesizer::Ref::New(
-			new seUSourceSynthSetPathSynthesizer( source, editPath->GetPath() ) ));
+		seUSourceSynthSetPathSynthesizer::Ref undo(seUSourceSynthSetPathSynthesizer::Ref::NewWith(
+			source, editPath->GetPath()));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -104,8 +104,7 @@ public:
 			return;
 		}
 		
-		seUSourceSynthConTargetMore::Ref undo(seUSourceSynthConTargetMore::Ref::New(
-			new seUSourceSynthConTargetMore( source ) ));
+		seUSourceSynthConTargetMore::Ref undo(seUSourceSynthConTargetMore::Ref::NewWith(source));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -128,8 +127,7 @@ public:
 			return;
 		}
 		
-		seUSourceSynthConTargetLess::Ref undo(seUSourceSynthConTargetLess::Ref::New(
-			new seUSourceSynthConTargetLess( source ) ));
+		seUSourceSynthConTargetLess::Ref undo(seUSourceSynthConTargetLess::Ref::NewWith(source));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -158,8 +156,8 @@ public:
 			return;
 		}
 		
-		seUSourceSynthSetConController::Ref undo(seUSourceSynthSetConController::Ref::New(
-			new seUSourceSynthSetConController( source, target, controller ) ));
+		seUSourceSynthSetConController::Ref undo(seUSourceSynthSetConController::Ref::NewWith(
+			source, target, controller));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };

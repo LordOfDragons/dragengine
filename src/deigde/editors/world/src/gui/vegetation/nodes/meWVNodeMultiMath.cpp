@@ -71,8 +71,8 @@ public:
 			return;
 		}
 		
-		meUHTVRuleMultiMathSetOp::Ref undo(meUHTVRuleMultiMathSetOp::Ref::New(new meUHTVRuleMultiMathSetOp( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMultiMath(), op )));
+		meUHTVRuleMultiMathSetOp::Ref undo(meUHTVRuleMultiMathSetOp::Ref::NewWith(
+			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleMultiMath(), op));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -98,8 +98,8 @@ pRuleMultiMath( NULL )
 	SetTitle( "Multi-Math" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(new meWVNodeSlot( env, "Result", "Result of the operation",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eosResult )));
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
+		env, "Result", "Result of the operation", false, *this, meWVNodeSlot::estValue, meHTVRuleMultiMath::eosResult));
 	AddSlot( slot );
 	
 	slot.TakeOver( new meWVNodeSlot( env, "Values", "Input values",

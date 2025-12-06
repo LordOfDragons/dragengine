@@ -115,8 +115,8 @@ void ceWPTTIMAWaitCondition::OnContextMenu( igdeMenuCascade &contextMenu ){
 	int i;
 	
 	// condition
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(new igdeMenuCascade( environment, "Set Condition",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) )));
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		environment, "Set Condition", environment.GetStockIcon( igdeEnvironment::esiPlus )));
 	contextMenu.AddChild( subMenu );
 	
 	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){
@@ -151,8 +151,8 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition ){
 	int i;
 	
 	// child action specific
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(new igdeMenuCascade( environment, "Replace Condition",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) )));
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		environment, "Replace Condition", environment.GetStockIcon( igdeEnvironment::esiPlus )));
 	contextMenu.AddChild( subMenu );
 	
 	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){

@@ -71,8 +71,8 @@ igdeUndo *gdeMAOCNavBlockerCopy::OnActionSubObject( gdeGameDefinition &gameDefin
 	
 	const gdeOCNavigationBlocker::Ref clipOCNavigationBlocker(gdeOCNavigationBlocker::Ref::NewWith(*navBlocker));
 	
-	gdeClipboardDataOCNavBlocker::Ref clipData(gdeClipboardDataOCNavBlocker::Ref::New(
-		new gdeClipboardDataOCNavBlocker( clipOCNavigationBlocker ) ));
+	gdeClipboardDataOCNavBlocker::Ref clipData(gdeClipboardDataOCNavBlocker::Ref::NewWith(
+		clipOCNavigationBlocker));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

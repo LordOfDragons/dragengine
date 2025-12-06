@@ -74,7 +74,6 @@ void ceWPTMAWaitActionsMoveAction::OnAction(){
 		DETHROW( deeInvalidAction );
 	}
 	
-	ceUCAWaitMove::Ref undo(ceUCAWaitMove::Ref::New(
-		new ceUCAWaitMove( pTopic, pWait, pAction, pIndex ) ));
+	ceUCAWaitMove::Ref undo(ceUCAWaitMove::Ref::NewWith(pTopic, pWait, pAction, pIndex));
 	pConversation->GetUndoSystem()->Add( undo );
 }

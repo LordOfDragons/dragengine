@@ -91,8 +91,7 @@ public:
 			return;
 		}
 		
-		gdeUSkinSetPath::Ref undo(gdeUSkinSetPath::Ref::New(
-			new gdeUSkinSetPath( skin, editPath->GetPath() ) ));
+		gdeUSkinSetPath::Ref undo(gdeUSkinSetPath::Ref::NewWith(skin, editPath->GetPath()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -109,8 +108,7 @@ public:
 			return;
 		}
 		
-		gdeUSkinSetName::Ref undo(gdeUSkinSetName::Ref::New(
-			new gdeUSkinSetName( skin, textField->GetText() ) ));
+		gdeUSkinSetName::Ref undo(gdeUSkinSetName::Ref::NewWith(skin, textField->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -127,8 +125,7 @@ public:
 			return;
 		}
 		
-		gdeUSkinSetDescription::Ref undo(gdeUSkinSetDescription::Ref::New(
-			new gdeUSkinSetDescription( skin, textArea->GetText() ) ));
+		gdeUSkinSetDescription::Ref undo(gdeUSkinSetDescription::Ref::NewWith(skin, textArea->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -145,8 +142,7 @@ public:
 			return;
 		}
 		
-		gdeUSkinSetCategory::Ref undo(gdeUSkinSetCategory::Ref::New(
-			new gdeUSkinSetCategory( skin, comboBox->GetText() ) ));
+		gdeUSkinSetCategory::Ref undo(gdeUSkinSetCategory::Ref::NewWith(skin, comboBox->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

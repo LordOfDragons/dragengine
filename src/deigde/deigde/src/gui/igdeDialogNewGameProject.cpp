@@ -415,8 +415,8 @@ bool igdeDialogNewGameProject::CheckValidInput(){
 		}
 	}
 	
-	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(
-		decPath::CreatePathNative( pEditPathProject->GetDirectory() ) )));
+	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathNative( pEditPathProject->GetDirectory() )));
 	if( container->ExistsFile( decPath() ) ){
 		pEditPathProject->Focus();
 		igdeCommonDialogs::Error( this, mbtitle, "Project directory exists. "

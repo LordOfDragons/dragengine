@@ -147,8 +147,7 @@ gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass( const char *filename ){
 
 void gdeLoadSaveSystem::SaveXmlEClass( const gdeGameDefinition &gameDefinition,
 const gdeObjectClass &objectClass, const char *filename ){
-	decDiskFileWriter::Ref fileWriter(decDiskFileWriter::Ref::New(
-		new decDiskFileWriter( filename, false ) ));
+	decDiskFileWriter::Ref fileWriter(decDiskFileWriter::Ref::NewWith(filename, false));
 	pLSXmlEClass.SaveXmlEClass( gameDefinition, objectClass, fileWriter );
 }
 

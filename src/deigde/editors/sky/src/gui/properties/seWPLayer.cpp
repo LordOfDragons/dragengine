@@ -605,8 +605,7 @@ public:
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer* ){
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(
-			new igdeMenuCascade( pPanel.GetEnvironment() ) ));
+		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(pPanel.GetEnvironment()));
 		helper.MenuCommand( menu, pPanel.GetActionBodyAdd() );
 		helper.MenuCommand( menu, pPanel.GetActionBodyRemove() );
 		helper.MenuSeparator( menu );

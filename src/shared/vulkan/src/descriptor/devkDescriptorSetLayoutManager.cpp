@@ -68,8 +68,7 @@ const devkDescriptorSetLayoutConfiguration &configuration ){
 		}
 	}
 	
-	devkDescriptorSetLayout::Ref layout(devkDescriptorSetLayout::Ref::New(
-		new devkDescriptorSetLayout( pDevice, configuration ) ));
+	devkDescriptorSetLayout::Ref layout(devkDescriptorSetLayout::Ref::NewWith(pDevice, configuration));
 	pLayouts.Add( layout );
 	return layout; // called does not hold reference
 }

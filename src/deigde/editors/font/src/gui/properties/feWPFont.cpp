@@ -179,8 +179,7 @@ public:
 			return;
 		}
 		
-		feUFontToggleColorFont::Ref undo(feUFontToggleColorFont::Ref::New(
-			new feUFontToggleColorFont( font ) ));
+		feUFontToggleColorFont::Ref undo(feUFontToggleColorFont::Ref::NewWith(font));
 		font->GetUndoSystem()->Add( undo );
 	}
 };

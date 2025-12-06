@@ -245,8 +245,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	decPath path( pNativePathProject );
 	path.AddComponent( ".gitignore" );
 	
-	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New(
-		new decDiskFileWriter( path.GetPathNative(), false ) ));
+	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false));
 	writer->WriteString( pProject->GetPathLocal() + "\n" );
 	writer->WriteString( pPathCache + "\n" );
 	writer->WriteString( "distribute\n" );
@@ -404,8 +403,8 @@ void igdeCreateProject::pApplyTemplate(){
 	// create vfs directories to work with
 	pVFS.TakeOver( new deVirtualFileSystem );
 	
-	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_DATA ),
-		decPath::CreatePathNative( pNativePathData ) )));
+	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathUnix( VFS_DIR_DATA ), decPath::CreatePathNative( pNativePathData )));
 	pVFS->AddContainer( container );
 	
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_PROJECT ),

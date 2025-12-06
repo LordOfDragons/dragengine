@@ -67,7 +67,6 @@ pAction( action )
 ///////////////
 
 void ceWPTMAWaitActionsRemoveAction::OnAction(){
-	ceUCAWaitRemove::Ref undo(ceUCAWaitRemove::Ref::New(
-		new ceUCAWaitRemove( pTopic, pWait, pAction ) ));
+	ceUCAWaitRemove::Ref undo(ceUCAWaitRemove::Ref::NewWith(pTopic, pWait, pAction));
 	pConversation->GetUndoSystem()->Add( undo );
 }

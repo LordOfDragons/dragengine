@@ -67,8 +67,8 @@ void ceWPTMAPasteSnippet::OnAction(){
 		return;
 	}
 	
-	ceDialogPasteSnippet::Ref refDialog(ceDialogPasteSnippet::Ref::New(
-		new ceDialogPasteSnippet( GetWindowMain().GetEnvironment(), pConversation ) ));
+	ceDialogPasteSnippet::Ref refDialog(ceDialogPasteSnippet::Ref::NewWith(
+		GetWindowMain().GetEnvironment(), pConversation));
 	ceDialogPasteSnippet &dialog = ( ceDialogPasteSnippet& )( igdeDialog& )refDialog;
 	
 	if( ! dialog.Run( &GetWindowMain() ) || dialog.GetActions().GetCount() == 0 ){

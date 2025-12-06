@@ -181,8 +181,8 @@ public:
 			return;
 		}
 		
-		gdeUOCSnapPointToggleSnapToRotation::Ref undo(gdeUOCSnapPointToggleSnapToRotation::Ref::New(
-			new gdeUOCSnapPointToggleSnapToRotation( pPanel.GetObjectClass(), snapPoint ) ));
+		gdeUOCSnapPointToggleSnapToRotation::Ref undo(gdeUOCSnapPointToggleSnapToRotation::Ref::NewWith(
+			pPanel.GetObjectClass(), snapPoint));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

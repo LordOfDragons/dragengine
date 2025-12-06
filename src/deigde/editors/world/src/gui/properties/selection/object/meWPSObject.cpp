@@ -1252,8 +1252,8 @@ public:
 			return;
 		}
 		
-		meUObjectTextureSetSkin::Ref undo(meUObjectTextureSetSkin::Ref::New(
-			new meUObjectTextureSetSkin( texture, editPath->GetPath() ) ));
+		meUObjectTextureSetSkin::Ref undo(meUObjectTextureSetSkin::Ref::NewWith(
+			texture, editPath->GetPath()));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -1301,8 +1301,8 @@ public:
 			return;
 		}
 		
-		meUObjectTextureColorTint::Ref undo(meUObjectTextureColorTint::Ref::New(
-			new meUObjectTextureColorTint( texture, colorBox->GetColor() ) ));
+		meUObjectTextureColorTint::Ref undo(meUObjectTextureColorTint::Ref::NewWith(
+			texture, colorBox->GetColor()));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };

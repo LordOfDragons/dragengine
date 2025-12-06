@@ -101,11 +101,11 @@ pViewImage( NULL )
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	
-	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::New(new igdeContainerFlow( env, igdeContainerFlow::eaX,
-		igdeContainerFlow::esFirst )));
+	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::NewWith(
+		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	AddChild( bottomLine, igdeContainerBorder::eaBottom );
 	
-	cScrollView::Ref scrollView(cScrollView::Ref::New( new cScrollView( *this ) ));
+	cScrollView::Ref scrollView(cScrollView::Ref::NewWith(*this));
 	
 	pSBHorizontal.TakeOver( new igdeScrollBar( env, igdeScrollBar::eoHorizontal ) );
 	pSBHorizontal->AddListener( scrollView );
@@ -123,7 +123,7 @@ pViewImage( NULL )
 	pCBZoom->SetSelection( 0 ); // 100
 	bottomLine->AddChild( pCBZoom );
 	
-	cChangeZoom::Ref changeZoom(cChangeZoom::Ref::New( new cChangeZoom( *this ) ));
+	cChangeZoom::Ref changeZoom(cChangeZoom::Ref::NewWith(*this));
 	pCBZoom->AddListener( changeZoom );
 	
 	pSBVertical.TakeOver( new igdeScrollBar( env, igdeScrollBar::eoVertical ) );

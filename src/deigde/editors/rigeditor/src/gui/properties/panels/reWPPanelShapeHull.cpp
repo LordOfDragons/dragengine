@@ -83,8 +83,8 @@ public:
 			return;
 		}
 		
-		reUShapeHullAddPoint::Ref undo(reUShapeHullAddPoint::Ref::New(
-			new reUShapeHullAddPoint( hull, decVector(), hull->GetPointCount() ) ));
+		reUShapeHullAddPoint::Ref undo(reUShapeHullAddPoint::Ref::NewWith(
+			hull, decVector(), hull->GetPointCount()));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -110,8 +110,7 @@ public:
 			return;
 		}
 		
-		reUShapeHullRemovePoint::Ref undo(reUShapeHullRemovePoint::Ref::New(
-			new reUShapeHullRemovePoint( hull, index ) ));
+		reUShapeHullRemovePoint::Ref undo(reUShapeHullRemovePoint::Ref::NewWith(hull, index));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -139,8 +138,8 @@ public:
 			return;
 		}
 		
-		reUShapeHullSetPoint::Ref undo(reUShapeHullSetPoint::Ref::New(
-			new reUShapeHullSetPoint( hull, editVector->GetVector(), index ) ));
+		reUShapeHullSetPoint::Ref undo(reUShapeHullSetPoint::Ref::NewWith(
+			hull, editVector->GetVector(), index));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}

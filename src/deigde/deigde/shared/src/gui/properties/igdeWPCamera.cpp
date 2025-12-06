@@ -713,8 +713,7 @@ void igdeWPCamera::pCreateContent(){
 	
 	helper.CheckBoxOnly( frameLine, pChkEnableHDRR, new cCheckEnableHDRR( *this ), true );
 	
-	cActionMenuCamera::Ref actionMenuCamera(cActionMenuCamera::Ref::New(
-		new cActionMenuCamera( *this ) ));
+	cActionMenuCamera::Ref actionMenuCamera(cActionMenuCamera::Ref::NewWith(*this));
 	helper.Button( frameLine, pBtnCamera, actionMenuCamera );
 	actionMenuCamera->SetWidget( pBtnCamera );
 	

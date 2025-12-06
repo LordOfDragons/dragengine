@@ -248,7 +248,7 @@ void igdeEditDVector::pCreateContent( igdeUIHelper &helper ){
 	pTextZ->SetDouble( pDVector.z );
 	
 	// add listener
-	cListener::Ref listener(cListener::Ref::New( new cListener( *this, pTextX, pTextY, pTextZ ) ));
+	cListener::Ref listener(cListener::Ref::NewWith(*this, pTextX, pTextY, pTextZ));
 	pTextX->AddListener( listener );
 	pTextY->AddListener( listener );
 	pTextZ->AddListener( listener );

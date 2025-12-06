@@ -134,8 +134,8 @@ pAnimator( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(400))));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
 	
 	pWindowProperties = new aeWindowProperties( *this );
@@ -1425,8 +1425,8 @@ void aeWindowMain::pCreateMenuLink( igdeMenuCascade &menu ){
 void aeWindowMain::pCreateMenuRule( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
-		new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) ));
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		GetEnvironment(), "Add", deInputEvent::ekcA));
 	menu.AddChild( subMenu );
 	helper.MenuCommand( subMenu, pActionRuleAddAnim );
 	helper.MenuCommand( subMenu, pActionRuleAddAnimDiff );

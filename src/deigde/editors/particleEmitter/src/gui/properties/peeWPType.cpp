@@ -204,8 +204,7 @@ public:
 			return;
 		}
 		
-		peeUEmitterToggleEmitBurst::Ref undo(peeUEmitterToggleEmitBurst::Ref::New(
-			new peeUEmitterToggleEmitBurst( emitter ) ));
+		peeUEmitterToggleEmitBurst::Ref undo(peeUEmitterToggleEmitBurst::Ref::NewWith(emitter));
 		emitter->GetUndoSystem()->Add( undo );
 	}
 };
@@ -226,8 +225,7 @@ public:
 			return;
 		}
 		
-		peeUEmitterSetBurstLifetime::Ref undo(peeUEmitterSetBurstLifetime::Ref::New(
-			new peeUEmitterSetBurstLifetime( emitter, value ) ));
+		peeUEmitterSetBurstLifetime::Ref undo(peeUEmitterSetBurstLifetime::Ref::NewWith(emitter, value));
 		emitter->GetUndoSystem()->Add( undo );
 	}
 };
@@ -266,8 +264,7 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(
-			new igdeMenuCascade( pPanel.GetEnvironment() ) ));
+		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(pPanel.GetEnvironment()));
 		helper.MenuCommand( menu, pPanel.GetActionTypeAdd() );
 		helper.MenuCommand( menu, pPanel.GetActionTypeRemove() );
 		helper.MenuCommand( menu, pPanel.GetActionTypeRename() );
@@ -299,7 +296,7 @@ public:
 			
 			const peeType::Ref type(peeType::Ref::NewWith(emitter->GetEngine(), name));
 			
-			peeUTypeAdd::Ref undo(peeUTypeAdd::Ref::New( new peeUTypeAdd( emitter, type ) ));
+			peeUTypeAdd::Ref undo(peeUTypeAdd::Ref::NewWith(emitter, type));
 			emitter->GetUndoSystem()->Add( undo );
 			return;
 		}

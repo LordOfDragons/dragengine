@@ -211,8 +211,8 @@ public:
 			return;
 		}
 		
-		gdeUOCLightSetColor::Ref undo(gdeUOCLightSetColor::Ref::New(
-			new gdeUOCLightSetColor( pPanel.GetObjectClass(), light, colorBox->GetColor() ) ));
+		gdeUOCLightSetColor::Ref undo(gdeUOCLightSetColor::Ref::NewWith(
+			pPanel.GetObjectClass(), light, colorBox->GetColor()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -458,8 +458,8 @@ public:
 			return;
 		}
 		
-		gdeUOCLightSetLightSkinPath::Ref undo(gdeUOCLightSetLightSkinPath::Ref::New(new gdeUOCLightSetLightSkinPath(
-			pPanel.GetObjectClass(), light, editPath->GetPath() )));
+		gdeUOCLightSetLightSkinPath::Ref undo(gdeUOCLightSetLightSkinPath::Ref::NewWith(
+			pPanel.GetObjectClass(), light, editPath->GetPath()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -495,8 +495,8 @@ public:
 			return;
 		}
 		
-		gdeUOCLightSetPropertyName::Ref undo(gdeUOCLightSetPropertyName::Ref::New(new gdeUOCLightSetPropertyName(
-			pPanel.GetObjectClass(), light, propertyName, comboBox->GetText() )));
+		gdeUOCLightSetPropertyName::Ref undo(gdeUOCLightSetPropertyName::Ref::NewWith(
+			pPanel.GetObjectClass(), light, propertyName, comboBox->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -530,8 +530,8 @@ public:
 			return;
 		}
 		
-		gdeUOCLightSetTriggerName::Ref undo(gdeUOCLightSetTriggerName::Ref::New(new gdeUOCLightSetTriggerName(
-			pPanel.GetObjectClass(), pPanel.GetLight(), triggerName, comboBox->GetText() )));
+		gdeUOCLightSetTriggerName::Ref undo(gdeUOCLightSetTriggerName::Ref::NewWith(
+			pPanel.GetObjectClass(), pPanel.GetLight(), triggerName, comboBox->GetText()));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

@@ -114,8 +114,8 @@ void ceWPTTIMAWaitActions::OnContextMenu( igdeMenuCascade &contextMenu ){
 	const int indexAppend = wait.GetActions().GetCount();
 	int i;
 	
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(new igdeMenuCascade( environment, "Add Action",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) )));
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		environment, "Add Action", environment.GetStockIcon( igdeEnvironment::esiPlus )));
 	contextMenu.AddChild( subMenu );
 	
 	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
@@ -182,8 +182,8 @@ igdeMenuCascade &contextMenu, ceConversationAction *action ){
 		windowMain, conversation, *topic, wait, action ), true );
 	helper.MenuSeparator( contextMenu );
 	
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(new igdeMenuCascade( environment, "Insert Action Before",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) )));
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		environment, "Insert Action Before", environment.GetStockIcon( igdeEnvironment::esiPlus )));
 	contextMenu.AddChild( subMenu );
 	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
 		helper.MenuCommand( subMenu, new ceWPTMAWaitActionsAddAction( windowMain, conversation, *topic,

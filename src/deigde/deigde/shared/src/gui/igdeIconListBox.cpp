@@ -590,7 +590,7 @@ void igdeIconListBox::ShowContextMenu( const decPoint &position ){
 		return;
 	}
 	
-	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New( new igdeMenuCascade( GetEnvironment() ) ));
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(GetEnvironment()));
 	
 	const int count = pListeners.GetCount();
 	int i;

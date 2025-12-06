@@ -219,7 +219,7 @@ void igdeEditPoint::pCreateContent( igdeUIHelper &helper ){
 	pTextY->SetInteger( pPoint.y );
 	
 	// add listener
-	cListener::Ref listener(cListener::Ref::New( new cListener( *this, pTextX, pTextY ) ));
+	cListener::Ref listener(cListener::Ref::NewWith(*this, pTextX, pTextY));
 	pTextX->AddListener( listener );
 	pTextY->AddListener( listener );
 }

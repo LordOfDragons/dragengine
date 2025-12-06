@@ -263,8 +263,8 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode* ){
-		seClipboardDataPropertyNode::Ref data(seClipboardDataPropertyNode::Ref::New(
-			new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) ));
+		seClipboardDataPropertyNode::Ref data(seClipboardDataPropertyNode::Ref::NewWith(
+			property->GetNodeSelection().GetSelected()));
 		pView.GetWindowMain().GetClipboard().Set( data );
 		return NULL;
 	}
@@ -276,8 +276,8 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ), "Cut nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode *node ){
-		seClipboardDataPropertyNode::Ref data(seClipboardDataPropertyNode::Ref::New(
-			new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) ));
+		seClipboardDataPropertyNode::Ref data(seClipboardDataPropertyNode::Ref::NewWith(
+			property->GetNodeSelection().GetSelected()));
 		pView.GetWindowMain().GetClipboard().Set( data );
 		
 		return new seUPNGroupRemoveNodes( node->GetParent(), property->GetNodeSelection().GetSelected() );

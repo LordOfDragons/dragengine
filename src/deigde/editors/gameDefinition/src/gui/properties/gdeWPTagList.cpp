@@ -155,8 +155,8 @@ pUndoSystem( NULL )
 	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
 	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
 	
-	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::New(new igdeContainerFlow( GetEnvironment(),
-		igdeContainerFlow::eaX, igdeContainerFlow::esFirst )));
+	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::NewWith(
+		GetEnvironment(), igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	helper.ComboBoxFilter( comboLine, true, description, pComboBox, NULL );
 	pComboBox->SetDefaultSorter();
 	pComboBox->SetFilterCaseInsentive( true );

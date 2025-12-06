@@ -302,7 +302,7 @@ void projTaskDistribute::pCreateDelgaWriter(){
 	
 	path.RemoveLastComponent(); // parent directory
 	
-	deVFSDiskDirectory::Ref parentDir(deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( path ) ));
+	deVFSDiskDirectory::Ref parentDir(deVFSDiskDirectory::Ref::NewWith(path));
 	
 	pDelgaWriter.TakeOver( parentDir->OpenFileForWriting( localPath ) );
 	
@@ -662,11 +662,9 @@ void projTaskDistribute::pWriteGameXml(){
 		pathGameXml.AddComponent( pProfile.GetIdentifier().ToHexString( false ) + ".degame" );
 	}
 	
-	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New(
-		new decMemoryFile( pathGameXml.GetPathUnix() ) ));
+	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith(pathGameXml.GetPathUnix()));
 	
-	decMemoryFileWriter::Ref memoryFileWriter(decMemoryFileWriter::Ref::New(
-		new decMemoryFileWriter( memoryFile, false ) ));
+	decMemoryFileWriter::Ref memoryFileWriter(decMemoryFileWriter::Ref::NewWith(memoryFile, false));
 	
 	// write xml file
 	{

@@ -180,8 +180,7 @@ public:
 				return NULL;
 		}
 		
-		seUSourceChainPathSoundAdd::Ref undo(seUSourceChainPathSoundAdd::Ref::New(
-			new seUSourceChainPathSoundAdd( source, path ) ));
+		seUSourceChainPathSoundAdd::Ref undo(seUSourceChainPathSoundAdd::Ref::NewWith(source, path));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 		
 		pPanel.SelectSoundInList( source->GetPathSounds().GetCount() - 1 );
@@ -248,8 +247,8 @@ public:
 			return;
 		}
 		
-		seUSourceChainSetPathSound::Ref undo(seUSourceChainSetPathSound::Ref::New(
-			new seUSourceChainSetPathSound( source, selection, editPath->GetPath() ) ));
+		seUSourceChainSetPathSound::Ref undo(seUSourceChainSetPathSound::Ref::NewWith(
+			source, selection, editPath->GetPath()));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };
