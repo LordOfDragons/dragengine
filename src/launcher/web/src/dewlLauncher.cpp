@@ -77,7 +77,7 @@ pConditionLauncher(PTHREAD_COND_INITIALIZER)
 		pCanvasId.GetString(), pCanvasSize.x, pCanvasSize.y);
 	
 	const delEngineInstanceDirect::Factory::Ref factory(
-		delEngineInstanceDirect::Factory::Ref::New(new delEngineInstanceDirect::Factory));
+		delEngineInstanceDirect::Factory::Ref::NewWith());
 	{
 	deOSWebWasm::sConfig config{};
 	config.canvasId = pCanvasId;

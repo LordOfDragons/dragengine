@@ -35,7 +35,7 @@ public:
 	pInvalidator(service.GetInvalidator()),
 	pUrl(url),
 	pRequestId(requestId),
-	pVFS(deVirtualFileSystem::Ref::New(new deVirtualFileSystem))
+	pVFS(deVirtualFileSystem::Ref::NewWith()
 	{
 		SetEmptyRun( true );
 
@@ -161,7 +161,7 @@ void deMTLoadUserResource::GetGamerPicture()
 	
 	pService.GetModule().LogInfoFormat("deMTLoadUserResource.GetGamerPicture: url=%s", pUrl.url.GetString());
 	
-	const deServiceObject::Ref data(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref data(deServiceObject::Ref::NewWith());
 	data->SetStringChildAt("url", pUrl.url);
 	data->SetStringChildAt("resourceType", "image");
 	

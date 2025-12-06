@@ -124,7 +124,7 @@ void deMsgdkGameConfig::pLoadFromXml(const decString& config)
 	file->Resize(config.GetLength());
 	memcpy((char*)file->GetPointer(), config.GetString(), file->GetLength());
 
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New(new decXmlDocument));
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	const decMemoryFileReader::Ref reader(decMemoryFileReader::Ref::New(new decMemoryFileReader(file)));
 	decXmlParser(pModule.GetGameEngine()->GetLogger()).ParseXml(reader, xmlDoc);
 

@@ -173,7 +173,7 @@ pEnvironment(owner.GetEnvironment()){
 }
 
 void igdeWOSOWorld::LoadXmlWorld::LoadWorld(const decString &path){
-	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New(new decXmlDocument));
+	const decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser(GetLogger()).ParseXml(decBaseFileReader::Ref::New(pEnvironment.
 		GetFileSystemGame()->OpenFileForReading(decPath::CreatePathUnix(path))), xmlDoc);

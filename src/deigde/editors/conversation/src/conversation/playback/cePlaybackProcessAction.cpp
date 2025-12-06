@@ -528,7 +528,7 @@ void cePlaybackProcessAction::ProcessSnippet( ceConversation &conversation, ceCA
 	
 	if(topic){
 		if(action->GetCreateSideLane()){
-			const cePlaybackActionStack::Ref stack(cePlaybackActionStack::Ref::New(new cePlaybackActionStack));
+			const cePlaybackActionStack::Ref stack(cePlaybackActionStack::Ref::NewWith());
 			stack->Push(topic, action, &topic->GetActionList(), 0);
 			playback.AddSideActionStack(stack);
 			playback.AdvanceToNextAction();

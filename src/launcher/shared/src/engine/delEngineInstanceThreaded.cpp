@@ -684,7 +684,7 @@ void delEngineInstanceThreaded::GetInternalModules(delEngineModuleList &list){
 	int i;
 	
 	for(i=0; i<count; i++){
-		const delEngineModule::Ref emod(delEngineModule::Ref::New(new delEngineModule));
+		const delEngineModule::Ref emod(delEngineModule::Ref::NewWith());
 		emod->SetType((deModuleSystem::eModuleTypes)ReadUCharFromPipe());
 		ReadString16FromPipe(string);
 		emod->SetName(string);

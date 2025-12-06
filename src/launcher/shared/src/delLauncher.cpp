@@ -60,7 +60,7 @@
 #ifdef OS_ANDROID
 delLauncher::delLauncher(const sConfig &config) :
 pConfig(config),
-pLoggerHistory(delLoggerHistory::Ref::New(new delLoggerHistory)),
+pLoggerHistory(delLoggerHistory::Ref::NewWith(),
 pLogSource(config.loggerSource),
 pEngine(*this, config.engineLogFileTitle),
 pGameManager(*this),
@@ -80,11 +80,11 @@ pPatchManager(*this)
 	
 	try{
 		pLogger.TakeOver(new deLoggerChain);
-		pLogger->AddLogger(deLoggerConsole::Ref::New(new deLoggerConsole));
+		pLogger->AddLogger(deLoggerConsole::Ref::NewWith());
 		pLogger->AddLogger(pLoggerHistory);
 		
 		const delEngineInstanceDirect::Factory::Ref factory(
-			delEngineInstanceDirect::Factory::Ref::New(new delEngineInstanceDirect::Factory));
+			delEngineInstanceDirect::Factory::Ref::NewWith());
 		factory->SetConfig(config.osConfig);
 		pEngineInstanceFactory = factory;
 		
@@ -99,7 +99,7 @@ pPatchManager(*this)
 
 #else
 delLauncher::delLauncher(const char *loggerSource, const char *engineLogFileTitle) :
-pLoggerHistory(delLoggerHistory::Ref::New(new delLoggerHistory)),
+pLoggerHistory(delLoggerHistory::Ref::NewWith(),
 pLogSource(loggerSource),
 pEngine(*this, engineLogFileTitle),
 pGameManager(*this),
@@ -108,7 +108,7 @@ pEngineInstanceFactory(delEngineInstance::Factory::Ref::New(new delEngineInstanc
 {
 	try{
 		pLogger.TakeOver(new deLoggerChain);
-		pLogger->AddLogger(deLoggerConsoleColor::Ref::New(new deLoggerConsoleColor));
+		pLogger->AddLogger(deLoggerConsoleColor::Ref::NewWith());
 		pLogger->AddLogger(pLoggerHistory);
 		
 		pLocatePath();

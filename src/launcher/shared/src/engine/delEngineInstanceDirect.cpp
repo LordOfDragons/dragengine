@@ -1022,12 +1022,12 @@ const char *delgaFile, decStringList &list){
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	const decPath pathRoot(decPath::CreatePathUnix("/"));
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
 	delgaVfs->AddContainer(container);
 	
 	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")));
 	
-	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	vfs->AddContainer(deArchiveContainer::Ref::New(
 		amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
 	
@@ -1069,12 +1069,12 @@ const char *delgaFile, const decStringList &filenames, decObjectOrderedSet &file
 	deArchiveManager &amgr = *pEngine->GetArchiveManager();
 	const decPath pathRoot(decPath::CreatePathUnix("/"));
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
 	delgaVfs->AddContainer(container);
 	
 	const deArchive::Ref delgaArchive(deArchive::Ref::New(amgr.OpenArchive(delgaVfs, delgaFile, "/")));
 	
-	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	vfs->AddContainer(deArchiveContainer::Ref::New(amgr.CreateContainer(pathRoot, delgaArchive, pathRoot)));
 	
 	// read files
@@ -1105,7 +1105,7 @@ const char *delgaFile, const char *archivePath, const decStringSet &hiddenPath){
 		delgaFile, archivePath, hiddenPath.GetCount());
 	DEASSERT_NOTNULL(pEngine)
 	
-	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+	const deVirtualFileSystem::Ref delgaVfs(deVirtualFileSystem::Ref::NewWith());
 	delgaVfs->AddContainer(container);
 	
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();

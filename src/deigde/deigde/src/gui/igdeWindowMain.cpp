@@ -1913,7 +1913,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	GetLogger()->LogInfoFormat( "IGDE", "IGDE Game Definition find content in %s",
 		pConfiguration.GetPathIGDEData().GetString() );
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New( new deVirtualFileSystem ));
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSDiskDirectory::Ref diskContainer(deVFSDiskDirectory::Ref::NewWith(
 		decPath::CreatePathUnix( "/igde" ), decPath::CreatePathNative( pConfiguration.GetPathIGDEData() )));
@@ -1966,7 +1966,7 @@ void igdeWindowMain::pLoadTemplates(){
 	deLogger &logger = *GetLogger();
 	logger.LogInfo( LOGSOURCE, "Loading project templates" );
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New( new deVirtualFileSystem ));
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	const decPath basePath( decPath::CreatePathNative( pConfiguration.GetPathIGDETemplates() ) );
 	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(basePath));
@@ -2038,7 +2038,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	
 	const decPath gameDefPath( decPath::CreatePathNative( pConfiguration.GetPathIGDEGameDefs() ) );
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New( new deVirtualFileSystem ));
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(gameDefPath));
 	vfs->AddContainer( container );
@@ -2322,7 +2322,7 @@ void igdeWindowMain::pLoadXMLElementClasses( igdeGameProject &gameProject ){
 	igdeXMLElementClass loader( GetLogger() );
 	gameProject.GetXMLEClassGameDefinition()->GetClassManager()->RemoveAll();
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New( new deVirtualFileSystem ));
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSContainer::Ref container;
 	decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
@@ -2364,7 +2364,7 @@ void igdeWindowMain::pFindAndAddSkins( igdeGameProject &gameProject ){
 	igdeGDSkinManager &gdskins = *gameDefinition.GetSkinManager();
 	gdskins.RemoveAllSkins();
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New( new deVirtualFileSystem ));
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSContainer::Ref container;
 	decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
@@ -2400,7 +2400,7 @@ void igdeWindowMain::pFindAndAddSkies( igdeGameProject &gameProject ){
 	igdeGDSkyManager &gdskies = *gameDefinition.GetSkyManager();
 	gdskies.RemoveAllSkies();
 	
-	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New( new deVirtualFileSystem ));
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSContainer::Ref container;
 	decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );

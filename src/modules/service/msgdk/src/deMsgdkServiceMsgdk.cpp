@@ -61,7 +61,7 @@ deMsgdkServiceMsgdk::deMsgdkServiceMsgdk(deMicrosoftGdk &module,
 pModule(module),
 pService(service),
 pIsInitialized(false),
-pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::New(new deMsgdkAsyncTask::Invalidator)),
+pInvalidator(deMsgdkAsyncTask::Invalidator::Ref::NewWith(),
 pUser(nullptr),
 pUserId(0),
 pUserLocalId({}),
@@ -137,7 +137,7 @@ void deMsgdkServiceMsgdk::CancelRequest(const decUniqueID& id)
 	
 	pPendingRequests.RemoveFrom(pPendingRequests.IndexOf(pr));
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 	so->SetStringChildAt("error", "Cancelled");
 	so->SetStringChildAt("message", "Request cancelled");
 	pModule.GetGameEngine()->GetServiceManager()->QueueRequestFailed(pService, id, so);
@@ -309,12 +309,12 @@ deServiceObject::Ref deMsgdkServiceMsgdk::GetUserFeatures()
 			&pModule.GetVFS(), "/share/image/authProviderImage.webp", "/"));
 	}
 	
-	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 	so->SetBoolChildAt("canManualLogin", false);
 	so->SetBoolChildAt("canAutomaticLogin", true);
 	so->SetBoolChildAt("canLogout", false);
 	
-	const deServiceObject::Ref soAtp(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref soAtp(deServiceObject::Ref::NewWith());
 	soAtp->SetStringChildAt("id", "xboxLive");
 	soAtp->SetResourceChildAt("icon", pAuthProviderIcon);
 	soAtp->SetResourceChildAt("image", pAuthProviderImage);
@@ -331,7 +331,7 @@ deServiceObject::Ref deMsgdkServiceMsgdk::GetUserInfo()
 		DETHROW_INFO(deeInvalidAction, "No user logged in");
 	}
 
-	const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 	char gamertag[101] = {};
 	size_t gamertagLen;
 

@@ -52,7 +52,7 @@
 deoglShaderUnitSourceCode::deoglShaderUnitSourceCode(deGraphicOpenGl &ogl, const decPath &path) :
 pStage(0)
 {
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New(new decXmlDocument));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	deVirtualFileSystem &vfs = ogl.GetVFS();
 	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));

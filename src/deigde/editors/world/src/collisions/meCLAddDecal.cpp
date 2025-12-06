@@ -181,7 +181,7 @@ void meCLAddDecal::CollisionResponse( deCollider *owner, deCollisionInfo *info )
 		}
 		
 		if( colliderOwner->GetObject() ){
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 			entry->SetObject( colliderOwner->GetObject() );
 			entry->SetDistance( info->GetDistance() );
 			entry->SetNormal( info->GetNormal() );
