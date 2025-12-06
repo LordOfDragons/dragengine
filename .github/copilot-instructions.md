@@ -37,7 +37,7 @@ scons -h
 
 ### Build Parameters
 
-- Use `custom.py` for build customization (copy from `custom.py.dist`)
+- Use `custom.py` for build customization (copy from `dist.custom.py` or platform-specific variants)
 - `prefix` - Installation prefix (default: `/usr`)
 - `with_debug` - Enable debug build
 - `with_system_*` - Control system vs in-tree library usage (`yes`, `no`, `auto`)
