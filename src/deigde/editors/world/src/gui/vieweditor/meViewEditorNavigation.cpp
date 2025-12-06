@@ -169,7 +169,7 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 						QuickMultiply(decDMatrix::CreateRT(camera->GetOrientation() * DEG2RAD, position)).
 						GetPosition();
 					
-					pUndoCameraMove->SetNewPosition(position);
+					((meUCameraMoveObject&)(igdeUndo&)pUndoCameraMove).SetNewPosition(position);
 					pUndoCameraMove->Redo();
 				}
 				
@@ -193,7 +193,7 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 						QuickMultiply(decDMatrix::CreateRT(camera->GetOrientation() * DEG2RAD, position)).
 						GetPosition();
 					
-					pUndoCameraMove->SetNewPosition(position);
+					((meUCameraMoveObject&)(igdeUndo&)pUndoCameraMove).SetNewPosition(position);
 					pUndoCameraMove->Redo();
 				}
 				
@@ -243,7 +243,7 @@ void meViewEditorNavigation::OnMouseMove( int x, int y, bool shift, bool control
 						QuickMultiply(decDMatrix::CreateWorld(camera->GetPosition(), rotation)).
 						ToQuaternion();
 					
-					pUndoCameraRotate->SetNewRotation(
+					((meUCameraRotateObject&)(igdeUndo&)pUndoCameraRotate).SetNewRotation(
 						rotation.GetEulerAngles() * RAD2DEG);
 					pUndoCameraRotate->Redo();
 				}

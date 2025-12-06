@@ -266,11 +266,11 @@ void meViewEditorAddNew::pUpdateUndo( bool shift, bool control ){
 	const decDVector rayPosition = camera.GetViewMatrix().GetPosition();
 	
 	if( elementMode == meWorldGuiParameters::eemObject ){
-		if(!pUndoAddObject || !pUndoAddObject->GetObject()){
+		if(!pUndoAddObject || !((meUAddObject&)(igdeUndo&)pUndoAddObject).GetObject()){
 			return;
 		}
 		
-		meObject &undoObject = *pUndoAddObject->GetObject();
+		meObject &undoObject = *((meUAddObject&)(igdeUndo&)pUndoAddObject).GetObject();
 		sCastIntoWorldParams params{};
 		params.originalMatrix = undoObject.GetObjectMatrix();
 		params.rayDirection = rayDirection;
@@ -287,11 +287,11 @@ void meViewEditorAddNew::pUpdateUndo( bool shift, bool control ){
 		GetWorld().NotifyObjectGeometryChanged( &undoObject );
 		
 	}else if(elementMode == meWorldGuiParameters::eemNavSpace){
-		if(!pUndoAddNavSpace || !pUndoAddNavSpace->GetNavSpace()){
+		if(!pUndoAddNavSpace || !((meUAddNavSpace&)(igdeUndo&)pUndoAddNavSpace).GetNavSpace()){
 			return;
 		}
 		
-		meNavigationSpace &undoNavSpace = *pUndoAddNavSpace->GetNavSpace();
+		meNavigationSpace &undoNavSpace = *((meUAddNavSpace&)(igdeUndo&)pUndoAddNavSpace).GetNavSpace();
 		sCastIntoWorldParams params{};
 		params.originalMatrix.SetRT(decDVector(undoNavSpace.GetOrientation() * DEG2RAD),
 			undoNavSpace.GetPosition());
