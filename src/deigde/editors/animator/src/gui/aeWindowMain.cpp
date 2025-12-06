@@ -134,9 +134,8 @@ pAnimator( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(400)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(400))));
 	AddChild( splitted );
 	
 	pWindowProperties = new aeWindowProperties( *this );
@@ -468,8 +467,7 @@ public:
 		if( ! pWindow.GetAnimator() ){
 			return;
 		}
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( pWindow.GetAnimator() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( pWindow.GetAnimator() ) ));
 		if( undo ){
 			pWindow.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -1427,8 +1425,7 @@ void aeWindowMain::pCreateMenuLink( igdeMenuCascade &menu ){
 void aeWindowMain::pCreateMenuRule( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascade::Ref subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) );
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) ));
 	menu.AddChild( subMenu );
 	helper.MenuCommand( subMenu, pActionRuleAddAnim );
 	helper.MenuCommand( subMenu, pActionRuleAddAnimDiff );

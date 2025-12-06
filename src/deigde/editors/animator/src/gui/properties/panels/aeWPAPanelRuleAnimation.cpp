@@ -85,8 +85,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -125,8 +124,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeUSetRuleAnimMoveName( rule, comboBox->GetText() ) );
+		aeUSetRuleAnimMoveName::Ref undo(aeUSetRuleAnimMoveName::Ref::New( new aeUSetRuleAnimMoveName( rule, comboBox->GetText() ) ));
 		pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -144,8 +142,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeUSetRuleAnimMoveTime( rule, value ) );
+		aeUSetRuleAnimMoveTime::Ref undo(aeUSetRuleAnimMoveTime::Ref::New( new aeUSetRuleAnimMoveTime( rule, value ) ));
 		pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 	}
 };

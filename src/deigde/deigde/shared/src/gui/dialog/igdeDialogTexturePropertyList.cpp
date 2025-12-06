@@ -69,16 +69,14 @@ igdeDialog( environment, "Texture Property List" ){
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(1000, 500)));
 	
-	igdeContainerSplitted::Ref content;
-	content.TakeOver(new igdeContainerSplitted(environment, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(300)));
+	igdeContainerSplitted::Ref content(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(environment, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(300))));
 	
 	helper.ListBox( 15, "Textue Property", pListProperties, new igdeDialogTexturePropertyList_ListBox( *this ) );
 	pListProperties->SetDefaultSorter();
 	content->AddChild( pListProperties, igdeContainerSplitted::eaSide );
 	
-	igdeContainer::Ref form;
-	form.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
+	igdeContainerForm::Ref form(igdeContainerForm::Ref::New( new igdeContainerForm( environment, igdeContainerForm::esLast ) ));
 	content->AddChild( form, igdeContainerSplitted::eaCenter );
 	
 	helper.EditString( form, "Name:", "Property name", pEditName, NULL );

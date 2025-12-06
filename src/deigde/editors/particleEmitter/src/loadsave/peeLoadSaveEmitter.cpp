@@ -158,8 +158,7 @@ peeLoadSaveEmitter::peeLoadSaveEmitter( peeLoadSaveSystem *lssys, deLogger *logg
 ///////////////////////
 
 void peeLoadSaveEmitter::LoadEmitter( peeLoadSaveSystem&, peeEmitter &emitter, decBaseFileReader &reader ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

@@ -105,8 +105,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, rig, constraint ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, rig, constraint ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -129,8 +128,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), rig, constraint ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), rig, constraint ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -155,8 +153,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( rig, constraint ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( rig, constraint ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -179,8 +176,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnTextChanged( comboBox, rig, constraint ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnTextChanged( comboBox, rig, constraint ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}

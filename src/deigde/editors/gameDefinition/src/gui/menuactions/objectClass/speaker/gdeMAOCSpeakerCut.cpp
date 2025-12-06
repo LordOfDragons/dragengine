@@ -73,8 +73,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCSpeaker::Ref clipOCSpeaker(gdeOCSpeaker::Ref::NewWith(*speaker));
 	
-	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCSpeaker( clipOCSpeaker ) );
+	gdeClipboardDataOCSpeaker::Ref clipData(gdeClipboardDataOCSpeaker::Ref::New( new gdeClipboardDataOCSpeaker( clipOCSpeaker ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

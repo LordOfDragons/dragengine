@@ -185,8 +185,7 @@ decBaseFileReader &reader ){
 		basePath.SetFromUnix( "/" );
 	}
 	
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	
@@ -314,8 +313,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 				continue;
 			}
 			
-			deSkin::Ref skin;
-			skin.TakeOver( particleEmitter.GetEngine()->GetSkinManager()->LoadSkin( path, basePath ) );
+			deSkin::Ref skin(deSkin::Ref::New( particleEmitter.GetEngine()->GetSkinManager()->LoadSkin( path, basePath ) ));
 			type.SetSkin( skin );
 			
 		}else if( strcmp( tag->GetName(), "model" ) == 0 ){
@@ -324,8 +322,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 				continue;
 			}
 			
-			deModel::Ref model;
-			model.TakeOver( particleEmitter.GetEngine()->GetModelManager()->LoadModel( path, basePath ) );
+			deModel::Ref model(deModel::Ref::New( particleEmitter.GetEngine()->GetModelManager()->LoadModel( path, basePath ) ));
 			type.SetModel( model );
 			
 		}else if( strcmp( tag->GetName(), "modelSkin" ) == 0 ){
@@ -334,8 +331,7 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 				continue;
 			}
 			
-			deSkin::Ref skin;
-			skin.TakeOver( particleEmitter.GetEngine()->GetSkinManager()->LoadSkin( path, basePath ) );
+			deSkin::Ref skin(deSkin::Ref::New( particleEmitter.GetEngine()->GetSkinManager()->LoadSkin( path, basePath ) ));
 			type.SetModelSkin( skin );
 			
 		}else if( strcmp( tag->GetName(), "castFrom" ) == 0 ){
@@ -381,11 +377,9 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 			
 			const decPath trailPath( decPath::AbsolutePathUnix( path, basePath ) );
 			
-			decBaseFileReader::Ref trailReader;
-			trailReader.TakeOver( particleEmitter.GetEngine()->GetVirtualFileSystem()->OpenFileForReading( trailPath ) );
+			decBaseFileReader::Ref trailReader(decBaseFileReader::Ref::New( particleEmitter.GetEngine()->GetVirtualFileSystem()->OpenFileForReading( trailPath ) ));
 			
-			deParticleEmitter::Ref trailEmitter;
-			trailEmitter.TakeOver( particleEmitter.GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter() );
+			deParticleEmitter::Ref trailEmitter(deParticleEmitter::Ref::New( particleEmitter.GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter() ));
 			Load( trailPath.GetPathUnix(), trailEmitter, trailReader );
 			
 			type.SetTrailEmitter( trailEmitter );
@@ -429,11 +423,9 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 			
 			const decPath colPath( decPath::AbsolutePathUnix( path, basePath ) );
 			
-			decBaseFileReader::Ref colReader;
-			colReader.TakeOver( particleEmitter.GetEngine()->GetVirtualFileSystem()->OpenFileForReading( colPath ) );
+			decBaseFileReader::Ref colReader(decBaseFileReader::Ref::New( particleEmitter.GetEngine()->GetVirtualFileSystem()->OpenFileForReading( colPath ) ));
 			
-			deParticleEmitter::Ref colEmitter;
-			colEmitter.TakeOver( particleEmitter.GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter() );
+			deParticleEmitter::Ref colEmitter(deParticleEmitter::Ref::New( particleEmitter.GetEngine()->GetParticleEmitterManager()->CreateParticleEmitter() ));
 			Load( colPath.GetPathUnix(), colEmitter, colReader );
 			
 			type.SetCollisionEmitter( colEmitter );

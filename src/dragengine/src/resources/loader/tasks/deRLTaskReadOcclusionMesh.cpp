@@ -87,8 +87,7 @@ void deRLTaskReadOcclusionMesh::Run(){
 	
 	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
 	
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( GetVFS()->OpenFileForReading( vfsPath ) ));
 	
 	pOcclusionMesh->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
 	pOcclusionMesh->SetAsynchron( true );

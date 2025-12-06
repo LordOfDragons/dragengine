@@ -92,8 +92,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), speaker ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), speaker ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -116,8 +115,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), speaker ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), speaker ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -140,8 +138,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), speaker ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, pPanel.GetObjectClass(), speaker ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -165,8 +162,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnActionSpeaker( pPanel.GetObjectClass(), speaker ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionSpeaker( pPanel.GetObjectClass(), speaker ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -188,9 +184,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCSpeakerSetPathSound(
-			pPanel.GetObjectClass(), speaker, editPath->GetPath() ) );
+		gdeUOCSpeakerSetPathSound::Ref undo(gdeUOCSpeakerSetPathSound::Ref::New(new gdeUOCSpeakerSetPathSound(
+			pPanel.GetObjectClass(), speaker, editPath->GetPath() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -354,9 +349,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCSpeakerSetPropertyName(
-			pPanel.GetObjectClass(), pPanel.GetSpeaker(), propertyName, comboBox->GetText() ) );
+		gdeUOCSpeakerSetPropertyName::Ref undo(gdeUOCSpeakerSetPropertyName::Ref::New(new gdeUOCSpeakerSetPropertyName(
+			pPanel.GetObjectClass(), pPanel.GetSpeaker(), propertyName, comboBox->GetText() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -391,9 +385,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCSpeakerSetTriggerName(
-			pPanel.GetObjectClass(), speaker, triggerName, comboBox->GetText() ) );
+		gdeUOCSpeakerSetTriggerName::Ref undo(gdeUOCSpeakerSetTriggerName::Ref::New(new gdeUOCSpeakerSetTriggerName(
+			pPanel.GetObjectClass(), speaker, triggerName, comboBox->GetText() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

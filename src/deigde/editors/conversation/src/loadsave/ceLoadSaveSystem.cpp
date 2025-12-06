@@ -102,9 +102,8 @@ ceLoadSaveSystem::~ceLoadSaveSystem(){
 ///////////////
 
 ceConversation *ceLoadSaveSystem::LoadConversation( const char *filename ){
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
+		->OpenFileForReading( decPath::CreatePathUnix( filename ) )));
 	
 	ceConversation *conversation = nullptr;
 	
@@ -123,57 +122,50 @@ ceConversation *ceLoadSaveSystem::LoadConversation( const char *filename ){
 }
 
 void ceLoadSaveSystem::SaveConversation( ceConversation *conversation, const char *filename ){
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
+		->OpenFileForWriting( decPath::CreatePathUnix( filename ) )));
 	pLSConversation->SaveConversation( *conversation, writer );
 }
 
 
 
 void ceLoadSaveSystem::LoadCTS( const char *filename, ceConversation &conversation ){
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
+		->OpenFileForReading( decPath::CreatePathUnix( filename ) )));
 	pLSCTS->LoadCTS( conversation, reader );
 }
 
 void ceLoadSaveSystem::SaveCTS( const char *filename, ceConversation &conversation ){
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
+		->OpenFileForWriting( decPath::CreatePathUnix( filename ) )));
 	pLSCTS->SaveCTS( conversation, writer );
 }
 
 
 
 void ceLoadSaveSystem::LoadCTA( const char *filename, ceConversationActor &actor ){
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
+		->OpenFileForReading( decPath::CreatePathUnix( filename ) )));
 	pLSCTA->LoadCTA( actor, reader );
 }
 
 void ceLoadSaveSystem::SaveCTA( const char *filename, ceConversationActor &actor ){
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
+		->OpenFileForWriting( decPath::CreatePathUnix( filename ) )));
 	pLSCTA->SaveCTA( actor, writer );
 }
 
 
 
 void ceLoadSaveSystem::LoadCTGS( const char *filename, ceConversation &conversation ){
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
+		->OpenFileForReading( decPath::CreatePathUnix( filename ) )));
 	pLSCTGS->LoadCTGS( conversation, reader );
 }
 
 void ceLoadSaveSystem::SaveCTGS( const char *filename, const ceConversation &conversation ){
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
+		->OpenFileForWriting( decPath::CreatePathUnix( filename ) )));
 	pLSCTGS->SaveCTGS( conversation, writer );
 }
 

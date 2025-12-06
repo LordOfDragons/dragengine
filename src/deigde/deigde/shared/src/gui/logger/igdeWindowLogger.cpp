@@ -83,8 +83,7 @@ pPendingClearLogs( false )
 	
 	pEditLogs.TakeOver( new igdeTextArea( environment, 60, 10, false ) );
 	
-	igdeTextStyle::Ref style;
-	style.TakeOver( new igdeTextStyle( styleWarning ) );
+	igdeTextStyle::Ref style(igdeTextStyle::Ref::New( new igdeTextStyle( styleWarning ) ));
 	style->SetColor( decColor( 0.0f, 0.0f, 0.0f ) );
 	style->SetBgColor( decColor( 1.0f, 0.815f, 0.0f ) );
 	pEditLogs->AddStyle( style );

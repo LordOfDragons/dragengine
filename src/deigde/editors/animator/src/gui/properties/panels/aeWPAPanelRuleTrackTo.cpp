@@ -84,8 +84,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}

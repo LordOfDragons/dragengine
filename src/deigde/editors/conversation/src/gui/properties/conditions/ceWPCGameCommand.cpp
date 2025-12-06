@@ -79,8 +79,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCGameCmdSetCommand( topic, action, condition, textField->GetText() ) );
+		ceUCCGameCmdSetCommand::Ref undo(ceUCCGameCmdSetCommand::Ref::New( new ceUCCGameCmdSetCommand( topic, action, condition, textField->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -109,8 +108,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCGameCmdSetCommand( topic, action, condition, text ) );
+		ceUCCGameCmdSetCommand::Ref undo(ceUCCGameCmdSetCommand::Ref::New( new ceUCCGameCmdSetCommand( topic, action, condition, text ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -130,8 +128,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCGameCmdToggleNegate( topic, action, condition ) );
+		ceUCCGameCmdToggleNegate::Ref undo(ceUCCGameCmdToggleNegate::Ref::New( new ceUCCGameCmdToggleNegate( topic, action, condition ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

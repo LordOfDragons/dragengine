@@ -103,8 +103,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), light ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), light ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -127,8 +126,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), light ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), light ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -151,8 +149,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), light ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, pPanel.GetObjectClass(), light ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -176,8 +173,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnActionLight( pPanel.GetObjectClass(), light ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionLight( pPanel.GetObjectClass(), light ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -214,8 +210,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCLightSetColor( pPanel.GetObjectClass(), light, colorBox->GetColor() ) );
+		gdeUOCLightSetColor::Ref undo(gdeUOCLightSetColor::Ref::New( new gdeUOCLightSetColor( pPanel.GetObjectClass(), light, colorBox->GetColor() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -461,9 +456,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCLightSetLightSkinPath(
-			pPanel.GetObjectClass(), light, editPath->GetPath() ) );
+		gdeUOCLightSetLightSkinPath::Ref undo(gdeUOCLightSetLightSkinPath::Ref::New(new gdeUOCLightSetLightSkinPath(
+			pPanel.GetObjectClass(), light, editPath->GetPath() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -499,9 +493,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCLightSetPropertyName(
-			pPanel.GetObjectClass(), light, propertyName, comboBox->GetText() ) );
+		gdeUOCLightSetPropertyName::Ref undo(gdeUOCLightSetPropertyName::Ref::New(new gdeUOCLightSetPropertyName(
+			pPanel.GetObjectClass(), light, propertyName, comboBox->GetText() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -535,9 +528,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCLightSetTriggerName(
-			pPanel.GetObjectClass(), pPanel.GetLight(), triggerName, comboBox->GetText() ) );
+		gdeUOCLightSetTriggerName::Ref undo(gdeUOCLightSetTriggerName::Ref::New(new gdeUOCLightSetTriggerName(
+			pPanel.GetObjectClass(), pPanel.GetLight(), triggerName, comboBox->GetText() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

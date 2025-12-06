@@ -108,9 +108,8 @@ pSAnimation( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(300)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(300))));
 	AddChild( splitted );
 	
 	pWindowProperties = new saeWindowProperties( *this );
@@ -330,8 +329,7 @@ public:
 	cActionBase( window, text, icon, description, mnemonic ){}
 	
 	virtual void OnAction(){
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( pWindow.GetSAnimation() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( pWindow.GetSAnimation() ) ));
 		if( undo ){
 			pWindow.GetSAnimation()->GetUndoSystem()->Add( undo );
 		}

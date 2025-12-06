@@ -67,9 +67,8 @@ pRuleGeometry( rule )
 	SetTitle( "Geometry" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Height", "Height of point relative to terrain position",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosHeight ) );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(new meWVNodeSlot( env, "Height", "Height of point relative to terrain position",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosHeight )));
 	AddSlot( slot );
 	
 	slot.TakeOver( new meWVNodeSlot( env, "Normal", "Normalized vector relative to terrain orientation",

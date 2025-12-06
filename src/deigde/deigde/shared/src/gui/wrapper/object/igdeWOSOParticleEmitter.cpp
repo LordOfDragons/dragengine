@@ -247,8 +247,7 @@ void igdeWOSOParticleEmitter::pUpdateParticleEmitter(){
 			
 			if( engine.GetVirtualFileSystem()->ExistsFile( vfsPath ) ){
 				try{
-					decBaseFileReader::Ref reader;
-					reader.TakeOver( engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) );
+					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) ));
 					emitter.TakeOver( engine.GetParticleEmitterManager()->CreateParticleEmitter() );
 					loadEmitter.Load( pathEmitter, emitter, reader );
 					

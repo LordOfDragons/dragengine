@@ -176,9 +176,8 @@ void meCLMaskPaint::Paint(){
 void meCLMaskPaint::EndSession(){
 	// check if we have any changes at all
 	if( pOldValues ){
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTPaintMask( pDrawMode, pWorld, pSector, pTexture,
-			decPoint( pAreaGrid.x1, pAreaGrid.y1 ), decPoint( pModifyWidth, pModifyHeight ), pOldValues ) );
+		meUHTPaintMask::Ref undo(meUHTPaintMask::Ref::New(new meUHTPaintMask( pDrawMode, pWorld, pSector, pTexture,
+			decPoint( pAreaGrid.x1, pAreaGrid.y1 ), decPoint( pModifyWidth, pModifyHeight ), pOldValues )));
 //		pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "Mask Paint: Adding Undo with %i bytes memory consumption.\n", undo->GetMemoryConsumption() );
 		pWorld->GetUndoSystem()->Add( undo, false );
 	}

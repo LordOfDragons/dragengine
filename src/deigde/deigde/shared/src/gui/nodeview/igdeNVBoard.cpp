@@ -307,8 +307,7 @@ igdeNVLink *igdeNVBoard::AddLink( igdeNVSlot *source, igdeNVSlot *target ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeNVLink::Ref link;
-	link.TakeOver( new igdeNVLink( source, target ) );
+	igdeNVLink::Ref link(igdeNVLink::Ref::New( new igdeNVLink( source, target ) ));
 	link->SetOwnerBoard( this );
 	pLinks.Add( ( igdeNVLink* )link );
 	
@@ -379,8 +378,7 @@ void igdeNVBoard::ShowContextMenu( const decPoint &position ){
 	
 	const igdeNativeNVBoard &native = *( ( igdeNativeNVBoard* )GetNativeWidget() );
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
-	igdeMenuCascade::Ref menu;
-	menu.TakeOver( new igdeMenuCascade( helper.GetEnvironment() ) );
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New( new igdeMenuCascade( helper.GetEnvironment() ) ));
 	
 	// link
 	igdeNVLink * const link = native.GetHoverLink();

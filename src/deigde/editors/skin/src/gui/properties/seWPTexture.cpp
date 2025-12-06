@@ -113,8 +113,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( skin, texture ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( skin, texture ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -184,8 +183,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, skin, texture, property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, skin, texture, property ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -210,8 +208,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *editPath, skin, texture, property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *editPath, skin, texture, property ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -236,8 +233,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *colorBox, skin, texture, property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *colorBox, skin, texture, property ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -293,8 +289,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUTextureSetName( texture, value ) );
+		seUTextureSetName::Ref undo(seUTextureSetName::Ref::New( new seUTextureSetName( texture, value ) ));
 		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -379,8 +374,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUPropertySetValueType( property, value ) );
+		seUPropertySetValueType::Ref undo(seUPropertySetValueType::Ref::New( new seUPropertySetValueType( property, value ) ));
 		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -502,8 +496,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUPropertySetMappedComponent( property, index, newMapped ) );
+		seUPropertySetMappedComponent::Ref undo(seUPropertySetMappedComponent::Ref::New( new seUPropertySetMappedComponent( property, index, newMapped ) ));
 		skin->GetUndoSystem()->Add( undo );
 	}
 };
@@ -530,8 +523,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUPropertySetConstructedSize( property, editPoint3->GetPoint3() ) );
+		seUPropertySetConstructedSize::Ref undo(seUPropertySetConstructedSize::Ref::New( new seUPropertySetConstructedSize( property, editPoint3->GetPoint3() ) ));
 		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -583,8 +575,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUPropertyConstructedSetBitCount( property, bitCount ) );
+		seUPropertyConstructedSetBitCount::Ref undo(seUPropertyConstructedSetBitCount::Ref::New( new seUPropertyConstructedSetBitCount( property, bitCount ) ));
 		skin->GetUndoSystem()->Add( undo );
 	}
 };

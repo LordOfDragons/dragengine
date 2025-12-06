@@ -71,8 +71,7 @@ pOption( option )
 ///////////////
 
 void ceWPTMAPChoiceOptionRemove::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCAPChoiceOptionRemove( pTopic, pPlayerChoice, pOption ) );
+	ceUCAPChoiceOptionRemove::Ref undo(ceUCAPChoiceOptionRemove::Ref::New( new ceUCAPChoiceOptionRemove( pTopic, pPlayerChoice, pOption ) ));
 	pConversation->GetUndoSystem()->Add( undo );
 	
 	ceWPTopic &wptopic = GetWindowMain().GetWindowProperties().GetPanelTopic();

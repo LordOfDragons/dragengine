@@ -76,8 +76,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAActorRemoveSetActor( topic, action, comboBox->GetText() ) );
+		ceUCAActorRemoveSetActor::Ref undo(ceUCAActorRemoveSetActor::Ref::New( new ceUCAActorRemoveSetActor( topic, action, comboBox->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

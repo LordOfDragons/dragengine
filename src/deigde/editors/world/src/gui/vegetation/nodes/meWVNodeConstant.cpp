@@ -64,9 +64,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleConstSetVector( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleConstant(), editVector->GetVector() ) );
+		meUHTVRuleConstSetVector::Ref undo(meUHTVRuleConstSetVector::Ref::New(new meUHTVRuleConstSetVector( pNode.GetWindowVegetation().GetVLayer(),
+			pNode.GetRuleConstant(), editVector->GetVector() )));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -92,9 +91,8 @@ pRuleConstant( rule )
 	SetTitle( "Constant" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Vector", "Vector value",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector ) );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(new meWVNodeSlot( env, "Vector", "Vector value",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector )));
 	AddSlot( slot );
 	
 	slot.TakeOver( new meWVNodeSlot( env, "X", "X value",

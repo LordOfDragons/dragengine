@@ -87,8 +87,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, font, glyph ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, font, glyph ) ));
 		if( undo ){
 			font->GetUndoSystem()->Add( undo );
 		}

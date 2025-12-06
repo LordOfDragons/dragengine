@@ -387,8 +387,7 @@ void deVFSDiskDirectory::TouchFile( const decPath &path ){
 	diskPath.RemoveLastComponent();
 	pEnsureDirectoryExists( diskPath );
 	
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( new decDiskFileWriter( npath, false ) );
+	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New( new decDiskFileWriter( npath, false ) ));
 }
 
 void deVFSDiskDirectory::SearchFiles( const decPath &directory, deContainerFileSearch &searcher ){

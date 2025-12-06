@@ -77,8 +77,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, source ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, source ) ));
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -101,8 +100,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( source ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( source ) ));
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -182,8 +180,7 @@ public:
 				return NULL;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourceChainPathSoundAdd( source, path ) );
+		seUSourceChainPathSoundAdd::Ref undo(seUSourceChainPathSoundAdd::Ref::New( new seUSourceChainPathSoundAdd( source, path ) ));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 		
 		pPanel.SelectSoundInList( source->GetPathSounds().GetCount() - 1 );
@@ -250,8 +247,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourceChainSetPathSound( source, selection, editPath->GetPath() ) );
+		seUSourceChainSetPathSound::Ref undo(seUSourceChainSetPathSound::Ref::New( new seUSourceChainSetPathSound( source, selection, editPath->GetPath() ) ));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };

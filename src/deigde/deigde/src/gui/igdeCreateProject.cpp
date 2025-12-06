@@ -245,8 +245,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	decPath path( pNativePathProject );
 	path.AddComponent( ".gitignore" );
 	
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( new decDiskFileWriter( path.GetPathNative(), false ) );
+	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New( new decDiskFileWriter( path.GetPathNative(), false ) ));
 	writer->WriteString( pProject->GetPathLocal() + "\n" );
 	writer->WriteString( pPathCache + "\n" );
 	writer->WriteString( "distribute\n" );
@@ -404,9 +403,8 @@ void igdeCreateProject::pApplyTemplate(){
 	// create vfs directories to work with
 	pVFS.TakeOver( new deVirtualFileSystem );
 	
-	deVFSContainer::Ref container;
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_DATA ),
-		decPath::CreatePathNative( pNativePathData ) ) );
+	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_DATA ),
+		decPath::CreatePathNative( pNativePathData ) )));
 	pVFS->AddContainer( container );
 	
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_PROJECT ),
@@ -442,8 +440,7 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	
 	// find files
 	if( ! file.GetPattern().IsEmpty() ){
-		deVirtualFileSystem::Ref vfs;
-		vfs.TakeOver( new deVirtualFileSystem );
+		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New( new deVirtualFileSystem ));
 		
 		deCollectFileSearchVisitor collect( file.GetPattern() );
 		pVFS->SearchFiles( decPath::CreatePathUnix( VFS_DIR_TEMPLATE ), collect );

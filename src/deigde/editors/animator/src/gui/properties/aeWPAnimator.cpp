@@ -98,8 +98,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( animator ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -136,8 +135,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeUAnimatorSetRigPath( animator, editPath->GetPath() ) );
+		aeUAnimatorSetRigPath::Ref undo(aeUAnimatorSetRigPath::Ref::New( new aeUAnimatorSetRigPath( animator, editPath->GetPath() ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -155,8 +153,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeUAnimatorSetAnimationPath( animator, editPath->GetPath() ) );
+		aeUAnimatorSetAnimationPath::Ref undo(aeUAnimatorSetAnimationPath::Ref::New( new aeUAnimatorSetAnimationPath( animator, editPath->GetPath() ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -219,8 +216,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		igdeClipboardData::Ref clip;
-		clip.TakeOver( new aeClipboardDataBones( animator->GetListBones() ) );
+		aeClipboardDataBones::Ref clip(aeClipboardDataBones::Ref::New( new aeClipboardDataBones( animator->GetListBones() ) ));
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
 		return nullptr;
 	}
@@ -395,8 +391,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position sets" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		igdeClipboardData::Ref clip;
-		clip.TakeOver( new aeClipboardDataVertexPositionSets( animator->GetListVertexPositionSets() ) );
+		aeClipboardDataVertexPositionSets::Ref clip(aeClipboardDataVertexPositionSets::Ref::New( new aeClipboardDataVertexPositionSets( animator->GetListVertexPositionSets() ) ));
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
 		return nullptr;
 	}

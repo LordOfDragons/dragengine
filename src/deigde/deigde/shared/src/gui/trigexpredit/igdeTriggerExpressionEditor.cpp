@@ -695,9 +695,8 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	AddChild( form );
 	
 	// content
-	igdeContainerSplitted::Ref panelContent;
-	panelContent.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espRight,
-		igdeApplication::app().DisplayScaled(200)));
+	igdeContainerSplitted::Ref panelContent(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espRight,
+		igdeApplication::app().DisplayScaled(200))));
 	AddChild( panelContent );
 	
 	// expression tree

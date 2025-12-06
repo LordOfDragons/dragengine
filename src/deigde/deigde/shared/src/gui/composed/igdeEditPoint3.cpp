@@ -229,8 +229,7 @@ void igdeEditPoint3::pCreateContent( igdeUIHelper &helper ){
 	pTextZ->SetInteger( pPoint3.z );
 	
 	// add listener
-	igdeTextFieldListener::Ref listener;
-	listener.TakeOver( new cListener( *this, pTextX, pTextY, pTextZ ) );
+	cListener::Ref listener(cListener::Ref::New( new cListener( *this, pTextX, pTextY, pTextZ ) ));
 	pTextX->AddListener( listener );
 	pTextY->AddListener( listener );
 	pTextZ->AddListener( listener );

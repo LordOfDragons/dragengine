@@ -132,8 +132,7 @@ void aeLSAnimator::LoadAnimator( aeAnimator *animator, decBaseFileReader *file )
 		DETHROW( deeInvalidParam );
 	}
 	
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	decXmlParser( pLSSys->GetWindowMain()->GetEnvironment().GetLogger() ).ParseXml( file, xmlDoc );
 	

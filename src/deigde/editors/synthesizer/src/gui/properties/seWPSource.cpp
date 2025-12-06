@@ -132,8 +132,7 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascade::Ref submenu;
-		submenu.TakeOver( new igdeMenuCascade( menu.GetEnvironment(), "Add" ) );
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( menu.GetEnvironment(), "Add" ) ));
 		helper.MenuCommand( submenu, windowMain.GetActionSourceAddWave() );
 		helper.MenuCommand( submenu, windowMain.GetActionSourceAddSound() );
 		helper.MenuCommand( submenu, windowMain.GetActionSourceAddChain() );
@@ -184,8 +183,7 @@ public:
 			return;
 		}
 		
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new seClipboardDataSource( source ) );
+		seClipboardDataSource::Ref cdata(seClipboardDataSource::Ref::New( new seClipboardDataSource( source ) ));
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 	}
 	
@@ -208,8 +206,7 @@ public:
 			return;
 		}
 		
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new seClipboardDataSource( source ) );
+		seClipboardDataSource::Ref cdata(seClipboardDataSource::Ref::New( new seClipboardDataSource( source ) ));
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 		
 		igdeUndo::Ref undo;
@@ -350,8 +347,7 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	content->AddChild( pSwitcher );
 	
-	igdeWidget::Ref panel;
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
 	pSwitcher->AddChild( panel );
 	
 	panel.TakeOver( pPanelSound = new seWPAPanelSourceSound( *this ) );
@@ -462,8 +458,7 @@ void seWPSource::UpdateSourceTree(){
 			seSource * const source = pSynthesizer->GetSources().GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItem::Ref item;
-				item.TakeOver( new igdeTreeItem( "" ) );
+				igdeTreeItem::Ref item(igdeTreeItem::Ref::New( new igdeTreeItem( "" ) ));
 				pTreeSource->AppendItem( NULL, item );
 				nextItem = item;
 			}
@@ -524,8 +519,7 @@ void seWPSource::UpdateSourceTreeItem( igdeTreeItem *item, seSource *source ){
 			seSource * const source2 = sourceGroup.GetSources().GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItem::Ref child;
-				child.TakeOver( new igdeTreeItem( "" ) );
+				igdeTreeItem::Ref child(igdeTreeItem::Ref::New( new igdeTreeItem( "" ) ));
 				pTreeSource->AppendItem( item, child );
 				nextItem = child;
 			}

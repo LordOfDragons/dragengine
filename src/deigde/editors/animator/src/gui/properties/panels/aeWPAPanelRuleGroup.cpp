@@ -79,8 +79,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -126,8 +125,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeURuleGroupSetApplicationType( rule, value ) );
+		aeURuleGroupSetApplicationType::Ref undo(aeURuleGroupSetApplicationType::Ref::New( new aeURuleGroupSetApplicationType( rule, value ) ));
 		animator->GetUndoSystem()->Add( undo );
 	}
 };

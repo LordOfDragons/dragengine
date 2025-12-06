@@ -58,8 +58,7 @@ igdeBaseXML( logger, "IGDEProjectTemplate" ){
 ///////////////
 
 void igdeLoadTemplate::Load( decBaseFileReader &reader, igdeTemplate &atemplate ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

@@ -75,8 +75,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, langpack ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, langpack ) ));
 		if( undo ){
 			langpack->GetUndoSystem()->Add( undo );
 		}
@@ -98,8 +97,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textArea, langpack ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textArea, langpack ) ));
 		if( undo ){
 			langpack->GetUndoSystem()->Add( undo );
 		}

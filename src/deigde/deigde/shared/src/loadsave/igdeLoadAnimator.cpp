@@ -117,8 +117,7 @@ void igdeLoadAnimator::Load( const decString &pathAnimator, deAnimator &animator
 		basePath.SetFromUnix( "/" );
 	}
 	
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	
@@ -1279,10 +1278,8 @@ const char *basePath, deAnimator &animator ){
 				
 				try{
 					const decPath realPath( decPath::AbsolutePathNative( pathAnimator, basePath ) );
-					decBaseFileReader::Ref reader;
-					reader.TakeOver( vfs.OpenFileForReading( realPath ) );
-					deAnimator::Ref subAnimator;
-					subAnimator.TakeOver( animator.GetEngine()->GetAnimatorManager()->CreateAnimator() );
+					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( realPath ) ));
+					deAnimator::Ref subAnimator(deAnimator::Ref::New( animator.GetEngine()->GetAnimatorManager()->CreateAnimator() ));
 					Load( realPath.GetPathUnix(), subAnimator, reader );
 					rule->SetSubAnimator( subAnimator );
 					

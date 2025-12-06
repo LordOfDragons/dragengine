@@ -75,9 +75,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleMathSetOp( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMath(), op ) );
+		meUHTVRuleMathSetOp::Ref undo(meUHTVRuleMathSetOp::Ref::New(new meUHTVRuleMathSetOp( pNode.GetWindowVegetation().GetVLayer(),
+			pNode.GetRuleMath(), op )));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -95,9 +94,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleMathSetValueA( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMath(), value ) );
+		meUHTVRuleMathSetValueA::Ref undo(meUHTVRuleMathSetValueA::Ref::New(new meUHTVRuleMathSetValueA( pNode.GetWindowVegetation().GetVLayer(),
+			pNode.GetRuleMath(), value )));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -115,9 +113,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleMathSetValueB( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMath(), value ) );
+		meUHTVRuleMathSetValueB::Ref undo(meUHTVRuleMathSetValueB::Ref::New(new meUHTVRuleMathSetValueB( pNode.GetWindowVegetation().GetVLayer(),
+			pNode.GetRuleMath(), value )));
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -143,9 +140,8 @@ pRuleMath( NULL )
 	SetTitle( "Math" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Result", "Result of the operation",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleMath::eosResult ) );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(new meWVNodeSlot( env, "Result", "Result of the operation",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleMath::eosResult )));
 	AddSlot( slot );
 	
 	slot.TakeOver( new meWVNodeSlot( env, "Value A", "First operand",

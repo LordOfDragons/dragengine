@@ -69,7 +69,6 @@ pAction( action )
 ///////////////
 
 void ceWPTMAPChoiceOptionRemoveAction::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCAPChoiceActionRemove( pTopic, pPlayerChoice, pOption, pAction ) );
+	ceUCAPChoiceActionRemove::Ref undo(ceUCAPChoiceActionRemove::Ref::New( new ceUCAPChoiceActionRemove( pTopic, pPlayerChoice, pOption, pAction ) ));
 	pConversation->GetUndoSystem()->Add( undo );
 }

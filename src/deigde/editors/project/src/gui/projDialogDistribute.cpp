@@ -74,8 +74,7 @@ pSuccess( true )
 		env.GetStockIcon( igdeEnvironment::esiOpen ), "Show DELGA file in File Manager" ) );
 	
 	
-	igdeContainer::Ref content;
-	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) );
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) ));
 	
 	// build information
 	igdeContainer::Ref groupBox;
@@ -94,8 +93,7 @@ pSuccess( true )
 	pEditDelgaDirCount->SetEditable( false );
 	
 	// logs and info line
-	igdeContainer::Ref containerLogs;
-	containerLogs.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) );
+	igdeContainerFlow::Ref containerLogs(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) ));
 	
 	helper.GroupBoxStaticFlow( containerLogs, groupBox, "Logs:", true );
 	

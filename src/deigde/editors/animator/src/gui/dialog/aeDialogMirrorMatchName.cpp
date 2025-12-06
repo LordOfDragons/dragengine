@@ -48,8 +48,7 @@ igdeDialog( environment, windowTitle )
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainer::Ref content;
-	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New( new igdeContainerForm( environment, igdeContainerForm::esLast ) ));
 	
 	helper.ComboBox( content, "Type:", "How to match the name.", pCBType, nullptr );
 	pCBType->AddItem( "Begin of name", nullptr, ( void* )( intptr_t )deAnimatorRuleMirror::emntFirst );

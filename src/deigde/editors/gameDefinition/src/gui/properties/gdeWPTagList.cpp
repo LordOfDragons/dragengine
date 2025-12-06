@@ -67,8 +67,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoSet( *pPanel.GetTagList() + pComboBox->GetText() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoSet( *pPanel.GetTagList() + pComboBox->GetText() ) ));
 		pPanel.GetUndoSystem()->Add( undo );
 		
 		pListBox->SetSelection( pListBox->IndexOfItem( pComboBox->GetText() ) );
@@ -92,8 +91,7 @@ public:
 		decStringSet tags( *pPanel.GetTagList() );
 		tags.Remove( pListBox->GetSelectedItem()->GetText() );
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoSet( tags ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoSet( tags ) ));
 		pPanel.GetUndoSystem()->Add( undo );
 		
 		if( pListBox->GetItemCount() > 0 ){
@@ -115,8 +113,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoSet( decStringSet() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoSet( decStringSet() ) ));
 		pPanel.GetUndoSystem()->Add( undo );
 	}
 };
@@ -157,9 +154,8 @@ pUndoSystem( NULL )
 	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
 	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
 	
-	igdeContainer::Ref comboLine;
-	comboLine.TakeOver( new igdeContainerFlow( GetEnvironment(),
-		igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
+	igdeContainerFlow::Ref comboLine(igdeContainerFlow::Ref::New(new igdeContainerFlow( GetEnvironment(),
+		igdeContainerFlow::eaX, igdeContainerFlow::esFirst )));
 	helper.ComboBoxFilter( comboLine, true, description, pComboBox, NULL );
 	pComboBox->SetDefaultSorter();
 	pComboBox->SetFilterCaseInsentive( true );

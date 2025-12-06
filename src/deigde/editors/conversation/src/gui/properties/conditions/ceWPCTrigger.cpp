@@ -83,8 +83,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCTriggerSetTestMode( topic, action, condition, testMode ) );
+		ceUCCTriggerSetTestMode::Ref undo(ceUCCTriggerSetTestMode::Ref::New( new ceUCCTriggerSetTestMode( topic, action, condition, testMode ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -103,8 +102,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCTriggerSetTrigger( topic, action, condition, textField->GetText() ) );
+		ceUCCTriggerSetTrigger::Ref undo(ceUCCTriggerSetTrigger::Ref::New( new ceUCCTriggerSetTrigger( topic, action, condition, textField->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

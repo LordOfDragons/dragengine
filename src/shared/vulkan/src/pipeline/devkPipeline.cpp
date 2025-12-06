@@ -93,8 +93,7 @@ pSaveCache( false )
 			if( vfs.ExistsFile( path ) ){
 				baseModule.LogInfoFormat( "Vulkan Pipeline: Read Cache for device %x", pDevice.GetProperties().deviceID );
 				
-				decBaseFileReader::Ref reader;
-				reader.TakeOver( vfs.OpenFileForReading( path ) );
+				decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( path ) ));
 				
 				cacheInfo.initialDataSize = reader->GetLength();
 				if( cacheInfo.initialDataSize > 0 ){
@@ -187,8 +186,7 @@ void devkPipeline::pCleanUp(){
 			baseModule.LogInfoFormat( "Vulkan Pipeline: Save Cache for device %x", pDevice.GetProperties().deviceID );
 			
 			try{
-				decBaseFileWriter::Ref writer;
-				writer.TakeOver( vfs.OpenFileForWriting( path ) );
+				decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( path ) ));
 				
 				size_t sizeData = 0;
 				VK_CHECK( vulkan, pDevice.vkGetPipelineCacheData( device, pCache, &sizeData, VK_NULL_HANDLE ) );

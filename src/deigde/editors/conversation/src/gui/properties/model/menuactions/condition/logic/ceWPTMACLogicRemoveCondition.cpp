@@ -68,7 +68,6 @@ pCondition( condition )
 ///////////////
 
 void ceWPTMACLogicRemoveCondition::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCCLogicRemove( pTopic, pAction, pLogic, pCondition ) );
+	ceUCCLogicRemove::Ref undo(ceUCCLogicRemove::Ref::New( new ceUCCLogicRemove( pTopic, pAction, pLogic, pCondition ) ));
 	pConversation->GetUndoSystem()->Add( undo );
 }

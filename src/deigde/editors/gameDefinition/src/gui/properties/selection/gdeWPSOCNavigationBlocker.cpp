@@ -92,8 +92,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), navblocker ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), navblocker ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -116,8 +115,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), navblocker ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), navblocker ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -140,8 +138,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), navblocker ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, pPanel.GetObjectClass(), navblocker ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -165,8 +162,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnActionNavBlocker( pPanel.GetObjectClass(), navblocker ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionNavBlocker( pPanel.GetObjectClass(), navblocker ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -340,9 +336,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCNavBlockerSetPropertyName(
-			pPanel.GetObjectClass(), pPanel.GetNavigationBlocker(), propertyName, comboBox->GetText() ) );
+		gdeUOCNavBlockerSetPropertyName::Ref undo(gdeUOCNavBlockerSetPropertyName::Ref::New(new gdeUOCNavBlockerSetPropertyName(
+			pPanel.GetObjectClass(), pPanel.GetNavigationBlocker(), propertyName, comboBox->GetText() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

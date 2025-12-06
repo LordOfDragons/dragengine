@@ -96,8 +96,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), forceField ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), forceField ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -120,8 +119,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), forceField ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, pPanel.GetObjectClass(), forceField ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -145,8 +143,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnActionForceField( pPanel.GetObjectClass(), forceField ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionForceField( pPanel.GetObjectClass(), forceField ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -182,8 +179,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), forceField ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), forceField ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -434,9 +430,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCForceFieldSetPropertyName(
-			pPanel.GetObjectClass(), forceField, propertyName, comboBox->GetText() ) );
+		gdeUOCForceFieldSetPropertyName::Ref undo(gdeUOCForceFieldSetPropertyName::Ref::New(new gdeUOCForceFieldSetPropertyName(
+			pPanel.GetObjectClass(), forceField, propertyName, comboBox->GetText() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -470,9 +465,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCForceFieldSetTriggerName(
-			pPanel.GetObjectClass(), pPanel.GetForceField(), triggerName, comboBox->GetText() ) );
+		gdeUOCForceFieldSetTriggerName::Ref undo(gdeUOCForceFieldSetTriggerName::Ref::New(new gdeUOCForceFieldSetTriggerName(
+			pPanel.GetObjectClass(), pPanel.GetForceField(), triggerName, comboBox->GetText() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

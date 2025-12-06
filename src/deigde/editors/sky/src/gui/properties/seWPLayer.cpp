@@ -124,8 +124,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, sky, layer ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, sky, layer ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -148,8 +147,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), sky, layer ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), sky, layer ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -172,8 +170,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector2->GetVector2(), sky, layer ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector2->GetVector2(), sky, layer ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -196,8 +193,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( colorBox->GetColor(), sky, layer ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( colorBox->GetColor(), sky, layer ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -220,8 +216,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editPath->GetPath(), sky, layer ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editPath->GetPath(), sky, layer ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -253,8 +248,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( sky ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( sky ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -611,8 +605,7 @@ public:
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer* ){
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		igdeMenuCascade::Ref menu;
-		menu.TakeOver( new igdeMenuCascade( pPanel.GetEnvironment() ) );
+		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New( new igdeMenuCascade( pPanel.GetEnvironment() ) ));
 		helper.MenuCommand( menu, pPanel.GetActionBodyAdd() );
 		helper.MenuCommand( menu, pPanel.GetActionBodyRemove() );
 		helper.MenuSeparator( menu );

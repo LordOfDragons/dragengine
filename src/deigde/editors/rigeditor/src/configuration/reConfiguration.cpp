@@ -110,8 +110,7 @@ void reConfiguration::LoadConfiguration(){
 			return;
 		}
 		
-		decBaseFileReader::Ref reader;
-		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
+		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ));
 		reConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
 		

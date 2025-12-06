@@ -397,8 +397,7 @@ pVAPreview( NULL )
 	panel2->AddChild( panel3 );
 	
 	pDopeSheet.TakeOver( new cDopeSheet( *this ) );
-	igdeMouseKeyListener::Ref mklistener;
-	mklistener.TakeOver( new cMouseKeyListener( *this ) );
+	cMouseKeyListener::Ref mklistener(cMouseKeyListener::Ref::New( new cMouseKeyListener( *this ) ));
 	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).AddListener( mklistener );
 	panel2->AddChild( pDopeSheet );
 	
@@ -798,8 +797,7 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 	
 	for( i=timeFirst; i<=timeLast; i++ ){
 		if( i - timeFirst == pTimeLines.GetCount() ){
-			deCanvasPaint::Ref canvas;
-			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasPaint() );
+			deCanvasPaint::Ref canvas(deCanvasPaint::Ref::New( GetEngine()->GetCanvasManager()->CreateCanvasPaint() ));
 			canvas->SetFillColor( decColor( 0.0f, 0.0f, 0.0f ) );
 			//GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetShadow ) );
 			canvas->SetThickness( 0 );
@@ -809,8 +807,7 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 		if( i - timeFirst == pTimeLineLabels.GetCount() ){
 			deFont * const font = pFontText->GetEngineFont();
 			
-			deCanvasText::Ref canvas;
-			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
+			deCanvasText::Ref canvas(deCanvasText::Ref::New( GetEngine()->GetCanvasManager()->CreateCanvasText() ));
 			canvas->SetFont( font );
 			canvas->SetFontSize( ( float )font->GetLineHeight() );
 			canvas->SetColor( GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetForeground ) );

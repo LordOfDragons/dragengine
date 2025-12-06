@@ -656,8 +656,7 @@ pAnimator( NULL )
 	helper.FormLineStretchFirst( groupBox, "Attachment:", "Attachment to edit", formLine );
 	helper.ComboBox( formLine, "Attachment to edit", pCBAttachments, new cComboAttachment( *this ) );
 	
-	igdeActionContextMenu::Ref actionMenuAttachment;
-	actionMenuAttachment.TakeOver( new cActionMenuAttach( *this ) );
+	cActionMenuAttach::Ref actionMenuAttachment(cActionMenuAttach::Ref::New( new cActionMenuAttach( *this ) ));
 	helper.Button( formLine, pBtnAttMenu, actionMenuAttachment );
 	actionMenuAttachment->SetWidget( pBtnAttMenu );
 	

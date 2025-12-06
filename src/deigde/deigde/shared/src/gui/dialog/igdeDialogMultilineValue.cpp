@@ -45,8 +45,7 @@ igdeDialog( environment, title )
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainer::Ref content;
-	content.TakeOver( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10 ) );
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10 ) ));
 	
 	helper.Label( content, message );
 	helper.EditString( content, "", pEditValue, columns, rows, NULL );

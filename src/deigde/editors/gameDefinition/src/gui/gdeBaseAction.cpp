@@ -72,8 +72,7 @@ void gdeBaseAction::OnAction(){
 		return;
 	}
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( OnAction( *gameDefinition ) );
+	igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( *gameDefinition ) ));
 	if( undo ){
 		gameDefinition->GetUndoSystem()->Add( undo );
 	}

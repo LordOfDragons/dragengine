@@ -73,8 +73,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCHasActorSetActor( topic, action, condition, comboBox->GetText() ) );
+		ceUCCHasActorSetActor::Ref undo(ceUCCHasActorSetActor::Ref::New( new ceUCCHasActorSetActor( topic, action, condition, comboBox->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -94,8 +93,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCHasActorToggleNegate( topic, action, condition ) );
+		ceUCCHasActorToggleNegate::Ref undo(ceUCCHasActorToggleNegate::Ref::New( new ceUCCHasActorToggleNegate( topic, action, condition ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

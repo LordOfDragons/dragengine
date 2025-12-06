@@ -73,8 +73,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCCamera::Ref clipOCCamera(gdeOCCamera::Ref::NewWith(*camera));
 	
-	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCCamera( clipOCCamera ) );
+	gdeClipboardDataOCCamera::Ref clipData(gdeClipboardDataOCCamera::Ref::New( new gdeClipboardDataOCCamera( clipOCCamera ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

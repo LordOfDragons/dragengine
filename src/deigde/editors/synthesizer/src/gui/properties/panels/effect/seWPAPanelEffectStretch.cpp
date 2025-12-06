@@ -67,8 +67,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, effect ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, effect ) ));
 		if( undo ){
 			effect->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}

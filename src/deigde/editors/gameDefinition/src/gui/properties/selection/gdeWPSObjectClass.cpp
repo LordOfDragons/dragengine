@@ -158,8 +158,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *comboBox, objectClass ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, objectClass ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -182,8 +181,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnActionObjectClass( objectClass ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionObjectClass( objectClass ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -209,8 +207,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, objectClass ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, objectClass ) ));
 		if( undo ) {
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -244,8 +241,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCSetDescription( objectClass, textArea->GetText() ) );
+		gdeUOCSetDescription::Ref undo(gdeUOCSetDescription::Ref::New( new gdeUOCSetDescription( objectClass, textArea->GetText() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -566,8 +562,7 @@ public:
 			inherit.SetPropertyPrefix( ioc->GetDefaultInheritPropertyPrefix() );
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCAddInherit( objectClass, &inherit ) );
+		gdeUOCAddInherit::Ref undo(gdeUOCAddInherit::Ref::New( new gdeUOCAddInherit( objectClass, &inherit ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
 		pPanel.SelectInherit( &inherit );
@@ -846,8 +841,7 @@ public:
 		decStringDictionary values( objectClass->GetPropertyValues() );
 		values.SetAt( key, value );
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCSetPropertyValues( objectClass, values ) );
+		gdeUOCSetPropertyValues::Ref undo(gdeUOCSetPropertyValues::Ref::New( new gdeUOCSetPropertyValues( objectClass, values ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -920,8 +914,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChangedTexture( editVector2->GetVector2(), pPanel.GetObjectClass(), texture ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChangedTexture( editVector2->GetVector2(), pPanel.GetObjectClass(), texture ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -976,8 +969,7 @@ public:
 		
 		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCAddTexture( objectClass, texture ) );
+		gdeUOCAddTexture::Ref undo(gdeUOCAddTexture::Ref::New( new gdeUOCAddTexture( objectClass, texture ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
 		objectClass->SetActiveTexture( texture );
@@ -1049,8 +1041,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCTextureSetPathSkin( pPanel.GetObjectClass(), texture, editPath->GetPath() ) );
+		gdeUOCTextureSetPathSkin::Ref undo(gdeUOCTextureSetPathSkin::Ref::New( new gdeUOCTextureSetPathSkin( pPanel.GetObjectClass(), texture, editPath->GetPath() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -1104,8 +1095,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCTextureSetColorTint( pPanel.GetObjectClass(), texture, colorBox->GetColor() ) );
+		gdeUOCTextureSetColorTint::Ref undo(gdeUOCTextureSetColorTint::Ref::New( new gdeUOCTextureSetColorTint( pPanel.GetObjectClass(), texture, colorBox->GetColor() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

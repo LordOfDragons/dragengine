@@ -110,8 +110,7 @@ deSkinModule::~deSkinModule(){
 ///////////////////////
 
 void deSkinModule::LoadSkin( decBaseFileReader &file, deSkin &skin ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	decXmlParser( GetGameEngine()->GetLogger() ).ParseXml( &file, xmlDoc );
 	

@@ -93,8 +93,7 @@ void lpeConfiguration::LoadConfiguration(){
 			return;
 		}
 		
-		decBaseFileReader::Ref reader;
-		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
+		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ));
 		lpeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
 		

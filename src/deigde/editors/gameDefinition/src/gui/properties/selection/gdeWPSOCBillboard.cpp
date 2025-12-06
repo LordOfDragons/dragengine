@@ -93,8 +93,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( pPanel.GetObjectClass(), billboard, editVector2->GetVector2() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( pPanel.GetObjectClass(), billboard, editVector2->GetVector2() ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -118,8 +117,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnActionBillboard( pPanel.GetObjectClass(), billboard ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionBillboard( pPanel.GetObjectClass(), billboard ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -157,8 +155,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), billboard ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), billboard ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -181,8 +178,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), billboard ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), billboard ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -206,9 +202,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCBillboardSetSkinPath(
-			pPanel.GetObjectClass(), billboard, editPath->GetPath() ) );
+		gdeUOCBillboardSetSkinPath::Ref undo(gdeUOCBillboardSetSkinPath::Ref::New(new gdeUOCBillboardSetSkinPath(
+			pPanel.GetObjectClass(), billboard, editPath->GetPath() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -396,9 +391,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCBillboardSetPropertyName(
-			pPanel.GetObjectClass(), billboard, propertyName, comboBox->GetText() ) );
+		gdeUOCBillboardSetPropertyName::Ref undo(gdeUOCBillboardSetPropertyName::Ref::New(new gdeUOCBillboardSetPropertyName(
+			pPanel.GetObjectClass(), billboard, propertyName, comboBox->GetText() )));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

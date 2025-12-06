@@ -103,8 +103,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new lpeULangPackEntrySetName( entry, name ) );
+		lpeULangPackEntrySetName::Ref undo(lpeULangPackEntrySetName::Ref::New( new lpeULangPackEntrySetName( entry, name ) ));
 		if( undo ){
 			langpack.GetUndoSystem()->Add( undo );
 		}
@@ -222,8 +221,7 @@ public:
 	}
 	
 	static void AddToListBox( lpeViewLangPack &window, igdeIconListBox &listBox ){
-		igdeIconListBoxListener::Ref listener;
-		listener.TakeOver( new cListEntries( window ) );
+		cListEntries::Ref listener(cListEntries::Ref::New( new cListEntries( window ) ));
 		listBox.AddListener( listener );
 		
 		( ( cListEntries& )( igdeIconListBoxListener& )listener ).UpdateSorter( listBox );
@@ -250,20 +248,17 @@ preventUpdate( false )
 	igdeUIHelper &helper = env.GetUIHelper();
 	
 	// filter line on top
-	igdeContainer::Ref topLine;
-	topLine.TakeOver( new igdeContainerForm( env ) );
+	igdeContainerForm::Ref topLine(igdeContainerForm::Ref::New( new igdeContainerForm( env ) ));
 	helper.EditString( topLine, "Filter:", "Filter entries by identifier.",
 		pEditFilter, new cTextFilter( *this ) );
 	AddChild( topLine, igdeContainerBorder::eaTop );
 	
 	// content split between list and bottom line
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espBottom,
-		igdeApplication::app().DisplayScaled(100)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espBottom,
+		igdeApplication::app().DisplayScaled(100))));
 	AddChild( splitted, igdeContainerBorder::eaCenter );
 	
-	igdeContainer::Ref sidePanel;
-	sidePanel.TakeOver( new igdeContainerForm( env, igdeContainerForm::esLast ) );
+	igdeContainerForm::Ref sidePanel(igdeContainerForm::Ref::New( new igdeContainerForm( env, igdeContainerForm::esLast ) ));
 	helper.EditString( sidePanel, "Identifier:", "Unique identifier name of the entry.",
 		pEditEntryName, new cTextName( *this ) );
 	helper.EditString( sidePanel, "Reference Text:", "Reference text of the reference language pack entry.",

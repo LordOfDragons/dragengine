@@ -187,9 +187,8 @@ pActiveGameDefinition( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(350)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(350))));
 	AddChild( splitted );
 	
 	pWindowProperties = new gdeWindowProperties( *this );

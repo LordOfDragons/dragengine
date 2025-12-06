@@ -109,8 +109,7 @@ igdeXMLGameDefinition::~igdeXMLGameDefinition(){
 ////////////
 
 void igdeXMLGameDefinition::Load( decBaseFileReader &file, igdeGameDefinition &gamedef ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	// parse xml
 	decXmlParser( GetLogger() ).ParseXml( &file, xmlDoc );

@@ -145,8 +145,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -170,8 +169,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -193,8 +191,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -216,8 +213,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector2->GetVector2(), world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector2->GetVector2(), world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -239,8 +235,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editPath, world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editPath, world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -262,8 +257,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( sliderText, world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( sliderText, world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -352,8 +346,7 @@ public:
 				
 			}else if( answer == igdeCommonDialogs::ebYes ){
 				const int resolution = world->GetHeightTerrain()->GetSectorResolution();
-				deImage::Ref image;
-				image.TakeOver( pPanel.GetEngine()->GetImageManager()->LoadImage( editPath->GetPath(), "/" ) );
+				deImage::Ref image(deImage::Ref::New( pPanel.GetEngine()->GetImageManager()->LoadImage( editPath->GetPath(), "/" ) ));
 				
 				if( image->GetComponentCount() != 1 ){
 					image = NULL;
@@ -370,8 +363,7 @@ public:
 				}
 				
 				if( image ){
-					igdeUndo::Ref undo;
-					undo.TakeOver( new meUHTImportHeightImage( world, sector, image ) );
+					meUHTImportHeightImage::Ref undo(meUHTImportHeightImage::Ref::New( new meUHTImportHeightImage( world, sector, image ) ));
 					world->GetUndoSystem()->Add( undo );
 				}
 			}
@@ -424,8 +416,7 @@ public:
 				}
 				
 				if( image ){
-					igdeUndo::Ref undo;
-					undo.TakeOver( new meUHTImportVisibilityImage( world, sector, image ) );
+					meUHTImportVisibilityImage::Ref undo(meUHTImportVisibilityImage::Ref::New( new meUHTImportVisibilityImage( world, sector, image ) ));
 					world->GetUndoSystem()->Add( undo );
 				}
 			}
@@ -809,8 +800,7 @@ public:
 		if( ! type || colorBox->GetColor().IsEqualTo( type->GetColor() ) ){
 			return;
 		}
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTNavSpaceTypeSetColor( type, colorBox->GetColor() ) );
+		meUHTNavSpaceTypeSetColor::Ref undo(meUHTNavSpaceTypeSetColor::Ref::New( new meUHTNavSpaceTypeSetColor( type, colorBox->GetColor() ) ));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };

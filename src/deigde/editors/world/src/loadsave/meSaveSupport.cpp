@@ -418,9 +418,8 @@ void meSaveSupport::SaveHTNavSpace( meWorld &world, meHeightTerrainNavSpace &nav
 	}
 	
 	pWindowMain->GetLogger()->LogInfoFormat( LOGSOURCE, "Saving height terrain navigation space to %s", filename.GetString() );
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( navspace.GetEngine().GetVirtualFileSystem()->OpenFileForWriting(
-		decPath::CreatePathUnix( filename ) ) );
+	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(navspace.GetEngine().GetVirtualFileSystem()->OpenFileForWriting(
+		decPath::CreatePathUnix( filename ) )));
 	saveNavSpace.Save( *navspace.GetEngineNavSpace(), writer );
 	
 	navspace.SetPathNavSpace( decPath::RelativePathUnix( filename,

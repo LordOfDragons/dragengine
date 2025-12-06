@@ -103,8 +103,7 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionEffectPasteInsert() );
 		
 		const seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascade::Ref submenu;
-		submenu.TakeOver( new igdeMenuCascade( menu.GetEnvironment(), "Add" ) );
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( menu.GetEnvironment(), "Add" ) ));
 		helper.MenuCommand( submenu, windowMain.GetActionEffectAddStretch() );
 		menu.AddChild( submenu );
 		
@@ -133,8 +132,7 @@ public:
 			return;
 		}
 		
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new seClipboardDataEffect( effect ) );
+		seClipboardDataEffect::Ref cdata(seClipboardDataEffect::Ref::New( new seClipboardDataEffect( effect ) ));
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 	}
 	
@@ -157,12 +155,10 @@ public:
 			return;
 		}
 		
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new seClipboardDataEffect( effect ) );
+		seClipboardDataEffect::Ref cdata(seClipboardDataEffect::Ref::New( new seClipboardDataEffect( effect ) ));
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourceRemoveEffect( pPanel.GetSource(), effect ) );
+		seUSourceRemoveEffect::Ref undo(seUSourceRemoveEffect::Ref::New( new seUSourceRemoveEffect( pPanel.GetSource(), effect ) ));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -195,8 +191,7 @@ public:
 		const seEffectList &list = pPanel.GetSource()->GetEffects();
 		const int index = effect ? list.IndexOf( effect ) : list.GetCount();
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourcePasteEffect( pPanel.GetSource(), cdata->GetEffects(), index ) );
+		seUSourcePasteEffect::Ref undo(seUSourcePasteEffect::Ref::New( new seUSourcePasteEffect( pPanel.GetSource(), cdata->GetEffects(), index ) ));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -224,9 +219,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourcePasteEffect( pPanel.GetSource(), cdata->GetEffects(),
-			pPanel.GetSource()->GetEffects().GetCount() ) );
+		seUSourcePasteEffect::Ref undo(seUSourcePasteEffect::Ref::New(new seUSourcePasteEffect( pPanel.GetSource(), cdata->GetEffects(),
+			pPanel.GetSource()->GetEffects().GetCount() )));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -269,8 +263,7 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	AddChild( pSwitcher );
 	
-	igdeWidget::Ref panel;
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
 	pSwitcher->AddChild( panel );
 	
 	panel.TakeOver( pPanelStretch = new seWPAPanelEffectStretch( *this ) );

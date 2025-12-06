@@ -75,8 +75,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAMusicSetName( topic, action, textField->GetText() ) );
+		ceUCAMusicSetName::Ref undo(ceUCAMusicSetName::Ref::New( new ceUCAMusicSetName( topic, action, textField->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

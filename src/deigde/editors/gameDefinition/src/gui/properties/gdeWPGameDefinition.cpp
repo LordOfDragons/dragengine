@@ -122,8 +122,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, gameDefinition ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, gameDefinition ) ));
 		if( undo ){
 			gameDefinition->GetUndoSystem()->Add( undo );
 		}
@@ -148,8 +147,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnActionGameDefinition( gameDefinition ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionGameDefinition( gameDefinition ) ));
 		if( undo ){
 			gameDefinition->GetUndoSystem()->Add( undo );
 		}
@@ -187,8 +185,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUGDSetDescription( gameDefinition, textArea->GetText() ) );
+		gdeUGDSetDescription::Ref undo(gdeUGDSetDescription::Ref::New( new gdeUGDSetDescription( gameDefinition, textArea->GetText() ) ));
 		gameDefinition->GetUndoSystem()->Add( undo );
 	}
 };

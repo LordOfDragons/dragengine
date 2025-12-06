@@ -77,14 +77,12 @@ void ceWPTMAPasteCondition::OnAction(){
 		return;
 	}
 	
-	ceConversationCondition::Ref condition;
-	condition.TakeOver( cdata->GetConditions().GetAt( 0 )->CreateCopy() );
+	ceConversationCondition::Ref condition(ceConversationCondition::Ref::New( cdata->GetConditions().GetAt( 0 )->CreateCopy() ));
 	
 	ceConversationConditionList conditions;
 	conditions.Add( condition );
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( CreateUndo( conditions ) );
+	igdeUndo::Ref undo(igdeUndo::Ref::New( CreateUndo( conditions ) ));
 	pConversation->GetUndoSystem()->Add( undo );
 }
 

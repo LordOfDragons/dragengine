@@ -79,8 +79,7 @@ igdeXMLElementClass::~igdeXMLElementClass(){
 igdeGDClass *igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
 const char *filename){
 	try{
-		decXmlDocument::Ref document;
-		document.TakeOver( new decXmlDocument );
+		decXmlDocument::Ref document(decXmlDocument::Ref::New( new decXmlDocument ));
 		
 		decXmlParser( GetLogger() ).ParseXml( &reader, document );
 		

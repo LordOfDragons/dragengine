@@ -68,11 +68,9 @@ pConditionType( conditionType ){
 ///////////////
 
 void ceWPTMACreateCondition::OnAction(){
-	ceConversationCondition::Ref condition;
-	condition.TakeOver( CreateCondition() );
+	ceConversationCondition::Ref condition(ceConversationCondition::Ref::New( CreateCondition() ));
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( CreateUndo( condition ) );
+	igdeUndo::Ref undo(igdeUndo::Ref::New( CreateUndo( condition ) ));
 	GetConversation().GetUndoSystem()->Add( undo );
 }
 

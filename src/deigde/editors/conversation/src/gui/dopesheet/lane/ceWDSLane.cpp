@@ -137,8 +137,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pLane.UndoStripRemove( pStrip ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pLane.UndoStripRemove( pStrip ) ));
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -160,8 +159,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pLane.UndoStripRemoveAll() );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pLane.UndoStripRemoveAll() ));
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -184,8 +182,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex - 1 ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex - 1 ) ));
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -208,8 +205,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex + 1 ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex + 1 ) ));
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -463,8 +459,7 @@ public:
 			return;
 		}
 		
-		igdeMenuCascade::Ref contextMenu;
-		contextMenu.TakeOver( new igdeMenuCascade( pLane.GetWindow().GetEnvironment() ) );
+		igdeMenuCascade::Ref contextMenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( pLane.GetWindow().GetEnvironment() ) ));
 		
 		pLane.OnContextMenu( contextMenu, position );
 		
@@ -949,8 +944,7 @@ void ceWDSLane::CreateHandle( deCanvasView::Ref &canvas, deCanvasPaint::Ref &can
 	canvasBg->SetSize( size );
 	canvas->AddCanvas( canvasBg );
 	
-	deCanvasPaint::Ref canvasKnob;
-	canvasKnob.TakeOver( canvasManager.CreateCanvasPaint() );
+	deCanvasPaint::Ref canvasKnob(deCanvasPaint::Ref::New( canvasManager.CreateCanvasPaint() ));
 	canvasKnob->SetFillColor( colorBorder );
 	canvasKnob->SetThickness( 0 );
 	canvasKnob->SetOrder( 1 );

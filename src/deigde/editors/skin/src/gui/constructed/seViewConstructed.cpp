@@ -132,8 +132,7 @@ pViewNode( NULL )
 	pListener = new seViewConstructedListener( *this );
 	
 	
-	igdeContainer::Ref bottomLine;
-	bottomLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
+	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) ));
 	helper.ScrollBar( bottomLine, true, 0, 0, 1, 0, pSBHorizontal, new cScrollView( *this ) );
 	helper.EditSpinInteger( bottomLine, "Select layer to edit", 0, 0, pSpinLayer, new cSpinLayer( *this ) );
 	
@@ -156,8 +155,7 @@ pViewNode( NULL )
 	AddChild( pSBVertical, igdeContainerBorder::eaRight );
 	
 	
-	igdeWidget::Ref view;
-	view.TakeOver( pViewNode = new seViewConstructedView( windowMain ) );
+	igdeWidget::Ref view(igdeWidget::Ref::New( pViewNode = new seViewConstructedView( windowMain ) ));
 	AddChild( view, igdeContainerBorder::eaCenter );
 }
 

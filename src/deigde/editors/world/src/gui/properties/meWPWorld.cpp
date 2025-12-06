@@ -97,8 +97,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -122,8 +121,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -145,8 +143,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -168,8 +165,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}
@@ -191,8 +187,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editDVector->GetDVector(), world ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editDVector->GetDVector(), world ) ));
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
 		}

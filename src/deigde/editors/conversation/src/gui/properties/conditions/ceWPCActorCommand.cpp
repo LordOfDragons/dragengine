@@ -79,8 +79,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCACommandSetActor( topic, action, condition, comboBox->GetText() ) );
+		ceUCCACommandSetActor::Ref undo(ceUCCACommandSetActor::Ref::New( new ceUCCACommandSetActor( topic, action, condition, comboBox->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -100,8 +99,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCACommandSetCommand( topic, action, condition, textField->GetText() ) );
+		ceUCCACommandSetCommand::Ref undo(ceUCCACommandSetCommand::Ref::New( new ceUCCACommandSetCommand( topic, action, condition, textField->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -130,8 +128,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCACommandSetCommand( topic, action, condition, text ) );
+		ceUCCACommandSetCommand::Ref undo(ceUCCACommandSetCommand::Ref::New( new ceUCCACommandSetCommand( topic, action, condition, text ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -151,8 +148,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCACommandToggleNegate( topic, action, condition ) );
+		ceUCCACommandToggleNegate::Ref undo(ceUCCACommandToggleNegate::Ref::New( new ceUCCACommandToggleNegate( topic, action, condition ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

@@ -71,8 +71,7 @@ igdeUndo *gdeMAObjectClassCopy::OnAction( gdeGameDefinition &gameDefinition ){
 	
 	const gdeObjectClass::Ref clipObjectClass(gdeObjectClass::Ref::NewWith(*objectClass));
 	
-	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataObjectClass( clipObjectClass ) );
+	gdeClipboardDataObjectClass::Ref clipData(gdeClipboardDataObjectClass::Ref::New( new gdeClipboardDataObjectClass( clipObjectClass ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

@@ -71,8 +71,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakEyesLAFromHeadLA( pLane.GetWindow().GetTopic(), action ) );
+		ceUCAASpeakEyesLAFromHeadLA::Ref undo(ceUCAASpeakEyesLAFromHeadLA::Ref::New( new ceUCAASpeakEyesLAFromHeadLA( pLane.GetWindow().GetTopic(), action ) ));
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	

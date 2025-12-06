@@ -109,8 +109,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, emitter, type ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, emitter, type ) ));
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
 		}
@@ -135,8 +134,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( emitter, type ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( emitter, type ) ));
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
 		}
@@ -159,8 +157,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editPath->GetPath(), emitter, type ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editPath->GetPath(), emitter, type ) ));
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
 		}
@@ -183,8 +180,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, emitter, type ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, emitter, type ) ));
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
 		}
@@ -208,8 +204,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new peeUEmitterToggleEmitBurst( emitter ) );
+		peeUEmitterToggleEmitBurst::Ref undo(peeUEmitterToggleEmitBurst::Ref::New( new peeUEmitterToggleEmitBurst( emitter ) ));
 		emitter->GetUndoSystem()->Add( undo );
 	}
 };
@@ -230,8 +225,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new peeUEmitterSetBurstLifetime( emitter, value ) );
+		peeUEmitterSetBurstLifetime::Ref undo(peeUEmitterSetBurstLifetime::Ref::New( new peeUEmitterSetBurstLifetime( emitter, value ) ));
 		emitter->GetUndoSystem()->Add( undo );
 	}
 };
@@ -270,8 +264,7 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		igdeMenuCascade::Ref menu;
-		menu.TakeOver( new igdeMenuCascade( pPanel.GetEnvironment() ) );
+		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New( new igdeMenuCascade( pPanel.GetEnvironment() ) ));
 		helper.MenuCommand( menu, pPanel.GetActionTypeAdd() );
 		helper.MenuCommand( menu, pPanel.GetActionTypeRemove() );
 		helper.MenuCommand( menu, pPanel.GetActionTypeRename() );
@@ -303,8 +296,7 @@ public:
 			
 			const peeType::Ref type(peeType::Ref::NewWith(emitter->GetEngine(), name));
 			
-			igdeUndo::Ref undo;
-			undo.TakeOver( new peeUTypeAdd( emitter, type ) );
+			peeUTypeAdd::Ref undo(peeUTypeAdd::Ref::New( new peeUTypeAdd( emitter, type ) ));
 			emitter->GetUndoSystem()->Add( undo );
 			return;
 		}

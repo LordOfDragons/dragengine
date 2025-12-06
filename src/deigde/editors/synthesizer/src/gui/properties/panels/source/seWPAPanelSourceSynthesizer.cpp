@@ -70,8 +70,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourceSynthSetPathSynthesizer( source, editPath->GetPath() ) );
+		seUSourceSynthSetPathSynthesizer::Ref undo(seUSourceSynthSetPathSynthesizer::Ref::New( new seUSourceSynthSetPathSynthesizer( source, editPath->GetPath() ) ));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -104,8 +103,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourceSynthConTargetMore( source ) );
+		seUSourceSynthConTargetMore::Ref undo(seUSourceSynthConTargetMore::Ref::New( new seUSourceSynthConTargetMore( source ) ));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -128,8 +126,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourceSynthConTargetLess( source ) );
+		seUSourceSynthConTargetLess::Ref undo(seUSourceSynthConTargetLess::Ref::New( new seUSourceSynthConTargetLess( source ) ));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -158,8 +155,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourceSynthSetConController( source, target, controller ) );
+		seUSourceSynthSetConController::Ref undo(seUSourceSynthSetConController::Ref::New( new seUSourceSynthSetConController( source, target, controller ) ));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };

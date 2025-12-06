@@ -79,8 +79,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakWordFromText( pLane.GetWindow().GetTopic(), action ) );
+		ceUCAASpeakWordFromText::Ref undo(ceUCAASpeakWordFromText::Ref::New( new ceUCAASpeakWordFromText( pLane.GetWindow().GetTopic(), action ) ));
 		( ( ceUCAASpeakWordFromText& )( igdeUndo& )undo ).SetWordsFromText(
 			action->ResolveTextBoxText( *conversation ), 0.075f );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );

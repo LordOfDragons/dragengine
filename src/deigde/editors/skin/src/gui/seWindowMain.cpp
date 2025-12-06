@@ -132,9 +132,8 @@ pSkin( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(400)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(400))));
 	AddChild( splitted );
 	
 	pWindowProperties = new seWindowProperties( *this );
@@ -446,8 +445,7 @@ public:
 		if( ! pWindow.GetSkin() ){
 			return;
 		}
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( pWindow.GetSkin() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( pWindow.GetSkin() ) ));
 		if( undo ){
 			pWindow.GetSkin()->GetUndoSystem()->Add( undo );
 		}
@@ -781,8 +779,7 @@ public:
 		"Add texture", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnAction( seSkin *skin ){
-		igdeDialog::Ref dialog;
-		dialog.TakeOver( new seDialogAddTexture( pWindow ) );
+		seDialogAddTexture::Ref dialog(seDialogAddTexture::Ref::New( new seDialogAddTexture( pWindow ) ));
 		if( ! dialog->Run( &pWindow ) ){
 			return NULL;
 		}
@@ -991,8 +988,7 @@ public:
 		"Add property", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnActionTexture( seSkin*, seTexture *texture ){
-		igdeDialog::Ref refDialog;
-		refDialog.TakeOver( new seDialogAddProperty( pWindow ) );
+		seDialogAddProperty::Ref refDialog(seDialogAddProperty::Ref::New( new seDialogAddProperty( pWindow ) ));
 		if( ! refDialog->Run( &pWindow ) ){
 			return NULL;
 		}

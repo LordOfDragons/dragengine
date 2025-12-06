@@ -134,9 +134,8 @@ pRig( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(300)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(300))));
 	AddChild( splitted );
 	
 	pWindowProperties = new reWindowProperties( *this );
@@ -349,8 +348,7 @@ public:
 	pWindow( window ){}
 	
 	virtual void OnAction(){
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( pWindow.GetRig() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( pWindow.GetRig() ) ));
 		if( undo ){
 			pWindow.GetRig()->GetUndoSystem()->Add( undo );
 		}

@@ -89,8 +89,7 @@ void deRLTaskReadLanguagePack::Run(){
 	
 	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
 	
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( GetVFS()->OpenFileForReading( vfsPath ) ));
 	
 	pLanguagePack->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
 	pLanguagePack->SetAsynchron( true );

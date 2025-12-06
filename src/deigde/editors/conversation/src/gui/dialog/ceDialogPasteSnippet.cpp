@@ -68,8 +68,7 @@ pConversation( conversation )
 	
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainer::Ref content;
-	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New( new igdeContainerForm( environment, igdeContainerForm::esLast ) ));
 	
 	helper.ComboBoxFilter( content, "Camera Shot 1:", true,
 		"Camera shot to use for the first actor", pCBCameraShot1, NULL );

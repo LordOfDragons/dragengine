@@ -70,8 +70,7 @@ pPattern( ".dectgs" ){
 ///////////////////////
 
 void ceLoadSaveCTGS::LoadCTGS( ceConversation &conversation, decBaseFileReader &reader ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

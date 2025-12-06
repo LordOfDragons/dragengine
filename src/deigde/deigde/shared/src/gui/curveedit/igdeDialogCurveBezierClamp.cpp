@@ -98,8 +98,7 @@ void igdeDialogCurveBezierClamp::SetClampMax( const decVector2 &maximum ){
 void igdeDialogCurveBezierClamp::pCreateContent( igdeEnvironment &environment ){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainer::Ref content;
-	content.TakeOver( new igdeContainerForm( environment ) );
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::New( new igdeContainerForm( environment ) ));
 	
 	helper.CheckBox( content, "Enable Clamping", "Curve points are clamped to minimum/maximum range", pChkClamp );
 	helper.EditVector2( content, "Minimum:", "Minimum coordinates to clamp curve points to", pEditMinimum, NULL );

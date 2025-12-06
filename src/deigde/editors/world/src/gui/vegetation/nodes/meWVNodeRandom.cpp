@@ -67,9 +67,8 @@ pRuleRandom( rule )
 	SetTitle( "Random" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Random", "Random value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom ) );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::New(new meWVNodeSlot( env, "Random", "Random value",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom )));
 	AddSlot( slot );
 	
 	// parameters

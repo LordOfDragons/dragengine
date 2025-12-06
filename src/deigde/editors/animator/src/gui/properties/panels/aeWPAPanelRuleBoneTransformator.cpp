@@ -102,8 +102,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -143,8 +142,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -167,8 +165,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector, animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector, animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -191,8 +188,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}

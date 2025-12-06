@@ -190,16 +190,14 @@ pRecentFilesLangPack( *this )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(400)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::New(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
+		igdeApplication::app().DisplayScaled(400))));
 	AddChild( splitted );
 	
 	pWindowProperties = new ceWindowProperties( *this );
 	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
 	
-	igdeContainer::Ref panel;
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) );
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) ));
 	splitted->AddChild( panel, igdeContainerSplitted::eaCenter );
 	
 	pViewConversation = new ceViewConversation( *this );
@@ -510,8 +508,7 @@ public:
 		if( ! pWindow.GetConversation() ){
 			return;
 		}
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( pWindow.GetConversation() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( pWindow.GetConversation() ) ));
 		if( undo ){
 			pWindow.GetConversation()->GetUndoSystem()->Add( undo );
 		}

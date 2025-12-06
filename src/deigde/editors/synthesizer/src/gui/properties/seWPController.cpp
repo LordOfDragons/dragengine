@@ -86,8 +86,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, controller ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, controller ) ));
 		if( undo ){
 			controller->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -111,8 +110,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( controller ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( controller ) ));
 		if( undo ){
 			controller->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -258,8 +256,7 @@ public:
 		decCurveBezier curve;
 		CreateCurve( *controller, curve );
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUControllerSetCurve( controller, curve ) );
+		seUControllerSetCurve::Ref undo(seUControllerSetCurve::Ref::New( new seUControllerSetCurve( controller, curve ) ));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 		pEditCurve->ResetView();
 		return NULL;

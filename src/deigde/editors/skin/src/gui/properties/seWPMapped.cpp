@@ -95,8 +95,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( skin ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( skin ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -163,8 +162,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, skin, mapped ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, skin, mapped ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -294,8 +292,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUMappedSetName( mapped, value ) );
+		seUMappedSetName::Ref undo(seUMappedSetName::Ref::New( new seUMappedSetName( mapped, value ) ));
 		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -318,8 +315,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUMappedSetInputType( mapped, type ) );
+		seUMappedSetInputType::Ref undo(seUMappedSetInputType::Ref::New( new seUMappedSetInputType( mapped, type ) ));
 		skin->GetUndoSystem()->Add( undo );
 	}
 };
@@ -469,8 +465,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUMappedSetRenderableComponent( mapped, component ) );
+		seUMappedSetRenderableComponent::Ref undo(seUMappedSetRenderableComponent::Ref::New( new seUMappedSetRenderableComponent( mapped, component ) ));
 		skin->GetUndoSystem()->Add( undo );
 	}
 };

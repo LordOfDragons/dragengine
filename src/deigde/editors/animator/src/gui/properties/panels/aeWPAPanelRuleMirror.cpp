@@ -91,8 +91,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -132,8 +131,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -175,8 +173,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add match name" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
-		igdeDialog::Ref dialog;
-		dialog.TakeOver( new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Add match name" ) );
+		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::New( new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Add match name" ) ));
 		return dialog->Run( &pPanel ) ? new aeURuleMirrorAddMatchName( rule, 
 			( ( aeDialogMirrorMatchName& )( igdeDialog& )dialog ).CreateMatchName() ) : nullptr;
 	}
@@ -239,8 +236,7 @@ public:
 			return nullptr;
 		}
 		
-		igdeDialog::Ref dialog;
-		dialog.TakeOver( new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Edit match name" ) );
+		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::New( new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Edit match name" ) ));
 		( ( aeDialogMirrorMatchName& )( igdeDialog& )dialog ).Set( *matchName );
 		if( ! dialog->Run( &pPanel ) ){
 			return nullptr;
@@ -294,8 +290,7 @@ public:
 	cListMatchNames( aeWPAPanelRuleMirror &panel ) : pPanel( panel ){ }
 	
 	virtual void OnDoubleClickItem( igdeListBox*, int ){
-		igdeAction::Ref action;
-		action.TakeOver( new cActionMatchNameEdit( pPanel ) );
+		cActionMatchNameEdit::Ref action(cActionMatchNameEdit::Ref::New( new cActionMatchNameEdit( pPanel ) ));
 		action->OnAction();
 	}
 	

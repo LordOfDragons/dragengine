@@ -124,8 +124,7 @@ void deClassNetworkMessage::nfGetReader::RunFunction( dsRunTime *rt, dsValue *my
 	deNetworkMessage * const message = ( ( sNMNatDat* )p_GetNativeData( myself ) )->message;
 	deScriptingDragonScript &ds = ( ( deClassNetworkMessage* )GetOwnerClass() )->GetDS();
 	
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( new deNetworkMessageReader( message ) );
+	deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::New( new deNetworkMessageReader( message ) ));
 	ds.GetClassFileReader()->PushFileReader( rt, reader );
 }
 
@@ -140,8 +139,7 @@ void deClassNetworkMessage::nfGetWriter::RunFunction( dsRunTime *rt, dsValue *my
 	deScriptingDragonScript &ds = ( ( deClassNetworkMessage* )GetOwnerClass() )->GetDS();
 	
 	const bool append = rt->GetValue( 0 )->GetBool();
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( new deNetworkMessageWriter( message, append ) );
+	deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::New( new deNetworkMessageWriter( message, append ) ));
 	ds.GetClassFileWriter()->PushFileWriter( rt, writer );
 }
 

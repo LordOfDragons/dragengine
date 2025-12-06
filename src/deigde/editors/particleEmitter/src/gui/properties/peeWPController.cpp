@@ -90,8 +90,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, emitter, controller ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, emitter, controller ) ));
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
 		}
@@ -114,8 +113,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editSlider->GetValue(), emitter, controller ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editSlider->GetValue(), emitter, controller ) ));
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
 		}
@@ -147,8 +145,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( emitter ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( emitter ) ));
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
 		}

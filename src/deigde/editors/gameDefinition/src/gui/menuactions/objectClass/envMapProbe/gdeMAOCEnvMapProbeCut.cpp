@@ -73,8 +73,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCEnvMapProbe::Ref clipOCEnvMapProbe(gdeOCEnvMapProbe::Ref::NewWith(*envMapProbe));
 	
-	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCEnvMapProbe( clipOCEnvMapProbe ) );
+	gdeClipboardDataOCEnvMapProbe::Ref clipData(gdeClipboardDataOCEnvMapProbe::Ref::New( new gdeClipboardDataOCEnvMapProbe( clipOCEnvMapProbe ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

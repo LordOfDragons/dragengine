@@ -79,8 +79,7 @@ void deRLTaskWriteImage::Run(){
 	decPath path;
 	path.SetFromUnix( GetPath() );
 	
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( GetVFS()->OpenFileForWriting( path ) );
+	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New( GetVFS()->OpenFileForWriting( path ) ));
 	module->SaveImage( writer, pImage );
 	
 	pSucceeded = true;

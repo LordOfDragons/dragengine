@@ -94,8 +94,7 @@ pPattern( ".desynth" )
 ///////////////
 
 void seLoadSaveSynthesizer::LoadSynthesizer( seSynthesizer &synthesizer, decBaseFileReader &reader ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

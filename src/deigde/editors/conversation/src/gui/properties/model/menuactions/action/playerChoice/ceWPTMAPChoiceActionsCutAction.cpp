@@ -64,8 +64,7 @@ pPlayerChoice( &playerChoice ){
 void ceWPTMAPChoiceActionsCutAction::OnAction(){
 	ceWPTMACopyAction::OnAction();
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCAPChoiceActionRemove( pTopic, pPlayerChoice, NULL, GetAction() ) );
+	ceUCAPChoiceActionRemove::Ref undo(ceUCAPChoiceActionRemove::Ref::New( new ceUCAPChoiceActionRemove( pTopic, pPlayerChoice, NULL, GetAction() ) ));
 	undo->SetShortInfo( "Cut Action" );
 	pConversation->GetUndoSystem()->Add( undo );
 }

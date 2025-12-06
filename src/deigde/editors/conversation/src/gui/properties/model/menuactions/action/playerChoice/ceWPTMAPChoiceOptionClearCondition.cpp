@@ -68,7 +68,6 @@ pOption( &option )
 ///////////////
 
 void ceWPTMAPChoiceOptionClearCondition::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCAPChoiceOptionSetCondition( pTopic, pPlayerChoice, pOption, NULL ) );
+	ceUCAPChoiceOptionSetCondition::Ref undo(ceUCAPChoiceOptionSetCondition::Ref::New( new ceUCAPChoiceOptionSetCondition( pTopic, pPlayerChoice, pOption, NULL ) ));
 	GetConversation().GetUndoSystem()->Add( undo );
 }

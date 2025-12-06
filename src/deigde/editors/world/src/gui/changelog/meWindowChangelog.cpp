@@ -126,8 +126,7 @@ pWorld( NULL )
 		headers, 3, "Changes", pListChanges, new cListChangelog( *this ) );
 	AddChild( pListChanges, igdeContainerBorder::eaCenter );
 	
-	igdeListItemSorter::Ref sorter;
-	sorter.TakeOver( new cChangelogSorter );
+	cChangelogSorter::Ref sorter(cChangelogSorter::Ref::New( new cChangelogSorter ));
 	pListChanges->SetSorter( sorter );
 }
 

@@ -77,8 +77,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCATriggerSetName( topic, action, textField->GetText() ) );
+		ceUCATriggerSetName::Ref undo(ceUCATriggerSetName::Ref::New( new ceUCATriggerSetName( topic, action, textField->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -102,8 +101,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCATriggerSetAction( topic, action, triggerAction ) );
+		ceUCATriggerSetAction::Ref undo(ceUCATriggerSetAction::Ref::New( new ceUCATriggerSetAction( topic, action, triggerAction ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

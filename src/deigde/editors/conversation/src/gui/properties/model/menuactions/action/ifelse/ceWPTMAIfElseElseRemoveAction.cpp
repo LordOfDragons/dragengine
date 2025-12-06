@@ -67,7 +67,6 @@ pAction( action )
 ///////////////
 
 void ceWPTMAIfElseElseRemoveAction::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCAIfElseRemove( pTopic, pIfElse, NULL, pAction ) );
+	ceUCAIfElseRemove::Ref undo(ceUCAIfElseRemove::Ref::New( new ceUCAIfElseRemove( pTopic, pIfElse, NULL, pAction ) ));
 	pConversation->GetUndoSystem()->Add( undo );
 }

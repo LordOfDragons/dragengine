@@ -193,18 +193,15 @@ igdeAction **actions, int actionCount ){
 }
 
 void igdeDialog::CreateButtonBar( igdeContainer::Ref &buttonBar, const char *text ){
-	igdeAction::Ref action;
-	action.TakeOver( new CancelDialog( *this, text ) );
+	CancelDialog::Ref action(CancelDialog::Ref::New( new CancelDialog( *this, text ) ));
 	CreateButtonBar( buttonBar, action );
 }
 
 void igdeDialog::CreateButtonBar( igdeContainer::Ref &buttonBar,
 const char *textAccept, const char *textCancel ){
-	igdeAction::Ref actionAccept;
-	actionAccept.TakeOver( new AcceptDialog( *this, textAccept ) );
+	AcceptDialog::Ref actionAccept(AcceptDialog::Ref::New( new AcceptDialog( *this, textAccept ) ));
 	
-	igdeAction::Ref actionCancel;
-	actionCancel.TakeOver( new CancelDialog( *this, textCancel ) );
+	CancelDialog::Ref actionCancel(CancelDialog::Ref::New( new CancelDialog( *this, textCancel ) ));
 	
 	CreateButtonBar( buttonBar, actionAccept, actionCancel );
 }
@@ -307,8 +304,7 @@ igdeWidget *rightPanel, igdeWidget *buttonBar ){
 	igdeEnvironment &env = GetEnvironment();
 	const int spacing = igdeNativeDialog::DialogPadContent( *GetGuiTheme() );
 	
-	igdeContainerBorder::Ref border;
-	border.TakeOver( new igdeContainerBorder( env, spacing ) );
+	igdeContainerBorder::Ref border(igdeContainerBorder::Ref::New( new igdeContainerBorder( env, spacing ) ));
 	AddChild( border );
 	
 	if( header ){
@@ -323,13 +319,11 @@ igdeWidget *rightPanel, igdeWidget *buttonBar ){
 	
 	border->AddChild( content, igdeContainerBorder::eaCenter );
 	
-	igdeContainer::Ref bottom;
-	bottom.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY,
-		igdeContainerFlow::esNone, spacing ) );
+	igdeContainerFlow::Ref bottom(igdeContainerFlow::Ref::New(new igdeContainerFlow( env, igdeContainerFlow::eaY,
+		igdeContainerFlow::esNone, spacing )));
 	border->AddChild( bottom, igdeContainerBorder::eaBottom );
 	
-	igdeWidget::Ref separator;
-	separator.TakeOver( new igdeSeparator( env, igdeSeparator::eoHorizontal ) );
+	igdeSeparator::Ref separator(igdeSeparator::Ref::New( new igdeSeparator( env, igdeSeparator::eoHorizontal ) ));
 	bottom->AddChild( separator );
 	bottom->AddChild( buttonBar );
 }

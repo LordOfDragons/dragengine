@@ -169,14 +169,12 @@ void igdeEditorModuleDefinition::UnloadModule(){
 //////////////////////
 
 void igdeEditorModuleDefinition::pLoadFile(){
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( new decDiskFileReader( pFilePath ) );
+	decDiskFileReader::Ref reader(decDiskFileReader::Ref::New( new decDiskFileReader( pFilePath ) ));
 	pParseFile( reader );
 }
 
 void igdeEditorModuleDefinition::pParseFile( decBaseFileReader& reader ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	int i, j;
 	

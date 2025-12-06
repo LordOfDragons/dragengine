@@ -72,8 +72,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourceGroupSetApplicationType( source, type ) );
+		seUSourceGroupSetApplicationType::Ref undo(seUSourceGroupSetApplicationType::Ref::New( new seUSourceGroupSetApplicationType( source, type ) ));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };

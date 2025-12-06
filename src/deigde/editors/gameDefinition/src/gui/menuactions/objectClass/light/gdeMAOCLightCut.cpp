@@ -73,8 +73,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::NewWith(*light));
 	
-	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCLight( clipOCLight ) );
+	gdeClipboardDataOCLight::Ref clipData(gdeClipboardDataOCLight::Ref::New( new gdeClipboardDataOCLight( clipOCLight ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

@@ -73,8 +73,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCComponent::Ref clipOCComponent(gdeOCComponent::Ref::NewWith(*component));
 	
-	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCComponent( clipOCComponent ) );
+	gdeClipboardDataOCComponent::Ref clipData(gdeClipboardDataOCComponent::Ref::New( new gdeClipboardDataOCComponent( clipOCComponent ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

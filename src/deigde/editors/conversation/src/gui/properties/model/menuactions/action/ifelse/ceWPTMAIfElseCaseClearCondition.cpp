@@ -67,7 +67,6 @@ pIfCase( &ifCase )
 ///////////////
 
 void ceWPTMAIfElseCaseClearCondition::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCAIfElseCaseSetCondition( pTopic, pIfElse, pIfCase, NULL ) );
+	ceUCAIfElseCaseSetCondition::Ref undo(ceUCAIfElseCaseSetCondition::Ref::New( new ceUCAIfElseCaseSetCondition( pTopic, pIfElse, pIfCase, NULL ) ));
 	GetConversation().GetUndoSystem()->Add( undo );
 }

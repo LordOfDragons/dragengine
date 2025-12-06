@@ -66,8 +66,7 @@ pLogic( &logic ){
 void ceWPTMACLogicCutCondition::OnAction(){
 	ceWPTMACopyCondition::OnAction();
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCCLogicRemove( pTopic, pAction, pLogic, GetCondition() ) );
+	ceUCCLogicRemove::Ref undo(ceUCCLogicRemove::Ref::New( new ceUCCLogicRemove( pTopic, pAction, pLogic, GetCondition() ) ));
 	undo->SetShortInfo( "Cut Condition" );
 	pConversation->GetUndoSystem()->Add( undo );
 }

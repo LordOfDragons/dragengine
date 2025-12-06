@@ -69,8 +69,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, source ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, source ) ));
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -98,8 +97,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSourceWaveSetType( source, type ) );
+		seUSourceWaveSetType::Ref undo(seUSourceWaveSetType::Ref::New( new seUSourceWaveSetType( source, type ) ));
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };

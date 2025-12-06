@@ -71,8 +71,7 @@ igdeXMLGameProject::~igdeXMLGameProject(){
 ///////////////////////
 
 void igdeXMLGameProject::Load( decBaseFileReader &reader, igdeGameProject &project ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New( new decXmlDocument ));
 	
 	decXmlParser parser( GetLogger() );
 	parser.ParseXml( &reader, xmlDoc );

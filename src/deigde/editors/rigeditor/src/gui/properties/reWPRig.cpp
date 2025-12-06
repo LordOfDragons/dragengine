@@ -82,8 +82,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, rig ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, rig ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -105,8 +104,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), rig ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), rig ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -130,8 +128,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( rig ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( rig ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -153,8 +150,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnTextChanged( comboBox, rig ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnTextChanged( comboBox, rig ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}

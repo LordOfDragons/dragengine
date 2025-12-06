@@ -127,9 +127,8 @@ void meASubclassAsEClass::OnAction(){
 	
 	// write file
 	{
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( pWindow.GetEnvironment().GetFileSystemGame()
-		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pWindow.GetEnvironment().GetFileSystemGame()
+		->OpenFileForWriting( decPath::CreatePathUnix( filename ) )));
 	decXmlWriter xmlWriter( writer );
 	WriteEClass( object, gdclass, classname, xmlWriter, basePath );
 	}
