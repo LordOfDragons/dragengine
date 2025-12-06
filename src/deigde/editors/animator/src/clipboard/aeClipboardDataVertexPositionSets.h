@@ -36,6 +36,9 @@
  */
 class aeClipboardDataVertexPositionSets : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeClipboardDataVertexPositionSets> Ref;
+	
 	/** Type name. */
 	static const char * const TYPE_NAME;
 	

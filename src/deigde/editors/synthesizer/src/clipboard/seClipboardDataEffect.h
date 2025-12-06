@@ -36,6 +36,9 @@
  */
 class seClipboardDataEffect : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seClipboardDataEffect> Ref;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	
