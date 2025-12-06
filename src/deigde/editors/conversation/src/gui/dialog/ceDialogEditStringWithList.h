@@ -49,6 +49,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceDialogEditStringWithList> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */

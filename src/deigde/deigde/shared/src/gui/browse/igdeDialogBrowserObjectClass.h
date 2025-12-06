@@ -36,6 +36,9 @@ class igdeGDClass;
  */
 class DE_DLL_EXPORT igdeDialogBrowserObjectClass : public igdeDialogBrowser{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogBrowserObjectClass> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */
