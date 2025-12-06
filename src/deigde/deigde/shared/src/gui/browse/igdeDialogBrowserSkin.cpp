@@ -79,9 +79,8 @@ void igdeDialogBrowserSkin::SetSelectedSkin( igdeGDSkin *gdSkin ){
 
 
 bool igdeDialogBrowserSkin::SelectSkin( igdeWidget *owner, igdeGDSkin* &skin, const char *title ){
-	igdeDialogBrowserSkin::Ref refDialog(igdeDialogBrowserSkin::Ref::NewWith(
+	igdeDialogBrowserSkin::Ref dialog(igdeDialogBrowserSkin::Ref::NewWith(
 		owner->GetEnvironment(), title));
-	igdeDialogBrowserSkin &dialog = ( igdeDialogBrowserSkin& )( igdeDialog& )refDialog;
 	if( skin ){
 		dialog.SetSelectedSkin( skin );
 	}

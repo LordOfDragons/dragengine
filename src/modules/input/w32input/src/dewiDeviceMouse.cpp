@@ -60,9 +60,8 @@ dewiDevice( module, esWindows )
 	SetName( " Mouse" );
 	SetType( deInputDevice::edtMouse );
 	
-	const dewiDeviceAxis::Ref refObject(dewiDeviceAxis::Ref::NewWith(module));
-	AddAxis( refObject );
-	dewiDeviceAxis &axisX = ( dewiDeviceAxis& )( deObject& )refObject;
+	dewiDeviceAxis::Ref axisX(dewiDeviceAxis::Ref::NewWith(module));
+	AddAxis( axisX );
 	axisX.SetIndex( 0 );
 	axisX.SetAbsolute( false );
 	axisX.SetID( "x" );

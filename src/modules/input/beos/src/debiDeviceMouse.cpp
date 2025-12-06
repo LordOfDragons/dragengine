@@ -61,9 +61,8 @@ debiDevice( module )
 	SetType( deInputDevice::edtMouse );
 	
 	// add axis
-	const debiDeviceAxis::Ref refObject(debiDeviceAxis::Ref::NewWith(module));
-	AddAxis( refObject );
-	debiDeviceAxis &axisX = ( debiDeviceAxis& )( deObject& )refObject;
+	debiDeviceAxis::Ref axisX(debiDeviceAxis::Ref::NewWith(module));
+	AddAxis( axisX );
 	axisX.SetIndex( 0 );
 	axisX.SetAbsolute( false );
 	axisX.SetID( "x" );
