@@ -1199,7 +1199,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		devkDescriptorSetLayout * const dslSSBO = pVulkanDevice->GetDescriptorSetLayoutManager().GetWith( dslSSBOConfig );
 		
 		devkDescriptorPool::Ref dpSSBO(devkDescriptorPool::Ref::NewWith(
-			pVulkanDevice, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, dslSSBO));
+			pVulkanDevice, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, dslSSBO ));
 		
 		devkDescriptorSet::Ref dsSSBO;
 		VKTLOG( dsSSBO.TakeOver( new devkDescriptorSet( dpSSBO ) ), "DescriptorSet SSBO")
@@ -1277,7 +1277,7 @@ void deoglRenderThread::pInitThreadPhase4(){
 		} shaderConfig;
 		
 		devkSpecialization::Ref specialization(devkSpecialization::Ref::NewWith(
-			&shaderConfig, sizeof( shaderConfig ), 1));
+			&shaderConfig, sizeof( shaderConfig ), 1 ));
 		specialization->SetEntryUIntAt( 0, 0, offsetof( ShaderConfig, valueCount ) );
 		pipelineConfig.SetSpecialization( specialization );
 		

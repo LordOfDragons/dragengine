@@ -708,7 +708,7 @@ void debnConnection::SendReliableMessage( deNetworkMessage *message ){
 			
 			// build message
 			deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::NewWith(
-				bnMessage->GetMessage(), false));
+				bnMessage->GetMessage(), false ));
 			writer->WriteByte( eccReliableMessage );
 			writer->WriteUShort( ( uint16_t )bnMessage->GetNumber() );
 			writer->Write( message->GetBuffer(), message->GetDataLength() );
@@ -784,7 +784,7 @@ void debnConnection::LinkState( deNetworkMessage *message, deNetworkState *state
 		
 		// build message
 		deNetworkMessageWriter::Ref writer(deNetworkMessageWriter::Ref::NewWith(
-			bnMessage->GetMessage(), false));
+			bnMessage->GetMessage(), false ));
 		writer->WriteByte( eccReliableLinkState );
 		writer->WriteUShort( ( uint16_t )bnMessage->GetNumber() );
 		writer->WriteUShort( ( uint16_t )stateLink->GetIdentifier() );
@@ -1039,25 +1039,25 @@ void debnConnection::pProcessQueuedMessages(){
 		switch( type ){
 		case eccReliableMessage:{
 			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(
-				bnMessage->GetMessage()));
+				bnMessage->GetMessage() ));
 			pProcessReliableMessage( pReliableNumberRecv, reader );
 			}break;
 			
 		case eccReliableLinkState:{
 			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(
-				bnMessage->GetMessage()));
+				bnMessage->GetMessage() ));
 			pProcessLinkState( pReliableNumberRecv, reader );
 			}break;
 			
 		case eccReliableMessageLong:{
 			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(
-				bnMessage->GetMessage()));
+				bnMessage->GetMessage() ));
 			pProcessReliableMessageLong( pReliableNumberRecv, reader );
 			}break;
 			
 		case eccReliableLinkStateLong:{
 			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(
-				bnMessage->GetMessage()));
+				bnMessage->GetMessage() ));
 			pProcessLinkStateLong( pReliableNumberRecv, reader );
 			}break;
 		}
