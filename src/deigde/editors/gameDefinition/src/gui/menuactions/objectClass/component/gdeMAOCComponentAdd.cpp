@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -60,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Component...",
 ///////////////
 
 igdeUndo *gdeMAOCComponentAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference component;
-	component.TakeOver( new gdeOCComponent );
-	return new gdeUOCAddComponent( &objectClass, ( gdeOCComponent* )( deObject* )component );
+	return new gdeUOCAddComponent(&objectClass, gdeOCComponent::Ref::NewWith());
 }
 
 void gdeMAOCComponentAdd::Update(){

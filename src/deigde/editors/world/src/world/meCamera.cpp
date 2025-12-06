@@ -27,7 +27,6 @@
 #include <string.h>
 #include "meWorld.h"
 #include "meCamera.h"
-#include "meWorld.h"
 #include "object/meObject.h"
 
 #include "dragengine/deEngine.h"

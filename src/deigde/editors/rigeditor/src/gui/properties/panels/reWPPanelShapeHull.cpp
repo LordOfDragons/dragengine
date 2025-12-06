@@ -40,7 +40,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/composed/igdeEditVector.h>
@@ -48,7 +48,7 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -83,7 +83,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUShapeHullAddPoint( hull, decVector(), hull->GetPointCount() ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -110,7 +110,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUShapeHullRemovePoint( hull, index ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -139,7 +139,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUShapeHullSetPoint( hull, editVector->GetVector(), index ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -161,7 +161,7 @@ reWPPanelShapeHull::reWPPanelShapeHull( reWPShape &wpShapes ) :
 reWPPanelShape( wpShapes, reRigShape::estHull )
 {
 	igdeEnvironment &env = wpShapes.GetEnvironment();
-	igdeContainerReference groupHull, formline;
+	igdeContainer::Ref groupHull, formline;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	

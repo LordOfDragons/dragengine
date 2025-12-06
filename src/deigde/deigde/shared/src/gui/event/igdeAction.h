@@ -26,7 +26,7 @@
 #define _IGDEACTION_H_
 
 #include "../resources/igdeHotKey.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerOrderedSet.h>
@@ -60,7 +60,7 @@ private:
 	decString pDescription;
 	igdeHotKey pHotKey;
 	deInputEvent::eKeyCodes pMnemonic;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pEnabled;
 	bool pSelected;
 	bool pDefault;

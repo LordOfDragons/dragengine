@@ -27,8 +27,8 @@
 
 #include "igdeWidget.h"
 #include "event/igdeActionListener.h"
-#include "event/igdeActionReference.h"
-#include "resources/igdeIconReference.h"
+#include "event/igdeAction.h"
+#include "resources/igdeIcon.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -40,6 +40,7 @@ class DE_DLL_EXPORT igdeButton : public igdeWidget, igdeActionListener{
 public:
 	/** \brief Strong reference. */
 	typedef deTObjectReference<igdeButton> Ref;
+	
 	
 	/** \brief Button style. */
 	enum eButtonStyle{
@@ -55,10 +56,10 @@ private:
 	eButtonStyle pStyle;
 	decString pText;
 	decString pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	bool pEnabled;
 	bool pDefault;
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 public:

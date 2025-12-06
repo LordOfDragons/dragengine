@@ -56,7 +56,7 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -64,14 +64,13 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -102,7 +101,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, sanimation ) );
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
@@ -132,7 +131,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( sanimation ) );
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
@@ -155,7 +154,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnTextChanged( comboBox, sanimation ) );
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
@@ -178,7 +177,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editPath->GetPath(), sanimation ) );
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
@@ -587,7 +586,7 @@ pListener( nullptr ),
 pSAnimation( nullptr )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener = new saeWPSAnimListener( *this );

@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -60,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Billboard...",
 ///////////////
 
 igdeUndo *gdeMAOCBillboardAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference billboard;
-	billboard.TakeOver( new gdeOCBillboard );
-	return new gdeUOCAddBillboard( &objectClass, ( gdeOCBillboard* )( deObject* )billboard );
+	return new gdeUOCAddBillboard(&objectClass, gdeOCBillboard::Ref::NewWith());
 }
 
 void gdeMAOCBillboardAdd::Update(){

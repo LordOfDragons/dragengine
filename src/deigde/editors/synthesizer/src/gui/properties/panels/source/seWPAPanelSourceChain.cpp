@@ -41,7 +41,6 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
@@ -51,7 +50,7 @@
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -78,7 +77,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, source ) );
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -102,7 +101,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( source ) );
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
@@ -183,7 +182,7 @@ public:
 				return NULL;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourceChainPathSoundAdd( source, path ) );
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 		
@@ -251,7 +250,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourceChainSetPathSound( source, selection, editPath->GetPath() ) );
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -272,7 +271,7 @@ seWPAPanelSource( wpSource, deSynthesizerSourceVisitorIdentify::estChain )
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox, form;
+	igdeContainer::Ref groupBox, form;
 	
 	
 	pActionSoundAdd.TakeOver( new cActionSoundAdd( *this ) );

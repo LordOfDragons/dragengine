@@ -26,7 +26,7 @@
 #define _IGDETABBOOK_H_
 
 #include "igdeContainer.h"
-#include "resources/igdeIconReference.h"
+#include "resources/igdeIcon.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/string/decString.h>
@@ -37,6 +37,12 @@
  * \brief IGDE UI Tab book.
  */
 class DE_DLL_EXPORT igdeTabBook : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTabBook> Ref;
+	
+	
 private:
 	decObjectList pHeaders;
 	int pActivePanel;
@@ -107,9 +113,13 @@ public:
 	 */
 	class DE_DLL_EXPORT cHeader : public deObject{
 	public:
+		/** \brief Type holding strong reference. */
+		typedef deTObjectReference<cHeader> Ref;
+		
+		
 		decString text;
 		decString description;
-		igdeIconReference icon;
+		igdeIcon::Ref icon;
 		
 		cHeader( const char *text, igdeIcon *icon, const char *description );
 		virtual ~cHeader();

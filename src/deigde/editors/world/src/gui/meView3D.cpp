@@ -59,7 +59,6 @@
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
 
 
 
@@ -299,7 +298,7 @@ void meView3D::CreateCanvas(){
 		pCanvasFPS->SetSize(decPoint(lineHeight * 4, lineHeight));
 		AddCanvas( pCanvasFPS );
 		
-		deCanvasPaintReference canvasBackground;
+		deCanvasPaint::Ref canvasBackground;
 		canvasBackground.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasPaint() );
 		canvasBackground->SetShapeType( deCanvasPaint::estRectangle );
 		canvasBackground->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.5f ) );

@@ -30,7 +30,6 @@
 #include "deoglSharedSPBList.h"
 #include "deoglSharedSPBElement.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 

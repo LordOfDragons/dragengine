@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<dexsiDeviceManager> Ref;
 	
 	
-	
 private:
 	deXSystemInput &pModule;
 	

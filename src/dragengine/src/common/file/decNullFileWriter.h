@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<decNullFileWriter> Ref;
 	
 	
-	
 private:
 	decString pFilename;
 	

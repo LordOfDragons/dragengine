@@ -27,9 +27,9 @@
 
 #include "reWPPanelShape.h"
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 
 class reRigShapeHull;
 
@@ -40,12 +40,12 @@ class reRigShapeHull;
  */
 class reWPPanelShapeHull : public reWPPanelShape{
 private:
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeSpinTextFieldReference pSpinPoint;
-	igdeButtonReference pBtnPointAdd;
-	igdeButtonReference pBtnPointRemove;
-	igdeEditVectorReference pEditPoint;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeSpinTextField::Ref pSpinPoint;
+	igdeButton::Ref pBtnPointAdd;
+	igdeButton::Ref pBtnPointRemove;
+	igdeEditVector::Ref pEditPoint;
 	
 	
 	

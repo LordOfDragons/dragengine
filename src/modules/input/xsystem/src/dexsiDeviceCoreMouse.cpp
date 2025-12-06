@@ -63,88 +63,77 @@ dexsiDevice( module, esX11 )
 	SetDisplayImages( "mouse" );
 	
 	// x11 does not provide a way to figure out mouse configuration. using XInput2 should help
-	deObjectReference refObject;
+	const dexsiDeviceAxis::Ref axisX(dexsiDeviceAxis::Ref::NewWith(module));
+	AddAxis(axisX);
+	axisX->SetIndex( 0 );
+	axisX->SetAbsolute( false );
+	axisX->SetID( "x" );
+	axisX->SetName( "X" );
+	axisX->SetType( deInputDeviceAxis::eatMouse );
+	axisX->SetDisplayImages( "mouseX" );
 	
-	refObject.TakeOver( new dexsiDeviceAxis( module ) );
-	AddAxis( ( dexsiDeviceAxis* )( deObject* )refObject );
-	dexsiDeviceAxis &axisX = ( dexsiDeviceAxis& )( deObject& )refObject;
-	axisX.SetIndex( 0 );
-	axisX.SetAbsolute( false );
-	axisX.SetID( "x" );
-	axisX.SetName( "X" );
-	axisX.SetType( deInputDeviceAxis::eatMouse );
-	axisX.SetDisplayImages( "mouseX" );
+	const dexsiDeviceAxis::Ref axisY( dexsiDeviceAxis::Ref::NewWith(module) );
+	AddAxis( axisY );
+	axisY->SetIndex( 1 );
+	axisY->SetAbsolute( false );
+	axisY->SetID( "y" );
+	axisY->SetName( "Y" );
+	axisY->SetType( deInputDeviceAxis::eatMouse );
+	axisY->SetDisplayImages( "mouseY" );
 	
-	refObject.TakeOver( new dexsiDeviceAxis( module ) );
-	AddAxis( ( dexsiDeviceAxis* )( deObject* )refObject );
-	dexsiDeviceAxis &axisY = ( dexsiDeviceAxis& )( deObject& )refObject;
-	axisY.SetIndex( 1 );
-	axisY.SetAbsolute( false );
-	axisY.SetID( "y" );
-	axisY.SetName( "Y" );
-	axisY.SetType( deInputDeviceAxis::eatMouse );
-	axisY.SetDisplayImages( "mouseY" );
+	const dexsiDeviceAxis::Ref wheelY( dexsiDeviceAxis::Ref::NewWith(module) );
+	AddAxis( wheelY );
+	wheelY->SetIndex( 2 );
+	wheelY->SetAbsolute( false );
+	wheelY->SetWheelOtherAxis( false );
+	wheelY->SetID( "wheelY" );
+	wheelY->SetName( "Wheel Y" );
+	wheelY->SetType( deInputDeviceAxis::eatMouseWheel );
+	wheelY->SetDisplayImages( "mouseY" );
+	wheelY->SetDisplayText( "Wheel" );
 	
-	refObject.TakeOver( new dexsiDeviceAxis( module ) );
-	AddAxis( ( dexsiDeviceAxis* )( deObject* )refObject );
-	dexsiDeviceAxis &wheelY = ( dexsiDeviceAxis& )( deObject& )refObject;
-	wheelY.SetIndex( 2 );
-	wheelY.SetAbsolute( false );
-	wheelY.SetWheelOtherAxis( false );
-	wheelY.SetID( "wheelY" );
-	wheelY.SetName( "Wheel Y" );
-	wheelY.SetType( deInputDeviceAxis::eatMouseWheel );
-	wheelY.SetDisplayImages( "mouseY" );
-	wheelY.SetDisplayText( "Wheel" );
+	const dexsiDeviceAxis::Ref wheelX( dexsiDeviceAxis::Ref::NewWith(module) );
+	AddAxis( wheelX );
+	wheelX->SetIndex( 3 );
+	wheelX->SetAbsolute( false );
+	wheelX->SetWheelOtherAxis( true );
+	wheelX->SetID( "wheelX" );
+	wheelX->SetName( "Wheel X" );
+	wheelX->SetType( deInputDeviceAxis::eatMouseWheel );
+	wheelX->SetDisplayImages( "mouseX" );
+	wheelX->SetDisplayText( "Wheel X" );
 	
-	refObject.TakeOver( new dexsiDeviceAxis( module ) );
-	AddAxis( ( dexsiDeviceAxis* )( deObject* )refObject );
-	dexsiDeviceAxis &wheelX = ( dexsiDeviceAxis& )( deObject& )refObject;
-	wheelX.SetIndex( 3 );
-	wheelX.SetAbsolute( false );
-	wheelX.SetWheelOtherAxis( true );
-	wheelX.SetID( "wheelX" );
-	wheelX.SetName( "Wheel X" );
-	wheelX.SetType( deInputDeviceAxis::eatMouseWheel );
-	wheelX.SetDisplayImages( "mouseX" );
-	wheelX.SetDisplayText( "Wheel X" );
+	const dexsiDeviceButton::Ref buttonLeft( dexsiDeviceButton::Ref::NewWith(module) );
+	AddButton( buttonLeft );
+	buttonLeft->SetID( "left" );
+	buttonLeft->SetName( "Left" );
+	buttonLeft->SetDisplayImages( "mouseL" );
 	
-	refObject.TakeOver( new dexsiDeviceButton( module ) );
-	AddButton( ( dexsiDeviceButton* )( deObject* )refObject );
-	dexsiDeviceButton &buttonLeft = ( dexsiDeviceButton& )( deObject& )refObject;
-	buttonLeft.SetID( "left" );
-	buttonLeft.SetName( "Left" );
-	buttonLeft.SetDisplayImages( "mouseL" );
+	const dexsiDeviceButton::Ref buttonRight( dexsiDeviceButton::Ref::NewWith(module) );
+	AddButton( buttonRight );
+	buttonRight->SetID( "right" );
+	buttonRight->SetName( "Right" );
+	buttonRight->SetDisplayImages( "mouseR" );
 	
-	refObject.TakeOver( new dexsiDeviceButton( module ) );
-	AddButton( ( dexsiDeviceButton* )( deObject* )refObject );
-	dexsiDeviceButton &buttonRight = ( dexsiDeviceButton& )( deObject& )refObject;
-	buttonRight.SetID( "right" );
-	buttonRight.SetName( "Right" );
-	buttonRight.SetDisplayImages( "mouseR" );
+	const dexsiDeviceButton::Ref buttonMiddle( dexsiDeviceButton::Ref::NewWith(module) );
+	AddButton( buttonMiddle );
+	buttonMiddle->SetID( "middle" );
+	buttonMiddle->SetName( "Middle" );
+	buttonMiddle->SetDisplayImages( "mouseM" );
 	
-	refObject.TakeOver( new dexsiDeviceButton( module ) );
-	AddButton( ( dexsiDeviceButton* )( deObject* )refObject );
-	dexsiDeviceButton &buttonMiddle = ( dexsiDeviceButton& )( deObject& )refObject;
-	buttonMiddle.SetID( "middle" );
-	buttonMiddle.SetName( "Middle" );
-	buttonMiddle.SetDisplayImages( "mouseM" );
+	const dexsiDeviceButton::Ref buttonBackward( dexsiDeviceButton::Ref::NewWith(module) );
+	AddButton( buttonBackward );
+	buttonBackward->SetID( "backward" );
+	buttonBackward->SetName( "Backward" );
+	buttonBackward->SetDisplayImages( "mouseX" );
+	buttonBackward->SetDisplayText( "B" );
 	
-	refObject.TakeOver( new dexsiDeviceButton( module ) );
-	AddButton( ( dexsiDeviceButton* )( deObject* )refObject );
-	dexsiDeviceButton &buttonBackward = ( dexsiDeviceButton& )( deObject& )refObject;
-	buttonBackward.SetID( "backward" );
-	buttonBackward.SetName( "Backward" );
-	buttonBackward.SetDisplayImages( "mouseX" );
-	buttonBackward.SetDisplayText( "B" );
-	
-	refObject.TakeOver( new dexsiDeviceButton( module ) );
-	AddButton( ( dexsiDeviceButton* )( deObject* )refObject );
-	dexsiDeviceButton &buttonForward = ( dexsiDeviceButton& )( deObject& )refObject;
-	buttonForward.SetID( "forward" );
-	buttonForward.SetName( "Forward" );
-	buttonForward.SetDisplayImages( "mouseX" );
-	buttonForward.SetDisplayText( "F" );
+	const dexsiDeviceButton::Ref buttonForward( dexsiDeviceButton::Ref::NewWith(module) );
+	AddButton( buttonForward );
+	buttonForward->SetID( "forward" );
+	buttonForward->SetName( "Forward" );
+	buttonForward->SetDisplayImages( "mouseX" );
+	buttonForward->SetDisplayText( "F" );
 }
 
 dexsiDeviceCoreMouse::~dexsiDeviceCoreMouse(){

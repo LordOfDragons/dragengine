@@ -36,6 +36,10 @@ class igdeTriggerTarget;
  */
 class DE_DLL_EXPORT igdeTriggerListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTriggerListener> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create trigger listener. */

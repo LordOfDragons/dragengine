@@ -26,7 +26,7 @@
 
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
@@ -48,7 +48,7 @@ igdeDialog( environment, windowTitle )
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerForm( environment, igdeContainerForm::esLast ) );
 	
 	helper.ComboBox( content, "Type:", "How to match the name.", pCBType, nullptr );
@@ -60,7 +60,7 @@ igdeDialog( environment, windowTitle )
 	helper.EditString( content, "First:", "First name string component to match.", 30, pEditFirst, nullptr );
 	helper.EditString( content, "Second:", "Second name string component to match.", 30, pEditSecond, nullptr );
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Cancel" );
 	
 	AddContent( content, buttonBar );

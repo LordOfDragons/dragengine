@@ -30,7 +30,7 @@
 #include "../igdeUIHelper.h"
 #include "../igdeCheckBox.h"
 #include "../igdeTextField.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeCommonDialogs.h"
 #include "../composed/igdeEditVector.h"
 #include "../composed/igdeEditVectorListener.h"
@@ -40,7 +40,6 @@
 #include "../curveedit/igdeViewCurveBezierListener.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionContextMenu.h"
-#include "../event/igdeActionContextMenuReference.h"
 #include "../event/igdeTextFieldListener.h"
 #include "../filedialog/igdeFilePattern.h"
 #include "../filedialog/igdeFilePatternList.h"
@@ -693,7 +692,7 @@ void igdeWPCamera::OnDestroyed( igdeAction *action ){
 void igdeWPCamera::pCreateContent(){
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference form, frameLine, group;
+	igdeContainer::Ref form, frameLine, group;
 	
 	
 	form.TakeOver( new igdeContainerForm( env ) );
@@ -714,7 +713,7 @@ void igdeWPCamera::pCreateContent(){
 	
 	helper.CheckBoxOnly( frameLine, pChkEnableHDRR, new cCheckEnableHDRR( *this ), true );
 	
-	igdeActionContextMenuReference actionMenuCamera;
+	igdeActionContextMenu::Ref actionMenuCamera;
 	actionMenuCamera.TakeOver( new cActionMenuCamera( *this ) );
 	helper.Button( frameLine, pBtnCamera, actionMenuCamera );
 	actionMenuCamera->SetWidget( pBtnCamera );

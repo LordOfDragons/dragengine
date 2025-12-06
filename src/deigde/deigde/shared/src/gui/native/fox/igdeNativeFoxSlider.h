@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXSLIDER_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeSlider;
 class igdeEnvironment;

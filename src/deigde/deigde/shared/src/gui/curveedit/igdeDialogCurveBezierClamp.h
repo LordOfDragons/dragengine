@@ -26,8 +26,8 @@
 #define _IGDEDIALOGCURVEBEZIERCLAMP_H_
 
 #include "../dialog/igdeDialog.h"
-#include "../igdeCheckBoxReference.h"
-#include "../composed/igdeEditVector2Reference.h"
+#include "../igdeCheckBox.h"
+#include "../composed/igdeEditVector2.h"
 
 
 
@@ -36,9 +36,9 @@
  */
 class DE_DLL_EXPORT igdeDialogCurveBezierClamp : public igdeDialog{
 private:
-	igdeCheckBoxReference pChkClamp;
-	igdeEditVector2Reference pEditMinimum;
-	igdeEditVector2Reference pEditMaximum;
+	igdeCheckBox::Ref pChkClamp;
+	igdeEditVector2::Ref pEditMinimum;
+	igdeEditVector2::Ref pEditMaximum;
 	
 	
 	

@@ -98,7 +98,6 @@ public:
 	typedef deTObjectReference<deForceField> Ref;
 	
 	
-	
 public:
 	/** \brief Field types. */
 	enum eFieldTypes{

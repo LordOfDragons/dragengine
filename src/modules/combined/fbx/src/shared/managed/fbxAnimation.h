@@ -52,7 +52,6 @@ public:
 	typedef deTObjectReference<fbxAnimation> Ref;
 	
 	
-	
 private:
 	fbxScene &pScene;
 	decObjectOrderedSet pMoves;

@@ -25,7 +25,6 @@
 #ifndef _DEOGLGIINSTANCES_H_
 #define _DEOGLGIINSTANCES_H_
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/collection/decPointerDictionaryExt.h>
 #include <dragengine/common/collection/decObjectList.h>

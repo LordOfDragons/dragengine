@@ -25,18 +25,18 @@
 #ifndef _MEWPVIEW_H_
 #define _MEWPVIEW_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/composed/igdeToggleTagsReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
-#include <deigde/gui/properties/igdeWPWObjectReference.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
-#include <deigde/gui/properties/igdeWPTriggerTableReference.h>
+#include <deigde/gui/composed/igdeToggleTags.h>
+#include <deigde/gui/composed/igdeEditVector.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/properties/igdeWPSky.h>
+#include <deigde/gui/properties/igdeWPWObject.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
+#include <deigde/gui/properties/igdeWPTriggerTable.h>
 
 class meWindowProperties;
 class meWPViewListener;
@@ -55,35 +55,35 @@ private:
 	
 	meWorld *pWorld;
 	
-	igdeTextFieldReference pEditMoveStep;
-	igdeCheckBoxReference pChkMoveSnap;
-	igdeTextFieldReference pEditRotStep;
-	igdeCheckBoxReference pChkRotSnap;
-	igdeTextFieldReference pEditScaleStep;
-	igdeCheckBoxReference pChkScaleSnap;
-	igdeCheckBoxReference pChkAutoUpdate;
-	igdeTextFieldReference pEditSensitivity;
+	igdeTextField::Ref pEditMoveStep;
+	igdeCheckBox::Ref pChkMoveSnap;
+	igdeTextField::Ref pEditRotStep;
+	igdeCheckBox::Ref pChkRotSnap;
+	igdeTextField::Ref pEditScaleStep;
+	igdeCheckBox::Ref pChkScaleSnap;
+	igdeCheckBox::Ref pChkAutoUpdate;
+	igdeTextField::Ref pEditSensitivity;
 	igdeButton::Ref pBtnSensitivity;
-	igdeTextFieldReference pEditRectSelDist;
-	igdeTextFieldReference pEditRectSelDistStep;
+	igdeTextField::Ref pEditRectSelDist;
+	igdeTextField::Ref pEditRectSelDistStep;
 	
-	igdeTextFieldReference pEditActiveCamera;
+	igdeTextField::Ref pEditActiveCamera;
 	
-	igdeWPSkyReference pWPSky;
-	igdeWPWObjectReference pWPBgObject;
-	igdeWPCameraReference pWPCamera;
-	igdeWPTriggerTableReference pWPTriggerTable;
-	igdeComboBoxReference pCBCameraObjects;
-	igdeToggleTagsReference pEditClassHideTags;
-	igdeToggleTagsReference pEditClassPartialHideTags;
+	igdeWPSky::Ref pWPSky;
+	igdeWPWObject::Ref pWPBgObject;
+	igdeWPCamera::Ref pWPCamera;
+	igdeWPTriggerTable::Ref pWPTriggerTable;
+	igdeComboBox::Ref pCBCameraObjects;
+	igdeToggleTags::Ref pEditClassHideTags;
+	igdeToggleTags::Ref pEditClassPartialHideTags;
 	
-	igdeActionReference pActionCameraFreeRoaming;
-	igdeActionReference pActionCameraPlayer;
-	igdeActionReference pActionCameraObject;
+	igdeAction::Ref pActionCameraFreeRoaming;
+	igdeAction::Ref pActionCameraPlayer;
+	igdeAction::Ref pActionCameraObject;
 	
-	igdeCheckBoxReference pChkEnableAuralization;
+	igdeCheckBox::Ref pChkEnableAuralization;
 	
-	igdeEditVectorReference pEditLimitBoxMinExtend, pEditLimitBoxMaxExtend;
+	igdeEditVector::Ref pEditLimitBoxMinExtend, pEditLimitBoxMaxExtend;
 	igdeButton::Ref pBtnLimitBoxMenu;
 	
 	bool pPreventUpdateCamera;

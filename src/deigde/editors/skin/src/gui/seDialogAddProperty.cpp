@@ -37,12 +37,11 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeLabel.h>
-#include <deigde/gui/igdeLabelReference.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/dialog/igdeDialogTexturePropertyList.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
@@ -50,7 +49,6 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIconReference.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringList.h>
@@ -70,7 +68,7 @@ public:
 	pDialog( dialog ){ }
 	
 	virtual void OnAction(){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new igdeDialogTexturePropertyList( pDialog.GetEnvironment() ) );
 		dialog->Run( &pDialog );
 	}
@@ -92,10 +90,10 @@ pWindowMain( windowMain )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference content, formLine;
+	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabelReference header;
+	igdeLabel::Ref header;
 	header.TakeOver( new igdeLabel( env, "Multi-Select properties or enter custom name." ) );
 	
 	
@@ -113,7 +111,7 @@ pWindowMain( windowMain )
 	content->AddChild( formLine );
 	
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Add Properties", "Cancel" );
 	
 	
@@ -185,8 +183,8 @@ void seDialogAddProperty::pInitPropertyList(){
 	seTexture &texture = *pWindowMain.GetSkin()->GetActiveTexture();
 	const sePropertyList &propList = texture.GetPropertyList();
 	const int propertyCount = envPropList.GetCount();
-	igdeIconReference iconUsed( environment.GetStockIcon( igdeEnvironment::esiSmallPlus ) );
-	igdeIconReference iconAvailable( environment.GetStockIcon( igdeEnvironment::esiSmallMinus ) );
+	igdeIcon::Ref iconUsed( environment.GetStockIcon( igdeEnvironment::esiSmallPlus ) );
+	igdeIcon::Ref iconAvailable( environment.GetStockIcon( igdeEnvironment::esiSmallMinus ) );
 	int i;
 	
 	for( i=0; i<propertyCount; i++ ){

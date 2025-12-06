@@ -36,6 +36,12 @@ class igdeEditPoint3;
  * \brief IGDE UI EditPoint3 Listener.
  */
 class DE_DLL_EXPORT igdeEditPoint3Listener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditPoint3Listener> Ref;
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

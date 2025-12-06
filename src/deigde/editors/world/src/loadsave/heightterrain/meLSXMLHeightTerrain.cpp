@@ -71,7 +71,6 @@
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -116,7 +115,7 @@ void meLSXMLHeightTerrain::LoadFromFile( meHeightTerrain &heightTerrain, decBase
 	pLSSys->GetWindowMain()->GetLogger()->LogInfoFormat( LOGSOURCE,
 		"XMLHeightTerrain: load height terrain %s", file.GetFilename() );
 	
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( pLSSys->GetWindowMain()->GetEnvironment().GetLogger() ).ParseXml( &file, xmlDoc );
@@ -698,11 +697,11 @@ void meLSXMLHeightTerrain::pLoadHeightTerrain( decXmlElementTag &root, meHeightT
 			heightTerrain.SetHeightScaling( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "sector" ){
-			deObjectReference htsector;
-			htsector.TakeOver( new meHeightTerrainSector( heightTerrain.GetWorld().GetEngine(),
-				decPoint( GetAttributeInt( *tag, "x" ), GetAttributeInt( *tag, "z" ) ) ) );
-			heightTerrain.AddSector( ( meHeightTerrainSector* )( deObject* )htsector );
-			pLoadSector( *tag, ( meHeightTerrainSector& )( deObject& )htsector );
+			const meHeightTerrainSector::Ref htsector(meHeightTerrainSector::Ref::NewWith(
+				heightTerrain.GetWorld().GetEngine(), decPoint(
+					GetAttributeInt(*tag, "x"), GetAttributeInt(*tag, "z"))));
+			heightTerrain.AddSector(htsector);
+			pLoadSector(*tag, htsector);
 			
 		}else if( tagName == "vegetationLayer" ){
 			pLoadVLayer( *tag, heightTerrain );
@@ -788,10 +787,8 @@ void meLSXMLHeightTerrain::pLoadSector( decXmlElementTag &root, meHeightTerrainS
 }
 
 void meLSXMLHeightTerrain::pLoadTexture( decXmlElementTag &root, meHeightTerrainSector &sector ){
-	deObjectReference refTexture;
-	refTexture.TakeOver( new meHeightTerrainTexture( pLSSys->GetWindowMain()->GetEngine(),
-			GetAttributeString( root, "name" ) ) );
-	meHeightTerrainTexture &texture = ( meHeightTerrainTexture& )( deObject& )refTexture;
+	const meHeightTerrainTexture::Ref texture(meHeightTerrainTexture::Ref::NewWith(
+		pLSSys->GetWindowMain()->GetEngine(), GetAttributeString(root, "name")));
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -804,36 +801,35 @@ void meLSXMLHeightTerrain::pLoadTexture( decXmlElementTag &root, meHeightTerrain
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "skin" ){
-			texture.SetPathSkin( GetCDataString( *tag ) );
+			texture->SetPathSkin( GetCDataString( *tag ) );
 			
 		}else if( tagName == "typeNumber" ){
-			texture.SetTypeNumber( GetCDataInt( *tag ) );
+			texture->SetTypeNumber( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "uvOffset" ){
-			texture.SetProjectionOffsetU( GetAttributeFloat( *tag, "u" ) );
-			texture.SetProjectionOffsetV( GetAttributeFloat( *tag, "v" ) );
+			texture->SetProjectionOffsetU( GetAttributeFloat( *tag, "u" ) );
+			texture->SetProjectionOffsetV( GetAttributeFloat( *tag, "v" ) );
 			
 		}else if( tagName == "uvScaling" ){
-			texture.SetProjectionScalingU( GetAttributeFloat( *tag, "u" ) );
-			texture.SetProjectionScalingV( GetAttributeFloat( *tag, "v" ) );
+			texture->SetProjectionScalingU( GetAttributeFloat( *tag, "u" ) );
+			texture->SetProjectionScalingV( GetAttributeFloat( *tag, "v" ) );
 			
 		}else if( tagName == "uvRotation" ){
-			texture.SetProjectionRotation( GetCDataFloat( *tag ) );
+			texture->SetProjectionRotation( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "mask" ){
-			texture.SetPathMask( GetCDataString( *tag ), true );
+			texture->SetPathMask( GetCDataString( *tag ), true );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	sector.AddTexture( &texture );
+	sector.AddTexture(texture);
 }
 
 void meLSXMLHeightTerrain::pLoadNavSpace( decXmlElementTag &root, meHeightTerrainSector &sector ){
-	deObjectReference refNavSpace;
-	refNavSpace.TakeOver( new meHeightTerrainNavSpace( *pLSSys->GetWindowMain()->GetEngine() ) );
+	const meHeightTerrainNavSpace::Ref refNavSpace(meHeightTerrainNavSpace::Ref::NewWith(*pLSSys->GetWindowMain()->GetEngine()));
 	meHeightTerrainNavSpace &navspace = ( meHeightTerrainNavSpace& )( deObject& )refNavSpace;
 	
 	navspace.SetName( GetAttributeString( root, "name" ) );
@@ -874,11 +870,9 @@ void meLSXMLHeightTerrain::pLoadNavSpace( decXmlElementTag &root, meHeightTerrai
 }
 
 void meLSXMLHeightTerrain::pLoadNavSpaceType( decXmlElementTag &root, meHeightTerrainNavSpace &navspace ){
-	deObjectReference refType;
-	refType.TakeOver( new meHeightTerrainNavSpaceType );
-	meHeightTerrainNavSpaceType &navtype = ( meHeightTerrainNavSpaceType& )( deObject& )refType;
+	const meHeightTerrainNavSpaceType::Ref navtype(meHeightTerrainNavSpaceType::Ref::NewWith());
 	
-	navtype.SetName( GetAttributeString( root, "name" ) );
+	navtype->SetName( GetAttributeString( root, "name" ) );
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -891,10 +885,10 @@ void meLSXMLHeightTerrain::pLoadNavSpaceType( decXmlElementTag &root, meHeightTe
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "type" ){
-			navtype.SetType( GetCDataInt( *tag ) );
+			navtype->SetType( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "color" ){
-			navtype.SetColor( decColor( GetAttributeFloat( *tag, "r" ),
+			navtype->SetColor( decColor( GetAttributeFloat( *tag, "r" ),
 				GetAttributeFloat( *tag, "g" ), GetAttributeFloat( *tag, "b" ) ) );
 			
 		}else{
@@ -902,12 +896,11 @@ void meLSXMLHeightTerrain::pLoadNavSpaceType( decXmlElementTag &root, meHeightTe
 		}
 	}
 	
-	navspace.AddType( &navtype );
+	navspace.AddType(navtype);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayer( decXmlElementTag &root, meHeightTerrain &heightTerrain ){
-	deObjectReference refVLayer;
-	refVLayer.TakeOver( new meHTVegetationLayer( pLSSys->GetWindowMain()->GetEngine() ) );
+	const meHTVegetationLayer::Ref refVLayer(meHTVegetationLayer::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
 	meHTVegetationLayer &vlayer = ( meHTVegetationLayer& )( deObject& )refVLayer;
 	
 	const int count = root.GetElementCount();
@@ -946,8 +939,7 @@ void meLSXMLHeightTerrain::pLoadVLayer( decXmlElementTag &root, meHeightTerrain 
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerVariation( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refVariation;
-	refVariation.TakeOver( new meHTVVariation( pLSSys->GetWindowMain()->GetEngine() ) );
+	const meHTVVariation::Ref refVariation(meHTVVariation::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
 	meHTVVariation &variation = ( meHTVVariation& )( deObject& )refVariation;
 	
 	const int count = root.GetElementCount();
@@ -1068,9 +1060,7 @@ bool meLSXMLHeightTerrain::pLoadVLayerRule( decXmlElementTag &tag, meHTVRule &ru
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleClosestProp( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleClosestProp );
-	meHTVRuleClosestProp &rule = ( meHTVRuleClosestProp& )( deObject& )refRule;
+	const meHTVRuleClosestProp::Ref rule(meHTVRuleClosestProp::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1083,23 +1073,21 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleClosestProp( decXmlElementTag &root, m
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "propClass" ){
-			rule.SetPropClass( GetCDataString( *tag ) );
+			rule->SetPropClass( GetCDataString( *tag ) );
 			
 		}else if( tagName == "searchRadius" ){
-			rule.SetSearchRadius( GetCDataFloat( *tag ) );
+			rule->SetSearchRadius( GetCDataFloat( *tag ) );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleClosestVegetation( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleClosestVegetation );
-	meHTVRuleClosestVegetation &rule = ( meHTVRuleClosestVegetation& )( deObject& )refRule;
+	const meHTVRuleClosestVegetation::Ref rule(meHTVRuleClosestVegetation::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1112,23 +1100,21 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleClosestVegetation( decXmlElementTag &r
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "vegetationType" ){
-			rule.SetVegetationType( GetCDataString( *tag ) );
+			rule->SetVegetationType( GetCDataString( *tag ) );
 			
 		}else if( tagName == "searchRadius" ){
-			rule.SetSearchRadius( GetCDataFloat( *tag ) );
+			rule->SetSearchRadius( GetCDataFloat( *tag ) );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleCombine( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleCombine );
-	meHTVRuleCombine &rule = ( meHTVRuleCombine& )( deObject& )refRule;
+	const meHTVRuleCombine::Ref rule(meHTVRuleCombine::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1141,26 +1127,24 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleCombine( decXmlElementTag &root, meHTV
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "x" ){
-			rule.SetX( GetCDataFloat( *tag ) );
+			rule->SetX( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "y" ){
-			rule.SetY( GetCDataFloat( *tag ) );
+			rule->SetY( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "z" ){
-			rule.SetZ( GetCDataFloat( *tag ) );
+			rule->SetZ( GetCDataFloat( *tag ) );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleComponents( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleComponents );
-	meHTVRuleComponents &rule = ( meHTVRuleComponents& )( deObject& )refRule;
+	const meHTVRuleComponents::Ref rule(meHTVRuleComponents::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1175,30 +1159,27 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleComponents( decXmlElementTag &root, me
 		if( tagName == "vector" ){
 			decVector vector;
 			ReadVector( *tag, vector );
-			rule.SetVector( vector );
+			rule->SetVector( vector );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleCurve( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
 	decCurveBezier curve;
 	ReadCurveBezier( root, curve );
 	
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleCurve );
-	( ( meHTVRuleCurve& )( deObject& )refRule ).SetCurve( curve );
-	vlayer.AddRule( ( meHTVRuleCurve* )( deObject* )refRule );
+	const meHTVRuleCurve::Ref rule(meHTVRuleCurve::Ref::NewWith());
+	rule->SetCurve(curve);
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleGeometry( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleGeometry );
-	meHTVRuleGeometry &rule = ( meHTVRuleGeometry& )( deObject& )refRule;
+	const meHTVRuleGeometry::Ref rule(meHTVRuleGeometry::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1213,13 +1194,11 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleGeometry( decXmlElementTag &root, meHT
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleMapping( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleMapping );
-	meHTVRuleMapping &rule = ( meHTVRuleMapping& )( deObject& )refRule;
+	const meHTVRuleMapping::Ref rule(meHTVRuleMapping::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1232,29 +1211,27 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMapping( decXmlElementTag &root, meHTV
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "lower" ){
-			rule.SetLower( GetCDataFloat( *tag ) );
+			rule->SetLower( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "upper" ){
-			rule.SetUpper( GetCDataFloat( *tag ) );
+			rule->SetUpper( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "value" ){
-			rule.SetValue( GetCDataFloat( *tag ) );
+			rule->SetValue( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "inversed" ){
-			rule.SetInversed( GetCDataInt( *tag ) != 0 );
+			rule->SetInversed( GetCDataInt( *tag ) != 0 );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleMath( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleMath );
-	meHTVRuleMath &rule = ( meHTVRuleMath& )( deObject& )refRule;
+	const meHTVRuleMath::Ref rule(meHTVRuleMath::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1270,90 +1247,88 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMath( decXmlElementTag &root, meHTVege
 			const char * const keyword = GetCDataString( *tag );
 			
 			if( strcmp( keyword, "add" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopAdd );
+				rule->SetOperator( meHTVRuleMath::eopAdd );
 				
 			}else if( strcmp( keyword, "subtract" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopSubtract );
+				rule->SetOperator( meHTVRuleMath::eopSubtract );
 				
 			}else if( strcmp( keyword, "multiply" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopMultiply );
+				rule->SetOperator( meHTVRuleMath::eopMultiply );
 				
 			}else if( strcmp( keyword, "divide" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopDivide );
+				rule->SetOperator( meHTVRuleMath::eopDivide );
 				
 			}else if( strcmp( keyword, "sine" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopSine );
+				rule->SetOperator( meHTVRuleMath::eopSine );
 				
 			}else if( strcmp( keyword, "cosine" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopCosine );
+				rule->SetOperator( meHTVRuleMath::eopCosine );
 				
 			}else if( strcmp( keyword, "tangent" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopTangent );
+				rule->SetOperator( meHTVRuleMath::eopTangent );
 				
 			}else if( strcmp( keyword, "arcsine" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopArcSine );
+				rule->SetOperator( meHTVRuleMath::eopArcSine );
 				
 			}else if( strcmp( keyword, "arccosine" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopArcCosine );
+				rule->SetOperator( meHTVRuleMath::eopArcCosine );
 				
 			}else if( strcmp( keyword, "arctangent" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopArcTangent );
+				rule->SetOperator( meHTVRuleMath::eopArcTangent );
 				
 			}else if( strcmp( keyword, "power" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopPower );
+				rule->SetOperator( meHTVRuleMath::eopPower );
 				
 			}else if( strcmp( keyword, "exponential" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopExponential );
+				rule->SetOperator( meHTVRuleMath::eopExponential );
 				
 			}else if( strcmp( keyword, "logarithm" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopLogarithm );
+				rule->SetOperator( meHTVRuleMath::eopLogarithm );
 				
 			}else if( strcmp( keyword, "minimum" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopMinimum );
+				rule->SetOperator( meHTVRuleMath::eopMinimum );
 				
 			}else if( strcmp( keyword, "maximum" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopMaximum );
+				rule->SetOperator( meHTVRuleMath::eopMaximum );
 				
 			}else if( strcmp( keyword, "round" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopRound );
+				rule->SetOperator( meHTVRuleMath::eopRound );
 				
 			}else if( strcmp( keyword, "lessthan" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopLessThan );
+				rule->SetOperator( meHTVRuleMath::eopLessThan );
 				
 			}else if( strcmp( keyword, "greaterthan" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopGreaterThan );
+				rule->SetOperator( meHTVRuleMath::eopGreaterThan );
 				
 			}else if( strcmp( keyword, "equal" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopEqual );
+				rule->SetOperator( meHTVRuleMath::eopEqual );
 				
 			}else if( strcmp( keyword, "notequal" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopNotEqual );
+				rule->SetOperator( meHTVRuleMath::eopNotEqual );
 				
 			}else if( strcmp( keyword, "average" ) == 0 ){
-				rule.SetOperator( meHTVRuleMath::eopAverage );
+				rule->SetOperator( meHTVRuleMath::eopAverage );
 				
 			}else{
 				LogWarnUnknownValue( *tag, keyword );
 			}
 			
 		}else if( tagName == "value1" ){
-			rule.SetValueA( GetCDataFloat( *tag ) );
+			rule->SetValueA( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "value2" ){
-			rule.SetValueB( GetCDataFloat( *tag ) );
+			rule->SetValueB( GetCDataFloat( *tag ) );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleMultiMath( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleMultiMath );
-	meHTVRuleMultiMath &rule = ( meHTVRuleMultiMath& )( deObject& )refRule;
+	const meHTVRuleMultiMath::Ref rule(meHTVRuleMultiMath::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1369,19 +1344,19 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMultiMath( decXmlElementTag &root, meH
 			const char * const keyword = GetCDataString( *tag );
 			
 			if( strcmp( keyword, "add" ) == 0 ){
-				rule.SetOperator( meHTVRuleMultiMath::eopAdd );
+				rule->SetOperator( meHTVRuleMultiMath::eopAdd );
 				
 			}else if( strcmp( keyword, "multiply" ) == 0 ){
-				rule.SetOperator( meHTVRuleMultiMath::eopMultiply );
+				rule->SetOperator( meHTVRuleMultiMath::eopMultiply );
 				
 			}else if( strcmp( keyword, "minimum" ) == 0 ){
-				rule.SetOperator( meHTVRuleMultiMath::eopMinimum );
+				rule->SetOperator( meHTVRuleMultiMath::eopMinimum );
 				
 			}else if( strcmp( keyword, "maximum" ) == 0 ){
-				rule.SetOperator( meHTVRuleMultiMath::eopMaximum );
+				rule->SetOperator( meHTVRuleMultiMath::eopMaximum );
 				
 			}else if( strcmp( keyword, "average" ) == 0 ){
-				rule.SetOperator( meHTVRuleMultiMath::eopAverage );
+				rule->SetOperator( meHTVRuleMultiMath::eopAverage );
 				
 			}else{
 				LogWarnUnknownValue( *tag, keyword );
@@ -1392,13 +1367,11 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleMultiMath( decXmlElementTag &root, meH
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleRandom( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleRandom );
-	meHTVRuleRandom &rule = ( meHTVRuleRandom& )( deObject& )refRule;
+	const meHTVRuleRandom::Ref rule(meHTVRuleRandom::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1413,13 +1386,11 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleRandom( decXmlElementTag &root, meHTVe
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleResult( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleResult );
-	meHTVRuleResult &rule = ( meHTVRuleResult& )( deObject& )refRule;
+	const meHTVRuleResult::Ref rule(meHTVRuleResult::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1432,23 +1403,21 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleResult( decXmlElementTag &root, meHTVe
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "probability" ){
-			rule.SetProbability( GetCDataFloat( *tag ) );
+			rule->SetProbability( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "variation" ){
-			rule.SetVariation( GetCDataInt( *tag ) );
+			rule->SetVariation( GetCDataInt( *tag ) );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleVectorMath( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleVectorMath );
-	meHTVRuleVectorMath &rule = ( meHTVRuleVectorMath& )( deObject& )refRule;
+	const meHTVRuleVectorMath::Ref rule(meHTVRuleVectorMath::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1464,22 +1433,22 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleVectorMath( decXmlElementTag &root, me
 			const char * const keyword = GetCDataString( *tag );
 			
 			if( strcmp( keyword, "add" ) == 0 ){
-				rule.SetOperator( meHTVRuleVectorMath::eopAdd );
+				rule->SetOperator( meHTVRuleVectorMath::eopAdd );
 				
 			}else if( strcmp( keyword, "subtract" ) == 0 ){
-				rule.SetOperator( meHTVRuleVectorMath::eopSubtract );
+				rule->SetOperator( meHTVRuleVectorMath::eopSubtract );
 				
 			}else if( strcmp( keyword, "average" ) == 0 ){
-				rule.SetOperator( meHTVRuleVectorMath::eopAverage );
+				rule->SetOperator( meHTVRuleVectorMath::eopAverage );
 				
 			}else if( strcmp( keyword, "normalize" ) == 0 ){
-				rule.SetOperator( meHTVRuleVectorMath::eopNormalize );
+				rule->SetOperator( meHTVRuleVectorMath::eopNormalize );
 				
 			}else if( strcmp( keyword, "dot" ) == 0 ){
-				rule.SetOperator( meHTVRuleVectorMath::eopDot );
+				rule->SetOperator( meHTVRuleVectorMath::eopDot );
 				
 			}else if( strcmp( keyword, "cross" ) == 0 ){
-				rule.SetOperator( meHTVRuleVectorMath::eopCross );
+				rule->SetOperator( meHTVRuleVectorMath::eopCross );
 				
 			}else{
 				LogWarnUnknownValue( *tag, keyword );
@@ -1488,25 +1457,23 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleVectorMath( decXmlElementTag &root, me
 		}else if( tagName == "vector1" ){
 			decVector vector;
 			ReadVector( *tag, vector );
-			rule.SetVectorA( vector );
+			rule->SetVectorA( vector );
 			
 		}else if( tagName == "vector2" ){
 			decVector vector;
 			ReadVector( *tag, vector );
-			rule.SetVectorB( vector );
+			rule->SetVectorB( vector );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRuleConstant( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRuleConstant );
-	meHTVRuleConstant &rule = ( meHTVRuleConstant& )( deObject& )refRule;
+	const meHTVRuleConstant::Ref rule(meHTVRuleConstant::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1521,20 +1488,18 @@ void meLSXMLHeightTerrain::pLoadVLayerRuleConstant( decXmlElementTag &root, meHT
 		if( tagName == "vector" ){
 			decVector vector;
 			ReadVector( *tag, vector );
-			rule.SetVector( vector );
+			rule->SetVector( vector );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRulePropCount( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	deObjectReference refRule;
-	refRule.TakeOver( new meHTVRulePropCount );
-	meHTVRulePropCount &rule = ( meHTVRulePropCount& )( deObject& )refRule;
+	const meHTVRulePropCount::Ref rule(meHTVRulePropCount::Ref::NewWith());
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -1547,17 +1512,17 @@ void meLSXMLHeightTerrain::pLoadVLayerRulePropCount( decXmlElementTag &root, meH
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "propClass" ){
-			rule.SetPropClass( GetCDataString( *tag ) );
+			rule->SetPropClass( GetCDataString( *tag ) );
 			
 		}else if( tagName == "searchRadius" ){
-			rule.SetSearchRadius( GetCDataFloat( *tag ) );
+			rule->SetSearchRadius( GetCDataFloat( *tag ) );
 			
 		}else if( ! pLoadVLayerRule( *tag, rule ) ){
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddRule( &rule );
+	vlayer.AddRule(rule);
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerLink( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
@@ -1604,9 +1569,8 @@ void meLSXMLHeightTerrain::pLoadVLayerLink( decXmlElementTag &root, meHTVegetati
 		DETHROW( deeInvalidParam );
 	}
 	
-	deObjectReference refLink;
-	refLink.TakeOver( new meHTVRLink( sourceRule, sourceSlot, destinationRule, destinationSlot ) );
-	meHTVRLink * const link = ( meHTVRLink* )( deObject* )refLink;
+	const meHTVRLink::Ref refLink(meHTVRLink::Ref::NewWith(sourceRule, sourceSlot, destinationRule, destinationSlot));
+	meHTVRLink * const link = refLink;
 	
 	sourceRule->GetSlotAt( sourceSlot ).AddLink( link );
 	destinationRule->GetSlotAt( destinationSlot ).AddLink( link );

@@ -69,6 +69,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRVideo> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render video. */

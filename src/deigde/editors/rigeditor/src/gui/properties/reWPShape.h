@@ -25,7 +25,7 @@
 #ifndef _REWPSHAPE_H_
 #define _REWPSHAPE_H_
 
-#include <deigde/gui/igdeSwitcherReference.h>
+#include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class reRig;
@@ -51,7 +51,7 @@ private:
 	reRig *pRig;
 	reWPShapeListener *pListener;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	reWPPanelShapeSphere *pPanelSphere;
 	reWPPanelShapeBox *pPanelBox;
 	reWPPanelShapeCylinder *pPanelCylinder;

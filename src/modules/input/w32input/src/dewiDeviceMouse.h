@@ -36,7 +36,8 @@ class dewiDeviceMouse : public dewiDevice{
 public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<dewiDeviceMouse> Ref;
-
+	
+	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

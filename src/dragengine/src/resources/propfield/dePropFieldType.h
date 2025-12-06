@@ -25,8 +25,8 @@
 #ifndef _DEPROPFIELDTYPE_H_
 #define _DEPROPFIELDTYPE_H_
 
-#include "../model/deModelReference.h"
-#include "../skin/deSkinReference.h"
+#include "../model/deModel.h"
+#include "../skin/deSkin.h"
 #include "../../common/utils/decCollisionFilter.h"
 
 class dePropFieldInstance;
@@ -48,8 +48,8 @@ class dePropFieldBendState;
  */
 class DE_DLL_EXPORT dePropFieldType{
 private:
-	deModelReference pModel;
-	deSkinReference pSkin;
+	deModel::Ref pModel;
+	deSkin::Ref pSkin;
 	float pRotationPerForce;
 	float pRestitution;
 	

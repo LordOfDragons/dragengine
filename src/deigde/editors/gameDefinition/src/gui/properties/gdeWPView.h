@@ -26,8 +26,8 @@
 #define _GDEWPVIEW_H_
 
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
+#include <deigde/gui/properties/igdeWPSky.h>
 
 class gdeWindowProperties;
 class gdeWPViewListener;
@@ -44,8 +44,8 @@ private:
 	gdeGameDefinition *pGameDefinition;
 	gdeWPViewListener *pListener;
 	
-	igdeWPSkyReference pWPSky;
-	igdeWPCameraReference pWPCamera;
+	igdeWPSky::Ref pWPSky;
+	igdeWPCamera::Ref pWPCamera;
 	
 	
 	

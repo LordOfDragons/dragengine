@@ -27,15 +27,15 @@
 
 #include "../../../conversation/strip/ceStripList.h"
 
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
-#include <dragengine/resources/canvas/deCanvasTextReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
 
 class ceWindowDopeSheet;
 class ceUCAASpeakStripSetPause;
@@ -52,15 +52,22 @@ class igdeUndo;
  * Dope sheet lane base class.
  */
 class ceWDSLane : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWDSLane> Ref;
+	
+	
 private:
 	class cStrip : public deObject{
 	public:
-		deCanvasViewReference handlePause;
-		deCanvasPaintReference handlePauseBg;
-		deCanvasViewReference handleDuration;
-		deCanvasPaintReference handleDurationBg;
-		deCanvasPaintReference stripIdBg;
-		deCanvasTextReference stripId;
+		typedef deTObjectReference<cStrip> Ref;
+		
+		deCanvasView::Ref handlePause;
+		deCanvasPaint::Ref handlePauseBg;
+		deCanvasView::Ref handleDuration;
+		deCanvasPaint::Ref handleDurationBg;
+		deCanvasPaint::Ref stripIdBg;
+		deCanvasText::Ref stripId;
 		cStrip();
 		
 	protected:
@@ -76,14 +83,14 @@ private:
 	decObjectList pStrips;
 	decObjectList pTimeLines;
 	
-	deCanvasViewReference pCanvas;
-	deCanvasViewReference pCanvasPanelSheet;
-	deCanvasPaintReference pCanvasBar;
-	deCanvasPaintReference pCanvasBarSelection;
-	deCanvasViewReference pCanvasHandles;
+	deCanvasView::Ref pCanvas;
+	deCanvasView::Ref pCanvasPanelSheet;
+	deCanvasPaint::Ref pCanvasBar;
+	deCanvasPaint::Ref pCanvasBarSelection;
+	deCanvasView::Ref pCanvasHandles;
 	
 	int pBarHeight;
-	igdeMouseKeyListenerReference pMouseKeyListener;
+	igdeMouseKeyListener::Ref pMouseKeyListener;
 	int pSelectionFrom;
 	int pSelectionTo;
 	
@@ -233,7 +240,7 @@ public:
 protected:
 	inline const ceStripList &GetEmptyList() const{ return pEmptyList; }
 	void FillIDListLookAt( decStringList &list );
-	void CreateHandle( deCanvasViewReference &canvas, deCanvasPaintReference &canvasBg, const decPoint &size );
+	void CreateHandle( deCanvasView::Ref &canvas, deCanvasPaint::Ref &canvasBg, const decPoint &size );
 	/*@}*/
 };
 

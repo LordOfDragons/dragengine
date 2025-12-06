@@ -36,6 +36,12 @@ class igdeEditPath;
  * \brief IGDE UI EditPath Listener.
  */
 class DE_DLL_EXPORT igdeEditPathListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditPathListener> Ref;
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

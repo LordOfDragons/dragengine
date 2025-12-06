@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<deSharedVulkan> Ref;
 	
 	
-	
 private:
 	deBaseModule &pModule;
 	devkLoader *pLoader;

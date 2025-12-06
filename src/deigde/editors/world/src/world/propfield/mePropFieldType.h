@@ -65,6 +65,10 @@ private:
 	int pInstanceCount;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<mePropFieldType> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a object. */

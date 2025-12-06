@@ -26,7 +26,7 @@
 #define _DEDSRENDERABLEVIDEOFRAME_H_
 
 #include "deDSRenderable.h"
-#include "../../../video/deVideoPlayerReference.h"
+#include "../../../video/deVideoPlayer.h"
 
 
 /**
@@ -36,7 +36,7 @@
  */
 class DE_DLL_EXPORT deDSRenderableVideoFrame : public deDSRenderable{
 private:
-	deVideoPlayerReference pVideoPlayer;
+	deVideoPlayer::Ref pVideoPlayer;
 	
 	
 	

@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<deSynthesizer> Ref;
 	
 	
-	
 private:
 	decObjectOrderedSet pControllers;
 	decObjectOrderedSet pLinks;

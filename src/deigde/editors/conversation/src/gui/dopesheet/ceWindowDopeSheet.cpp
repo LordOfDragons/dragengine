@@ -51,7 +51,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/igdeViewRenderWindow.h>
@@ -64,7 +64,6 @@
 #include <deigde/gui/layout/igdeContainerBox.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/gui/theme/propertyNames.h>
 #include <deigde/gui/theme/themeNames.h>
@@ -235,7 +234,7 @@ public:
 
 class cMouseKeyListener : public igdeMouseKeyListener{
 	ceWindowDopeSheet &pWindow;
-	igdeMouseKeyListenerReference pDragListener;
+	igdeMouseKeyListener::Ref pDragListener;
 	
 public:
 	cMouseKeyListener( ceWindowDopeSheet &window ) : pWindow( window ){}
@@ -341,7 +340,7 @@ pVAPreview( NULL )
 {
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference panel, panel2, panel3, panel4, panel5;
+	igdeContainer::Ref panel, panel2, panel3, panel4, panel5;
 	int i;
 	
 	pListener = new ceWindowDopeSheetListener( *this );
@@ -358,19 +357,12 @@ pVAPreview( NULL )
 	
 	
 	// lanes
-	deObjectReference lane;
-	lane.TakeOver( new ceWDSLaneWord( *this, 0, "Word", "Speech animation." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneFacePose( *this, 1, "Face Pose", "Facial animation." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneGesture( *this, 2, "Gesture", "Gesture playback." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneBodyLookAt( *this, 3, "Body Look-At", "Body orientation." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneHeadLookAt( *this, 4, "Head Look-At", "Head orientation." ) );
-	pLanes.Add( lane );
-	lane.TakeOver( new ceWDSLaneEyesLookAt( *this, 5, "Eyes Look-At", "Eyes orientation. If empty uses Head Look-At." ) );
-	pLanes.Add( lane );
+	pLanes.Add(ceWDSLaneWord::Ref::NewWith(*this, 0, "Word", "Speech animation."));
+	pLanes.Add(ceWDSLaneFacePose::Ref::NewWith(*this, 1, "Face Pose", "Facial animation."));
+	pLanes.Add(ceWDSLaneGesture::Ref::NewWith(*this, 2, "Gesture", "Gesture playback."));
+	pLanes.Add(ceWDSLaneBodyLookAt::Ref::NewWith(*this, 3, "Body Look-At", "Body orientation."));
+	pLanes.Add(ceWDSLaneHeadLookAt::Ref::NewWith(*this, 4, "Head Look-At", "Head orientation."));
+	pLanes.Add(ceWDSLaneEyesLookAt::Ref::NewWith(*this, 5, "Eyes Look-At", "Eyes orientation. If empty uses Head Look-At."));
 	
 	// voice audio preview
 	pVAPreview = new ceWDSVAPreview( *this );
@@ -405,7 +397,7 @@ pVAPreview( NULL )
 	panel2->AddChild( panel3 );
 	
 	pDopeSheet.TakeOver( new cDopeSheet( *this ) );
-	igdeMouseKeyListenerReference mklistener;
+	igdeMouseKeyListener::Ref mklistener;
 	mklistener.TakeOver( new cMouseKeyListener( *this ) );
 	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).AddListener( mklistener );
 	panel2->AddChild( pDopeSheet );
@@ -806,7 +798,7 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 	
 	for( i=timeFirst; i<=timeLast; i++ ){
 		if( i - timeFirst == pTimeLines.GetCount() ){
-			deCanvasPaintReference canvas;
+			deCanvasPaint::Ref canvas;
 			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasPaint() );
 			canvas->SetFillColor( decColor( 0.0f, 0.0f, 0.0f ) );
 			//GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetShadow ) );
@@ -817,7 +809,7 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 		if( i - timeFirst == pTimeLineLabels.GetCount() ){
 			deFont * const font = pFontText->GetEngineFont();
 			
-			deCanvasTextReference canvas;
+			deCanvasText::Ref canvas;
 			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
 			canvas->SetFont( font );
 			canvas->SetFontSize( ( float )font->GetLineHeight() );

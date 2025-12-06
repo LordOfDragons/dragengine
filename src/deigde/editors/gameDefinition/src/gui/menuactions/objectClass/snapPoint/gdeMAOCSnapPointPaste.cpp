@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 #include "../../../../undosys/objectClass/snappoint/gdeUOCAddSnapPoint.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Snap Point",
 ///////////////
 
 igdeUndo *gdeMAOCSnapPointPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCSnapPoint::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;
@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCSnapPointPaste::OnActionSubObject( gdeGameDefinition&, gdeObjec
 	const gdeClipboardDataOCSnapPoint &clipOCSnapPoint =
 		( const gdeClipboardDataOCSnapPoint & )( igdeClipboardData& )clip;
 	
-	deObjectReference snapPoint;
-	snapPoint.TakeOver( new gdeOCSnapPoint( *clipOCSnapPoint.GetSnapPoint() ) );
+	const gdeOCSnapPoint::Ref snapPoint(gdeOCSnapPoint::Ref::NewWith(*clipOCSnapPoint.GetSnapPoint()));
 	
 	igdeUndo * const undo = new gdeUOCAddSnapPoint( &objectClass,
-		( gdeOCSnapPoint* )( deObject* )snapPoint );
+		snapPoint );
 	undo->SetShortInfo( "Paste object class snap point" );
 	return undo;
 }

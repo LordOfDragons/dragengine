@@ -27,9 +27,9 @@
 
 #include "../component/deoglComponentListener.h"
 #include "../decal/deoglDecalListener.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
 
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 
@@ -39,7 +39,6 @@ class deoglRDecal;
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOBlock;
 class deoglDynamicTBOFloat16;
 class deoglDynamicTBOUInt32;
 class decLayerMask;
@@ -49,9 +48,15 @@ class decLayerMask;
  * Global illumination instance.
  */
 class deoglGIInstance : public deObject{
+public:
+	typedef deTObjectReference<deoglGIInstance> Ref;
+	
+	
 private:
 	class cListenerLink{
 	public:
+		typedef deTObjectReference<cListenerLink> Ref;
+		
 		deoglGIInstance &instance;
 		
 		cListenerLink( deoglGIInstance &instance );
@@ -69,6 +74,8 @@ private:
 		const cListenerLink pLink;
 		
 	public:
+		typedef deTObjectReference<cComponentListener> Ref;
+		
 		cComponentListener( deoglGIInstance &instance );
 		void ComponentDestroyed( deoglRComponent &component ) override;
 		void ParentWorldChanged( deoglRComponent &component ) override;
@@ -88,6 +95,8 @@ private:
 		const cListenerLink pLink;
 		
 	public:
+		typedef deTObjectReference<cDecalListener> Ref;
+		
 		cDecalListener( deoglGIInstance &instance );
 		virtual void DecalDestroyed( deoglRDecal &decal );
 		virtual void GeometryChanged( deoglRDecal &decal );
@@ -100,6 +109,8 @@ private:
 		const cListenerLink pLink;
 		
 	public:
+		typedef deTObjectReference<cDecalComponentListener> Ref;
+		
 		cDecalComponentListener( deoglGIInstance &instance );
 		virtual void BoundariesChanged( deoglRComponent &component );
 		virtual void RenderStaticChanged( deoglRComponent &component );
@@ -111,11 +122,11 @@ private:
 	deoglGIInstances &pInstances;
 	
 	deoglRComponent *pComponent;
-	deObjectReference pComponentListener;
+	cComponentListener::Ref pComponentListener;
 	
 	deoglRDecal *pDecal;
-	deObjectReference pDecalListener;
-	deObjectReference pDecalComponentListener;
+	cDecalListener::Ref pDecalListener;
+	cDecalComponentListener::Ref pDecalComponentListener;
 	
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
@@ -131,7 +142,7 @@ private:
 	
 	decPointerList pTUCs;
 	bool pDirtyTUCs;
-	deObjectReference pBlockMaterial;
+	deoglDynamicTBOBlock::Ref pBlockMaterial;
 	deoglDynamicTBOUInt32 *pTBOMaterial;
 	deoglDynamicTBOFloat16 *pTBOMaterial2;
 	
@@ -284,7 +295,7 @@ public:
 	inline deoglDynamicTBOFloat16 *GetTBOMaterial2(){ return pTBOMaterial2; }
 	
 	/** Get TBO block for materials. */
-	deoglDynamicTBOBlock *GetBlockMaterial();
+	const deoglDynamicTBOBlock::Ref &GetBlockMaterial();
 	
 	/** Drop TBO blocks. */
 	void DropBlockMaterial();

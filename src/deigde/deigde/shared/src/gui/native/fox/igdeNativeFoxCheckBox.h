@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXCHECKBOX_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeCheckBox;
 class igdeEnvironment;
@@ -50,7 +50,7 @@ public:
 	
 private:
 	igdeCheckBox *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 public:
 	/** \name Constructors and Destructors */

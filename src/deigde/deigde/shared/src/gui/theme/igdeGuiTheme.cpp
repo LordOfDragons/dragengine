@@ -28,7 +28,6 @@
 
 #include "igdeGuiTheme.h"
 #include "igdeGuiThemeProperty.h"
-#include "igdeGuiThemePropertyReference.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -123,31 +122,31 @@ const decString &igdeGuiTheme::GetStringProperty( const char *name, const decStr
 
 
 void igdeGuiTheme::SetIntProperty( const char *name, int value ){
-	igdeGuiThemePropertyReference property;
+	igdeGuiThemeProperty::Ref property;
 	property.TakeOver( new igdeGuiThemeProperty( name, value ) );
 	pProperties.SetAt( name, property.operator->() );
 }
 
 void igdeGuiTheme::SetFloatProperty( const char *name, float value ){
-	igdeGuiThemePropertyReference property;
+	igdeGuiThemeProperty::Ref property;
 	property.TakeOver( new igdeGuiThemeProperty( name, value ) );
 	pProperties.SetAt( name, property.operator->() );
 }
 
 void igdeGuiTheme::SetPointProperty( const char *name, const decPoint &value ){
-	igdeGuiThemePropertyReference property;
+	igdeGuiThemeProperty::Ref property;
 	property.TakeOver( new igdeGuiThemeProperty( name, value ) );
 	pProperties.SetAt( name, property.operator->() );
 }
 
 void igdeGuiTheme::SetColorProperty( const char *name, const decColor &value ){
-	igdeGuiThemePropertyReference property;
+	igdeGuiThemeProperty::Ref property;
 	property.TakeOver( new igdeGuiThemeProperty( name, value ) );
 	pProperties.SetAt( name, property.operator->() );
 }
 
 void igdeGuiTheme::SetStringProperty( const char *name, const decString &value ){
-	igdeGuiThemePropertyReference property;
+	igdeGuiThemeProperty::Ref property;
 	property.TakeOver( new igdeGuiThemeProperty( name, value ) );
 	pProperties.SetAt( name, property.operator->() );
 }

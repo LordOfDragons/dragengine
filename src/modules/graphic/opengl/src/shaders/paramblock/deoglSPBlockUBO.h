@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<deoglSPBlockUBO> Ref;
 	
 	
-	
 private:
 	GLuint pUBO;
 	int pBindingPoint;

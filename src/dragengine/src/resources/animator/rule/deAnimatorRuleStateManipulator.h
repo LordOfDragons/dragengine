@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<deAnimatorRuleStateManipulator> Ref;
 	
 	
-	
 private:
 	decVector pMinPosition;
 	decVector pMaxPosition;

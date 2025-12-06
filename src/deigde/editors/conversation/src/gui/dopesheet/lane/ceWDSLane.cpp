@@ -46,23 +46,20 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/gui/theme/propertyNames.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/font/deFont.h>
@@ -100,30 +97,25 @@ public:
 			return;
 		}
 		
-		igdeDialogReference refDialog;
 		decString title, text;
 		title.Format( "Add %s", pLane.GetLabel().GetString() );
 		text.Format( "%s: ", pLane.GetLabel().GetString() );
-		refDialog.TakeOver( new ceDialogEditStrip( pLane.GetWindow().GetEnvironment(), title, text ) );
-		ceDialogEditStrip &dialog = ( ceDialogEditStrip& )( igdeDialog& )refDialog;
+		const ceDialogEditStrip::Ref dialog(ceDialogEditStrip::Ref::NewWith(
+			pLane.GetWindow().GetEnvironment(), title, text));
 		
 		decStringList idList;
 		pLane.FillIDList( idList );
-		dialog.SetIDList( idList );
-		dialog.SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( pLane ) ) );
-		dialog.ResetDuration();
-		dialog.SetAutoResetDuration( true );
+		dialog->SetIDList( idList );
+		dialog->SetListener( ceDialogEditStrip::Listener::Ref::New( new cListenerResetDuration( pLane ) ) );
+		dialog->ResetDuration();
+		dialog->SetAutoResetDuration( true );
 		
-		if( ! dialog.Run( &pLane.GetWindow().GetWindowMain() ) ){
+		if( ! dialog->Run( &pLane.GetWindow().GetWindowMain() ) ){
 			return;
 		}
 		
-		deObjectReference strip;
-		strip.TakeOver( dialog.CreateStrip() );
-		
-		igdeUndoReference undo;
-		undo.TakeOver( pLane.UndoStripAdd( ( ceStrip* )( deObject* )strip, decMath::max( pIndex, 0 ) ) );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(igdeUndo::Ref::New(
+			pLane.UndoStripAdd(ceStrip::Ref::New(dialog->CreateStrip()), decMath::max(pIndex, 0))));
 	}
 	
 	virtual void Update(){
@@ -145,7 +137,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pLane.UndoStripRemove( pStrip ) );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -168,7 +160,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pLane.UndoStripRemoveAll() );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -192,7 +184,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex - 1 ) );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -216,7 +208,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex + 1 ) );
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -262,9 +254,9 @@ class cMouseListener : public igdeMouseDragListener {
 	int pScaleCount;
 	float pScaleAnchor;
 	float pScaleLength;
-	igdeUndoReference pUndoDuration;
-	igdeUndoReference pUndoPause;
-	igdeUndoReference pUndoScale;
+	igdeUndo::Ref pUndoDuration;
+	igdeUndo::Ref pUndoPause;
+	igdeUndo::Ref pUndoScale;
 	
 public:
 	cMouseListener( ceWDSLane &lane ) : pLane( lane ), pDragMode( edmNone ){ }
@@ -471,7 +463,7 @@ public:
 			return;
 		}
 		
-		igdeMenuCascadeReference contextMenu;
+		igdeMenuCascade::Ref contextMenu;
 		contextMenu.TakeOver( new igdeMenuCascade( pLane.GetWindow().GetEnvironment() ) );
 		
 		pLane.OnContextMenu( contextMenu, position );
@@ -831,25 +823,23 @@ void ceWDSLane::RebuildCanvas(){
 			const decColor colorTextBg( 0.75f, 0.75f, 0.75f );
 			const decColor colorTextLine( 0.25f, 0.25f, 0.25f );
 			
-			deObjectReference refStrip;
-			refStrip.TakeOver( new cStrip );
-			cStrip &strip = ( cStrip& )( deObject& )refStrip;
+			const cStrip::Ref strip(cStrip::Ref::NewWith());
 			
-			CreateHandle( strip.handlePause, strip.handlePauseBg, handleSizeHalf );
-			CreateHandle( strip.handleDuration, strip.handleDurationBg, handleSize );
+			CreateHandle( strip->handlePause, strip->handlePauseBg, handleSizeHalf );
+			CreateHandle( strip->handleDuration, strip->handleDurationBg, handleSize );
 			
-			strip.stripIdBg.TakeOver( canvasManager.CreateCanvasPaint() );
-			strip.stripIdBg->SetFillColor( colorTextBg );
-			strip.stripIdBg->SetLineColor( colorTextLine );
-			strip.stripIdBg->SetThickness( 1 );
-			strip.stripIdBg->SetOrder( 0 );
+			strip->stripIdBg.TakeOver( canvasManager.CreateCanvasPaint() );
+			strip->stripIdBg->SetFillColor( colorTextBg );
+			strip->stripIdBg->SetLineColor( colorTextLine );
+			strip->stripIdBg->SetThickness( 1 );
+			strip->stripIdBg->SetOrder( 0 );
 			
-			strip.stripId.TakeOver( canvasManager.CreateCanvasText() );
-			strip.stripId->SetFont( font );
-			strip.stripId->SetFontSize( ( float )font->GetLineHeight() );
-			strip.stripId->SetColor( colorText );
+			strip->stripId.TakeOver( canvasManager.CreateCanvasText() );
+			strip->stripId->SetFont( font );
+			strip->stripId->SetFontSize( ( float )font->GetLineHeight() );
+			strip->stripId->SetColor( colorText );
 			
-			pStrips.Add( refStrip );
+			pStrips.Add(strip);
 		}
 		
 		cStrip &strip = *( ( cStrip* )pStrips.GetAt( i ) );
@@ -874,7 +864,7 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeDialogReference refDialog;
+	igdeDialog::Ref refDialog;
 	decString title, text;
 	title.Format( "Edit %s", pLabel.GetString() );
 	text.Format( "%s: ", pLabel.GetString() );
@@ -893,15 +883,13 @@ void ceWDSLane::EditStrip( ceStrip *strip ){
 		return;
 	}
 	
-	deObjectReference newStrip;
-	newStrip.TakeOver( dialog.CreateStrip() );
-	if( ( ceStrip& )( deObject& )newStrip == *strip ){
+	const ceStrip::Ref newStrip(ceStrip::Ref::New(dialog.CreateStrip()));
+	if(*newStrip == *strip){
 		return;
 	}
 	
-	igdeUndoReference undo;
-	undo.TakeOver( UndoStripReplace( strip, ( ceStrip* )( deObject* )newStrip ) );
-	pWindow.GetConversation()->GetUndoSystem()->Add( undo );
+	pWindow.GetConversation()->GetUndoSystem()->Add(
+		igdeUndo::Ref::New(UndoStripReplace(strip, newStrip)));
 }
 
 float ceWDSLane::DefaultDuration( const decString & ) {
@@ -944,7 +932,7 @@ void ceWDSLane::FillIDListLookAt( decStringList &list ){
 	}
 }
 
-void ceWDSLane::CreateHandle( deCanvasViewReference &canvas, deCanvasPaintReference &canvasBg, const decPoint &size ){
+void ceWDSLane::CreateHandle( deCanvasView::Ref &canvas, deCanvasPaint::Ref &canvasBg, const decPoint &size ){
 	igdeEnvironment &env = pWindow.GetEnvironment();
 	const decColor colorBackground( env.GetSystemColor( igdeEnvironment::escWidgetBackground ) );
 	const decColor colorBorder( 0.0f, 0.0f, 0.0f ); //env.GetSystemColor( igdeEnvironment::escWidgetShadow ) );
@@ -961,7 +949,7 @@ void ceWDSLane::CreateHandle( deCanvasViewReference &canvas, deCanvasPaintRefere
 	canvasBg->SetSize( size );
 	canvas->AddCanvas( canvasBg );
 	
-	deCanvasPaintReference canvasKnob;
+	deCanvasPaint::Ref canvasKnob;
 	canvasKnob.TakeOver( canvasManager.CreateCanvasPaint() );
 	canvasKnob->SetFillColor( colorBorder );
 	canvasKnob->SetThickness( 0 );

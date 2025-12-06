@@ -30,7 +30,7 @@
 #include "../../../../gamedef/objectClass/world/gdeOCWorld.h"
 #include "../../../../undosys/objectClass/world/gdeUOCAddWorld.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -55,7 +55,7 @@ gdeBaseMAOCSubObject(windowMain, "Paste Object Class World",
 ///////////////
 
 igdeUndo *gdeMAOCWorldPaste::OnActionSubObject(gdeGameDefinition&, gdeObjectClass &objectClass){
-	igdeClipboardDataReference clip(pWindowMain.GetClipboard().GetWithTypeName(
+	igdeClipboardData::Ref clip(pWindowMain.GetClipboard().GetWithTypeName(
 		gdeClipboardDataOCWorld::TYPE_NAME));
 	if(!clip){
 		return nullptr;

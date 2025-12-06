@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/navblocker/gdeOCNavigationBlocker.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -69,11 +69,10 @@ igdeUndo *gdeMAOCNavBlockerCopy::OnActionSubObject( gdeGameDefinition &gameDefin
 		return NULL;
 	}
 	
-	deObjectReference clipOCNavigationBlocker;
-	clipOCNavigationBlocker.TakeOver( new gdeOCNavigationBlocker( *navBlocker ) );
+	const gdeOCNavigationBlocker::Ref clipOCNavigationBlocker(gdeOCNavigationBlocker::Ref::NewWith(*navBlocker));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCNavBlocker( ( gdeOCNavigationBlocker* )( deObject* )clipOCNavigationBlocker ) );
+	igdeClipboardData::Ref clipData;
+	clipData.TakeOver( new gdeClipboardDataOCNavBlocker( clipOCNavigationBlocker ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

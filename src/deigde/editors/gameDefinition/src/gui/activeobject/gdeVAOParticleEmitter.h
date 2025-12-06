@@ -27,9 +27,9 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/particle/deParticleEmitterReference.h>
-#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/particle/deParticleEmitter.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
 
 class gdeOCParticleEmitter;
 class igdeWDebugDrawerShape;
@@ -41,13 +41,18 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object particleEmitter for edit view.
  */
 class gdeVAOParticleEmitter : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOParticleEmitter> Ref;
+	
+	
 private:
 	gdeOCParticleEmitter *pOCParticleEmitter;
 	
-	deParticleEmitterReference pEmitter;
-	deParticleEmitterInstanceReference pInstance;
+	deParticleEmitter::Ref pEmitter;
+	deParticleEmitterInstance::Ref pInstance;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

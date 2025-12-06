@@ -37,7 +37,6 @@
 #include "../../../conversation/condition/ceCConditionActorParameter.h"
 #include "../../../configuration/ceConfiguration.h"
 #include "../../../undosys/condition/actorParameter/ceUCCAParamSetActor.h"
-#include "../../../undosys/condition/actorParameter/ceUCCAParamSetActor.h"
 #include "../../../undosys/condition/actorParameter/ceUCCAParamSetOperator.h"
 #include "../../../undosys/condition/actorParameter/ceUCCAParamSetParameter.h"
 #include "../../../undosys/condition/actorParameter/ceUCCAParamSetTestValue.h"
@@ -50,12 +49,12 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -82,7 +81,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCCAParamSetActor( topic, action, condition, comboBox->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -108,7 +107,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCCAParamSetOperator( topic, action, condition, newOperator ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -128,7 +127,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCCAParamSetParameter( topic, action, condition, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -153,7 +152,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCCAParamSetTestValue( topic, action, condition, value ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -173,7 +172,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCCAParamSetTestVariable( topic, action, condition, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -191,7 +190,7 @@ public:
 
 ceWPCAParam::ceWPCAParam( ceWPTopic &parentPanel ) : ceWPCondition( parentPanel ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	helper.ComboBox( *this, "Actor ID:", true, "Actor ID to test", pCBActorID, new cComboActor( *this ) );
 	pCBActorID->SetDefaultSorter();

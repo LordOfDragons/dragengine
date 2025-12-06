@@ -64,6 +64,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debnSocket> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create socket. */

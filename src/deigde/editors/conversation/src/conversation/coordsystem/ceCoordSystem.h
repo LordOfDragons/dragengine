@@ -46,6 +46,10 @@ private:
 	decVector pOrientation;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceCoordSystem> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new coordinate system. */

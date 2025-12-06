@@ -36,6 +36,12 @@ class igdeSlider;
  * \brief IGDE UI Slider Listener.
  */
 class DE_DLL_EXPORT igdeSliderListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeSliderListener> Ref;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

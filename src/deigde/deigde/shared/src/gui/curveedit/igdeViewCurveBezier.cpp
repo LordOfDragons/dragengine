@@ -31,9 +31,7 @@
 #include "igdeDialogCurveBezierCoord.h"
 #include "../igdeUIHelper.h"
 #include "../dialog/igdeDialog.h"
-#include "../dialog/igdeDialogReference.h"
 #include "../menu/igdeMenuCascade.h"
-#include "../menu/igdeMenuCascadeReference.h"
 #include "../native/toolkit.h"
 
 #include <dragengine/common/exceptions.h>
@@ -84,7 +82,7 @@ void igdeViewCurveBezier::cActionEditSelectedPoint::OnAction(){
 		return;
 	}
 	
-	igdeDialogReference dialog;
+	igdeDialog::Ref dialog;
 	dialog.TakeOver( new igdeDialogCurveBezierCoord( pView.GetEnvironment(),
 		pView.GetCurve().GetPointAt( selectedPoint ) ) );
 	if( ! dialog->Run( &pView ) ){
@@ -285,7 +283,7 @@ pView( view ){
 }
 
 void igdeViewCurveBezier::cActionEditClamp::OnAction(){
-	igdeDialogReference dialog;
+	igdeDialog::Ref dialog;
 	dialog.TakeOver( new igdeDialogCurveBezierClamp( pView.GetEnvironment(),
 		pView.GetClamp(), pView.GetClampMin(), pView.GetClampMax() ) );
 	if( ! dialog->Run( &pView ) ){
@@ -579,7 +577,7 @@ void igdeViewCurveBezier::ShowContextMenu( const decPoint &position ){
 		return;
 	}
 	
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( GetEnvironment() ) );
 	
 	// view supported menu entries

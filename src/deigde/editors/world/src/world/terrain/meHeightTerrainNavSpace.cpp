@@ -38,7 +38,6 @@
 #include "../../utils/meByteArray.h"
 
 #include <deigde/loadsave/igdeLoadSaveHTNavSpace.h>
-#include <deigde/loadsave/igdeLoadSaveHTNavSpace.h>
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
 #include <deigde/undo/igdeUndoSystem.h>
 

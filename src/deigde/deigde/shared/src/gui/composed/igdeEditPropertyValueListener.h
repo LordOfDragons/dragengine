@@ -36,6 +36,12 @@ class igdeEditPropertyValue;
  * \brief IGDE UI EditPropertyValue Listener.
  */
 class DE_DLL_EXPORT igdeEditPropertyValueListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeEditPropertyValueListener> Ref;
+	
+	
 protected:
 	/** \name Constructors and Destructors */
 	/*@{*/

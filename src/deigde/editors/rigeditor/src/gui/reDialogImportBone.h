@@ -29,9 +29,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 class reWindowMain;
@@ -41,15 +41,20 @@ class reWindowMain;
  * \brief Dialog for importing bones.
  */
 class reDialogImportBone : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reDialogImportBone> Ref;
+	
+	
 private:
 	reWindowMain &pWindowMain;
 	
-	igdeTextFieldReference pEditPath;
-	igdeButtonReference pBtnPath;
-	igdeTextFieldReference pEditScaling;
-	igdeCheckBoxReference pChkImportBoneProperties;
-	igdeCheckBoxReference pChkImportShapes;
-	igdeCheckBoxReference pChkImportConstraints;
+	igdeTextField::Ref pEditPath;
+	igdeButton::Ref pBtnPath;
+	igdeTextField::Ref pEditScaling;
+	igdeCheckBox::Ref pChkImportBoneProperties;
+	igdeCheckBox::Ref pChkImportShapes;
+	igdeCheckBox::Ref pChkImportConstraints;
 	
 	
 	

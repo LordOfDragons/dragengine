@@ -40,7 +40,8 @@ private:
 	class Device : public deObject{
 	public:
 		typedef deTObjectReference<Device> Ref;
-		
+	
+	
 		deoxrDPMndxDevSpace &profile;
 		const decString name, serial;
 		XrXDevIdMNDX id;

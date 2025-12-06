@@ -25,21 +25,21 @@
 #ifndef _CEWINDOWDOPESHEET_H_
 #define _CEWINDOWDOPESHEET_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeScrollBarReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeScrollBar.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/resources/igdeFontReference.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/common/collection/decObjectList.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/sound/deSpeakerReference.h>
-#include <dragengine/resources/sound/deSoundReference.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasImage.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/sound/deSpeaker.h>
+#include <dragengine/resources/sound/deSound.h>
 
 
 class ceWindowDopeSheetListener;
@@ -94,29 +94,29 @@ private:
 	ceWindowDopeSheetListener *pListener;
 	ceConversation *pConversation;
 	
-	igdeActionReference pActionPlayAction;
-	igdeActionReference pActionPlayFromhere;
-	igdeActionReference pActionPause;
-	igdeActionReference pActionSelectCurAction;
+	igdeAction::Ref pActionPlayAction;
+	igdeAction::Ref pActionPlayFromhere;
+	igdeAction::Ref pActionPause;
+	igdeAction::Ref pActionSelectCurAction;
 	
-	igdeButtonReference pBtnPlayAction;
-	igdeButtonReference pBtnPlayFromHere;
-	igdeButtonReference pBtnPlayPause;
-	igdeButtonReference pBtnPlaySelectCurAction;
+	igdeButton::Ref pBtnPlayAction;
+	igdeButton::Ref pBtnPlayFromHere;
+	igdeButton::Ref pBtnPlayPause;
+	igdeButton::Ref pBtnPlaySelectCurAction;
 	
-	igdeScrollBarReference pSBTime;
-	igdeComboBoxReference pCBTimeScale;
-	igdeWidgetReference pDopeSheet;
+	igdeScrollBar::Ref pSBTime;
+	igdeComboBox::Ref pCBTimeScale;
+	igdeWidget::Ref pDopeSheet;
 	
 	decObjectList pTimeLineLabels;
 	decObjectList pTimeLines;
 	
-	deCanvasViewReference pCanvasTimeLines;
-	deCanvasViewReference pCanvasTimeLineLabels;
-	deCanvasPaintReference pCanvasPanelDopeSheet;
-	deCanvasPaintReference pCanvasPanelVAPreview;
-	deCanvasPaintReference pCanvasPanelVAPreviewLine;
-	deCanvasPaintReference pCanvasVAPreviewTime;
+	deCanvasView::Ref pCanvasTimeLines;
+	deCanvasView::Ref pCanvasTimeLineLabels;
+	deCanvasPaint::Ref pCanvasPanelDopeSheet;
+	deCanvasPaint::Ref pCanvasPanelVAPreview;
+	deCanvasPaint::Ref pCanvasPanelVAPreviewLine;
+	deCanvasPaint::Ref pCanvasVAPreviewTime;
 	
 	float pZoomTime;
 	float pPixelPerSecond;
@@ -126,7 +126,7 @@ private:
 	decObjectList pLanes;
 	ceWDSVAPreview *pVAPreview;
 	
-	igdeFontReference pFontText;
+	igdeFont::Ref pFontText;
 	
 	
 	

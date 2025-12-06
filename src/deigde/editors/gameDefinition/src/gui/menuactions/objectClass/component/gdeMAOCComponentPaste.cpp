@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/component/gdeOCComponent.h"
 #include "../../../../undosys/objectClass/component/gdeUOCAddComponent.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Component",
 ///////////////
 
 igdeUndo *gdeMAOCComponentPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCComponent::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;
@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCComponentPaste::OnActionSubObject( gdeGameDefinition&, gdeObjec
 	const gdeClipboardDataOCComponent &clipOCComponent =
 		( const gdeClipboardDataOCComponent & )( igdeClipboardData& )clip;
 	
-	deObjectReference component;
-	component.TakeOver( new gdeOCComponent( *clipOCComponent.GetComponent() ) );
+	const gdeOCComponent::Ref component(gdeOCComponent::Ref::NewWith(*clipOCComponent.GetComponent()));
 	
 	igdeUndo * const undo = new gdeUOCAddComponent( &objectClass,
-		( gdeOCComponent* )( deObject* )component );
+		component );
 	undo->SetShortInfo( "Paste object class component" );
 	return undo;
 }

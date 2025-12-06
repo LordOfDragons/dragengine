@@ -30,7 +30,6 @@
 #include "../deDEAnimator.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animation/deAnimation.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
@@ -120,10 +119,8 @@ void dearAnimation::pCreateMoves(){
 	
 	pMoves.RemoveAll();
 	
-	deObjectReference move;
 	int i;
 	for( i=0; i<count; i++ ){
-		move.TakeOver( new dearAnimationMove( *pAnimation->GetMove( i ) ) );
-		pMoves.Add( move );
+		pMoves.Add(dearAnimationMove::Ref::NewWith(*pAnimation->GetMove(i)));
 	}
 }

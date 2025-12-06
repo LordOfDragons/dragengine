@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<ceLoadSaveLangPack> Ref;
 	
 	
-	
 private:
 	deBaseLanguagePackModule &pModule;
 	decString pName;

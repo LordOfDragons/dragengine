@@ -42,12 +42,12 @@ public:
 	typedef deTObjectReference<seUMappedRemove> Ref;
 	
 	
-	
 private:
 	class sDependency : public deObject{
 	public:
 		typedef deTObjectReference<sDependency> Ref;
-		
+	
+	
 		const seProperty::Ref property;
 		const int mappedComponent;
 		

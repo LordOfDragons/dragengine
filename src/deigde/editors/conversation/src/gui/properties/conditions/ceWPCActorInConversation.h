@@ -25,8 +25,8 @@
 #ifndef _CEWPCACTORINCONVERSATION_H_
 #define _CEWPCACTORINCONVERSATION_H_
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPCondition.h"
 
@@ -39,8 +39,8 @@ class ceCConditionActorInConversation;
  */
 class ceWPCActorInConversation : public ceWPCondition{
 private:
-	igdeComboBoxReference pCBActor;
-	igdeCheckBoxReference pChkNegate;
+	igdeComboBox::Ref pCBActor;
+	igdeCheckBox::Ref pChkNegate;
 	
 	
 	

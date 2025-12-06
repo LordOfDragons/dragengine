@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<declLoggerFiltered> Ref;
 	
 	
-	
 private:
 	deLogger::Ref pLoggerInfo;
 	deLogger::Ref pLoggerWarn;

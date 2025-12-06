@@ -50,7 +50,6 @@ public:
 	typedef deTObjectReference<deNetworkState> Ref;
 	
 	
-	
 private:
 	decObjectOrderedSet pValues;
 	bool pReadOnly;

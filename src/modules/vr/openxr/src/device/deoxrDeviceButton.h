@@ -55,7 +55,6 @@ public:
 	typedef deTObjectReference<deoxrDeviceButton> Ref;
 	
 	
-	
 private:
 	deoxrDevice &pDevice;
 	

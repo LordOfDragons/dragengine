@@ -32,11 +32,9 @@
 #include "igdeCommonDialogs.h"
 #include "event/igdeComboBoxListener.h"
 #include "model/igdeListItem.h"
-#include "model/igdeListItemReference.h"
 #include "model/igdeListItemSorter.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -241,7 +239,7 @@ void igdeComboBox::AddItem( igdeListItem *item ){
 }
 
 igdeListItem *igdeComboBox::AddItem( const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	item.TakeOver( new igdeListItem( text, icon, data ) );
 	AddItem( item );
 	return item;
@@ -265,7 +263,7 @@ void igdeComboBox::InsertItem( int index, igdeListItem *item ){
 }
 
 igdeListItem *igdeComboBox::InsertItem( int index, const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	item.TakeOver( new igdeListItem( text, icon, data ) );
 	InsertItem( index, item );
 	return item;
@@ -363,7 +361,7 @@ void igdeComboBox::SetDefaultSorter(){
 }
 
 static void igdeComboBox_Sort( decObjectList &items, igdeListItemSorter &sorter, int left, int right ){
-	igdeListItemReference pivot( ( igdeListItem* )items.GetAt( left ) );
+	igdeListItem::Ref pivot( ( igdeListItem* )items.GetAt( left ) );
 	const int r_hold = right;
 	const int l_hold = left;
 	

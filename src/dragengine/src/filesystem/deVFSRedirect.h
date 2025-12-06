@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deVFSRedirect> Ref;
 	
 	
-	
 private:
 	const decPath pRedirectPath;
 	deVFSContainer *pContainer;

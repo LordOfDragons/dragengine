@@ -45,9 +45,9 @@
 #include <dragengine/filesystem/dePatternList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/exceptions.h>
 
@@ -199,13 +199,11 @@ reRig *reLoadSaveSystem::LoadRig( const char *filename ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference fileReader;
+	decBaseFileReader::Ref fileReader;
 	fileReader.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
 		->OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 	
-	deObjectReference refRig;
-	refRig.TakeOver( new reRig( &pWindowMain.GetEnvironment() ) );
-	reRig * const rig = ( reRig* )( deObject* )refRig;
+	const reRig::Ref rig(reRig::Ref::NewWith(&pWindowMain.GetEnvironment()));
 	
 	pLSRigs[ lsIndex ]->LoadRig( rig, fileReader );
 	
@@ -213,7 +211,7 @@ reRig *reLoadSaveSystem::LoadRig( const char *filename ){
 	rig->SetChanged( false );
 	rig->SetSaved( true );
 	
-	refRig->AddReference(); // required to hand over reference to caller
+	rig->AddReference(); // required to hand over reference to caller
 	return rig;
 }
 
@@ -223,7 +221,7 @@ void reLoadSaveSystem::SaveRig( reRig *rig, const char *filename ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileWriterReference fileWriter;
+	decBaseFileWriter::Ref fileWriter;
 	fileWriter.TakeOver( pWindowMain.GetEnvironment().GetFileSystemGame()
 		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
 	pLSRigs[ lsIndex ]->SaveRig( rig, fileWriter );

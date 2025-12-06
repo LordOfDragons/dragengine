@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<deglStyle> Ref;
 	
 	
-	
 private:
 	decColor pColorBackground;
 	decColor pColorText;

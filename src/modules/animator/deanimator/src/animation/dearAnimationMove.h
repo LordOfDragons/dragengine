@@ -49,6 +49,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dearAnimationMove> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new animation move. */

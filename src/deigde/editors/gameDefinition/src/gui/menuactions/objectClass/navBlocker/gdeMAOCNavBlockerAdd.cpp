@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -60,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Navigation Blocker...",
 ///////////////
 
 igdeUndo *gdeMAOCNavBlockerAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference navBlocker;
-	navBlocker.TakeOver( new gdeOCNavigationBlocker );
-	return new gdeUOCAddNavBlocker( &objectClass, ( gdeOCNavigationBlocker* )( deObject* )navBlocker );
+	return new gdeUOCAddNavBlocker(&objectClass, gdeOCNavigationBlocker::Ref::NewWith());
 }
 
 void gdeMAOCNavBlockerAdd::Update(){

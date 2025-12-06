@@ -35,12 +35,11 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeContainer.h>
-#include <deigde/gui/igdeContainerReference.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 
@@ -73,7 +72,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new seUSourceGroupSetApplicationType( source, type ) );
 		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
@@ -94,7 +93,7 @@ seWPAPanelSource( wpSource, deSynthesizerSourceVisitorIdentify::estGroup )
 {
 	igdeEnvironment &env = wpSource.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	
 	
 	helper.GroupBox( *this, groupBox, "Group:" );

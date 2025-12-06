@@ -27,7 +27,7 @@
 
 #include "aeWPAPanelRule.h"
 
-#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/igdeListBox.h>
 
 
 /**
@@ -35,13 +35,13 @@
  */
 class aeWPAPanelRuleAnimationSelect : public aeWPAPanelRule{
 private:
-	igdeComboBoxFilterReference pCBMoves;
-	igdeListBoxReference pListMoves;
-	igdeButtonReference pBtnMoveAdd;
-	igdeCheckBoxReference pChkEnablePosition;
-	igdeCheckBoxReference pChkEnableRotation;
-	igdeCheckBoxReference pChkEnableSize;
-	igdeCheckBoxReference pChkEnableVertexPositionSet;
+	igdeComboBoxFilter::Ref pCBMoves;
+	igdeListBox::Ref pListMoves;
+	igdeButton::Ref pBtnMoveAdd;
+	igdeCheckBox::Ref pChkEnablePosition;
+	igdeCheckBox::Ref pChkEnableRotation;
+	igdeCheckBox::Ref pChkEnableSize;
+	igdeCheckBox::Ref pChkEnableVertexPositionSet;
 	
 	
 	

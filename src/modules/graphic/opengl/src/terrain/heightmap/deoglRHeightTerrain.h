@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<deoglRHeightTerrain> Ref;
 	
 	
-	
 private:
 	deoglRenderThread &pRenderThread;
 	

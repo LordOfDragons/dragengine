@@ -72,6 +72,10 @@ private:
 	bool pWorldMarkedRemove;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRDebugDrawer> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render debug drawer. */

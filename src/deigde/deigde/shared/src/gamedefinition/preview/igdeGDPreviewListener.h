@@ -35,6 +35,10 @@ class deImage;
  * \brief Listener for creating preview images.
  */
 class DE_DLL_EXPORT igdeGDPreviewListener : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPreviewListener> Ref;
+
+
 public:
 	/**  \name Constructors and Destructors */
 	/*@{*/

@@ -54,7 +54,6 @@ public:
 	typedef deTObjectReference<fbxNode> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decObjectOrderedSet pProperties;

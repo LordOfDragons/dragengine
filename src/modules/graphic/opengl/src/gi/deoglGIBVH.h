@@ -29,8 +29,8 @@
 #include "../collidelist/deoglCollideList.h"
 #include "../rendering/task/deoglRenderTask.h"
 #include "../utils/bvh/deoglBVH.h"
+#include "../tbo/deoglDynamicTBOBlock.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/math/decMath.h>
 
 class deoglGIBVHLocal;
@@ -200,7 +200,7 @@ private:
 	
 	deoglDynamicTBOFloat32 *pBVHTBONodeBox;
 	deoglDynamicTBOUInt16 *pBVHTBOIndex;
-	deObjectReference pBlockBVH;
+	deoglDynamicTBOBlock::Ref pBlockBVH;
 	
 	deoglRenderTask pRenderTaskMaterial;
 	bool pDirty;

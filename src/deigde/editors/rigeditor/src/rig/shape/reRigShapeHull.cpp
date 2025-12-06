@@ -31,7 +31,6 @@
 #include "../bone/reRigBone.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/shape/decShapeHull.h>
 #include <dragengine/resources/rig/deRig.h>
@@ -133,10 +132,7 @@ void reRigShapeHull::RemovePoint( int index ){
 
 
 reRigShape *reRigShapeHull::Duplicate() const{
-	deObjectReference ref;
-	ref.TakeOver( new reRigShapeHull( GetEngine() ) );
-	
-	reRigShapeHull * const shape = ( reRigShapeHull* )( deObject* )ref;
+	const reRigShapeHull::Ref shape(reRigShapeHull::Ref::NewWith(GetEngine()));
 	shape->SetPosition( GetPosition() );
 	shape->SetOrientation( GetOrientation() );
 	if( pPointCount > 0 ){

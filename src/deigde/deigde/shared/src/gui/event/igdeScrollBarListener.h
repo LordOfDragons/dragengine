@@ -36,6 +36,12 @@ class igdeScrollBar;
  * \brief IGDE UI ScrollBar Listener.
  */
 class DE_DLL_EXPORT igdeScrollBarListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeScrollBarListener> Ref;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

@@ -25,7 +25,7 @@
 #ifndef _DECANVAS_H_
 #define _DECANVAS_H_
 
-#include "deCanvasReference.h"
+#include "deCanvas.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 
@@ -58,7 +58,6 @@ public:
 	typedef deTObjectReference<deCanvas> Ref;
 	
 	
-	
 public:
 	/** \brief Blend modes used to blend canvas over previous content. */
 	enum eBlendModes{
@@ -89,7 +88,7 @@ private:
 	float pOrder;
 	float pTransparency;
 	eBlendModes pBlendMode;
-	deCanvasReference pMask;
+	deCanvas::Ref pMask;
 	
 	deBaseGraphicCanvas *pPeerGraphic;
 	

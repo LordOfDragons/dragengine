@@ -38,6 +38,11 @@ class seSynthesizer;
  * \brief Undo action source add effect.
  */
 class seUSourceAddEffect : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seUSourceAddEffect> Ref;
+	
+	
 private:
 	seSource *pSource;
 	seEffect *pEffect;

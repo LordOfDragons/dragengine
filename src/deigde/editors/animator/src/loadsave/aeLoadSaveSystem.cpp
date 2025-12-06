@@ -44,9 +44,9 @@
 #include <dragengine/filesystem/dePatternList.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/common/exceptions.h>
 
@@ -116,7 +116,7 @@ void aeLoadSaveSystem::SaveAnimator( aeAnimator *animator, const char *filename 
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileWriterReference fileWriter;
+	decBaseFileWriter::Ref fileWriter;
 	fileWriter.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()
 		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
 	pLSAnimator->SaveAnimator( animator, fileWriter );
@@ -125,14 +125,14 @@ void aeLoadSaveSystem::SaveAnimator( aeAnimator *animator, const char *filename 
 
 
 void aeLoadSaveSystem::LoadAttConfig( const char *filename, aeAnimator &animator ){
-	decBaseFileReaderReference fileReader;
+	decBaseFileReader::Ref fileReader;
 	fileReader.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
 		decPath::CreatePathUnix( filename ) ) );
 	pLSAttConfig->LoadAttachmentConfig( animator, fileReader );
 }
 
 void aeLoadSaveSystem::SaveAttConfig( const char *filename, const aeAnimator &animator ){
-	decBaseFileWriterReference fileWriter;
+	decBaseFileWriter::Ref fileWriter;
 	fileWriter.TakeOver( pWndMain->GetEnvironment().GetFileSystemGame()
 		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
 	pLSAttConfig->SaveAttachmentConfig( animator, fileWriter );

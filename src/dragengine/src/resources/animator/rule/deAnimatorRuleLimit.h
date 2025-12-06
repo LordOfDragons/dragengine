@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deAnimatorRuleLimit> Ref;
 	
 	
-	
 public:
 	/** \brief Coordinate frame. */
 	enum eCoordinateFrames{

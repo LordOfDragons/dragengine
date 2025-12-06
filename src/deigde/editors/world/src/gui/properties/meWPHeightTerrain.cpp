@@ -90,7 +90,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeColorBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeToggleButton.h>
@@ -109,11 +109,10 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -121,7 +120,6 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/image/deImage.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/terrain/heightmap/deHeightTerrain.h>
 
@@ -147,7 +145,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -172,7 +170,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -195,7 +193,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -218,7 +216,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector2->GetVector2(), world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -241,7 +239,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editPath, world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -264,7 +262,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( sliderText, world ) );
 		if( undo ){
 			world->GetUndoSystem()->Add( undo );
@@ -354,7 +352,7 @@ public:
 				
 			}else if( answer == igdeCommonDialogs::ebYes ){
 				const int resolution = world->GetHeightTerrain()->GetSectorResolution();
-				deImageReference image;
+				deImage::Ref image;
 				image.TakeOver( pPanel.GetEngine()->GetImageManager()->LoadImage( editPath->GetPath(), "/" ) );
 				
 				if( image->GetComponentCount() != 1 ){
@@ -372,7 +370,7 @@ public:
 				}
 				
 				if( image ){
-					igdeUndoReference undo;
+					igdeUndo::Ref undo;
 					undo.TakeOver( new meUHTImportHeightImage( world, sector, image ) );
 					world->GetUndoSystem()->Add( undo );
 				}
@@ -407,7 +405,7 @@ public:
 				
 			}else if( answer == igdeCommonDialogs::ebYes ){
 				const int resolution = world->GetHeightTerrain()->GetSectorResolution();
-				deImageReference image;
+				deImage::Ref image;
 				
 				image.TakeOver( pPanel.GetEngine()->GetImageManager()->LoadImage( editPath->GetPath(), "/" ) );
 				
@@ -426,7 +424,7 @@ public:
 				}
 				
 				if( image ){
-					igdeUndoReference undo;
+					igdeUndo::Ref undo;
 					undo.TakeOver( new meUHTImportVisibilityImage( world, sector, image ) );
 					world->GetUndoSystem()->Add( undo );
 				}
@@ -489,9 +487,8 @@ public:
 				continue;
 			}
 			
-			deObjectReference texture;
-			texture.TakeOver( new meHeightTerrainTexture( world->GetEngine(), name ) );
-			return new meUHTAddTexture( world, sector, ( meHeightTerrainTexture* )( deObject* )texture );
+			const meHeightTerrainTexture::Ref texture(meHeightTerrainTexture::Ref::NewWith(world->GetEngine(), name));
+			return new meUHTAddTexture( world, sector, texture );
 		}
 		return NULL;
 	}
@@ -634,9 +631,8 @@ public:
 					continue;
 				}
 				
-				deObjectReference navspace;
-				navspace.TakeOver( new meHeightTerrainNavSpace( *world->GetEngine(), name ) );
-				return new meUHTNavSpaceAdd( sector, ( meHeightTerrainNavSpace* )( deObject* )navspace );
+				const meHeightTerrainNavSpace::Ref navspace(meHeightTerrainNavSpace::Ref::NewWith(*world->GetEngine(), name));
+				return new meUHTNavSpaceAdd( sector, navspace );
 			}
 		}
 		return NULL;
@@ -747,9 +743,8 @@ public:
 				continue;
 			}
 			
-			deObjectReference type;
-			type.TakeOver( new meHeightTerrainNavSpaceType( name ) );
-			return new meUHTNavSpaceTypeAdd( navspace, ( meHeightTerrainNavSpaceType* )( deObject* )type );
+			const meHeightTerrainNavSpaceType::Ref type(meHeightTerrainNavSpaceType::Ref::NewWith(name));
+			return new meUHTNavSpaceTypeAdd( navspace, type );
 		}
 		return NULL;
 	}
@@ -814,7 +809,7 @@ public:
 		if( ! type || colorBox->GetColor().IsEqualTo( type->GetColor() ) ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTNavSpaceTypeSetColor( type, colorBox->GetColor() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -858,9 +853,7 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference refFace;
-		refFace.TakeOver( new meHeightTerrainNavSpaceFace );
-		meHeightTerrainNavSpaceFace * const face = ( meHeightTerrainNavSpaceFace* )( deObject* )refFace;
+		const meHeightTerrainNavSpaceFace::Ref face(meHeightTerrainNavSpaceFace::Ref::NewWith());
 		face->GetNavPoints() = pPanel.GetSector()->GetSelectedNavPoints();
 		face->OrderClockwise( world->GetHeightTerrain()->GetSectorResolution() );
 		return new meUHTNavSpaceFaceAdd( pPanel.GetActiveNavSpaceType(), face );
@@ -1058,13 +1051,9 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference refVLayer;
-		refVLayer.TakeOver( new meHTVegetationLayer( world->GetEngine(), name ) );
-		meHTVegetationLayer * const vlayer = ( meHTVegetationLayer* )( deObject* )refVLayer;
+		const meHTVegetationLayer::Ref vlayer(meHTVegetationLayer::Ref::NewWith(world->GetEngine(), name));
 		
-		deObjectReference rule;
-		rule.TakeOver( new meHTVRuleResult );
-		vlayer->AddRule( ( meHTVRuleResult* )( deObject* )rule );
+		vlayer->AddRule(meHTVRuleResult::Ref::NewWith());
 		
 		return new meUHTVLayerAdd( world, world->GetHeightTerrain(), vlayer );
 	}
@@ -1169,9 +1158,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference variation;
-		variation.TakeOver( new meHTVVariation( world->GetEngine() ) );
-		return new meUHTVVariationAdd( vlayer, ( meHTVVariation* )( deObject* )variation );
+		const meHTVVariation::Ref variation(meHTVVariation::Ref::NewWith(world->GetEngine()));
+		return new meUHTVVariationAdd( vlayer, variation );
 	}
 	
 	virtual void Update(){
@@ -1374,7 +1362,7 @@ pVVariation( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new meWPHeightTerrainListener( *this );
 	

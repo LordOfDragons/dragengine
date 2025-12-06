@@ -26,7 +26,7 @@
 #include "igdeWindowMain.h"
 
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decString.h>

@@ -27,9 +27,8 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/deObject.h>
-#include <dragengine/deObjectReference.h>
-
 #include "../deoglBasics.h"
+#include "../tbo/deoglDynamicTBO.h"
 
 class deoglDynamicTBO;
 class deoglDynamicTBOBlock;
@@ -40,9 +39,13 @@ class deoglRTLogger;
  * Shared TBO containing one or more blocks.
  */
 class deoglDynamicTBOShared : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglDynamicTBOShared> Ref;
+
+
 public:
-	const deObjectReference pTBO;
-	const deObjectReference pTBO2;
+	const deoglDynamicTBO::Ref pTBO;
+	const deoglDynamicTBO::Ref pTBO2;
 	const int pStride;
 	const int pStride2;
 	decObjectList pBlocks;
@@ -66,8 +69,8 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** TBO. */
-	inline deoglDynamicTBO *GetTBO() const{ return ( deoglDynamicTBO* )( deObject* )pTBO; }
-	inline deoglDynamicTBO *GetTBO2() const{ return ( deoglDynamicTBO* )( deObject* )pTBO2; }
+	inline const deoglDynamicTBO::Ref &GetTBO() const{ return pTBO; }
+	inline const deoglDynamicTBO::Ref &GetTBO2() const{ return pTBO2; }
 	
 	/** Stride in pixel for one unit. */
 	inline int GetStride() const{ return pStride; }

@@ -28,7 +28,7 @@
 #include "igdeWPTriggerTable.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeTextField.h"
 #include "../igdeListBox.h"
 #include "../event/igdeAction.h"
@@ -170,13 +170,10 @@ public:
 				continue;
 			}
 			
-			deObjectReference refTarget;
-			refTarget.TakeOver( new igdeTriggerTarget( name ) );
+			const igdeTriggerTarget::Ref target(igdeTriggerTarget::Ref::NewWith(name));
+			list->Add(target);
 			
-			igdeTriggerTarget * const target = ( igdeTriggerTarget* )( deObject* )refTarget;
-			list->Add( target );
-			
-			pPanel.SelectTarget( target );
+			pPanel.SelectTarget(target);
 			pPanel.OnAction();
 			return;
 		}
@@ -426,7 +423,7 @@ void igdeWPTriggerTable::pCreateContent(){
 	helper.ListBox( *this, 8, "List of targets in the table", pListTriggerTable, new cListTable( *this ) );
 	pListTriggerTable->SetDefaultSorter();
 	
-	igdeContainerReference frameLine;
+	igdeContainer::Ref frameLine;
 	frameLine.TakeOver( new igdeContainerFlow( env, eaX, esLast ) );
 	helper.Label( frameLine, "Filter:" );
 	helper.EditString( frameLine, "Filter targets in the list case insensitive",

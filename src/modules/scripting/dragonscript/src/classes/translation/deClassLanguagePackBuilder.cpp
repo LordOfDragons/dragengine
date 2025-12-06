@@ -39,7 +39,6 @@
 #include <dragengine/resources/localization/deLanguagePackEntry.h>
 #include <dragengine/resources/localization/deLanguagePackBuilder.h>
 #include <dragengine/resources/localization/deLanguagePackManager.h>
-#include <dragengine/resources/localization/deLanguagePackReference.h>
 
 
 class deClassLanguagePackBuilder_Builder : public deLanguagePackBuilder{
@@ -119,7 +118,7 @@ void deClassLanguagePackBuilder::nfBuild::RunFunction( dsRunTime *rt, dsValue *m
 	const deScriptingDragonScript &ds = ( ( deClassLanguagePackBuilder* )GetOwnerClass() )->GetDS();
 	const char * const filename = rt->GetValue( 0 )->GetString();
 	deClassLanguagePackBuilder_Builder builder( rt, myself );
-	deLanguagePackReference languagePack;
+	deLanguagePack::Ref languagePack;
 	
 	nd.builder = &builder;
 	

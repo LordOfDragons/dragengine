@@ -25,8 +25,8 @@
 #ifndef _MEWVNODECLOSESTVEGETATION_H_
 #define _MEWVNODECLOSESTVEGETATION_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeContainer.h>
 
 #include "meWVNode.h"
 
@@ -41,9 +41,9 @@ class meWVNodeClosestVegetation : public meWVNode{
 private:
 	meHTVRuleClosestVegetation *pRuleCV;
 	
-	igdeContainerReference pFraParameters;
-	igdeTextFieldReference pEditVegetationType;
-	igdeTextFieldReference pEditSearchRadius;
+	igdeContainer::Ref pFraParameters;
+	igdeTextField::Ref pEditVegetationType;
+	igdeTextField::Ref pEditSearchRadius;
 	
 	
 	

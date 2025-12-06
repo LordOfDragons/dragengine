@@ -27,7 +27,7 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 
 class meHTVRuleGeometry;
 
@@ -40,7 +40,7 @@ class meWVNodeGeometry : public meWVNode{
 private:
 	meHTVRuleGeometry *pRuleGeometry;
 	
-	igdeContainerReference pFraParameters;
+	igdeContainer::Ref pFraParameters;
 	
 	
 	

@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<decXmlContainer> Ref;
 	
 	
-	
 private:
 	decObjectOrderedSet pElements;
 	

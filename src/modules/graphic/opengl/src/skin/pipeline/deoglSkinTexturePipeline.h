@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deoglSkinTexturePipeline> Ref;
 	
 	
-	
 private:
 	const deoglPipeline * const pPipeline;
 	deoglSkinShader *pShader;

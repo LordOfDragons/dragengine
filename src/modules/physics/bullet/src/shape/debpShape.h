@@ -45,6 +45,10 @@ class dePhysicsBullet;
  */
 class debpShape : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debpShape> Ref;
+	
+	
 	/** \brief Shape types. */
 	enum eShapeTypes{
 		estSphere,

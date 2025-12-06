@@ -65,6 +65,10 @@ private:
 	meObject *pHostObject;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meLumimeter> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new lumimeter. */

@@ -58,7 +58,6 @@ public:
 	typedef deTObjectReference<deAnimatorRuleStateSnapshot> Ref;
 	
 	
-	
 private:
 	bool pEnablePosition;
 	bool pEnableOrientation;

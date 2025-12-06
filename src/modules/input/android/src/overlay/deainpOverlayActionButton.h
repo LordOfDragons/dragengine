@@ -40,6 +40,7 @@ class deainpOverlayActionButton : public deainpOverlay{
 public:
 	typedef deTObjectReference<deainpOverlayActionButton> Ref;
 	
+	
 private:
 	deainpInputBinding pBinding;
 	

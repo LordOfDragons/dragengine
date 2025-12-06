@@ -34,7 +34,7 @@
  */
 class seWPAPanelSourceGroup : public seWPAPanelSource{
 private:
-	igdeComboBoxReference pCBApplicationType;
+	igdeComboBox::Ref pCBApplicationType;
 	
 	
 	

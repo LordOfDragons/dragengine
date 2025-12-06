@@ -28,9 +28,9 @@
 #include "gizmo/aeGizmoManager.h"
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 class aeWindowMain;
@@ -47,10 +47,10 @@ private:
 	
 	aeAnimator *pAnimator;
 	
-	igdeMouseCameraListenerReference pCameraInteraction;
-	igdeMouseKeyListenerReference pLocomotionInteraction;
-	igdeMouseKeyListenerReference pWakeboardInteraction;
-	igdeMouseKeyListenerReference pEditorInteraction;
+	igdeMouseCameraListener::Ref pCameraInteraction;
+	igdeMouseKeyListener::Ref pLocomotionInteraction;
+	igdeMouseKeyListener::Ref pWakeboardInteraction;
+	igdeMouseKeyListener::Ref pEditorInteraction;
 	
 	aeGizmoManager pGizmos;
 	

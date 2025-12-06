@@ -71,7 +71,6 @@ public:
 	typedef deTObjectReference<delGame> Ref;
 	
 	
-	
 private:
 	delLauncher &pLauncher;
 	

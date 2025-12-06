@@ -44,6 +44,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deoglHTSector> Ref;
 	
+	
 private:
 	deoglHeightTerrain &pHeightTerrain;
 	const deHeightTerrainSector &pSector;

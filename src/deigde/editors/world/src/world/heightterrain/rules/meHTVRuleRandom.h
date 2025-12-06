@@ -40,6 +40,10 @@
  */
 class meHTVRuleRandom : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleRandom> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Random value. */

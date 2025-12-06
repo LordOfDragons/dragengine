@@ -26,7 +26,7 @@
 #define _IGDEWINDOWLOGGER_H_
 
 #include "../igdeWindow.h"
-#include "../igdeTextAreaReference.h"
+#include "../igdeTextArea.h"
 
 class igdeLoggerHistory;
 class igdeLoggerHistoryEntry;
@@ -39,6 +39,10 @@ class igdeWindowLoggerListener;
  */
 class DE_DLL_EXPORT igdeWindowLogger : public igdeWindow{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWindowLogger> Ref;
+	
+	
 	/** \brief Warning style name. */
 	static const char *styleWarning;
 	
@@ -50,7 +54,7 @@ public:
 private:
 	igdeWindowLoggerListener *pListener;
 	igdeLoggerHistory *pLogger;
-	igdeTextAreaReference pEditLogs;
+	igdeTextArea::Ref pEditLogs;
 	int pPendingAddedLogs;
 	bool pPendingClearLogs;
 	

@@ -25,9 +25,9 @@
 #ifndef _SEWPSOURCE_H_
 #define _SEWPSOURCE_H_
 
-#include <deigde/gui/igdeTreeListReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeTreeList.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 
@@ -56,9 +56,9 @@ private:
 	
 	seSynthesizer *pSynthesizer;
 	
-	igdeTreeListReference pTreeSource;
+	igdeTreeList::Ref pTreeSource;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	seWPAPanelSourceSound *pPanelSound;
 	seWPAPanelSourceWave *pPanelWave;
 	seWPAPanelSourceChain *pPanelChain;
@@ -66,10 +66,10 @@ private:
 	seWPAPanelSourceSynthesizer *pPanelSynthesizer;
 	seWPAPanelSource *pActivePanel;
 	
-	igdeActionReference pActionSourceCut;
-	igdeActionReference pActionSourceCopy;
-	igdeActionReference pActionSourcePaste;
-	igdeActionReference pActionSourcePasteIntoGroup;
+	igdeAction::Ref pActionSourceCut;
+	igdeAction::Ref pActionSourceCopy;
+	igdeAction::Ref pActionSourcePaste;
+	igdeAction::Ref pActionSourcePasteIntoGroup;
 	
 	
 	

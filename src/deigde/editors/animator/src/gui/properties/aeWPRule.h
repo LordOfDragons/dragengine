@@ -25,8 +25,8 @@
 #ifndef _AEWPRULE_H_
 #define _AEWPRULE_H_
 
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeTreeListReference.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class aeWPAPanelRuleLimit;
@@ -60,9 +60,9 @@ private:
 	aeWPRuleListener *pListener;
 	aeAnimator *pAnimator;
 	
-	igdeTreeListReference pTreeRule;
+	igdeTreeList::Ref pTreeRule;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	aeWPAPanelRuleAnimation *pPanelAnim;
 	aeWPAPanelRuleAnimationDifference *pPanelAnimDiff;
 	aeWPAPanelRuleAnimationSelect *pPanelAnimSelect;

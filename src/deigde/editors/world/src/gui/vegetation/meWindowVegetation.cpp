@@ -75,14 +75,10 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/nodeview/igdeNVBoardListener.h>
-#include <deigde/gui/nodeview/igdeNVBoardListenerReference.h>
 #include <deigde/gui/nodeview/igdeNVLink.h>
-#include <deigde/gui/nodeview/igdeNVLinkReference.h>
 #include <deigde/gui/nodeview/igdeNVNode.h>
-#include <deigde/gui/nodeview/igdeNVNodeReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/logger/deLogger.h>
@@ -111,13 +107,10 @@ public:
 			return;
 		}
 		
-		deObjectReference rule;
-		rule.TakeOver( CreateRule() );
-		( ( meHTVRule& )( deObject& )rule ).SetPosition( pPosition );
+		const meHTVRule::Ref rule(meHTVRule::Ref::New(CreateRule()));
+		rule->SetPosition(pPosition);
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleAdd( pView.GetVLayer(), ( meHTVRule* )( deObject* )rule ) );
-		pView.GetWorld()->GetUndoSystem()->Add( undo );
+		pView.GetWorld()->GetUndoSystem()->Add(meUHTVRuleAdd::Ref::NewWith(pView.GetVLayer(), rule));
 	}
 	
 	virtual void Update(){
@@ -320,7 +313,7 @@ public:
 		}
 		
 		igdeEnvironment &env = menu.GetEnvironment();
-		igdeMenuCascadeReference subMenu, subMenu2;
+		igdeMenuCascade::Ref subMenu, subMenu2;
 		igdeUIHelper &helper = env.GetUIHelper();
 		
 		
@@ -402,12 +395,11 @@ public:
 			DETHROW( deeInvalidParam );
 		}
 		
-		deObjectReference ruleLink;
-		ruleLink.TakeOver( new meHTVRLink( wvnodeSource.GetRule(), indexSlotSource,
-			wvnodeTarget.GetRule(), indexSlotTarget ) );
+		const meHTVRLink::Ref ruleLink(meHTVRLink::Ref::NewWith(wvnodeSource.GetRule(), indexSlotSource,
+			wvnodeTarget.GetRule(), indexSlotTarget));
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVLinkAdd( pView.GetVLayer(), ( meHTVRLink* )( deObject* )ruleLink ) );
+		igdeUndo::Ref undo;
+		undo.TakeOver( new meUHTVLinkAdd( pView.GetVLayer(), ruleLink ) );
 		pView.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -421,7 +413,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVLinkCut( pView.GetVLayer() ) );
 		( ( meUHTVLinkCut& )( igdeUndo& )undo ).AddLinkToCut( ruleLink );
 		pView.GetWorld()->GetUndoSystem()->Add( undo );
@@ -542,7 +534,7 @@ void meWindowVegetation::UpdateNodesFromVLayer(){
 	}
 	
 	const int count = pVLayer->GetRuleCount();
-	igdeNVNodeReference node;
+	igdeNVNode::Ref node;
 	int i;
 	
 	for( i=0; i<count; i++ ){

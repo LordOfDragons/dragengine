@@ -69,6 +69,10 @@ private:
 	mePathFindTestTypeList pTypeList;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<mePathFindTest> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new path find test. */

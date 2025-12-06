@@ -25,10 +25,10 @@
 #ifndef _CEWPCACTORCOMMAND_H_
 #define _CEWPCACTORCOMMAND_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "ceWPCondition.h"
 
@@ -41,10 +41,10 @@ class ceCConditionActorCommand;
  */
 class ceWPCActorCommand : public ceWPCondition{
 private:
-	igdeComboBoxReference pCBActorID;
-	igdeTextFieldReference pEditCommand;
-	igdeButtonReference pBtnCommand;
-	igdeCheckBoxReference pChkNegate;
+	igdeComboBox::Ref pCBActorID;
+	igdeTextField::Ref pEditCommand;
+	igdeButton::Ref pBtnCommand;
+	igdeCheckBox::Ref pChkNegate;
 	
 	
 	

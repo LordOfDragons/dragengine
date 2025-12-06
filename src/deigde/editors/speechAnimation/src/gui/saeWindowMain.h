@@ -27,11 +27,11 @@
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 class decStringList;
 class saeWindowMainListener;
@@ -52,33 +52,33 @@ class saeWindowMain : public igdeEditorWindow{
 private:
 	saeWindowMainListener *pListener;
 	
-	igdeActionReference pActionFileNew;
-	igdeActionReference pActionFileOpen;
-	igdeActionReference pActionFileSave;
-	igdeActionReference pActionFileSaveAs;
+	igdeAction::Ref pActionFileNew;
+	igdeAction::Ref pActionFileOpen;
+	igdeAction::Ref pActionFileSave;
+	igdeAction::Ref pActionFileSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeActionReference pActionViewDispModeViseme;
-	igdeActionReference pActionViewDispModePhoneme;
-	igdeActionReference pActionViewDispModeWord;
+	igdeAction::Ref pActionViewDispModeViseme;
+	igdeAction::Ref pActionViewDispModePhoneme;
+	igdeAction::Ref pActionViewDispModeWord;
 	
-	igdeActionReference pActionVisemeAdd;
-	igdeActionReference pActionVisemeRemove;
+	igdeAction::Ref pActionVisemeAdd;
+	igdeAction::Ref pActionVisemeRemove;
 	
-	igdeActionReference pActionPhonemeAdd;
-	igdeActionReference pActionPhonemeRemove;
+	igdeAction::Ref pActionPhonemeAdd;
+	igdeAction::Ref pActionPhonemeRemove;
 	
-	igdeActionReference pActionWordAdd;
-	igdeActionReference pActionWordRemove;
-	igdeActionReference pActionWordAddList;
+	igdeAction::Ref pActionWordAdd;
+	igdeAction::Ref pActionWordRemove;
+	igdeAction::Ref pActionWordAddList;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	saeConfiguration *pConfiguration;
 	igdeClipboard pClipboard;

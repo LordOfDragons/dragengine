@@ -26,7 +26,7 @@
 #define _DERLTASKREADFONTINTERNAL2_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../font/deFontReference.h"
+#include "../../font/deFont.h"
 
 
 /**
@@ -36,7 +36,7 @@
  */
 class DE_DLL_EXPORT deRLTaskReadFontInternal2 : public deResourceLoaderTask {
 private:
-	deFontReference pFont;
+	deFont::Ref pFont;
 	bool pAlreadyLoaded;
 	
 	deResourceLoaderTask *pTaskImage;

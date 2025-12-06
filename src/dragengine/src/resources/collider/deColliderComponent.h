@@ -26,7 +26,7 @@
 #define _DECOLLIDERCOMPONENT_H_
 
 #include "deColliderRig.h"
-#include "../component/deComponentReference.h"
+#include "../component/deComponent.h"
 
 class deCollisionInfo;
 
@@ -54,9 +54,8 @@ public:
 	typedef deTObjectReference<deColliderComponent> Ref;
 	
 	
-	
 private:
-	deComponentReference pComponent;
+	deComponent::Ref pComponent;
 	
 	
 	

@@ -36,6 +36,12 @@
  * \brief Project template.
  */
 class igdeTemplate : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTemplate> Ref;
+
+
+
 private:
 	decString pBasePath;
 	decString pName;

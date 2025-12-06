@@ -41,7 +41,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -71,7 +71,7 @@ pOption( option )
 ///////////////
 
 void ceWPTMAPChoiceOptionRemove::OnAction(){
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new ceUCAPChoiceOptionRemove( pTopic, pPlayerChoice, pOption ) );
 	pConversation->GetUndoSystem()->Add( undo );
 	

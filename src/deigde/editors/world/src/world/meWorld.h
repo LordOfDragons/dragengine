@@ -112,7 +112,6 @@ public:
 	typedef deTObjectReference<meWorld> Ref;
 	
 	
-	
 public:
 	/** Layer masks for colliders. */
 	enum eColliderLayerMasks{

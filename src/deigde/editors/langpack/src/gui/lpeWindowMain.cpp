@@ -46,12 +46,10 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -63,7 +61,6 @@
 #include <deigde/gamedefinition/igdeGameDefinition.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -107,7 +104,7 @@ pLangPack( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(320)));
 	AddChild( splitted );
@@ -493,7 +490,7 @@ public:
 				continue;
 			}
 			
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			const lpeLangPackEntry::Ref entry( lpeLangPackEntry::Ref::New( new lpeLangPackEntry ) );
 			entry->SetName( name );
 			
@@ -544,7 +541,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new lpeULangPackEntryRemove( langpack, list, pWindow.GetReferenceLangPack() ) );
 		langpack->GetUndoSystem()->Add( undo );
 	}
@@ -654,7 +651,7 @@ void lpeWindowMain::pCreateToolBarEdit(){
 
 void lpeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "Language Pack", deInputEvent::ekcL ) );
 	pCreateMenuLangPack( cascade );

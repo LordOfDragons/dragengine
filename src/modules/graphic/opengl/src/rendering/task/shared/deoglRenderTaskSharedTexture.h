@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deoglRenderTaskSharedTexture> Ref;
 	
 	
-	
 private:
 	deoglRenderTaskSharedPool &pPool;
 	const int pIndex;

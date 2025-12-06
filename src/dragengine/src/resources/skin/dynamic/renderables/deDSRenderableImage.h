@@ -26,7 +26,7 @@
 #define _DEDSRENDERABLEIMAGE_H_
 
 #include "deDSRenderable.h"
-#include "../../../image/deImageReference.h"
+#include "../../../image/deImage.h"
 
 
 /**
@@ -36,7 +36,7 @@
  */
 class DE_DLL_EXPORT deDSRenderableImage : public deDSRenderable{
 private:
-	deImageReference pImage;
+	deImage::Ref pImage;
 	
 	
 	

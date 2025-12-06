@@ -46,6 +46,10 @@
  */
 class meHTVRuleClosestVegetation : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleClosestVegetation> Ref;
+	
+	
 	/** \brief Slots. */
 	enum eSlots{
 		/** Distance. */

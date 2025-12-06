@@ -26,7 +26,7 @@
 #define _CEWPTTIMCONDITIONCONTANIER_H_
 
 #include "../ceWPTTreeItemModel.h"
-#include "../../../../conversation/condition/ceConversationConditionReference.h"
+#include "../../../../conversation/condition/ceConversationCondition.h"
 
 class ceWPTTIMCondition;
 class ceConversationAction;
@@ -42,7 +42,7 @@ class ceConversationAction;
 class ceWPTTIMConditionContainer : public ceWPTTreeItemModel{
 private:
 	ceConversationAction *pAction;
-	ceConversationConditionReference pCondition;
+	ceConversationCondition::Ref pCondition;
 	ceWPTTIMCondition *pChildCondition;
 	
 	

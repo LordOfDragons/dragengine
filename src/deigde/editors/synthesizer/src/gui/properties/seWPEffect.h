@@ -25,9 +25,9 @@
 #ifndef _SEWPEFFECT_H_
 #define _SEWPEFFECT_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 class seEffect;
@@ -50,16 +50,16 @@ private:
 	
 	seSynthesizer *pSynthesizer;
 	
-	igdeListBoxReference pListEffect;
+	igdeListBox::Ref pListEffect;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	seWPAPanelEffectStretch *pPanelStretch;
 	seWPAPanelEffect *pActivePanel;
 	
-	igdeActionReference pActionEffectCut;
-	igdeActionReference pActionEffectCopy;
-	igdeActionReference pActionEffectPasteAdd;
-	igdeActionReference pActionEffectPasteInsert;
+	igdeAction::Ref pActionEffectCut;
+	igdeAction::Ref pActionEffectCopy;
+	igdeAction::Ref pActionEffectPasteAdd;
+	igdeAction::Ref pActionEffectPasteInsert;
 	
 	
 	

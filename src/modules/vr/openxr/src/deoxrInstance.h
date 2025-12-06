@@ -45,6 +45,7 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrInstance> Ref;
 	
+	
 	/** Extension. */
 	enum eExtension{	
 		extKHROpenglEnable, //<! XR_KHR_opengl_enable

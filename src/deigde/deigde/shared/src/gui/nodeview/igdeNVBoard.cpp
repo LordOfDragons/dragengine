@@ -31,17 +31,14 @@
 #include "igdeNVNode.h"
 #include "igdeNVSlot.h"
 #include "igdeNVLink.h"
-#include "igdeNVLinkReference.h"
 #include "../native/toolkit.h"
 #include "../igdeCommonDialogs.h"
 #include "../igdeContainer.h"
 #include "../igdeUIHelper.h"
 #include "../event/igdeAction.h"
 #include "../menu/igdeMenuCascade.h"
-#include "../menu/igdeMenuCascadeReference.h"
 #include "../resources/igdeIcon.h"
 #include "../resources/igdeFont.h"
-#include "../resources/igdeFontReference.h"
 #include "../theme/igdeGuiTheme.h"
 #include "../../environment/igdeEnvironment.h"
 
@@ -66,8 +63,8 @@ public:
 	}
 	
 	virtual void OnAction(){
-		const igdeNVSlotReference source( pLink->GetSource() );
-		const igdeNVSlotReference target( pLink->GetTarget() );
+		const igdeNVSlot::Ref source( pLink->GetSource() );
+		const igdeNVSlot::Ref target( pLink->GetTarget() );
 		pBoard.RemoveLink( pLink );
 		pBoard.NotifyLinkRemoved( source, target );
 	}
@@ -310,7 +307,7 @@ igdeNVLink *igdeNVBoard::AddLink( igdeNVSlot *source, igdeNVSlot *target ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeNVLinkReference link;
+	igdeNVLink::Ref link;
 	link.TakeOver( new igdeNVLink( source, target ) );
 	link->SetOwnerBoard( this );
 	pLinks.Add( ( igdeNVLink* )link );
@@ -382,7 +379,7 @@ void igdeNVBoard::ShowContextMenu( const decPoint &position ){
 	
 	const igdeNativeNVBoard &native = *( ( igdeNativeNVBoard* )GetNativeWidget() );
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( helper.GetEnvironment() ) );
 	
 	// link

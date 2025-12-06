@@ -28,7 +28,7 @@
 #include "common/exceptions.h"
 
 /**
- * \brief Template version of deObjectReference.
+ * \brief Object reference template.
  * \version 1.5
  * 
  * Safe way to hold an object reference with correct reference handling.

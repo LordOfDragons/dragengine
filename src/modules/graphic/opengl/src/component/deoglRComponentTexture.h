@@ -97,6 +97,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRComponentTexture> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create component texture. */

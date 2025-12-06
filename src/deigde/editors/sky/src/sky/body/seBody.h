@@ -28,7 +28,7 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class seLayer;
 
@@ -49,7 +49,7 @@ private:
 	decVector2 pSize;
 	decColor pColor;
 	decString pPathSkin;
-	deSkinReference pEngSkin;
+	deSkin::Ref pEngSkin;
 	
 	bool pSelected;
 	bool pActive;
@@ -57,6 +57,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seBody> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create sky body. */

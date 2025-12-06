@@ -26,11 +26,11 @@
 #define _IGDEWOSOLIGHT_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
-#include "../../../triggersystem/igdeTriggerExpressionReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
-#include <dragengine/resources/light/deLightReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/light/deLight.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -41,14 +41,19 @@ class igdeGDCLight;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOLight : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOLight> Ref;
+	
+	
 private:
 	const igdeGDCLight &pGDLight;
-	deLightReference pLight;
-	igdeResourceLoaderListenerReference pResLoad;
+	deLight::Ref pLight;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	igdeTriggerExpressionReference pTriggerActivate;
+	igdeTriggerExpression::Ref pTriggerActivate;
 	
 	
 public:

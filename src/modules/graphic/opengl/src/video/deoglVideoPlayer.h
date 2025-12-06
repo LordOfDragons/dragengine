@@ -26,7 +26,7 @@
 #define _DEOGLVIDEOPLAYER_H_
 
 #include <dragengine/common/collection/decPointerSet.h>
-#include <dragengine/resources/video/deVideoDecoderReference.h>
+#include <dragengine/resources/video/deVideoDecoder.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideoPlayer.h>
 
 class deoglVideo;
@@ -54,7 +54,7 @@ public:
 	deoglVideo *pVideo;
 	
 	bool pBrokenVideoDecoder;
-	deVideoDecoderReference pVideoDecoder;
+	deVideoDecoder::Ref pVideoDecoder;
 	deoglVideoDecodeThread *pDecodeThread;
 	
 	deoglRVideoPlayer *pRVideoPlayer;

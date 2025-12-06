@@ -25,15 +25,15 @@
 #ifndef _PROJPANELPROFILES_H_
 #define _PROJPANELPROFILES_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditPointReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditPoint.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -54,49 +54,49 @@ private:
 	projProject *pProject;
 	projPanelProfilesListener *pListener;
 	
-	igdeActionReference pActionScriptDirectory;
-	igdeActionReference pActionPathConfig;
-	igdeActionReference pActionPathCapture;
-	igdeActionReference pActionAddIcon;
-	igdeActionReference pActionRemoveIcon;
-	igdeActionReference pActionAddExcludePattern;
-	igdeActionReference pActionRemoveExcludePattern;
-	igdeActionReference pActionAddRequiredExtension;
-	igdeActionReference pActionRemoveRequiredExtension;
-	igdeActionReference pActionDelgaPath;
-	igdeActionContextMenuReference pActionMenuIdentifier;
+	igdeAction::Ref pActionScriptDirectory;
+	igdeAction::Ref pActionPathConfig;
+	igdeAction::Ref pActionPathCapture;
+	igdeAction::Ref pActionAddIcon;
+	igdeAction::Ref pActionRemoveIcon;
+	igdeAction::Ref pActionAddExcludePattern;
+	igdeAction::Ref pActionRemoveExcludePattern;
+	igdeAction::Ref pActionAddRequiredExtension;
+	igdeAction::Ref pActionRemoveRequiredExtension;
+	igdeAction::Ref pActionDelgaPath;
+	igdeActionContextMenu::Ref pActionMenuIdentifier;
 	
-	igdeListBoxReference pListProfiles;
+	igdeListBox::Ref pListProfiles;
 	
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
 	
-	igdeTextFieldReference pEditScriptDirectory;
-	igdeTextFieldReference pEditGameObject;
-	igdeTextFieldReference pEditPathConfig;
-	igdeTextFieldReference pEditPathCapture;
+	igdeTextField::Ref pEditScriptDirectory;
+	igdeTextField::Ref pEditGameObject;
+	igdeTextField::Ref pEditPathConfig;
+	igdeTextField::Ref pEditPathCapture;
 	
-	igdeTextFieldReference pEditIdentifier;
-	igdeButtonReference pBtnMenuIdentifier;
-	igdeTextFieldReference pEditAliasIdentifier;
-	igdeTextFieldReference pEditTitle;
-	igdeTextAreaReference pEditGameDescription;
-	igdeTextFieldReference pEditCreator;
-	igdeTextFieldReference pEditWebsite;
-	igdeEditPointReference pEditWindowSize;
+	igdeTextField::Ref pEditIdentifier;
+	igdeButton::Ref pBtnMenuIdentifier;
+	igdeTextField::Ref pEditAliasIdentifier;
+	igdeTextField::Ref pEditTitle;
+	igdeTextArea::Ref pEditGameDescription;
+	igdeTextField::Ref pEditCreator;
+	igdeTextField::Ref pEditWebsite;
+	igdeEditPoint::Ref pEditWindowSize;
 	
-	igdeEditPathReference pEditIconPath;
-	igdeListBoxReference pListIcons;
+	igdeEditPath::Ref pEditIconPath;
+	igdeListBox::Ref pListIcons;
 	
-	igdeTextFieldReference pEditExcludePattern;
-	igdeListBoxReference pListExcludePatterns;
+	igdeTextField::Ref pEditExcludePattern;
+	igdeListBox::Ref pListExcludePatterns;
 	
-	igdeTextFieldReference pEditRequiredExtension;
-	igdeListBoxReference pListRequiredExtensions;
+	igdeTextField::Ref pEditRequiredExtension;
+	igdeListBox::Ref pListRequiredExtensions;
 	
-	igdeTextFieldReference pEditDelgaPath;
+	igdeTextField::Ref pEditDelgaPath;
 	
-	igdeTextFieldReference pEditRunArguments;
+	igdeTextField::Ref pEditRunArguments;
 	
 	
 	

@@ -25,9 +25,9 @@
 #ifndef _SEVIEWCONSTRUCTED_H_
 #define _SEVIEWCONSTRUCTED_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeScrollBarReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeScrollBar.h>
+#include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
 
 #include <dragengine/common/math/decMath.h>
@@ -50,10 +50,10 @@ private:
 	decPoint pContentSize;
 	decPoint pScrollOffset;
 	
-	igdeScrollBarReference pSBHorizontal;
-	igdeScrollBarReference pSBVertical;
-	igdeComboBoxReference pCBZoom;
-	igdeSpinTextFieldReference pSpinLayer;
+	igdeScrollBar::Ref pSBHorizontal;
+	igdeScrollBar::Ref pSBVertical;
+	igdeComboBox::Ref pCBZoom;
+	igdeSpinTextField::Ref pSpinLayer;
 	seViewConstructedView *pViewNode;
 	
 	

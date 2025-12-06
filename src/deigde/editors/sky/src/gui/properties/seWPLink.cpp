@@ -47,16 +47,15 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeListBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezierListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorderReference.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
@@ -64,7 +63,7 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -90,7 +89,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, sky, link ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -114,7 +113,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, sky, link ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -147,7 +146,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( sky ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -218,9 +217,7 @@ public:
 		"Add a link to the end of the list." ){ }
 	
 	virtual igdeUndo *OnAction( seSky *sky ){
-		deObjectReference link;
-		link.TakeOver( new seLink );
-		return new seULinkAdd( sky, ( seLink* )( deObject* )link );
+		return new seULinkAdd(sky, seLink::Ref::NewWith());
 	}
 };
 
@@ -300,7 +297,7 @@ public:
 class cEditCurve : public igdeViewCurveBezierListener{
 protected:
 	seWPLink &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	cEditCurve( seWPLink &panel ) : pPanel( panel ){ }
@@ -348,7 +345,7 @@ pListener( NULL ),
 pSky( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener = new seWPLinkListener( *this );

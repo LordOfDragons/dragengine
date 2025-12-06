@@ -36,9 +36,7 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/exceptions.h>
 
@@ -94,7 +92,7 @@ void saeConfiguration::LoadConfiguration(){
 			return;
 		}
 		
-		decBaseFileReaderReference reader;
+		decBaseFileReader::Ref reader;
 		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
 		saeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
 		pPreventSaving = false;
@@ -117,7 +115,7 @@ void saeConfiguration::SaveConfiguration(){
 		return;
 	}
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	try{
 		writer.TakeOver( vfs.OpenFileForWriting( pathFile ) );
 		saeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).WriteToFile( writer, *this );

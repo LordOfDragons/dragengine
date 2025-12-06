@@ -35,6 +35,12 @@
  * \brief IGDE UI Text Style.
  */
 class DE_DLL_EXPORT igdeTextStyle : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTextStyle> Ref;
+	
+	
 private:
 	decString pName;
 	decColor pColor;

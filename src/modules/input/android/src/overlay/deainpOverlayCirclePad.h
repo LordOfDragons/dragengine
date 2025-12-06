@@ -38,6 +38,7 @@ class deainpOverlayCirclePad : public deainpOverlay{
 public:
 	typedef deTObjectReference<deainpOverlayCirclePad> Ref;
 	
+	
 private:
 	deainpInputBinding pAxisLeftRight;
 	deainpInputBinding pAxisUpDown;

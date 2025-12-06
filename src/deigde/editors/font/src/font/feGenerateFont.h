@@ -28,7 +28,7 @@
 #include <deigde/gui/resources/igdeFont.h>
 
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/font/deFontReference.h>
+#include <dragengine/resources/font/deFont.h>
 
 class feFontImage;
 class feFontGlyph;
@@ -52,7 +52,7 @@ private:
 	int pBorderSize;
 	int pEnlargeGlyph;
 	igdeFont::sConfiguration pFontConfig;
-	deFontReference pSystemFont;
+	deFont::Ref pSystemFont;
 	
 	
 	

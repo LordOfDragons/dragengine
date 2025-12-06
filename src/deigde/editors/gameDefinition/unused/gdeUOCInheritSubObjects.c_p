@@ -97,7 +97,6 @@ void gdeUOCInheritSubObjects::InheritBillboards( const gdeObjectClassList &objec
 const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCBillboardList &billboards = objectClass.GetBillboards();
 	const int count = billboards.GetCount();
-	deObjectReference ref;
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
@@ -134,7 +133,6 @@ void gdeUOCInheritSubObjects::InheritCameras( const gdeObjectClassList &objectCl
 const gdeObjectClass &objectClass ){
 	const gdeOCCameraList &cameras = objectClass.GetCameras();
 	const int count = cameras.GetCount();
-	deObjectReference ref;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -162,7 +160,6 @@ void gdeUOCInheritSubObjects::InheritComponents( const gdeObjectClassList &objec
 const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCComponentList &components = objectClass.GetComponents();
 	const int count = components.GetCount();
-	deObjectReference ref;
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
@@ -199,7 +196,6 @@ void gdeUOCInheritSubObjects::InheritEnvMapProbes( const gdeObjectClassList &obj
 const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCEnvMapProbeList &probes = objectClass.GetEnvMapProbes();
 	const int count = probes.GetCount();
-	deObjectReference ref;
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
@@ -236,7 +232,6 @@ void gdeUOCInheritSubObjects::InheritForceFields( const gdeObjectClassList &obje
 const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCForceFieldList &forceFields = objectClass.GetForceFields();
 	const int count = forceFields.GetCount();
-	deObjectReference ref;
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
@@ -279,7 +274,6 @@ void gdeUOCInheritSubObjects::InheritLights( const gdeObjectClassList &objectCla
 const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCLightList &lights = objectClass.GetLights();
 	const int count = lights.GetCount();
-	deObjectReference ref;
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
@@ -322,7 +316,6 @@ void gdeUOCInheritSubObjects::InheritNavigationBlockers( const gdeObjectClassLis
 const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCNavigationBlockerList &blockers = objectClass.GetNavigationBlockers();
 	const int count = blockers.GetCount();
-	deObjectReference ref;
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
@@ -359,7 +352,6 @@ void gdeUOCInheritSubObjects::InheritNavigationSpaces( const gdeObjectClassList 
 const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCNavigationSpaceList &spaces = objectClass.GetNavigationSpaces();
 	const int count = spaces.GetCount();
-	deObjectReference ref;
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
@@ -396,7 +388,6 @@ void gdeUOCInheritSubObjects::InheritParticleEmitters( const gdeObjectClassList 
 const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCParticleEmitterList &emitters = objectClass.GetParticleEmitters();
 	const int count = emitters.GetCount();
-	deObjectReference ref;
 	int i, j;
 	
 	for( i=0; i<count; i++ ){
@@ -439,7 +430,6 @@ void gdeUOCInheritSubObjects::InheritSnapPoints( const gdeObjectClassList &objec
 const gdeObjectClass &objectClass ){
 	const gdeOCSnapPointList &snapPoints = objectClass.GetSnapPoints();
 	const int count = snapPoints.GetCount();
-	deObjectReference ref;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -467,7 +457,6 @@ void gdeUOCInheritSubObjects::InheritSpeakers( const gdeObjectClassList &objectC
 const gdeObjectClass &objectClass, const decString &propertyPrefix ){
 	const gdeOCSpeakerList &speakers = objectClass.GetSpeakers();
 	const int count = speakers.GetCount();
-	deObjectReference ref;
 	int i, j;
 	
 	for( i=0; i<count; i++ ){

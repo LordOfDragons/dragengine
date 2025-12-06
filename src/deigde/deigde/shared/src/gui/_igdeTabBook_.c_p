@@ -32,7 +32,6 @@
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
 
@@ -309,8 +308,7 @@ const char *description ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	deObjectReference header;
-	header.TakeOver( new cHeader( text, icon, description ) );
+	const cHeader::Ref header(cHeader::Ref::NewWith(text, icon, description));
 	pHeaders.Add( header );
 	
 	cNativeIgdeTabBook * const native = ( cNativeIgdeTabBook* )GetNativeWidget();
@@ -320,7 +318,7 @@ const char *description ){
 	}
 	
 	try{
-		native->AddHeader( ( cHeader& )( deObject& )header );
+		native->AddHeader(header);
 		
 	}catch( const deException & ){
 		pHeaders.RemoveFrom( pHeaders.GetCount() - 1 );

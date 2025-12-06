@@ -25,12 +25,12 @@
 #ifndef _PEEWINDOWCURVES_H_
 #define _PEEWINDOWCURVES_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/resources/igdeIconReference.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/gui/resources/igdeIcon.h>
+#include <deigde/undo/igdeUndo.h>
 
 class peeEmitter;
 class peeParameter;
@@ -61,13 +61,13 @@ private:
 	
 	peeEmitter *pEmitter;
 	
-	igdeIconReference pIconCurveEmpty;
-	igdeIconReference pIconCurveUsed;
+	igdeIcon::Ref pIconCurveEmpty;
+	igdeIcon::Ref pIconCurveUsed;
 	
-	igdeListBoxReference pListCurves;
-	igdeViewCurveBezierReference pEditCurve;
+	igdeListBox::Ref pListCurves;
+	igdeViewCurveBezier::Ref pEditCurve;
 	
-	igdeUndoReference pUndoSetCurve;
+	igdeUndo::Ref pUndoSetCurve;
 	
 	
 	

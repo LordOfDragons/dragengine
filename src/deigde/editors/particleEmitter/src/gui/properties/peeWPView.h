@@ -25,13 +25,13 @@
 #ifndef _PEEWPVIEW_H_
 #define _PEEWPVIEW_H_
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/properties/igdeWPCameraReference.h>
-#include <deigde/gui/properties/igdeWPWObjectReference.h>
-#include <deigde/gui/properties/igdeWPSkyReference.h>
+#include <deigde/gui/properties/igdeWPCamera.h>
+#include <deigde/gui/properties/igdeWPWObject.h>
+#include <deigde/gui/properties/igdeWPSky.h>
 
 class peeEmitter;
 class peeWindowProperties;
@@ -48,15 +48,15 @@ private:
 	peeEmitter *pEmitter;
 	peeWPViewListener *pListener;
 	
-	igdeWPSkyReference pWPSky;
-	igdeWPWObjectReference pWPEnvObject;
-	igdeWPCameraReference pWPCamera;
+	igdeWPSky::Ref pWPSky;
+	igdeWPWObject::Ref pWPEnvObject;
+	igdeWPCamera::Ref pWPCamera;
 	
-	igdeEditVectorReference pEditEmitterPosition;
-	igdeEditVectorReference pEditEmitterRotation;
-	igdeTextFieldReference pEditEmitterBurstInterval;
-	igdeTextFieldReference pEditEmitterWarmUpTime;
-	igdeCheckBoxReference pChkEmitterEnableCasting;
+	igdeEditVector::Ref pEditEmitterPosition;
+	igdeEditVector::Ref pEditEmitterRotation;
+	igdeTextField::Ref pEditEmitterBurstInterval;
+	igdeTextField::Ref pEditEmitterWarmUpTime;
+	igdeCheckBox::Ref pChkEmitterEnableCasting;
 	
 	
 	

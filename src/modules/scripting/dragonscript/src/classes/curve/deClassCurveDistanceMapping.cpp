@@ -33,7 +33,6 @@
 #include "../../deClassPathes.h"
 
 #include <dragengine/common/curve/decCurveDistanceMapping.h>
-#include <dragengine/common/curve/decCurveDistanceMapping.h>
 
 #include <libdscript/exceptions.h>
 

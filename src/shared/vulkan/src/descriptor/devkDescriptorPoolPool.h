@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<devkDescriptorPoolPool> Ref;
 	
 	
-	
 private:
 	devkDescriptorPool &pOwner;
 	

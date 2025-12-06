@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<deAnimatorRuleInverseKinematic> Ref;
 	
 	
-	
 private:
 	decVector pGoalPosition;
 	decQuaternion pGoalOrientation;

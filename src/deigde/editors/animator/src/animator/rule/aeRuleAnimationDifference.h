@@ -36,6 +36,7 @@ class aeRuleAnimationDifference : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleAnimationDifference> Ref;
 	
+	
 private:
 	decString pMove1Name;
 	float pMove1Time;

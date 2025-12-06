@@ -45,7 +45,6 @@
 #include "../igdeTagManager.h"
 #include "../property/igdeGDProperty.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/string/decStringSet.h>
@@ -87,7 +86,6 @@ igdeGDClass::igdeGDClass( const char *name ){
 
 igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 	igdeGDCSnapPoint *snappoint = NULL;
-	deObjectReference objRef;
 	int i, count;
 	
 	pCamera = NULL;
@@ -138,9 +136,8 @@ igdeGDClass::igdeGDClass( const igdeGDClass &gdclass ){
 		
 		count = gdclass.pInheritClasses.GetCount();
 		for( i=0; i<count; i++ ){
-			objRef.TakeOver( new igdeGDClassInherit(
+			pInheritClasses.Add(igdeGDClassInherit::Ref::NewWith(
 				*( ( igdeGDClassInherit* )gdclass.pInheritClasses.GetAt( i ) ) ) );
-			pInheritClasses.Add( objRef );
 		}
 		
 		pDefaultInheritPropertyPrefix = gdclass.pDefaultInheritPropertyPrefix;

@@ -39,6 +39,7 @@ class deoglRenderPlanCompute : public deObject{
 public:
 	typedef deTObjectReference<deoglRenderPlanCompute> Ref;
 	
+	
 	/** Find config parameters. */
 	enum eFindConfigParameters{
 		efcpNodeCount,

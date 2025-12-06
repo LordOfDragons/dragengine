@@ -42,8 +42,8 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/filesystem/dePatternList.h>
@@ -80,7 +80,7 @@ gdeGameDefinition *gdeLoadSaveSystem::LoadGameDefinition( const char *filename )
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference fileReader;
+	decBaseFileReader::Ref fileReader;
 	gdeGameDefinition *gameDefinition = NULL;
 	
 	try{
@@ -147,7 +147,7 @@ gdeObjectClass *gdeLoadSaveSystem::LoadXmlEClass( const char *filename ){
 
 void gdeLoadSaveSystem::SaveXmlEClass( const gdeGameDefinition &gameDefinition,
 const gdeObjectClass &objectClass, const char *filename ){
-	decBaseFileWriterReference fileWriter;
+	decBaseFileWriter::Ref fileWriter;
 	fileWriter.TakeOver( new decDiskFileWriter( filename, false ) );
 	pLSXmlEClass.SaveXmlEClass( gameDefinition, objectClass, fileWriter );
 }

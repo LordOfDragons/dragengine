@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/light/gdeOCLight.h"
 #include "../../../../undosys/objectClass/light/gdeUOCRemoveLight.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -71,11 +71,10 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 		return NULL;
 	}
 	
-	deObjectReference clipOCLight;
-	clipOCLight.TakeOver( new gdeOCLight( *light ) );
+	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::NewWith(*light));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCLight( ( gdeOCLight* )( deObject* )clipOCLight ) );
+	igdeClipboardData::Ref clipData;
+	clipData.TakeOver( new gdeClipboardDataOCLight( clipOCLight ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

@@ -39,6 +39,8 @@ class igdeScriptModule : public deBaseScriptingModule{
 public:
 	/** \brief Script module factory. */
 	class cModule : public deInternalModule{
+	public:
+		typedef deTObjectReference<cModule> Ref;
 	private:
 		igdeWindowMain &pWindowMain;
 	public:

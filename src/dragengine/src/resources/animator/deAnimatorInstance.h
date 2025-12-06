@@ -26,10 +26,10 @@
 #define _DEANIMATORINSTANCE_H_
 
 #include "rule/deAnimatorRule.h"
-#include "deAnimatorReference.h"
+#include "deAnimator.h"
 #include "../deResource.h"
-#include "../animation/deAnimationReference.h"
-#include "../component/deComponentReference.h"
+#include "../animation/deAnimation.h"
+#include "../component/deComponent.h"
 #include "../../common/math/decMath.h"
 
 class deBaseScriptingCollider;
@@ -70,11 +70,10 @@ public:
 	typedef deTObjectReference<deAnimatorInstance> Ref;
 	
 	
-	
 private:
-	deAnimatorReference pAnimator;
-	deComponentReference pComponent;
-	deAnimationReference pAnimation;
+	deAnimator::Ref pAnimator;
+	deComponent::Ref pComponent;
+	deAnimation::Ref pAnimation;
 	
 	deAnimatorRule::eBlendModes pBlendMode;
 	float pBlendFactor;

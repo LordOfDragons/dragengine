@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXTEXTAREA_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 
 class igdeTextArea;
@@ -51,7 +51,7 @@ public:
 	
 private:
 	igdeTextArea *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXText *pTextArea;
 	FXHiliteStyle *pStyles;
 	igdeNativeFoxResizer *pResizer;

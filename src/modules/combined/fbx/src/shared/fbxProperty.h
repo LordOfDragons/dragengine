@@ -28,7 +28,7 @@
 #include <stdint.h>
 
 #include <dragengine/deObject.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
@@ -59,7 +59,6 @@ class fbxProperty : public deObject{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<fbxProperty> Ref;
-	
 	
 	
 public:
@@ -163,7 +162,7 @@ public:
 	
 	
 protected:
-	void pGetValueReader( decBaseFileReader &reader, decBaseFileReaderReference &valueReader );
+	void pGetValueReader( decBaseFileReader &reader, decBaseFileReader::Ref &valueReader );
 };
 
 #endif

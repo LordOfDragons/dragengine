@@ -37,12 +37,10 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/event/igdeScrollBarListener.h>
-#include <deigde/gui/event/igdeScrollBarListenerReference.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
-#include <deigde/gui/event/igdeComboBoxListenerReference.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 #include <dragengine/deEngine.h>
@@ -103,12 +101,12 @@ pViewImage( NULL )
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	
-	igdeContainerReference bottomLine;
+	igdeContainer::Ref bottomLine;
 	bottomLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX,
 		igdeContainerFlow::esFirst ) );
 	AddChild( bottomLine, igdeContainerBorder::eaBottom );
 	
-	igdeScrollBarListenerReference scrollView;
+	igdeScrollBarListener::Ref scrollView;
 	scrollView.TakeOver( new cScrollView( *this ) );
 	
 	pSBHorizontal.TakeOver( new igdeScrollBar( env, igdeScrollBar::eoHorizontal ) );
@@ -127,7 +125,7 @@ pViewImage( NULL )
 	pCBZoom->SetSelection( 0 ); // 100
 	bottomLine->AddChild( pCBZoom );
 	
-	igdeComboBoxListenerReference changeZoom;
+	igdeComboBoxListener::Ref changeZoom;
 	changeZoom.TakeOver( new cChangeZoom( *this ) );
 	pCBZoom->AddListener( changeZoom );
 	

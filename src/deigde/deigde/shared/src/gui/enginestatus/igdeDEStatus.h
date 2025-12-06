@@ -25,9 +25,9 @@
 #ifndef _IGDEDESTATUS_H_
 #define _IGDEDESTATUS_H_
 
-#include "../igdeTextAreaReference.h"
-#include "../igdeIconListBoxReference.h"
-#include "../igdeButtonReference.h"
+#include "../igdeTextArea.h"
+#include "../igdeIconListBox.h"
+#include "../igdeButton.h"
 #include "../layout/igdeContainerFlow.h"
 
 class igdeDialogEngine;
@@ -42,10 +42,10 @@ class DE_DLL_EXPORT igdeDEStatus : public igdeContainerFlow{
 private:
 	igdeDialogEngine &pDialogEngine;
 	
-	igdeTextAreaReference pTextStatus;
-	igdeIconListBoxReference pListSystems;
-	igdeButtonReference pBtnStart;
-	igdeButtonReference pBtnStop;
+	igdeTextArea::Ref pTextStatus;
+	igdeIconListBox::Ref pListSystems;
+	igdeButton::Ref pBtnStart;
+	igdeButton::Ref pBtnStop;
 	
 	
 	

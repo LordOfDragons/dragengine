@@ -78,7 +78,8 @@ protected:
 	class DE_DLL_EXPORT cMap : public deObject{
 	public:
 		typedef deTObjectReference<cMap> Ref;
-		
+	
+	
 		decString value;
 		decObjectDictionary map;
 		cMap();

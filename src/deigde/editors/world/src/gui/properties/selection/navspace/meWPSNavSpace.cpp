@@ -40,7 +40,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeTextField.h>
@@ -53,7 +53,7 @@
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -109,7 +109,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUNavSpaceSetPath( navspace, editPath->GetPath() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -131,7 +131,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUNavSpaceSetPosition( navspace, editDVector->GetDVector() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -153,7 +153,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUNavSpaceSetOrientation( navspace, editVector->GetVector() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -177,7 +177,7 @@ pWorld( NULL )
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox;
+	igdeContainer::Ref content, groupBox;
 	
 	pListener = new meWPSNavSpaceListener( *this );
 	

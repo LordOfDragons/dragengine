@@ -43,6 +43,7 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrSwapchain> Ref;
 	
+	
 	/** Image. */
 	struct sImage{
 		uint32_t openglImage;

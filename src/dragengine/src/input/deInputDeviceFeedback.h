@@ -27,7 +27,7 @@
 
 #include "../common/string/decString.h"
 #include "../common/collection/decObjectOrderedSet.h"
-#include "../resources/image/deImageReference.h"
+#include "../resources/image/deImage.h"
 
 
 /**
@@ -73,7 +73,7 @@ private:
 	 * 
 	 * Large image of 128 pixels squared or larger.
 	 */
-	deImageReference pDisplayImage;
+	deImage::Ref pDisplayImage;
 	
 	/** \brief List of small icons of different size for use in binding displays. */
 	decObjectOrderedSet pDisplayIcons;

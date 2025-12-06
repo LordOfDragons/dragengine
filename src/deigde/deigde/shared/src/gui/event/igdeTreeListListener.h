@@ -38,6 +38,12 @@ class igdeMenuCascade;
  * \brief IGDE UI TreeList Listener.
  */
 class DE_DLL_EXPORT igdeTreeListListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTreeListListener> Ref;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

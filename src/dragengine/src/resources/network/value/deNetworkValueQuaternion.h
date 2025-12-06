@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<deNetworkValueQuaternion> Ref;
 	
 	
-	
 private:
 	eValueFormats pFormat;
 	decQuaternion pValue;

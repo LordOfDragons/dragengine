@@ -25,16 +25,16 @@
 #ifndef _PEEWPTYPE_H_
 #define _PEEWPTYPE_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 class peeEmitter;
 class peeType;
@@ -54,43 +54,43 @@ private:
 	
 	peeEmitter *pEmitter;
 	
-	igdeIconReference pIconUnused;
-	igdeIconReference pIconUsed;
+	igdeIcon::Ref pIconUnused;
+	igdeIcon::Ref pIconUsed;
 	
-	igdeActionReference pActionType;
-	igdeActionReference pActionTypeAdd;
-	igdeActionReference pActionTypeRemove;
-	igdeActionReference pActionTypeRename;
+	igdeAction::Ref pActionType;
+	igdeAction::Ref pActionTypeAdd;
+	igdeAction::Ref pActionTypeRemove;
+	igdeAction::Ref pActionTypeRename;
 	
-	igdeComboBoxReference pCBType;
-	igdeButtonReference pBtnType;
+	igdeComboBox::Ref pCBType;
+	igdeButton::Ref pBtnType;
 	
-	igdeTextFieldReference pEditBurstLifetime;
-	igdeCheckBoxReference pChkEmitBurst;
+	igdeTextField::Ref pEditBurstLifetime;
+	igdeCheckBox::Ref pChkEmitBurst;
 	
-	igdeEditPathReference pEditSkin;
-	igdeEditPathReference pEditModel;
-	igdeEditPathReference pEditModelSkin;
-	igdeComboBoxReference pCBCastFrom;
-	igdeComboBoxReference pCBSimType;
-	igdeCheckBoxReference pChkIntervalAsDistance;
-	igdeEditPathReference pEditPathTrailEmitter;
-	igdeComboBoxReference pCBTrailController;
-	igdeTextFieldReference pEditTrailTargetController;
+	igdeEditPath::Ref pEditSkin;
+	igdeEditPath::Ref pEditModel;
+	igdeEditPath::Ref pEditModelSkin;
+	igdeComboBox::Ref pCBCastFrom;
+	igdeComboBox::Ref pCBSimType;
+	igdeCheckBox::Ref pChkIntervalAsDistance;
+	igdeEditPath::Ref pEditPathTrailEmitter;
+	igdeComboBox::Ref pCBTrailController;
+	igdeTextField::Ref pEditTrailTargetController;
 	
-	igdeTextFieldReference pEditPhysicsSize;
-	igdeComboBoxReference pCBCollisionResponse;
-	igdeEditPathReference pEditPathCollisionEmitter;
-	igdeTextFieldReference pEditEmitMinImpulse;
-	igdeComboBoxReference pCBEmitController;
-	igdeTextFieldReference pEditEmitTargetController;
+	igdeTextField::Ref pEditPhysicsSize;
+	igdeComboBox::Ref pCBCollisionResponse;
+	igdeEditPath::Ref pEditPathCollisionEmitter;
+	igdeTextField::Ref pEditEmitMinImpulse;
+	igdeComboBox::Ref pCBEmitController;
+	igdeTextField::Ref pEditEmitTargetController;
 	
-	igdeListBoxReference pListParams;
+	igdeListBox::Ref pListParams;
 	
-	igdeTextFieldReference pEditParamValue;
-	igdeTextFieldReference pEditParamSpread;
-	igdeComboBoxReference pCBParamCtrlValue;
-	igdeComboBoxReference pCBParamCtrlSpread;
+	igdeTextField::Ref pEditParamValue;
+	igdeTextField::Ref pEditParamSpread;
+	igdeComboBox::Ref pCBParamCtrlValue;
+	igdeComboBox::Ref pCBParamCtrlSpread;
 	
 	bool pPreventUpdate;
 	

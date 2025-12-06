@@ -104,7 +104,7 @@ pListener( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	
 	pListener = new seWPViewListener( *this );
 	

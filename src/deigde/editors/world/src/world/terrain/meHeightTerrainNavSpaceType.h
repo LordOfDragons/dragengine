@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<meHeightTerrainNavSpaceType> Ref;
 	
 	
-	
 private:
 	meHeightTerrainNavSpace *pNavSpace;
 	

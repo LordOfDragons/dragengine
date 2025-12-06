@@ -39,11 +39,8 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decMemoryFile.h>
-#include <dragengine/common/file/decMemoryFileReference.h>
 #include <dragengine/common/file/decMemoryFileWriter.h>
 #include <dragengine/common/utils/decDateTime.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
@@ -51,13 +48,12 @@
 #include <dragengine/systems/deModuleSystem.h>
 #include <dragengine/systems/modules/deLoadableModule.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/filesystem/deCollectDirectorySearchVisitor.h>
 #include <dragengine/filesystem/deCollectFileSearchVisitor.h>
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/image/deImageManager.h>
-#include <dragengine/resources/image/deImageReference.h>
 
 
 
@@ -306,7 +302,7 @@ void projTaskDistribute::pCreateDelgaWriter(){
 	
 	path.RemoveLastComponent(); // parent directory
 	
-	deVFSContainerReference parentDir;
+	deVFSContainer::Ref parentDir;
 	parentDir.TakeOver( new deVFSDiskDirectory( path ) );
 	
 	pDelgaWriter.TakeOver( parentDir->OpenFileForWriting( localPath ) );
@@ -552,7 +548,7 @@ const char *projTaskDistribute::pGetModuleTypeName( deModuleSystem::eModuleTypes
 }
 
 void projTaskDistribute::pCopyFile( const decPath &path ){
-	const decBaseFileReaderReference reader( decBaseFileReader::Ref::New( pVFS->OpenFileForReading( path ) ) );
+	const decBaseFileReader::Ref reader( decBaseFileReader::Ref::New( pVFS->OpenFileForReading( path ) ) );
 	
 	const long size = reader->GetLength();
 	if( size == 0 ){
@@ -667,10 +663,10 @@ void projTaskDistribute::pWriteGameXml(){
 		pathGameXml.AddComponent( pProfile.GetIdentifier().ToHexString( false ) + ".degame" );
 	}
 	
-	decMemoryFileReference memoryFile;
+	decMemoryFile::Ref memoryFile;
 	memoryFile.TakeOver( new decMemoryFile( pathGameXml.GetPathUnix() ) );
 	
-	decBaseFileWriterReference memoryFileWriter;
+	decBaseFileWriter::Ref memoryFileWriter;
 	memoryFileWriter.TakeOver( new decMemoryFileWriter( memoryFile, false ) );
 	
 	// write xml file
@@ -703,7 +699,7 @@ void projTaskDistribute::pWriteGameXml( decXmlWriter &writer ){
 	const int iconPathCount = iconPathList.GetCount();
 	if( iconPathCount > 0 ){
 		deImageManager &imageManager = *env.GetEngineController()->GetEngine()->GetImageManager();
-		deImageReference icon;
+		deImage::Ref icon;
 		int i;
 		for( i=0; i<iconPathCount; i++ ){
 			icon.TakeOver( imageManager.LoadImage( iconPathList.GetAt( i ), "/" ) );

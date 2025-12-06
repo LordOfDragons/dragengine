@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 #include "../../../../undosys/objectClass/speaker/gdeUOCAddSpeaker.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Speaker",
 ///////////////
 
 igdeUndo *gdeMAOCSpeakerPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCSpeaker::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;
@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCSpeakerPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectC
 	const gdeClipboardDataOCSpeaker &clipOCSpeaker =
 		( const gdeClipboardDataOCSpeaker & )( igdeClipboardData& )clip;
 	
-	deObjectReference speaker;
-	speaker.TakeOver( new gdeOCSpeaker( *clipOCSpeaker.GetSpeaker() ) );
+	const gdeOCSpeaker::Ref speaker(gdeOCSpeaker::Ref::NewWith(*clipOCSpeaker.GetSpeaker()));
 	
 	igdeUndo * const undo = new gdeUOCAddSpeaker( &objectClass,
-		( gdeOCSpeaker* )( deObject* )speaker );
+		speaker );
 	undo->SetShortInfo( "Paste object class speaker" );
 	return undo;
 }

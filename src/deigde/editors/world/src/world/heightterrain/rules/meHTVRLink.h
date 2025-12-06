@@ -47,6 +47,10 @@ private:
 	int pDestSlot;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRLink> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a link. */

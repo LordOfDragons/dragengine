@@ -34,6 +34,11 @@
  * Working object for rig box shape.
  */
 class reRigShapeHull : public reRigShape{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reRigShapeHull> Ref;
+	
+	
 private:
 	decVector *pPoints;
 	int pPointCount;

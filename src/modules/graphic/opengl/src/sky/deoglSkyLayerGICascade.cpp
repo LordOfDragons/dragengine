@@ -31,7 +31,6 @@
 #include "deoglSkyLayerGICascade.h"
 #include "../delayedoperation/deoglDelayedOperations.h"
 #include "../gi/deoglGICascade.h"
-#include "../gi/deoglGICascade.h"
 #include "../renderthread/deoglRenderThread.h"
 #include "../renderthread/deoglRTLogger.h"
 #include "../shadow/deoglShadowCaster.h"

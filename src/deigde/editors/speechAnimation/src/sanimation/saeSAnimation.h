@@ -33,10 +33,10 @@
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringSet.h>
-#include <dragengine/resources/animator/deAnimatorReference.h>
-#include <dragengine/resources/animator/deAnimatorInstanceReference.h>
-#include <dragengine/resources/component/deComponentReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/resources/animator/deAnimator.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
+#include <dragengine/resources/component/deComponent.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeWSky;
 class igdeCamera;
@@ -53,7 +53,6 @@ public:
 	typedef deTObjectReference<saeSAnimation> Ref;
 	
 	
-	
 public:
 	/** Display modes. */
 	enum eDisplayModes{
@@ -64,11 +63,11 @@ public:
 	};
 	
 private:
-	deWorldReference pEngWorld;
+	deWorld::Ref pEngWorld;
 	igdeWSky *pSky;
-	deComponentReference pEngComponent;
-	deAnimatorReference pEngAnimator;
-	deAnimatorInstanceReference pEngAnimatorInstance;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	
 	igdeCamera *pCamera;
 	
@@ -113,7 +112,7 @@ public:
 	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
 	
 	/** Component. */
-	inline const deComponentReference &GetEngineComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	
 	/** Retrieves the sky. */
 	inline igdeWSky *GetSky() const{ return pSky; }

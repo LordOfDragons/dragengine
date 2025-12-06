@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<meUndoDataObject> Ref;
 	
 	
-	
 private:
 	meObject::Ref pObject;
 	decDVector pOldPosition;

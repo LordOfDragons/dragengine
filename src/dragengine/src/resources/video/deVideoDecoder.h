@@ -25,7 +25,7 @@
 #ifndef _DEVIDEODECODER_H_
 #define _DEVIDEODECODER_H_
 
-#include "deVideoReference.h"
+#include "deVideo.h"
 #include "../../deObject.h"
 
 class deVideoManager;
@@ -46,10 +46,9 @@ public:
 	typedef deTObjectReference<deVideoDecoder> Ref;
 	
 	
-	
 private:
 	deVideoManager &pVideoManager;
-	deVideoReference pVideo;
+	deVideo::Ref pVideo;
 	
 	deBaseVideoDecoder *pPeerVideo;
 	

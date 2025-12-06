@@ -27,7 +27,7 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 
 
@@ -44,12 +44,17 @@
  * string in absolute form.
  */
 class DE_DLL_EXPORT igdeGDSkin : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDSkin> Ref;
+	
+	
 private:
 	decString pPath;
 	decString pName;
 	decString pDescription;
 	decString pCategory;
-	deImageReference pPreviewImage;
+	deImage::Ref pPreviewImage;
 	
 	
 	

@@ -48,7 +48,6 @@ public:
 	typedef deTObjectReference<deVFSMemoryFiles> Ref;
 	
 	
-	
 private:
 	decObjectList pFiles;
 	dePathList pDirectories;

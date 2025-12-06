@@ -26,7 +26,7 @@
 #define _IGDEGDPARTICLEEMITTERMANAGER_H_
 
 #include "igdeGDParticleEmitterList.h"
-#include "../igdeGDCategoryReference.h"
+#include "../igdeGDCategory.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -40,7 +40,7 @@ class igdeGameDefinition;
 class DE_DLL_EXPORT igdeGDParticleEmitterManager{
 private:
 	igdeGDParticleEmitterList pEmitterList;
-	igdeGDCategoryReference pCategories;
+	igdeGDCategory::Ref pCategories;
 	decString pDefaultPath;
 	
 	

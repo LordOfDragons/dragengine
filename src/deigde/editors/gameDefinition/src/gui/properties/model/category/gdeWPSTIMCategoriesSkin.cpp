@@ -36,7 +36,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -86,7 +86,7 @@ gdeWPSTIMCategorySkin *gdeWPSTIMCategoriesSkin::GetChildWith( gdeCategory* categ
 void gdeWPSTIMCategoriesSkin::CategoriesChanged(){
 	const gdeCategoryList &list = GetGameDefinition().GetCategoriesSkin();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	// update existing and add new categories
@@ -123,7 +123,7 @@ void gdeWPSTIMCategoriesSkin::CategoriesChanged(){
 void gdeWPSTIMCategoriesSkin::OnAddedToTree(){
 	const gdeCategoryList &list = GetGameDefinition().GetCategoriesSkin();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	for( i=0; i<count; i++ ){

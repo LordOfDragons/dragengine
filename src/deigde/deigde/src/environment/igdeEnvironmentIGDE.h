@@ -27,7 +27,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 
-#include <dragengine/logger/deLoggerReference.h>
+#include <dragengine/logger/deLogger.h>
 
 
 class igdeWindowMain;
@@ -38,7 +38,7 @@ class igdeWindowMain;
  */
 class igdeEnvironmentIGDE : public igdeEnvironment{
 private:
-	deLoggerReference pLogger;
+	deLogger::Ref pLogger;
 	igdeWindowMain *pWindowMain;
 	
 	

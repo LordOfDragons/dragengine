@@ -58,7 +58,6 @@ public:
 	typedef deTObjectReference<deovrDevice> Ref;
 	
 	
-	
 private:
 	deVROpenVR &pOvr;
 	

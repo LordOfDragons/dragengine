@@ -25,8 +25,8 @@
 #ifndef _MEWVNODECOMBINE_H_
 #define _MEWVNODECOMBINE_H_
 
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "meWVNode.h"
 
@@ -41,10 +41,10 @@ class meWVNodeCombine : public meWVNode{
 private:
 	meHTVRuleCombine *pRuleCombine;
 	
-	igdeContainerReference pFraParameters;
-	igdeTextFieldReference pEditX;
-	igdeTextFieldReference pEditY;
-	igdeTextFieldReference pEditZ;
+	igdeContainer::Ref pFraParameters;
+	igdeTextField::Ref pEditX;
+	igdeTextField::Ref pEditY;
+	igdeTextField::Ref pEditZ;
 	
 	
 	

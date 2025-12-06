@@ -29,15 +29,15 @@
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringSet.h>
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeIconListBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/composed/igdeEditPropertyValueReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeIconListBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/composed/igdeEditPropertyValue.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 
 class igdeUndo;
@@ -60,27 +60,27 @@ private:
 	igdeClipboard *pClipboard;
 	decStringDictionary pProperties;
 	
-	igdeIconReference pIconUnknownKey;
-	igdeIconReference pIconInvalidValue;
+	igdeIcon::Ref pIconUnknownKey;
+	igdeIcon::Ref pIconInvalidValue;
 	
-	igdeComboBoxFilterReference pCBKeys;
-	igdeButtonReference pBtnKeyAdd;
+	igdeComboBoxFilter::Ref pCBKeys;
+	igdeButton::Ref pBtnKeyAdd;
 	
-	igdeIconListBoxReference pListProperties;
-	igdeEditPropertyValueReference pEditPropertyValue;
-	igdeTextAreaReference pDisplayInfo;
+	igdeIconListBox::Ref pListProperties;
+	igdeEditPropertyValue::Ref pEditPropertyValue;
+	igdeTextArea::Ref pDisplayInfo;
 	
-	igdeActionReference pActionPropertyAdd;
-	igdeActionReference pActionPropertyRemove;
-	igdeActionReference pActionPropertyClear;
-	igdeActionReference pActionPropertyCopy;
-	igdeActionReference pActionPropertyCopyAll;
-	igdeActionReference pActionPropertyCut;
-	igdeActionReference pActionPropertyCutAll;
-	igdeActionReference pActionPropertyPaste;
-	igdeActionReference pActionPropertyRename;
-	igdeActionReference pActionPropertyExport;
-	igdeActionReference pActionPropertyImport;
+	igdeAction::Ref pActionPropertyAdd;
+	igdeAction::Ref pActionPropertyRemove;
+	igdeAction::Ref pActionPropertyClear;
+	igdeAction::Ref pActionPropertyCopy;
+	igdeAction::Ref pActionPropertyCopyAll;
+	igdeAction::Ref pActionPropertyCut;
+	igdeAction::Ref pActionPropertyCutAll;
+	igdeAction::Ref pActionPropertyPaste;
+	igdeAction::Ref pActionPropertyRename;
+	igdeAction::Ref pActionPropertyExport;
+	igdeAction::Ref pActionPropertyImport;
 	
 	bool pEnabled;
 	

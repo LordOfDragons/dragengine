@@ -27,11 +27,11 @@
 
 #include <deigde/clipboard/igdeClipboard.h>
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 class gdeMACategory;
 class gdeMAParticleEmitter;
@@ -70,124 +70,124 @@ class gdeWindowMain : public igdeEditorWindow{
 private:
 	gdeWindowMainListener *pListener;
 	
-	igdeIconReference pIconShowEnvMapProbes;
-	igdeIconReference pIconShowNavBlockers;
+	igdeIcon::Ref pIconShowEnvMapProbes;
+	igdeIcon::Ref pIconShowNavBlockers;
 	
-	igdeActionReference pActionGDNew;
-	igdeActionReference pActionGDOpen;
-	igdeActionReference pActionGDOpenProject;
-	igdeActionReference pActionGDSave;
-	igdeActionReference pActionGDSaveAs;
+	igdeAction::Ref pActionGDNew;
+	igdeAction::Ref pActionGDOpen;
+	igdeAction::Ref pActionGDOpenProject;
+	igdeAction::Ref pActionGDSave;
+	igdeAction::Ref pActionGDSaveAs;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
-	igdeActionReference pActionEditFind;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
+	igdeAction::Ref pActionEditFind;
 	
-	igdeActionReference pActionViewShowEnvMapProbes;
-	igdeActionReference pActionViewShowNavBlockers;
+	igdeAction::Ref pActionViewShowEnvMapProbes;
+	igdeAction::Ref pActionViewShowNavBlockers;
 	
-	igdeActionReference pActionCategoryAdd;
-	igdeActionReference pActionCategoryRemove;
-	igdeActionReference pActionCategoryObjectClassAdd;
-	igdeActionReference pActionCategoryParticleEmitterAdd;
-	igdeActionReference pActionCategorySkinAdd;
-	igdeActionReference pActionCategorySkyAdd;
+	igdeAction::Ref pActionCategoryAdd;
+	igdeAction::Ref pActionCategoryRemove;
+	igdeAction::Ref pActionCategoryObjectClassAdd;
+	igdeAction::Ref pActionCategoryParticleEmitterAdd;
+	igdeAction::Ref pActionCategorySkinAdd;
+	igdeAction::Ref pActionCategorySkyAdd;
 	
-	igdeActionReference pActionObjectClassAdd;
-	igdeActionReference pActionObjectClassRemove;
-	igdeActionReference pActionObjectClassCopy;
-	igdeActionReference pActionObjectClassCut;
-	igdeActionReference pActionObjectClassPaste;
-	igdeActionReference pActionObjectClassExportXmlEClass;
-	igdeActionReference pActionObjectClassDuplicate;
-	igdeActionReference pActionObjectClassSubclass;
+	igdeAction::Ref pActionObjectClassAdd;
+	igdeAction::Ref pActionObjectClassRemove;
+	igdeAction::Ref pActionObjectClassCopy;
+	igdeAction::Ref pActionObjectClassCut;
+	igdeAction::Ref pActionObjectClassPaste;
+	igdeAction::Ref pActionObjectClassExportXmlEClass;
+	igdeAction::Ref pActionObjectClassDuplicate;
+	igdeAction::Ref pActionObjectClassSubclass;
 	
-	igdeActionReference pActionOCBillboardAdd;
-	igdeActionReference pActionOCBillboardRemove;
-	igdeActionReference pActionOCBillboardCopy;
-	igdeActionReference pActionOCBillboardCut;
-	igdeActionReference pActionOCBillboardPaste;
+	igdeAction::Ref pActionOCBillboardAdd;
+	igdeAction::Ref pActionOCBillboardRemove;
+	igdeAction::Ref pActionOCBillboardCopy;
+	igdeAction::Ref pActionOCBillboardCut;
+	igdeAction::Ref pActionOCBillboardPaste;
 	
-	igdeActionReference pActionOCCameraAdd;
-	igdeActionReference pActionOCCameraRemove;
-	igdeActionReference pActionOCCameraCopy;
-	igdeActionReference pActionOCCameraCut;
-	igdeActionReference pActionOCCameraPaste;
+	igdeAction::Ref pActionOCCameraAdd;
+	igdeAction::Ref pActionOCCameraRemove;
+	igdeAction::Ref pActionOCCameraCopy;
+	igdeAction::Ref pActionOCCameraCut;
+	igdeAction::Ref pActionOCCameraPaste;
 	
-	igdeActionReference pActionOCComponentAdd;
-	igdeActionReference pActionOCComponentRemove;
-	igdeActionReference pActionOCComponentCopy;
-	igdeActionReference pActionOCComponentCut;
-	igdeActionReference pActionOCComponentPaste;
+	igdeAction::Ref pActionOCComponentAdd;
+	igdeAction::Ref pActionOCComponentRemove;
+	igdeAction::Ref pActionOCComponentCopy;
+	igdeAction::Ref pActionOCComponentCut;
+	igdeAction::Ref pActionOCComponentPaste;
 	
-	igdeActionReference pActionOCEnvMapProbeAdd;
-	igdeActionReference pActionOCEnvMapProbeRemove;
-	igdeActionReference pActionOCEnvMapProbeCopy;
-	igdeActionReference pActionOCEnvMapProbeCut;
-	igdeActionReference pActionOCEnvMapProbePaste;
+	igdeAction::Ref pActionOCEnvMapProbeAdd;
+	igdeAction::Ref pActionOCEnvMapProbeRemove;
+	igdeAction::Ref pActionOCEnvMapProbeCopy;
+	igdeAction::Ref pActionOCEnvMapProbeCut;
+	igdeAction::Ref pActionOCEnvMapProbePaste;
 	
-	igdeActionReference pActionOCLightAdd;
-	igdeActionReference pActionOCLightRemove;
-	igdeActionReference pActionOCLightCopy;
-	igdeActionReference pActionOCLightCut;
-	igdeActionReference pActionOCLightPaste;
+	igdeAction::Ref pActionOCLightAdd;
+	igdeAction::Ref pActionOCLightRemove;
+	igdeAction::Ref pActionOCLightCopy;
+	igdeAction::Ref pActionOCLightCut;
+	igdeAction::Ref pActionOCLightPaste;
 	
-	igdeActionReference pActionOCNavBlockerAdd;
-	igdeActionReference pActionOCNavBlockerRemove;
-	igdeActionReference pActionOCNavBlockerCopy;
-	igdeActionReference pActionOCNavBlockerCut;
-	igdeActionReference pActionOCNavBlockerPaste;
+	igdeAction::Ref pActionOCNavBlockerAdd;
+	igdeAction::Ref pActionOCNavBlockerRemove;
+	igdeAction::Ref pActionOCNavBlockerCopy;
+	igdeAction::Ref pActionOCNavBlockerCut;
+	igdeAction::Ref pActionOCNavBlockerPaste;
 	
-	igdeActionReference pActionOCNavSpaceAdd;
-	igdeActionReference pActionOCNavSpaceRemove;
-	igdeActionReference pActionOCNavSpaceCopy;
-	igdeActionReference pActionOCNavSpaceCut;
-	igdeActionReference pActionOCNavSpacePaste;
+	igdeAction::Ref pActionOCNavSpaceAdd;
+	igdeAction::Ref pActionOCNavSpaceRemove;
+	igdeAction::Ref pActionOCNavSpaceCopy;
+	igdeAction::Ref pActionOCNavSpaceCut;
+	igdeAction::Ref pActionOCNavSpacePaste;
 	
-	igdeActionReference pActionOCParticleEmitterAdd;
-	igdeActionReference pActionOCParticleEmitterRemove;
-	igdeActionReference pActionOCParticleEmitterCopy;
-	igdeActionReference pActionOCParticleEmitterCut;
-	igdeActionReference pActionOCParticleEmitterPaste;
+	igdeAction::Ref pActionOCParticleEmitterAdd;
+	igdeAction::Ref pActionOCParticleEmitterRemove;
+	igdeAction::Ref pActionOCParticleEmitterCopy;
+	igdeAction::Ref pActionOCParticleEmitterCut;
+	igdeAction::Ref pActionOCParticleEmitterPaste;
 	
-	igdeActionReference pActionOCForceFieldAdd;
-	igdeActionReference pActionOCForceFieldRemove;
-	igdeActionReference pActionOCForceFieldCopy;
-	igdeActionReference pActionOCForceFieldCut;
-	igdeActionReference pActionOCForceFieldPaste;
+	igdeAction::Ref pActionOCForceFieldAdd;
+	igdeAction::Ref pActionOCForceFieldRemove;
+	igdeAction::Ref pActionOCForceFieldCopy;
+	igdeAction::Ref pActionOCForceFieldCut;
+	igdeAction::Ref pActionOCForceFieldPaste;
 	
-	igdeActionReference pActionOCSnapPointAdd;
-	igdeActionReference pActionOCSnapPointRemove;
-	igdeActionReference pActionOCSnapPointCopy;
-	igdeActionReference pActionOCSnapPointCut;
-	igdeActionReference pActionOCSnapPointPaste;
+	igdeAction::Ref pActionOCSnapPointAdd;
+	igdeAction::Ref pActionOCSnapPointRemove;
+	igdeAction::Ref pActionOCSnapPointCopy;
+	igdeAction::Ref pActionOCSnapPointCut;
+	igdeAction::Ref pActionOCSnapPointPaste;
 	
-	igdeActionReference pActionOCSpeakerAdd;
-	igdeActionReference pActionOCSpeakerRemove;
-	igdeActionReference pActionOCSpeakerCopy;
-	igdeActionReference pActionOCSpeakerCut;
-	igdeActionReference pActionOCSpeakerPaste;
+	igdeAction::Ref pActionOCSpeakerAdd;
+	igdeAction::Ref pActionOCSpeakerRemove;
+	igdeAction::Ref pActionOCSpeakerCopy;
+	igdeAction::Ref pActionOCSpeakerCut;
+	igdeAction::Ref pActionOCSpeakerPaste;
 	
-	igdeActionReference pActionOCWorldAdd;
-	igdeActionReference pActionOCWorldRemove;
-	igdeActionReference pActionOCWorldCopy;
-	igdeActionReference pActionOCWorldCut;
-	igdeActionReference pActionOCWorldPaste;
+	igdeAction::Ref pActionOCWorldAdd;
+	igdeAction::Ref pActionOCWorldRemove;
+	igdeAction::Ref pActionOCWorldCopy;
+	igdeAction::Ref pActionOCWorldCut;
+	igdeAction::Ref pActionOCWorldPaste;
 	
-	igdeActionReference pActionParticleEmitterAdd;
-	igdeActionReference pActionParticleEmitterRemove;
+	igdeAction::Ref pActionParticleEmitterAdd;
+	igdeAction::Ref pActionParticleEmitterRemove;
 	
-	igdeActionReference pActionSkinAdd;
-	igdeActionReference pActionSkinRemove;
+	igdeAction::Ref pActionSkinAdd;
+	igdeAction::Ref pActionSkinRemove;
 	
-	igdeActionReference pActionSkyAdd;
-	igdeActionReference pActionSkyRemove;
+	igdeAction::Ref pActionSkyAdd;
+	igdeAction::Ref pActionSkyRemove;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	gdeConfiguration *pConfiguration;
 	igdeClipboard pClipboard;

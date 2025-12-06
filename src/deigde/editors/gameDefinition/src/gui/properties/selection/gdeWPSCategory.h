@@ -25,12 +25,12 @@
 #ifndef _GDEWPSCATEGORY_H_
 #define _GDEWPSCATEGORY_H_
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 #include "../../../undosys/category/gdeUCategoryBase.h"
@@ -52,13 +52,13 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeWidgetReference pAutoCategorizePattern;
-	igdeCheckBoxReference pChkHidden;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeWidget::Ref pAutoCategorizePattern;
+	igdeCheckBox::Ref pChkHidden;
 	
-	igdeListBoxReference pListElements;
-	igdeButtonReference pBtnJumpToElement;
+	igdeListBox::Ref pListElements;
+	igdeButton::Ref pBtnJumpToElement;
 	
 	
 	

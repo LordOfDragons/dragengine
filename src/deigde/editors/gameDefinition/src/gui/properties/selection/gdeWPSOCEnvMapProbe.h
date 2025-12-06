@@ -27,10 +27,10 @@
 
 #include "../../../gamedef/objectClass/envmapprobe/gdeOCEnvMapProbe.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -51,18 +51,18 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeEditVectorReference pEditScaling;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeEditVector::Ref pEditScaling;
 	
-	igdeTextFieldReference pEditShapeInfluence;
-	igdeTextFieldReference pEditShapeReflection;
-	igdeTextFieldReference pEditShapeReflectionMask;
-	igdeTextFieldReference pEditInfluenceBorderSize;
-	igdeTextFieldReference pEditInfluencePriority;
+	igdeTextField::Ref pEditShapeInfluence;
+	igdeTextField::Ref pEditShapeReflection;
+	igdeTextField::Ref pEditShapeReflectionMask;
+	igdeTextField::Ref pEditInfluenceBorderSize;
+	igdeTextField::Ref pEditInfluencePriority;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
 	
 	

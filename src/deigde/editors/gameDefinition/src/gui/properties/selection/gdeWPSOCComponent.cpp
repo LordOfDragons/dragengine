@@ -74,7 +74,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeCommonDialogs.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
@@ -92,12 +92,11 @@
 #include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeIconListBoxListener.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -106,7 +105,6 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/model/deModel.h>
-#include <dragengine/resources/model/deModelReference.h>
 #include <dragengine/resources/model/deModelTexture.h>
 #include <dragengine/resources/model/deModelManager.h>
 
@@ -130,7 +128,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), component ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -154,7 +152,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), component ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -178,7 +176,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), component ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -206,7 +204,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnActionComponent( pPanel.GetObjectClass(), component ) );
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -234,7 +232,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCComponentSetModelPath(
 			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -253,7 +251,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCComponentSetSkinPath(
 			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -272,7 +270,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCComponentSetRigPath(
 			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -291,7 +289,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCComponentSetAnimatorPath(
 			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -310,7 +308,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCComponentSetAnimationPath(
 			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -329,7 +327,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCComponentSetMove(
 			pPanel.GetObjectClass(), component, textField->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -348,7 +346,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCComponentSetOccMeshPath(
 			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -367,7 +365,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCComponentSetAudioModelPath(
 			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -556,7 +554,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCComponentSetPropertyName(
 			pPanel.GetObjectClass(), component, propertyName, comboBox->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -626,7 +624,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChangedTexture( editVector2->GetVector2(),
 			pPanel.GetObjectClass(), pPanel.GetComponent(), texture ) );
 		if( undo ){
@@ -656,6 +654,8 @@ class cActionTextureAdd : public cBaseAction{
 	const decString pTextureName;
 	
 public:
+	typedef deTObjectReference<cActionTextureAdd> Ref;
+	
 	cActionTextureAdd( gdeWPSOCComponent &panel ) : cBaseAction( panel, "Add...",
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add texture" ){ }
 	
@@ -682,14 +682,13 @@ public:
 			}
 		}
 		
-		deObjectReference texture;
-		texture.TakeOver( new gdeOCComponentTexture( name ) );
+		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new gdeUOCCAddTexture( objectClass, component, ( gdeOCComponentTexture* )( deObject* )texture ) );
+		igdeUndo::Ref undo;
+		undo.TakeOver( new gdeUOCCAddTexture( objectClass, component, texture ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
-		component->SetActiveTexture( ( gdeOCComponentTexture* )( deObject* )texture );
+		component->SetActiveTexture( texture );
 		pPanel.GetGameDefinition()->NotifyOCComponentActiveTextureChanged( objectClass, component );
 		return NULL;
 	}
@@ -729,14 +728,14 @@ public:
 		helper.MenuCommand( contextMenu, pPanel.GetActionTextureAdd() );
 		
 		if( actionsAddFromModel.GetCount() > 0 ){
-			igdeMenuCascadeReference subMenu;
+			igdeMenuCascade::Ref subMenu;
 			subMenu.TakeOver( new igdeMenuCascade( env, "Add Texture From Model",
 				env.GetStockIcon( igdeEnvironment::esiPlus ), "Add Texture From Model" ) );
 			
 			const int count = actionsAddFromModel.GetCount();
 			int i;
 			for( i=0; i<count; i++ ){
-				helper.MenuCommand( subMenu, ( igdeAction* )( deObject* )actionsAddFromModel.GetAt( i ) );
+				helper.MenuCommand( subMenu, (igdeAction*)actionsAddFromModel.GetAt( i ) );
 			}
 			
 			contextMenu.AddChild( subMenu );
@@ -778,7 +777,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCCTextureSetPathSkin( pPanel.GetObjectClass(),
 			pPanel.GetComponent(), texture, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -837,7 +836,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCCTextureSetColorTint( pPanel.GetObjectClass(),
 			pPanel.GetComponent(), texture, colorBox->GetColor() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -947,7 +946,7 @@ public:
 		decStringDictionary values( texture->GetProperties() );
 		values.SetAt( key, value );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUOCCTextureSetProperties( pPanel.GetObjectClass(),
 			pPanel.GetComponent(), texture, values ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
@@ -980,7 +979,7 @@ pDirtyEngModelTexNames( true )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	
 	pListener = new gdeWPSOCComponentListener( *this );
 	
@@ -1422,7 +1421,7 @@ void gdeWPSOCComponent::PrepareEngineModelPath(){
 		return;
 	}
 	
-	deModelReference model;
+	deModel::Ref model;
 	try{
 		model.TakeOver( GetEngine()->GetModelManager()->LoadModel( pEngModelPath, "/" ) );
 		
@@ -1434,10 +1433,9 @@ void gdeWPSOCComponent::PrepareEngineModelPath(){
 		
 		pEngModelTexNames.SortAscending();
 		
-		deObjectReference action;
 		for( i=0; i<count; i++ ){
-			action.TakeOver( new cActionTextureAdd( *this, pEngModelTexNames.GetAt( i ) ) );
-			pActionsTextureAddFromModel.Add( action );
+			pActionsTextureAddFromModel.Add(cActionTextureAdd::Ref::NewWith(
+				*this, pEngModelTexNames.GetAt(i)));
 		}
 		
 	}catch( const deException & ){

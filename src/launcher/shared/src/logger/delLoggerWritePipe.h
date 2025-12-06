@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<delLoggerWritePipe> Ref;
 	
 	
-	
 private:
 #ifdef OS_W32
 	HANDLE pPipe;

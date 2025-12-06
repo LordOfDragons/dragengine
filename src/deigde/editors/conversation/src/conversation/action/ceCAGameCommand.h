@@ -39,6 +39,11 @@
  *          to handle invalid or unknown commands.
  */
 class ceCAGameCommand : public ceConversationAction{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceCAGameCommand> Ref;
+	
+	
 private:
 	decString pCommand;
 	

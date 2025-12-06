@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<seUMappedSetCurve> Ref;
 	
 	
-	
 private:
 	const seMapped::Ref pMapped;
 	

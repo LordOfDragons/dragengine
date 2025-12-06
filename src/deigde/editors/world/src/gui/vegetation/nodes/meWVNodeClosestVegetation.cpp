@@ -35,7 +35,6 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -58,7 +57,7 @@ public:
 			return;
 		}
 		
-// 		igdeUndoReference undo;
+// 		igdeUndo::Ref undo;
 // 		undo.TakeOver( new meUHTVRuleCPSetRadius( pNode.GetWindowVegetation().GetVLayer(),
 // 			pNode.GetRuleClosestProp(), value ) );
 // 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -78,7 +77,7 @@ public:
 			return;
 		}
 		
-// 		igdeUndoReference undo;
+// 		igdeUndo::Ref undo;
 // 		undo.TakeOver( new meUHTVRuleCPSetRadius( pNode.GetWindowVegetation().GetVLayer(),
 // 			pNode.GetRuleClosestProp(), value ) );
 // 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -102,12 +101,12 @@ pRuleCV( rule )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	SetTitle( "Closest Vegetation" );
 	
 	// slots
-	igdeNVSlotReference slot;
+	igdeNVSlot::Ref slot;
 	slot.TakeOver( new meWVNodeSlot( env, "Distance", "Distance in meters from closest vegetation",
 		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestVegetation::eosDistance ) );
 	AddSlot( slot );

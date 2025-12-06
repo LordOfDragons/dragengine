@@ -25,10 +25,10 @@
 #ifndef _CEWPTOPIC_H_
 #define _CEWPTOPIC_H_
 
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeTreeListReference.h>
-#include <deigde/gui/igdeSwitcherReference.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeTreeList.h>
+#include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 
 class ceWPAComment;
@@ -83,16 +83,16 @@ private:
 	ceWPTopicListener *pListener;
 	ceConversation *pConversation;
 	
-	igdeComboBoxFilterReference pCBFile;
-	igdeButtonReference pBtnFile;
+	igdeComboBoxFilter::Ref pCBFile;
+	igdeButton::Ref pBtnFile;
 	
-	igdeComboBoxFilterReference pCBTopic;
-	igdeButtonReference pBtnTopic;
+	igdeComboBoxFilter::Ref pCBTopic;
+	igdeButton::Ref pBtnTopic;
 	
-	igdeTreeListReference pTreeActions;
+	igdeTreeList::Ref pTreeActions;
 	ceWPTTreeModel *pModelTreeActions;
 	
-	igdeSwitcherReference pSwitcher;
+	igdeSwitcher::Ref pSwitcher;
 	
 	ceWPACameraShot *pPanelACameraShot;
 	ceWPAMusic *pPanelAMusic;

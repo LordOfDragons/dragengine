@@ -51,7 +51,6 @@ public:
 	typedef deTObjectReference<deadArchiveDirectory> Ref;
 	
 	
-	
 private:
 	deArchiveDelga &pModule;
 	

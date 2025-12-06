@@ -35,7 +35,6 @@
 #include "../../deClassPathes.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/resources/synthesizer/deSynthesizer.h>
 #include <dragengine/resources/synthesizer/deSynthesizerManager.h>
 #include <dragengine/resources/synthesizer/deSynthesizerLink.h>
@@ -187,7 +186,6 @@ deClassSynthesizer::nfSetControllerCount::nfSetControllerCount( const sInitData 
 void deClassSynthesizer::nfSetControllerCount::RunFunction( dsRunTime *rt, dsValue *myself ){
 	deSynthesizer *synthesizer = ( ( sSynNatDat* )p_GetNativeData( myself ) )->synthesizer;
 	int count = rt->GetValue( 0 )->GetInt();
-	deObjectReference controller;
 	
 	if( count < 0 ) DSTHROW( dueInvalidParam );
 	
@@ -196,8 +194,7 @@ void deClassSynthesizer::nfSetControllerCount::RunFunction( dsRunTime *rt, dsVal
 	}
 	
 	while( synthesizer->GetControllerCount() < count ){
-		controller.TakeOver( new deSynthesizerController );
-		synthesizer->AddController( ( deSynthesizerController* )( deObject* )controller );
+		synthesizer->AddController(deSynthesizerController::Ref::NewWith());
 	}
 }
 

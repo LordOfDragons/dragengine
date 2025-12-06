@@ -41,7 +41,6 @@ public:
 	typedef deTObjectReference<delGameIcon> Ref;
 	
 	
-	
 private:
 	int pSize;
 	decString pPath;

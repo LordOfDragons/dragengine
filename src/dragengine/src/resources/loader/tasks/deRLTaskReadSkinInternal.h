@@ -26,7 +26,7 @@
 #define _DERLTASKREADSKININTERNAL_H_
 
 #include "deResourceLoaderTask.h"
-#include "../../skin/deSkinReference.h"
+#include "../../skin/deSkin.h"
 #include "../../../common/collection/decThreadSafeObjectOrderedSet.h"
 
 class deSkinPropertyImage;
@@ -50,6 +50,10 @@ public:
 	 * for the caller
 	 */
 	class DE_DLL_EXPORT cInternalTask : public deThreadSafeObject{
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<cInternalTask> Ref;
+
+
 	private:
 		deSkinPropertyImage *pPropertyImage;
 		deSkinPropertyNodeImage *pNodeImage;
@@ -71,7 +75,7 @@ public:
 	
 	
 private:
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	decThreadSafeObjectOrderedSet pInternalTasks;
 	
 	

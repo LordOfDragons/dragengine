@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<seMapped> Ref;
 	
 	
-	
 private:
 	seSkin *pSkin;
 	

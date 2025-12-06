@@ -27,9 +27,9 @@
 
 #include "meViewEditorNavigation.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 class meCLSnapPoint;
 
@@ -40,9 +40,9 @@ class meCLSnapPoint;
  */
 class meViewEditorMove : public meViewEditorNavigation{
 private:
-	igdeUndoReference pUndoMove;
+	igdeUndo::Ref pUndoMove;
 	meCLSnapPoint *pCLSnapPoint;
-	deColliderReference pCLCollider;
+	deCollider::Ref pCLCollider;
 	
 	
 	

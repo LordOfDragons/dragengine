@@ -42,17 +42,16 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeGroupBox.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/composed/igdeToggleTags.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVectorListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/event/igdeAction.h>
-#include <deigde/gui/event/igdeActionReference.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
@@ -296,10 +295,10 @@ public:
 
 
 class cActionClassHideTags : public cBaseAction {
-	igdeToggleTagsReference &pToggleTags;
+	igdeToggleTags::Ref &pToggleTags;
 	
 public:
-	cActionClassHideTags( meWPView &panel, igdeToggleTagsReference &toggleTags ) :
+	cActionClassHideTags( meWPView &panel, igdeToggleTags::Ref &toggleTags ) :
 	cBaseAction(panel, "", nullptr, "Hide classes matching one or more tags" ),
 	pToggleTags( toggleTags ){}
 	
@@ -310,10 +309,10 @@ public:
 };
 
 class cActionClassPartialHideTags : public cBaseAction {
-	igdeToggleTagsReference &pToggleTags;
+	igdeToggleTags::Ref &pToggleTags;
 	
 public:
-	cActionClassPartialHideTags( meWPView &panel, igdeToggleTagsReference &toggleTags ) :
+	cActionClassPartialHideTags( meWPView &panel, igdeToggleTags::Ref &toggleTags ) :
 	cBaseAction(panel, "", nullptr, "Partially hide classes matching one or more tags"),
 	pToggleTags( toggleTags ){}
 	
@@ -548,7 +547,7 @@ pPreventUpdateCamera(false)
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, form, formLine;
+	igdeContainer::Ref content, groupBox, form, formLine;
 	igdeActionContextMenu::Ref actionMenu;
 	
 	pListener = new meWPViewListener( *this );

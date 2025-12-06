@@ -25,7 +25,7 @@
 #ifndef _IGDENVLINK_H_
 #define _IGDENVLINK_H_
 
-#include "igdeNVSlotReference.h"
+#include "igdeNVSlot.h"
 
 #include <dragengine/deObject.h>
 
@@ -37,9 +37,15 @@ class igdeNVBoard;
  * \brief IGDE UI NodeView Link.
  */
 class DE_DLL_EXPORT igdeNVLink : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeNVLink> Ref;
+	
+	
 private:
-	igdeNVSlotReference pSource;
-	igdeNVSlotReference pTarget;
+	igdeNVSlot::Ref pSource;
+	igdeNVSlot::Ref pTarget;
 	
 	igdeNVBoard *pOwnerBoard;
 	

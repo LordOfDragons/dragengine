@@ -43,7 +43,7 @@
 #include <dragengine/app/deCmdLineArgs.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
+#include <dragengine/filesystem/deVFSContainer.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
@@ -157,7 +157,7 @@ void projTestRunEngine::Start(){
 
 void projTestRunEngine::PutIntoVFS(){
 	deVirtualFileSystem &vfs = *pProcess.GetLauncher().GetVFS();
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	decPath pathRootDir, pathDiskDir;
 	
 	if( ! pEngine->GetOS()->GetPathSystemConfig().IsEmpty() ){
@@ -375,7 +375,7 @@ void projTestRunEngine::InitVFS(){
 	deVirtualFileSystem &vfs = *pEngine->GetVirtualFileSystem();
 	deScriptingSystem &scrsys = *pEngine->GetScriptingSystem();
 	deModuleSystem &modsys = *pEngine->GetModuleSystem();
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	decPath path;
 	
 	// add data directory as root directory

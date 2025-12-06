@@ -25,16 +25,15 @@
 #ifndef _IGDENVBOARD_H_
 #define _IGDENVBOARD_H_
 
+#include "igdeNVNode.h"
 #include "../igdeContainer.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 
-class igdeNVNode;
 class igdeNVLink;
 class igdeNVSlot;
 class igdeNVBoardListener;
@@ -44,6 +43,12 @@ class igdeNVBoardListener;
  * \brief IGDE UI NodeView Board.
  */
 class DE_DLL_EXPORT igdeNVBoard : public igdeContainer{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeNVBoard> Ref;
+	
+	
 private:
 	decColor pBgColor;
 	bool pEnabled;
@@ -51,7 +56,7 @@ private:
 	
 	decObjectOrderedSet pNodes;
 	decObjectOrderedSet pLinks;
-	deObjectReference pActiveNode;
+	igdeNVNode::Ref pActiveNode;
 	
 	decObjectOrderedSet pListeners;
 	

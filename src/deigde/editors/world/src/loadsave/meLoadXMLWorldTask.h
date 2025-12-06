@@ -28,7 +28,7 @@
 #include <deigde/gui/igdeStepableTask.h>
 #include <deigde/utils/igdeBaseXML.h>
 
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
+#include <dragengine/common/xmlparser/decXmlDocument.h>
 
 class meDecal;
 class meLoadSaveSystem;
@@ -52,7 +52,7 @@ private:
 	meLoadSaveSystem *pLSSys;
 	meWorld *pWorld;
 	decBaseFileReader *pReader;
-	decXmlDocumentReference pXMLDocument;
+	decXmlDocument::Ref pXMLDocument;
 	decXmlElementTag *pXMLRoot;
 	int pNextTag;
 	bool pProcessPFCache;

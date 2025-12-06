@@ -45,7 +45,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -134,7 +133,7 @@ void ceWPTTIMAIfElseIfCaseCondition::OnContextMenu( igdeMenuCascade &contextMenu
 	int i;
 	
 	// condition
-	igdeMenuCascadeReference subMenu;
+	igdeMenuCascade::Ref subMenu;
 	subMenu.TakeOver( new igdeMenuCascade( environment, "Set Condition",
 		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
 	contextMenu.AddChild( subMenu );
@@ -177,7 +176,7 @@ igdeMenuCascade &contextMenu, ceConversationCondition *condition ){
 	int i;
 	
 	// child action specific
-	igdeMenuCascadeReference subMenu;
+	igdeMenuCascade::Ref subMenu;
 	subMenu.TakeOver( new igdeMenuCascade( environment, "Replace Condition",
 		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
 	contextMenu.AddChild( subMenu );

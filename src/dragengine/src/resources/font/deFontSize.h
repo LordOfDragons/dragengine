@@ -28,7 +28,7 @@
 #include "deFontGlyph.h"
 #include "../image/deImage.h"
 #include "../../deObject.h"
-#include "../../parallel/deParallelTaskReference.h"
+#include "../../parallel/deParallelTask.h"
 
 
 /**
@@ -47,7 +47,7 @@ private:
 	int pGlyphCount, pFontWidth, pBaseLine;
 	decString pImagePath;
 	deImage::Ref pImage;
-	deParallelTaskReference pTaskLoad;
+	deParallelTask::Ref pTaskLoad;
 	
 	
 public:

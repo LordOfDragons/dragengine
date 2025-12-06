@@ -33,17 +33,15 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeLabel.h>
-#include <deigde/gui/igdeLabelReference.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIconReference.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/logger/deLogger.h>
@@ -102,10 +100,10 @@ pWindowMain( windowMain )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
-	igdeContainerReference content, formLine;
+	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabelReference header;
+	igdeLabel::Ref header;
 	header.TakeOver( new igdeLabel( env, "Enter texture name or choose from model textures." ) );
 	
 	
@@ -121,7 +119,7 @@ pWindowMain( windowMain )
 	content->AddChild( formLine );
 	
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Create Texture", "Cancel" );
 	
 	
@@ -160,8 +158,8 @@ void seDialogAddTexture::SetTextureName( const char *name ){
 ////////////////////////
 
 void seDialogAddTexture::pUpdateModelTextureList(){
-	igdeIconReference iconUsed( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallPlus ) );
-	igdeIconReference iconAvailable( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallMinus ) );
+	igdeIcon::Ref iconUsed( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallPlus ) );
+	igdeIcon::Ref iconAvailable( GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallMinus ) );
 	const seSkin * const skin = pWindowMain.GetSkin();
 	const deModel *engModel = NULL;
 	

@@ -25,10 +25,10 @@
 #ifndef _GDEWPTAGLIST_H_
 #define _GDEWPTAGLIST_H_
 
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction.h>
 
 class igdeUIHelper;
 class igdeUndoSystem;
@@ -44,15 +44,15 @@ class decStringSet;
  */
 class gdeWPTagList : public igdeContainerFlow{
 private:
-	igdeComboBoxFilterReference pComboBox;
-	igdeListBoxReference pListBox;
+	igdeComboBoxFilter::Ref pComboBox;
+	igdeListBox::Ref pListBox;
 	
 	const decStringSet *pTagList;
 	igdeUndoSystem *pUndoSystem;
 	
-	igdeActionReference pActionAdd;
-	igdeActionReference pActionRemove;
-	igdeActionReference pActionClear;
+	igdeAction::Ref pActionAdd;
+	igdeAction::Ref pActionRemove;
+	igdeAction::Ref pActionClear;
 	
 	
 	

@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<deoglRenderTaskSharedVAO> Ref;
 	
 	
-	
 private:
 	deoglRenderTaskSharedPool &pPool;
 	const int pIndex;

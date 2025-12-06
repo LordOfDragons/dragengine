@@ -117,7 +117,6 @@ public:
 	typedef deTObjectReference<deoglPipeline> Ref;
 	
 	
-	
 private:
 	deoglRenderThread &pRenderThread;
 	int pRTSIndex;

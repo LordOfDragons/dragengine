@@ -63,7 +63,6 @@
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/collider/deColliderVisitorIdentify.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
-#include <dragengine/resources/collider/deColliderReference.h>
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/component/deComponentBone.h>
 #include <dragengine/resources/model/deModel.h>
@@ -588,7 +587,7 @@ void debpColliderComponent::DetectCustomCollision( float elapsed ){
 		}
 #endif
 		
-		deColliderReference guard( &pColliderComponent ); // avoid collider being removed while in use
+		deCollider::Ref guard( &pColliderComponent ); // avoid collider being removed while in use
 		
 		pColliderComponent.GetPeerScripting()->CollisionResponse( &pColliderComponent, colinfo );
 		

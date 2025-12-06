@@ -27,11 +27,11 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/event/igdeActionContextMenu.h>
 
 class meHTVRulePropCount;
 
@@ -44,12 +44,12 @@ class meWVNodePropCount : public meWVNode{
 private:
 	meHTVRulePropCount *pRulePC;
 	
-	igdeActionContextMenuReference pActionMenuClass;
+	igdeActionContextMenu::Ref pActionMenuClass;
 	
-	igdeContainerReference pFraParameters;
-	igdeComboBoxFilterReference pCBPropClass;
-	igdeButtonReference pBtnPropClass;
-	igdeTextFieldReference pEditSearchRadius;
+	igdeContainer::Ref pFraParameters;
+	igdeComboBoxFilter::Ref pCBPropClass;
+	igdeButton::Ref pBtnPropClass;
+	igdeTextField::Ref pEditSearchRadius;
 	
 public:
 	/** \name Constructors and Destructors */

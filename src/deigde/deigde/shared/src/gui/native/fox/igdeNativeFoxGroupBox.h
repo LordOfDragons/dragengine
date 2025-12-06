@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXGROUPBOX_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeGroupBox;
 class igdeEnvironment;
@@ -52,7 +52,7 @@ private:
 	igdeGroupBox *pOwner;
 	int pUncollapsedFlags;
 	int pCollapsedFlags;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 public:
 	/** \name Constructors and Destructors */

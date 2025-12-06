@@ -25,7 +25,7 @@
 #ifndef _CEPLAYBACKACTIONSTACKENTRY_H_
 #define _CEPLAYBACKACTIONSTACKENTRY_H_
 
-#include "../action/ceConversationActionReference.h"
+#include "../action/ceConversationAction.h"
 
 class ceConversationActionList;
 class ceConversationTopic;
@@ -42,13 +42,13 @@ class ceConversationCondition;
 class cePlaybackActionStackEntry{
 private:
 	ceConversationTopic *pParentTopic;
-	ceConversationActionReference pParentAction;
+	ceConversationAction::Ref pParentAction;
 	const ceConversationActionList *pParentList;
 	
 	ceConversationCondition *pLoopCondition;
 	bool pLooping;
 	
-	ceConversationActionReference pNextAction;
+	ceConversationAction::Ref pNextAction;
 	int pNextIndex;
 	
 public:

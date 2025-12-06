@@ -26,7 +26,6 @@
 #define _DECWEAKFILEREADER_H_
 
 #include "decBaseFileReader.h"
-#include "decBaseFileReaderReference.h"
 
 
 /**
@@ -38,7 +37,7 @@
  */
 class decWeakFileReader : public decBaseFileReader{
 private:
-	decBaseFileReaderReference pReader;
+	decBaseFileReader::Ref pReader;
 	
 	
 	

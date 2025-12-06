@@ -42,6 +42,10 @@ private:
 	bool pSupported;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealFileFormat> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create file format. */

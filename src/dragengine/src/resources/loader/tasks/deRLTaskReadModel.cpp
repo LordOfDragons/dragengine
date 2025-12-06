@@ -33,7 +33,6 @@
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
 #include "../../../common/file/decBaseFileReader.h"
-#include "../../../common/file/decBaseFileReaderReference.h"
 #include "../../../common/file/decPath.h"
 #include "../../../filesystem/deVirtualFileSystem.h"
 #include "../../../systems/deModuleSystem.h"
@@ -89,7 +88,7 @@ void deRLTaskReadModel::Run(){
 	
 	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
 	
 	pModel->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );

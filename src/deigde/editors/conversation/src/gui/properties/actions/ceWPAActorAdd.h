@@ -25,7 +25,7 @@
 #ifndef _CEWPAACTORADD_H_
 #define _CEWPAACTORADD_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
+#include <deigde/gui/igdeComboBox.h>
 
 #include "ceWPAction.h"
 
@@ -38,8 +38,8 @@ class ceCAActorAdd;
  */
 class ceWPAActorAdd : public ceWPAction{
 private:
-	igdeComboBoxReference pCBActorID;
-	igdeComboBoxReference pCBAliasID;
+	igdeComboBox::Ref pCBActorID;
+	igdeComboBox::Ref pCBAliasID;
 	
 	
 	

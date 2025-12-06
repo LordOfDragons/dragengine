@@ -50,7 +50,6 @@
 #include <dragengine/resources/collider/deColliderManager.h>
 #include <dragengine/resources/collider/deColliderAttachment.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/skin/deSkinManager.h>
 #include <dragengine/resources/world/deWorld.h>
 
@@ -87,7 +86,7 @@ gdeVAOBillboard::~gdeVAOBillboard(){
 ///////////////
 
 void gdeVAOBillboard::RebuildResources(){
-	const deBillboardReference oldBillboard( pBillboard );
+	const deBillboard::Ref oldBillboard( pBillboard );
 	
 	pReleaseResources();
 	
@@ -150,7 +149,7 @@ void gdeVAOBillboard::pCreateBillboard(){
 	deVirtualFileSystem * const vfs = pView.GetGameDefinition()->GetPreviewVFS();
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
-	deSkinReference skin;
+	deSkin::Ref skin;
 	decString path;
 	
 	path = PropertyString( pOCBillboard->GetPropertyName( gdeOCBillboard::epSkin ), pOCBillboard->GetSkinPath() );

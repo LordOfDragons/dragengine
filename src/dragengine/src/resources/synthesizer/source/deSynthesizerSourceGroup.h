@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<deSynthesizerSourceGroup> Ref;
 	
 	
-	
 public:
 	/** \brief Application types. */
 	enum eApplicationTypes{

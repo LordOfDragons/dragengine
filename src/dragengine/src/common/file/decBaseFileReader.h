@@ -44,7 +44,6 @@ public:
 	typedef deTObjectReference<decBaseFileReader> Ref;
 	
 	
-	
 public:
 	/** \name Constructors and Destructors */
 	/*@{*/

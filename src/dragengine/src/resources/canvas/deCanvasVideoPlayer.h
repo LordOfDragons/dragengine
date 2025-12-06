@@ -26,7 +26,7 @@
 #define _DECANVASVIDEOPLAYER_H_
 
 #include "deCanvas.h"
-#include "../video/deVideoPlayerReference.h"
+#include "../video/deVideoPlayer.h"
 
 
 /**
@@ -38,9 +38,8 @@ public:
 	typedef deTObjectReference<deCanvasVideoPlayer> Ref;
 	
 	
-	
 private:
-	deVideoPlayerReference pVideoPlayer;
+	deVideoPlayer::Ref pVideoPlayer;
 	int pRepeatX;
 	int pRepeatY;
 	

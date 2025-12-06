@@ -29,9 +29,9 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
-#include <dragengine/resources/canvas/capture/deCaptureCanvasReference.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
+#include <dragengine/resources/canvas/capture/deCaptureCanvas.h>
+#include <dragengine/resources/image/deImage.h>
 
 class igdeGDPreviewListener;
 class igdeEnvironment;
@@ -54,17 +54,21 @@ private:
 	
 	igdeEnvironment &pEnvironment;
 	
-	deCaptureCanvasReference pCaptureCanvas;
-	deCanvasViewReference pCanvas;
+	deCaptureCanvas::Ref pCaptureCanvas;
+	deCanvasView::Ref pCanvas;
 	
 	eStates pState;
-	deImageReference pImage;
+	deImage::Ref pImage;
 	decObjectOrderedSet pListeners;
 	bool pEnableDebug;
 	
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGDPreviewCreator> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create preview creator. */

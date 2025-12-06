@@ -39,6 +39,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeGizmoMove> Ref;
 	
+	
 	/** \brief Action. */
 	enum eActions{
 		/** \brief No action. */

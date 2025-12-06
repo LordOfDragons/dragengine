@@ -38,6 +38,7 @@ class aeRuleForeignState : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleForeignState> Ref;
 	
+	
 private:
 	decString pForeignBone;
 	decString pForeignVertexPositionSet;

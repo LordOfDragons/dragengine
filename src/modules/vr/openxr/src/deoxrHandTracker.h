@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deoxrHandTracker> Ref;
 	
 	
-	
 private:
 	struct sBoneMapping{
 		XrHandJointEXT constOxr;

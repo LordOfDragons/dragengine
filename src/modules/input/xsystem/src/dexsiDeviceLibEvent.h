@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<dexsiDeviceLibEvent> Ref;
 	
 	
-	
 private:
 	decString pEvdevPath;
 	int pEvdevFile;

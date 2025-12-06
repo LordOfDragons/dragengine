@@ -41,6 +41,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglShaderPreprocessorSymbol> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create shader preprocessor symbol. */

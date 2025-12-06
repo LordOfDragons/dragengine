@@ -28,13 +28,13 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
 
-#include "../igdeButtonReference.h"
-#include "../igdeContainerReference.h"
-#include "../igdeLabelReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../composed/igdeEditSliderTextReference.h"
+#include "../igdeButton.h"
+#include "../igdeContainer.h"
+#include "../igdeLabel.h"
+#include "../igdeTextField.h"
+#include "../composed/igdeEditSliderText.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 
 
@@ -56,14 +56,20 @@ class igdeWSky;
  * this widget.
  */
 class DE_DLL_EXPORT igdeWPSky : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWPSky> Ref;
+	
+	
 private:
 	class DE_DLL_EXPORT Controller : public deObject{
 	public:
 		typedef deTObjectReference<Controller> Ref;
-		
+	
+	
 		int controller;
-		igdeLabelReference label;
-		igdeEditSliderTextReference slider;
+		igdeLabel::Ref label;
+		igdeEditSliderText::Ref slider;
 		decString name;
 		float minimum;
 		float maximum;
@@ -74,14 +80,14 @@ private:
 private:
 	igdeWSky *pSky;
 	
-	igdeTextFieldReference pEditSkyPath;
-	igdeButtonReference pBtnSkyPath;
-	igdeButtonReference pBtnFromGDSky;
+	igdeTextField::Ref pEditSkyPath;
+	igdeButton::Ref pBtnSkyPath;
+	igdeButton::Ref pBtnFromGDSky;
 	
-	igdeContainerReference pFraControllers;
+	igdeContainer::Ref pFraControllers;
 	decObjectList pControllers;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

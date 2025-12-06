@@ -226,7 +226,7 @@ deSkin *deSkinManager::LoadDefault(){
 	deSkin * findSkin = NULL;
 	deSkinTexture * skinTex = NULL;
 	deSkinPropertyImage * propDiff = NULL;
-	deImageReference imgNoTex;
+	deImage::Ref imgNoTex;
 	
 	try{
 		findSkin = ( deSkin* )pSkins.GetWithFilename( GetEngine()->GetVirtualFileSystem(), SKIN_NO_SKIN );

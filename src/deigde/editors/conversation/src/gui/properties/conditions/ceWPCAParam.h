@@ -25,8 +25,8 @@
 #ifndef _CEWPCAPARAM_H_
 #define _CEWPCAPARAM_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
 
 #include "ceWPCondition.h"
 
@@ -39,11 +39,11 @@ class ceCConditionActorParameter;
  */
 class ceWPCAParam : public ceWPCondition{
 private:
-	igdeComboBoxReference pCBActorID;
-	igdeComboBoxReference pCBOperator;
-	igdeTextFieldReference pEditParameter;
-	igdeTextFieldReference pEditTestValue;
-	igdeTextFieldReference pEditTestVariable;
+	igdeComboBox::Ref pCBActorID;
+	igdeComboBox::Ref pCBOperator;
+	igdeTextField::Ref pEditParameter;
+	igdeTextField::Ref pEditTestValue;
+	igdeTextField::Ref pEditTestVariable;
 	
 	
 	

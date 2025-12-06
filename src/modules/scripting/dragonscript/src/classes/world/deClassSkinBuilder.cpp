@@ -46,7 +46,6 @@
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/skin/deSkinBuilder.h>
 #include <dragengine/resources/skin/deSkinManager.h>
-#include <dragengine/resources/skin/deSkinReference.h>
 #include <dragengine/resources/skin/deSkinTexture.h>
 #include <dragengine/resources/skin/deSkinMapped.h>
 #include <dragengine/resources/skin/property/deSkinPropertyColor.h>
@@ -197,7 +196,7 @@ void deClassSkinBuilder::nfBuild::RunFunction( dsRunTime *rt, dsValue *myself ){
 	const deScriptingDragonScript &ds = ( ( deClassSkinBuilder* )GetOwnerClass() )->GetDS();
 	const char * const filename = rt->GetValue( 0 )->GetString();
 	deClassSkinBuilder_Builder builder( rt, myself );
-	deSkinReference skin;
+	deSkin::Ref skin;
 	
 	nd.builder = &builder;
 	

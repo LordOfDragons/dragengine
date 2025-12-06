@@ -39,6 +39,7 @@ class meInfoBubble : public deObject{
 public:
 	typedef deTObjectReference<meInfoBubble> Ref;
 	
+	
 	enum ePlacement{
 		epTopLeft,
 		epTopRight,

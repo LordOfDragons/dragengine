@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXSWITCHER_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeSwitcher;
 class igdeEnvironment;

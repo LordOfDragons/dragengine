@@ -35,6 +35,10 @@ class deoglRDecal;
  */
 class deoglDecalListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglDecalListener> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create decal listener. */

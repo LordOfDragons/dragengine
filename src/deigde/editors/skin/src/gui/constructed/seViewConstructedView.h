@@ -26,14 +26,14 @@
 #define _SEVIEWCONSTRUCTEDVIEW_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
-#include <deigde/gui/event/igdeMouseDragListenerReference.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
+#include <deigde/gui/event/igdeMouseDragListener.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasImage.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 
 class seProperty;
 class sePropertyNode;
@@ -52,30 +52,30 @@ private:
 	seWindowMain &pWindowMain;
 	seViewConstructedViewListener *pListener;
 	
-	igdeMouseKeyListenerReference pKeyHandling;
-	igdeMouseDragListenerReference pDragNode;
+	igdeMouseKeyListener::Ref pKeyHandling;
+	igdeMouseDragListener::Ref pDragNode;
 	
 	seSkin *pSkin;
 	
-	igdeActionReference pActionConstructedFromImage;
-	igdeActionReference pActionAddShape;
-	igdeActionReference pActionAddImage;
-	igdeActionReference pActionAddText;
-	igdeActionReference pActionRemoveNode;
-	igdeActionReference pActionCopyNode;
-	igdeActionReference pActionCutNode;
-	igdeActionReference pActionPasteNode;
-	igdeActionReference pActionEnterGroup;
-	igdeActionReference pActionExitGroup;
-	igdeActionReference pActionGroupNodes;
-	igdeActionReference pActionUngroupNodes;
-	igdeActionReference pActionMoveNodeTop;
-	igdeActionReference pActionMoveNodeUp;
-	igdeActionReference pActionMoveNodeDown;
-	igdeActionReference pActionMoveNodeBottom;
-	igdeActionReference pActionSetMask;
-	igdeActionReference pActionRemoveMask;
-	igdeActionReference pActionSizeFromImage;
+	igdeAction::Ref pActionConstructedFromImage;
+	igdeAction::Ref pActionAddShape;
+	igdeAction::Ref pActionAddImage;
+	igdeAction::Ref pActionAddText;
+	igdeAction::Ref pActionRemoveNode;
+	igdeAction::Ref pActionCopyNode;
+	igdeAction::Ref pActionCutNode;
+	igdeAction::Ref pActionPasteNode;
+	igdeAction::Ref pActionEnterGroup;
+	igdeAction::Ref pActionExitGroup;
+	igdeAction::Ref pActionGroupNodes;
+	igdeAction::Ref pActionUngroupNodes;
+	igdeAction::Ref pActionMoveNodeTop;
+	igdeAction::Ref pActionMoveNodeUp;
+	igdeAction::Ref pActionMoveNodeDown;
+	igdeAction::Ref pActionMoveNodeBottom;
+	igdeAction::Ref pActionSetMask;
+	igdeAction::Ref pActionRemoveMask;
+	igdeAction::Ref pActionSizeFromImage;
 	
 	
 	
@@ -86,31 +86,31 @@ private:
 	decPoint pOffset;
 	decPoint pBorderSize;
 	
-	deCanvasViewReference pCanvasContent;
-	deCanvasPaintReference pCanvasContentBackground;
+	deCanvasView::Ref pCanvasContent;
+	deCanvasPaint::Ref pCanvasContentBackground;
 	
-	deCanvasPaintReference pCanvasMarkerBorder;
-	deCanvasImageReference pCanvasMarkerResizeTopLeft;
-	deCanvasImageReference pCanvasMarkerResizeTop;
-	deCanvasImageReference pCanvasMarkerResizeTopRight;
-	deCanvasImageReference pCanvasMarkerResizeLeft;
-	deCanvasImageReference pCanvasMarkerResizeRight;
-	deCanvasImageReference pCanvasMarkerResizeBottomLeft;
-	deCanvasImageReference pCanvasMarkerResizeBottomRight;
-	deCanvasImageReference pCanvasMarkerResizeBottom;
-	deCanvasImageReference pCanvasMarkerRotateTopLeft;
-	deCanvasImageReference pCanvasMarkerRotateTopRight;
-	deCanvasImageReference pCanvasMarkerRotateBottomLeft;
-	deCanvasImageReference pCanvasMarkerRotateBottomRight;
-	deCanvasImageReference pCanvasMarkerShearTop;
-	deCanvasImageReference pCanvasMarkerShearBottom;
-	deCanvasImageReference pCanvasMarkerShearLeft;
-	deCanvasImageReference pCanvasMarkerShearRight;
+	deCanvasPaint::Ref pCanvasMarkerBorder;
+	deCanvasImage::Ref pCanvasMarkerResizeTopLeft;
+	deCanvasImage::Ref pCanvasMarkerResizeTop;
+	deCanvasImage::Ref pCanvasMarkerResizeTopRight;
+	deCanvasImage::Ref pCanvasMarkerResizeLeft;
+	deCanvasImage::Ref pCanvasMarkerResizeRight;
+	deCanvasImage::Ref pCanvasMarkerResizeBottomLeft;
+	deCanvasImage::Ref pCanvasMarkerResizeBottomRight;
+	deCanvasImage::Ref pCanvasMarkerResizeBottom;
+	deCanvasImage::Ref pCanvasMarkerRotateTopLeft;
+	deCanvasImage::Ref pCanvasMarkerRotateTopRight;
+	deCanvasImage::Ref pCanvasMarkerRotateBottomLeft;
+	deCanvasImage::Ref pCanvasMarkerRotateBottomRight;
+	deCanvasImage::Ref pCanvasMarkerShearTop;
+	deCanvasImage::Ref pCanvasMarkerShearBottom;
+	deCanvasImage::Ref pCanvasMarkerShearLeft;
+	deCanvasImage::Ref pCanvasMarkerShearRight;
 	
-	deCanvasPaintReference pCanvasGroupDarkeningTop;
-	deCanvasPaintReference pCanvasGroupDarkeningBottom;
-	deCanvasPaintReference pCanvasGroupDarkeningLeft;
-	deCanvasPaintReference pCanvasGroupDarkeningRight;
+	deCanvasPaint::Ref pCanvasGroupDarkeningTop;
+	deCanvasPaint::Ref pCanvasGroupDarkeningBottom;
+	deCanvasPaint::Ref pCanvasGroupDarkeningLeft;
+	deCanvasPaint::Ref pCanvasGroupDarkeningRight;
 	
 	
 	
@@ -258,8 +258,8 @@ public:
 	
 	
 private:
-	void pCreateMarkerCanvas( deCanvasImageReference &canvas, const char *pathImage, float order ) const;
-	void pCreateDarkeningCanvas( deCanvasPaintReference &canvas, float order ) const;
+	void pCreateMarkerCanvas( deCanvasImage::Ref &canvas, const char *pathImage, float order ) const;
+	void pCreateDarkeningCanvas( deCanvasPaint::Ref &canvas, float order ) const;
 	
 	void pRecreateContentCanvas( const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView );
 	void pUpdateContentCanvasParams( const sePropertyNodeGroup &nodeGroup, deCanvasView &canvasView );

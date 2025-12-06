@@ -78,7 +78,7 @@
 #include "../meIGDEModule.h"
 #include "../worldedit.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -87,12 +87,10 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -107,7 +105,7 @@
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/file/decBaseFileReader.h>
@@ -168,7 +166,7 @@ pLoadTask( NULL )
 	pCreateToolBarObject();
 	pCreateToolBarDecal();
 	
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
@@ -297,10 +295,8 @@ void meWindowMain::SetWorld( meWorld *world ){
 }
 
 void meWindowMain::CreateNewWorld(){
-	deObjectReference refWorld;
-	
-	refWorld.TakeOver( new meWorld( *this, &GetEnvironment() ) );
-	meWorld * const world = ( meWorld* )( deObject* )refWorld;
+	const meWorld::Ref refWorld(meWorld::Ref::NewWith(*this, &GetEnvironment()));
+	meWorld * const world = refWorld;
 	world->SetSaved( false );
 	world->SetChanged( false );
 	world->SetDepChanged( false );
@@ -443,7 +439,7 @@ void meWindowMain::RotateActiveObjectBy( const decVector &rotation ){
 		return;
 	}
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new meUSetObjectRotation( object, object->GetRotation() + rotation ) );
 	pWorld->GetUndoSystem()->Add( undo );
 }
@@ -489,7 +485,7 @@ public:
 		if( ! pWindow.GetWorld() ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetWorld() ) );
 		if( undo ){
 			pWindow.GetWorld()->GetUndoSystem()->Add( undo );
@@ -597,7 +593,7 @@ public:
 		deInputEvent::ekcX, deInputEvent::ekcT ){}
 	
 	virtual igdeUndo *OnAction( meWorld *world ){
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		
 		switch( world->GetGuiParameters().GetElementMode() ){
 		case meWorldGuiParameters::eemObject:
@@ -624,7 +620,7 @@ public:
 		deInputEvent::ekcC, deInputEvent::ekcC ){}
 	
 	virtual igdeUndo *OnAction( meWorld *world ){
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		
 		switch( world->GetGuiParameters().GetElementMode() ){
 		case meWorldGuiParameters::eemObject:
@@ -1378,7 +1374,7 @@ public:
 	
 	virtual igdeUndo * OnActionShape( meWorld *world, meObject *object, const char *property ){
 		meObjectShapeSelection &selection = world->GetSelectionObjectShape();
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		decShape * const shape = CreateShape();
 		undo.TakeOver( new meUObjectShapeAdd( object, property, *shape ) );
@@ -2115,7 +2111,7 @@ void meWindowMain::pCreateToolBarDecal(){
 
 void meWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "File", deInputEvent::ekcF ) );
 	pCreateMenuFile( cascade );
@@ -2221,13 +2217,13 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 	helper.MenuCommand( menu, pActionObjectSubclassAsEclass );
 	
 	helper.MenuSeparator( menu );
-	igdeMenuCascadeReference active;
+	igdeMenuCascade::Ref active;
 	active.TakeOver( new igdeMenuCascade( GetEnvironment(), "Active Object",
 		NULL, "Active object", deInputEvent::ekcA ) );
 		
 		menu.AddChild( active );
 		
-		igdeMenuCascadeReference activeRotate;
+		igdeMenuCascade::Ref activeRotate;
 		activeRotate.TakeOver( new igdeMenuCascade( GetEnvironment(), "Rotate",
 			NULL, "Rotate active object", deInputEvent::ekcR ) );
 			
@@ -2239,7 +2235,7 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeRotate, pActionObjectRotate180 );
 			helper.MenuCommand( activeRotate, pActionObjectRotateRandom );
 		
-		igdeMenuCascadeReference activeCopySelected;
+		igdeMenuCascade::Ref activeCopySelected;
 		activeCopySelected.TakeOver( new igdeMenuCascade( GetEnvironment(),
 			"Copy To Selected", nullptr, "Copy To Selected" ) );
 			
@@ -2262,14 +2258,14 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleZ );
 			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleXYZ );
 			
-		igdeMenuCascadeReference activeLight;
+		igdeMenuCascade::Ref activeLight;
 		activeLight.TakeOver( new igdeMenuCascade( GetEnvironment(), "Light",
 			NULL, "Active object light", deInputEvent::ekcL ) );
 			
 			active->AddChild( activeLight );
 			helper.MenuCommand( activeLight, pActionObjectLightToggle );
 			
-		igdeMenuCascadeReference activeShapes;
+		igdeMenuCascade::Ref activeShapes;
 		activeShapes.TakeOver( new igdeMenuCascade( GetEnvironment(), "Property Shapes",
 			NULL, "Active object property shapes", deInputEvent::ekcS ) );
 			

@@ -40,6 +40,7 @@ class DE_DLL_EXPORT igdeNullInputModule : public deBaseInputModule{
 public:
 	class DE_DLL_EXPORT cModule : public deInternalModule{
 	public:
+		typedef deTObjectReference<cModule> Ref;
 		cModule( deModuleSystem *system );
 		virtual ~cModule();
 		virtual void CreateModule();

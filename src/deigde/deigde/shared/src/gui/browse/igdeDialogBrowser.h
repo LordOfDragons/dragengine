@@ -30,11 +30,11 @@
 #include <stdlib.h>
 
 #include "../dialog/igdeDialog.h"
-#include "../igdeTreeListReference.h"
-#include "../igdeIconListBoxReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../igdeTextAreaReference.h"
-#include "../event/igdeActionReference.h"
+#include "../igdeTreeList.h"
+#include "../igdeIconListBox.h"
+#include "../igdeTextField.h"
+#include "../igdeTextArea.h"
+#include "../event/igdeAction.h"
 
 class decPath;
 class igdeGDCategory;
@@ -64,21 +64,21 @@ public:
 	
 	
 private:
-	igdeTreeListReference pTreeCategories;
-	igdeIconListBoxReference pListItems;
-	igdeTextFieldReference pEditFilter;
+	igdeTreeList::Ref pTreeCategories;
+	igdeIconListBox::Ref pListItems;
+	igdeTextField::Ref pEditFilter;
 	
-	igdeTextAreaReference pEditInfos;
+	igdeTextArea::Ref pEditInfos;
 	
 	ePreviewSize pPreviewSize;
 	eViewModes pViewMode;
 	
-	igdeActionReference pActionPISizeSmall;
-	igdeActionReference pActionPISizeMedium;
-	igdeActionReference pActionPISizeLarge;
+	igdeAction::Ref pActionPISizeSmall;
+	igdeAction::Ref pActionPISizeMedium;
+	igdeAction::Ref pActionPISizeLarge;
 	
-	igdeActionReference pActionPIViewList;
-	igdeActionReference pActionPIViewPreview;
+	igdeAction::Ref pActionPIViewList;
+	igdeAction::Ref pActionPIViewPreview;
 	
 protected:
 	/** \name Constructors and Destructors */

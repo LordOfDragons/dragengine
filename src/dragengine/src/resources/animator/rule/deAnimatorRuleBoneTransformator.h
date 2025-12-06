@@ -48,6 +48,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deAnimatorRuleBoneTransformator> Ref;
 	
+	
 	/** \brief Coordinate frame. */
 	enum eCoordinateFrames{
 		/** \brief Bone local coordinate frame. */

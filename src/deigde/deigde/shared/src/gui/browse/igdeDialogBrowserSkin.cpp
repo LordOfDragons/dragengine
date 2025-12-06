@@ -24,7 +24,7 @@
 
 #include "igdeDialogBrowserSkin.h"
 #include "igdeBrowseItemGDPreviewListener.h"
-#include "../dialog/igdeDialogReference.h"
+#include "../dialog/igdeDialog.h"
 #include "../model/igdeListItem.h"
 #include "../../gamedefinition/igdeGDCategory.h"
 #include "../../gamedefinition/igdeGameDefinition.h"
@@ -79,7 +79,7 @@ void igdeDialogBrowserSkin::SetSelectedSkin( igdeGDSkin *gdSkin ){
 
 
 bool igdeDialogBrowserSkin::SelectSkin( igdeWidget *owner, igdeGDSkin* &skin, const char *title ){
-	igdeDialogReference refDialog;
+	igdeDialog::Ref refDialog;
 	refDialog.TakeOver( new igdeDialogBrowserSkin( owner->GetEnvironment(), title ) );
 	igdeDialogBrowserSkin &dialog = ( igdeDialogBrowserSkin& )( igdeDialog& )refDialog;
 	if( skin ){

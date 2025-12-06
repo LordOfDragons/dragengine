@@ -26,12 +26,12 @@
 #define _FEWINDOWMAIN_H_
 
 #include <deigde/gui/igdeEditorWindow.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/event/igdeActionUndoReference.h>
-#include <deigde/gui/event/igdeActionRedoReference.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/event/igdeActionUndo.h>
+#include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeFont.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 class feWindowMainListener;
 class feConfiguration;
@@ -50,22 +50,22 @@ class feWindowMain : public igdeEditorWindow{
 private:
 	feWindowMainListener *pListener;
 	
-	//igdeIconReference pIconEditPaste;
+	//igdeIcon::Ref pIconEditPaste;
 	
-	igdeActionReference pActionFontNew;
-	igdeActionReference pActionFontOpen;
-	igdeActionReference pActionFontSave;
-	igdeActionReference pActionFontSaveAs;
-	igdeActionReference pActionFontGenerate;
+	igdeAction::Ref pActionFontNew;
+	igdeAction::Ref pActionFontOpen;
+	igdeAction::Ref pActionFontSave;
+	igdeAction::Ref pActionFontSaveAs;
+	igdeAction::Ref pActionFontGenerate;
 	
-	igdeActionUndoReference pActionEditUndo;
-	igdeActionRedoReference pActionEditRedo;
-	igdeActionReference pActionEditCut;
-	igdeActionReference pActionEditCopy;
-	igdeActionReference pActionEditPaste;
+	igdeActionUndo::Ref pActionEditUndo;
+	igdeActionRedo::Ref pActionEditRedo;
+	igdeAction::Ref pActionEditCut;
+	igdeAction::Ref pActionEditCopy;
+	igdeAction::Ref pActionEditPaste;
 	
-	igdeToolBarReference pTBFile;
-	igdeToolBarReference pTBEdit;
+	igdeToolBar::Ref pTBFile;
+	igdeToolBar::Ref pTBEdit;
 	
 	feConfiguration *pConfiguration;
 	feClipboard *pClipboard;

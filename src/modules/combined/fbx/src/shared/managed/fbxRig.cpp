@@ -35,7 +35,6 @@
 #include "../fbxProperty.h"
 #include "../property/fbxPropertyString.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/systems/modules/deBaseModule.h>
 

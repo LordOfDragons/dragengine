@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 #include "../../../../undosys/objectClass/forceField/gdeUOCRemoveForceField.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -71,11 +71,10 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 		return NULL;
 	}
 	
-	deObjectReference clipOCForceField;
-	clipOCForceField.TakeOver( new gdeOCForceField( *forceField ) );
+	const gdeOCForceField::Ref clipOCForceField(gdeOCForceField::Ref::NewWith(*forceField));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCForceField( ( gdeOCForceField* )( deObject* )clipOCForceField ) );
+	igdeClipboardData::Ref clipData;
+	clipData.TakeOver( new gdeClipboardDataOCForceField( clipOCForceField ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

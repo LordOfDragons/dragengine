@@ -28,7 +28,6 @@
 #include "../framebuffer/deoglFramebuffer.h"
 #include "../texture/texture2d/deoglTexture.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decPointerList.h>
 
 class deoglRenderThread;

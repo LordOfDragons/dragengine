@@ -40,6 +40,10 @@ private:
 	float pValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceControllerValue> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create controller value. */

@@ -25,78 +25,78 @@
 #ifndef _IGDEUIHELPER_H_
 #define _IGDEUIHELPER_H_
 
+#include <stdint.h>
+
 #include "igdeButton.h"
+#include "igdeCheckBox.h"
+#include "igdeColorBox.h"
+#include "igdeComboBox.h"
+#include "igdeComboBoxFilter.h"
+#include "igdeContainer.h"
+#include "igdeIconListBox.h"
+#include "igdeLabel.h"
+#include "igdeListBox.h"
+#include "igdeProgressBar.h"
+#include "igdeScrollBar.h"
+#include "igdeSlider.h"
+#include "igdeSpacer.h"
+#include "igdeSpinTextField.h"
+#include "igdeTextArea.h"
+#include "igdeTextField.h"
+#include "igdeToggleButton.h"
+#include "igdeTreeList.h"
+#include "igdeWidget.h"
+#include "composed/igdeEditDVector.h"
+#include "composed/igdeEditDirectory.h"
+#include "composed/igdeEditPath.h"
+#include "composed/igdeEditPoint.h"
+#include "composed/igdeEditPoint3.h"
+#include "composed/igdeEditPropertyValue.h"
+#include "composed/igdeEditSliderText.h"
+#include "composed/igdeEditTags.h"
+#include "composed/igdeEditVector.h"
+#include "composed/igdeEditVector2.h"
+#include "composed/igdeToggleTags.h"
+#include "curveedit/igdeViewCurveBezier.h"
 #include "event/igdeAction.h"
+#include "layout/igdeContainerBorder.h"
+#include "layout/igdeContainerScroll.h"
+#include "properties/igdeWPCamera.h"
+#include "properties/igdeWPSky.h"
+#include "properties/igdeWPTriggerTable.h"
+#include "properties/igdeWPWObject.h"
 #include "../environment/igdeEnvironment.h"
 
-#include <stdint.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 
 class igdeAction;
-class igdeButtonReference;
-class igdeCheckBoxReference;
 class igdeColorBoxListener;
-class igdeColorBoxReference;
-class igdeComboBoxFilterReference;
 class igdeComboBoxListener;
-class igdeComboBoxReference;
 class igdeContainer;
-class igdeContainerBorderReference;
-class igdeContainerReference;
-class igdeContainerScrollReference;
-class igdeEditDirectoryListener;
-class igdeEditDirectoryReference;
 class igdeEditDVectorListener;
-class igdeEditDVectorReference;
+class igdeEditDirectoryListener;
 class igdeEditPathListener;
-class igdeEditPathReference;
 class igdeEditPoint3Listener;
-class igdeEditPoint3Reference;
 class igdeEditPointListener;
-class igdeEditPointReference;
 class igdeEditPropertyValueListener;
-class igdeEditPropertyValueReference;
 class igdeEditSliderTextListener;
-class igdeEditSliderTextReference;
-class igdeEditTagsReference;
 class igdeEditVector2Listener;
-class igdeEditVector2Reference;
 class igdeEditVectorListener;
-class igdeEditVectorReference;
 class igdeEnvironment;
 class igdeIcon;
 class igdeIconListBoxListener;
-class igdeIconListBoxReference;
-class igdeLabelReference;
 class igdeListBoxListener;
-class igdeListBoxReference;
 class igdeMenuCascade;
-class igdeProgressBarReference;
 class igdeRecentFiles;
 class igdeScrollBarListener;
-class igdeScrollBarReference;
 class igdeSliderListener;
-class igdeSliderReference;
-class igdeSpacerReference;
 class igdeSpinTextFieldListener;
-class igdeSpinTextFieldReference;
 class igdeTextAreaListener;
-class igdeTextAreaReference;
 class igdeTextFieldListener;
-class igdeTextFieldReference;
-class igdeToggleButtonReference;
-class igdeToggleTagsReference;
 class igdeToolBar;
 class igdeTreeListListener;
-class igdeTreeListReference;
 class igdeViewCurveBezierListener;
-class igdeViewCurveBezierReference;
-class igdeWidgetReference;
-class igdeWPCameraReference;
-class igdeWPSkyReference;
-class igdeWPTriggerTableReference;
-class igdeWPWObjectReference;
 class igdeWidget;
 
 
@@ -155,35 +155,35 @@ public:
 	 * flow layout is stretching the last widget. The flow layout is placed in \em panel.
 	 * The flow layout is assigned the theme name igdeGuiThemeNames::properties .
 	 */
-	void SidePanel( igdeContainerScrollReference &scroll, igdeContainerReference &panel,
+	void SidePanel( igdeContainerScroll::Ref &scroll, igdeContainer::Ref &panel,
 		bool stretchLast = false, int spacing = 0 );
 	
-	void SidePanel( igdeContainer &parent, igdeContainerReference &panel,
+	void SidePanel( igdeContainer &parent, igdeContainer::Ref &panel,
 		bool stretchLast = false, int spacing = 0 );
 	
 	
 	
 	/** \brief Create igdeGroupBox with an igdeContainerForm layout. */
-	void GroupBox( igdeContainer &parent, igdeContainerReference &groupBox,
+	void GroupBox( igdeContainer &parent, igdeContainer::Ref &groupBox,
 		const char *title, bool collapsed = false ) const;
 	
 	/** \brief Create non-collapsable igdeGroupBox with an igdeContainerForm layout. */
-	void GroupBoxStatic( igdeContainer &parent, igdeContainerReference &groupBox, const char *title ) const;
+	void GroupBoxStatic( igdeContainer &parent, igdeContainer::Ref &groupBox, const char *title ) const;
 	
 	/** \brief Create igdeGroupBox with an igdeContainerFlow layout. */
-	void GroupBoxFlow( igdeContainer &parent, igdeContainerReference &groupBox,
+	void GroupBoxFlow( igdeContainer &parent, igdeContainer::Ref &groupBox,
 		const char *title, bool stretchLast = false, bool collapsed = false ) const;
 	
 	/** \brief Create igdeGroupBox with an igdeContainerBorder layout. */
-	void GroupBoxBorder( igdeContainer &parent, igdeContainerBorderReference &groupBox,
+	void GroupBoxBorder( igdeContainer &parent, igdeContainerBorder::Ref &groupBox,
 		const char *title, bool collapsed = false ) const;
 	
 	/** \brief Create non-collapsable igdeGroupBox with an igdeContainerFlow layout. */
-	void GroupBoxStaticFlow( igdeContainer &parent, igdeContainerReference &groupBox,
+	void GroupBoxStaticFlow( igdeContainer &parent, igdeContainer::Ref &groupBox,
 		const char *title, bool stretchLast = false ) const;
 	
 	/** \brief Create non-collapsable igdeGroupBox with an igdeContainerBorder layout. */
-	void GroupBoxStaticBorder( igdeContainer &parent, igdeContainerBorderReference &groupBox,
+	void GroupBoxStaticBorder( igdeContainer &parent, igdeContainerBorder::Ref &groupBox,
 		const char *title, bool stretch = false ) const;
 	
 	
@@ -201,10 +201,10 @@ public:
 	 * Container is igdeContainerBox equally stretching widgets.
 	 */
 	void FormLine( igdeContainer &form, const char *label, const char *description,
-		igdeContainerReference &line );
+		igdeContainer::Ref &line );
 	
 	void FormLine( igdeContainer &form, const char *label, const char *description,
-		igdeContainerReference &line, int labelAlignment );
+		igdeContainer::Ref &line, int labelAlignment );
 	
 	/**
 	 * \brief Form line with label and container for additing multiple widgets.
@@ -212,10 +212,10 @@ public:
 	 * Container is igdeContainerFlow is used instead set to stretch the first widget.
 	 */
 	void FormLineStretchFirst( igdeContainer &form, const char *label,
-		const char *description, igdeContainerReference &line );
+		const char *description, igdeContainer::Ref &line );
 	
 	void FormLineStretchFirst( igdeContainer &form, const char *label,
-		const char *description, igdeContainerReference &line, int labelAlignment );
+		const char *description, igdeContainer::Ref &line, int labelAlignment );
 	
 	/**
 	 * \brief Form line with label and container flowing downwards.
@@ -223,10 +223,10 @@ public:
 	 * Container is igdeContainerFlow along y axis.
 	 */
 	void FormLineDownFlow( igdeContainer &form, const char *label,
-		const char *description, igdeContainerReference &line );
+		const char *description, igdeContainer::Ref &line );
 	
 	void FormLineDownFlow( igdeContainer &form, const char *label,
-		const char *description, igdeContainerReference &line, int labelAlignment );
+		const char *description, igdeContainer::Ref &line, int labelAlignment );
 	
 	
 	
@@ -236,10 +236,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditString( igdeContainer &form, const char *label, const char *description,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
 	void EditString( igdeContainer &form, const char *label, const char *description,
-		int rows, igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		int rows, igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
 	/**
 	 * \brief Add text field.
@@ -247,15 +247,15 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditString( igdeContainer &parent, const char *description,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
 	void EditString( igdeContainer &parent, const char *description, int rows,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
-	void EditString( const char *description, igdeTextFieldReference &textField,
+	void EditString( const char *description, igdeTextField::Ref &textField,
 		igdeTextFieldListener *listener );
 	
-	void EditString( const char *description, int rows, igdeTextFieldReference &textField,
+	void EditString( const char *description, int rows, igdeTextField::Ref &textField,
 		igdeTextFieldListener *listener );
 	
 	
@@ -266,10 +266,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditString( igdeContainer &form, const char *label, const char *description,
-		igdeTextAreaReference &textArea, int rows, igdeTextAreaListener *listener );
+		igdeTextArea::Ref &textArea, int rows, igdeTextAreaListener *listener );
 	
 	void EditString( igdeContainer &form, const char *label, const char *description,
-		igdeTextAreaReference &textArea, int columns, int rows, igdeTextAreaListener *listener );
+		igdeTextArea::Ref &textArea, int columns, int rows, igdeTextAreaListener *listener );
 	
 	/**
 	 * \brief Add text area.
@@ -277,16 +277,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditString( igdeContainer &parent, const char *description,
-		igdeTextAreaReference &textArea, int rows, igdeTextAreaListener *listener );
+		igdeTextArea::Ref &textArea, int rows, igdeTextAreaListener *listener );
 	
 	void EditString( igdeContainer &parent, const char *description,
-		igdeTextAreaReference &textArea, int columns, int rows, igdeTextAreaListener *listener );
+		igdeTextArea::Ref &textArea, int columns, int rows, igdeTextAreaListener *listener );
 	
-	void EditString( const char *description, int rows, igdeTextAreaReference &textArea,
+	void EditString( const char *description, int rows, igdeTextArea::Ref &textArea,
 		igdeTextAreaListener *listener );
 	
 	void EditString( const char *description, int columns, int rows,
-		igdeTextAreaReference &textArea, igdeTextAreaListener *listener );
+		igdeTextArea::Ref &textArea, igdeTextAreaListener *listener );
 	
 	
 	
@@ -296,10 +296,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditFloat( igdeContainer &form, const char *label, const char *description,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
 	void EditFloat( igdeContainer &form, const char *label, const char *description,
-		int columns, int precision, igdeTextFieldReference &textField,
+		int columns, int precision, igdeTextField::Ref &textField,
 		igdeTextFieldListener *listener );
 	
 	/**
@@ -308,16 +308,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditFloat( igdeContainer &parent, const char *description,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
 	void EditFloat( igdeContainer &parent, const char *description, int columns, int precision,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
-	void EditFloat( const char *description, igdeTextFieldReference &textField,
+	void EditFloat( const char *description, igdeTextField::Ref &textField,
 		igdeTextFieldListener *listener );
 	
 	void EditFloat( const char *description, int columns, int precision,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
 	
 	
@@ -327,10 +327,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditInteger( igdeContainer &form, const char *label, const char *description,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
 	void EditInteger( igdeContainer &form, const char *label, const char *description,
-		int columns, igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		int columns, igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
 	/**
 	 * \brief Add text field.
@@ -338,15 +338,15 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditInteger( igdeContainer &parent, const char *description,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
 	void EditInteger( igdeContainer &parent, const char *description, int columns,
-		igdeTextFieldReference &textField, igdeTextFieldListener *listener );
+		igdeTextField::Ref &textField, igdeTextFieldListener *listener );
 	
-	void EditInteger( const char *description, igdeTextFieldReference &textField,
+	void EditInteger( const char *description, igdeTextField::Ref &textField,
 		igdeTextFieldListener *listener );
 	
-	void EditInteger( const char *description, int columns, igdeTextFieldReference &textField,
+	void EditInteger( const char *description, int columns, igdeTextField::Ref &textField,
 		igdeTextFieldListener *listener );
 	
 	
@@ -357,26 +357,26 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditSpinInteger( igdeContainer &form, const char *label, const char *description,
-		int lower, int upper, igdeSpinTextFieldReference &spinTextField,
+		int lower, int upper, igdeSpinTextField::Ref &spinTextField,
 		igdeSpinTextFieldListener *listener );
 	
 	void EditSpinInteger( igdeContainer &parent, const char *description, int lower, int upper,
-		igdeSpinTextFieldReference &spinTextField, igdeSpinTextFieldListener *listener );
+		igdeSpinTextField::Ref &spinTextField, igdeSpinTextFieldListener *listener );
 	
 	void EditSpinInteger( const char *description, int lower, int upper,
-		igdeSpinTextFieldReference &spinTextField, igdeSpinTextFieldListener *listener );
+		igdeSpinTextField::Ref &spinTextField, igdeSpinTextFieldListener *listener );
 	
 	
 	
 	/** \brief Form line with label and progress bar. */
 	void ProgressBar( igdeContainer &form, const char *label, const char *description,
-		int lower, int upper, bool horizontal, igdeProgressBarReference &progressBar );
+		int lower, int upper, bool horizontal, igdeProgressBar::Ref &progressBar );
 	
 	void ProgressBar( igdeContainer &parent, const char *description, int lower, int upper,
-		bool horizontal, igdeProgressBarReference &progressBar );
+		bool horizontal, igdeProgressBar::Ref &progressBar );
 	
 	void ProgressBar( const char *description, int lower, int upper, bool horizontal,
-		igdeProgressBarReference &progressBar );
+		igdeProgressBar::Ref &progressBar );
 	
 	
 	
@@ -386,16 +386,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void ComboBox( igdeContainer &form, const char *label, const char *description,
-		igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBox::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBox( igdeContainer &form, const char *label, bool editable, const char *description,
-		igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBox::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBox( igdeContainer &form, const char *label, int columns, bool editable,
-		const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+		const char *description, igdeComboBox::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBox( igdeContainer &form, const char *label, int columns, int rows, bool editable,
-		const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+		const char *description, igdeComboBox::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	/**
 	 * \brief Add combo box.
@@ -403,19 +403,19 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void ComboBox( igdeContainer &parent, const char *description,
-		igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBox::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBox( igdeContainer &parent, bool editable, const char *description,
-		igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBox::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBox( igdeContainer &parent, int columns, int rows, const char *description,
-		igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBox::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBox( igdeContainer &parent, int columns, int rows, bool editable,
-		const char *description, igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+		const char *description, igdeComboBox::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBox( int columns, int rows, bool editable, const char *description,
-		igdeComboBoxReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBox::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	
 	
@@ -425,16 +425,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void ComboBoxFilter( igdeContainer &form, const char *label, const char *description,
-		igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBoxFilter( igdeContainer &form, const char *label, bool editable, const char *description,
-		igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBoxFilter( igdeContainer &form, const char *label, int columns, bool editable,
-		const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+		const char *description, igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBoxFilter( igdeContainer &form, const char *label, int columns, int rows, bool editable,
-		const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+		const char *description, igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	/**
 	 * \brief Add combo box filter.
@@ -442,43 +442,43 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void ComboBoxFilter( igdeContainer &parent, const char *description,
-		igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBoxFilter( igdeContainer &parent, bool editable, const char *description,
-		igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBoxFilter( igdeContainer &parent, int columns, int rows, const char *description,
-		igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBoxFilter( igdeContainer &parent, int columns, int rows, bool editable,
-		const char *description, igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+		const char *description, igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	void ComboBoxFilter( int columns, int rows, bool editable, const char *description,
-		igdeComboBoxFilterReference &comboBox, igdeComboBoxListener *listener );
+		igdeComboBoxFilter::Ref &comboBox, igdeComboBoxListener *listener );
 	
 	
 	
 	/**
 	 * \brief Form line with empty label check box,
 	 */
-	void CheckBox( igdeContainer &form, igdeCheckBoxReference &checkBox,
+	void CheckBox( igdeContainer &form, igdeCheckBox::Ref &checkBox,
 		igdeAction *action, bool takeOverAction = false );
 	
 	void CheckBox( igdeContainer &form, const char *text, const char *description,
-		igdeCheckBoxReference &checkBox );
+		igdeCheckBox::Ref &checkBox );
 	
-	void CheckBox( igdeCheckBoxReference &checkBox, igdeAction *action, bool takeOverAction = false );
+	void CheckBox( igdeCheckBox::Ref &checkBox, igdeAction *action, bool takeOverAction = false );
 	
-	void CheckBox( const char *text, const char *description, igdeCheckBoxReference &checkBox );
+	void CheckBox( const char *text, const char *description, igdeCheckBox::Ref &checkBox );
 	
 	/**
 	 * \brief Check box without form line.
 	 */
-	void CheckBoxOnly( igdeContainer &parent , igdeCheckBoxReference &checkBox,
+	void CheckBoxOnly( igdeContainer &parent , igdeCheckBox::Ref &checkBox,
 		igdeAction *action, bool takeOverAction = false );
 	
 	void CheckBoxOnly( igdeContainer &parent, const char *text, const char *description,
-		igdeCheckBoxReference &checkBox );
+		igdeCheckBox::Ref &checkBox );
 	
 	
 	
@@ -489,25 +489,25 @@ public:
 	 */
 	void Slider( igdeContainer &form, const char *label, const char *description,
 		float lower, float upper, int precision, float tickSpacing,
-		igdeSliderReference &slider, igdeSliderListener *listener );
+		igdeSlider::Ref &slider, igdeSliderListener *listener );
 	
 	void Slider( igdeContainer &form, const char *label, const char *description,
-		int lower, int upper, int tickSpacing, igdeSliderReference &slider,
+		int lower, int upper, int tickSpacing, igdeSlider::Ref &slider,
 		igdeSliderListener *listener );
 	
 	void Slider( igdeContainer &parent, const char *description,
 		float lower, float upper, int precision, float tickSpacing,
-		igdeSliderReference &slider, igdeSliderListener *listener );
+		igdeSlider::Ref &slider, igdeSliderListener *listener );
 	
 	void Slider( igdeContainer &parent, const char *description,
-		int lower, int upper, int tickSpacing, igdeSliderReference &slider,
+		int lower, int upper, int tickSpacing, igdeSlider::Ref &slider,
 		igdeSliderListener *listener );
 	
 	void Slider( const char *description, float lower, float upper, int precision,
-		float tickSpacing, igdeSliderReference &slider, igdeSliderListener *listener );
+		float tickSpacing, igdeSlider::Ref &slider, igdeSliderListener *listener );
 	
 	void Slider( const char *description, int lower, int upper, int tickSpacing,
-		igdeSliderReference &slider, igdeSliderListener *listener );
+		igdeSlider::Ref &slider, igdeSliderListener *listener );
 	
 	
 	
@@ -517,7 +517,7 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void ColorBox( igdeContainer &form, const char *label, const char *description,
-		igdeColorBoxReference &colorBox, igdeColorBoxListener *listener );
+		igdeColorBox::Ref &colorBox, igdeColorBoxListener *listener );
 	
 	/**
 	 * \brief Add color box.
@@ -525,9 +525,9 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void ColorBox( igdeContainer &parent, const char *description,
-		igdeColorBoxReference &colorBox, igdeColorBoxListener *listener );
+		igdeColorBox::Ref &colorBox, igdeColorBoxListener *listener );
 	
-	void ColorBox( const char *description, igdeColorBoxReference &colorBox,
+	void ColorBox( const char *description, igdeColorBox::Ref &colorBox,
 		igdeColorBoxListener *listener );
 	
 	
@@ -538,7 +538,7 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditPoint( igdeContainer &form, const char *label, const char *description,
-		igdeEditPointReference &editPoint, igdeEditPointListener *listener );
+		igdeEditPoint::Ref &editPoint, igdeEditPointListener *listener );
 	
 	/**
 	 * \brief Add edit point.
@@ -546,9 +546,9 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditPoint( igdeContainer &parent, const char *description,
-		igdeEditPointReference &editPoint, igdeEditPointListener *listener );
+		igdeEditPoint::Ref &editPoint, igdeEditPointListener *listener );
 	
-	void EditPoint( const char *description, igdeEditPointReference &editPoint,
+	void EditPoint( const char *description, igdeEditPoint::Ref &editPoint,
 		igdeEditPointListener *listener );
 	
 	
@@ -559,7 +559,7 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditPoint3( igdeContainer &form, const char *label, const char *description,
-		igdeEditPoint3Reference &editPoint, igdeEditPoint3Listener *listener );
+		igdeEditPoint3::Ref &editPoint, igdeEditPoint3Listener *listener );
 	
 	/**
 	 * \brief Add edit point.
@@ -567,9 +567,9 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditPoint3( igdeContainer &parent, const char *description,
-		igdeEditPoint3Reference &editPoint, igdeEditPoint3Listener *listener );
+		igdeEditPoint3::Ref &editPoint, igdeEditPoint3Listener *listener );
 	
-	void EditPoint3( const char *description, igdeEditPoint3Reference &editPoint,
+	void EditPoint3( const char *description, igdeEditPoint3::Ref &editPoint,
 		igdeEditPoint3Listener *listener );
 	
 	
@@ -581,11 +581,11 @@ public:
 	 */
 	void EditPath( igdeContainer &form, const char *label, const char *description,
 		igdeEnvironment::eFilePatternListTypes resourceType,
-		igdeEditPathReference &editPath, igdeEditPathListener *listener,
+		igdeEditPath::Ref &editPath, igdeEditPathListener *listener,
 		bool useGameVFS = true );
 	
 	void EditPath( igdeContainer &form, const char *label, const char *description,
-		const igdeFilePatternList &customFilePatterns, igdeEditPathReference &editPath,
+		const igdeFilePatternList &customFilePatterns, igdeEditPath::Ref &editPath,
 		igdeEditPathListener *listener, bool useGameVFS = true );
 	
 	/**
@@ -595,19 +595,19 @@ public:
 	 */
 	void EditPath( igdeContainer &parent, const char *description,
 		igdeEnvironment::eFilePatternListTypes resourceType,
-		igdeEditPathReference &editPath, igdeEditPathListener *listener,
+		igdeEditPath::Ref &editPath, igdeEditPathListener *listener,
 		bool useGameVFS = true );
 	
 	void EditPath( igdeContainer &parent, const char *description,
-		const igdeFilePatternList &customFilePatterns, igdeEditPathReference &editPath,
+		const igdeFilePatternList &customFilePatterns, igdeEditPath::Ref &editPath,
 		igdeEditPathListener *listener, bool useGameVFS = true );
 	
 	void EditPath( const char *description, igdeEnvironment::eFilePatternListTypes resourceType,
-		igdeEditPathReference &editPath, igdeEditPathListener *listener,
+		igdeEditPath::Ref &editPath, igdeEditPathListener *listener,
 		bool useGameVFS = true );
 	
 	void EditPath( const char *description, const igdeFilePatternList &customFilePatterns,
-		igdeEditPathReference &editPath, igdeEditPathListener *listener,
+		igdeEditPath::Ref &editPath, igdeEditPathListener *listener,
 		bool useGameVFS = true );
 	
 	
@@ -618,7 +618,7 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditDirectory( igdeContainer &form, const char *label, const char *description,
-		igdeEditDirectoryReference &editDirectory, igdeEditDirectoryListener *listener,
+		igdeEditDirectory::Ref &editDirectory, igdeEditDirectoryListener *listener,
 		bool useGameVFS = true );
 	
 	/**
@@ -627,10 +627,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditDirectory( igdeContainer &parent, const char *description,
-		igdeEditDirectoryReference &editDirectory, igdeEditDirectoryListener *listener,
+		igdeEditDirectory::Ref &editDirectory, igdeEditDirectoryListener *listener,
 		bool useGameVFS = true );
 	
-	void EditDirectory( const char *description, igdeEditDirectoryReference &editDirectory,
+	void EditDirectory( const char *description, igdeEditDirectory::Ref &editDirectory,
 		igdeEditDirectoryListener *listener, bool useGameVFS = true );
 	
 	
@@ -641,10 +641,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditDVector( igdeContainer &form, const char *label, const char *description,
-		igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener );
+		igdeEditDVector::Ref &editDVector, igdeEditDVectorListener *listener );
 	
 	void EditDVector( igdeContainer &form, const char *label, const char *description,
-		int columns, int precision, igdeEditDVectorReference &editDVector,
+		int columns, int precision, igdeEditDVector::Ref &editDVector,
 		igdeEditDVectorListener *listener );
 	
 	/**
@@ -653,16 +653,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditDVector( igdeContainer &parent, const char *description,
-		igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener );
+		igdeEditDVector::Ref &editDVector, igdeEditDVectorListener *listener );
 	
 	void EditDVector( igdeContainer &parent, const char *description, int columns, int precision,
-		igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener );
+		igdeEditDVector::Ref &editDVector, igdeEditDVectorListener *listener );
 	
-	void EditDVector( const char *description, igdeEditDVectorReference &editDVector,
+	void EditDVector( const char *description, igdeEditDVector::Ref &editDVector,
 		igdeEditDVectorListener *listener );
 	
 	void EditDVector( const char *description, int columns, int precision,
-		igdeEditDVectorReference &editDVector, igdeEditDVectorListener *listener );
+		igdeEditDVector::Ref &editDVector, igdeEditDVectorListener *listener );
 	
 	
 	
@@ -672,10 +672,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditVector( igdeContainer &form, const char *label, const char *description,
-		igdeEditVectorReference &editVector, igdeEditVectorListener *listener );
+		igdeEditVector::Ref &editVector, igdeEditVectorListener *listener );
 	
 	void EditVector( igdeContainer &form, const char *label, const char *description,
-		int columns, int precision, igdeEditVectorReference &editVector,
+		int columns, int precision, igdeEditVector::Ref &editVector,
 		igdeEditVectorListener *listener );
 	
 	/**
@@ -684,16 +684,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditVector( igdeContainer &parent, const char *description,
-		igdeEditVectorReference &editVector, igdeEditVectorListener *listener );
+		igdeEditVector::Ref &editVector, igdeEditVectorListener *listener );
 	
 	void EditVector( igdeContainer &parent, const char *description, int columns, int precision,
-		igdeEditVectorReference &editVector, igdeEditVectorListener *listener );
+		igdeEditVector::Ref &editVector, igdeEditVectorListener *listener );
 	
-	void EditVector( const char *description, igdeEditVectorReference &editVector,
+	void EditVector( const char *description, igdeEditVector::Ref &editVector,
 		igdeEditVectorListener *listener );
 	
 	void EditVector( const char *description, int columns, int precision,
-		igdeEditVectorReference &editVector, igdeEditVectorListener *listener );
+		igdeEditVector::Ref &editVector, igdeEditVectorListener *listener );
 	
 	
 	
@@ -703,10 +703,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditVector2( igdeContainer &form, const char *label, const char *description,
-		igdeEditVector2Reference &editVector2, igdeEditVector2Listener *listener );
+		igdeEditVector2::Ref &editVector2, igdeEditVector2Listener *listener );
 	
 	void EditVector2( igdeContainer &form, const char *label, const char *description,
-		int columns, int precision, igdeEditVector2Reference &editVector2,
+		int columns, int precision, igdeEditVector2::Ref &editVector2,
 		igdeEditVector2Listener *listener );
 	
 	/**
@@ -715,16 +715,16 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void EditVector2( igdeContainer &parent, const char *description,
-		igdeEditVector2Reference &editVector2, igdeEditVector2Listener *listener );
+		igdeEditVector2::Ref &editVector2, igdeEditVector2Listener *listener );
 	
 	void EditVector2( igdeContainer &parent, const char *description, int columns, int precision,
-		igdeEditVector2Reference &editVector2, igdeEditVector2Listener *listener );
+		igdeEditVector2::Ref &editVector2, igdeEditVector2Listener *listener );
 	
-	void EditVector2( const char *description, igdeEditVector2Reference &editVector2,
+	void EditVector2( const char *description, igdeEditVector2::Ref &editVector2,
 		igdeEditVector2Listener *listener );
 	
 	void EditVector2( const char *description, int columns, int precision,
-		igdeEditVector2Reference &editVector2, igdeEditVector2Listener *listener );
+		igdeEditVector2::Ref &editVector2, igdeEditVector2Listener *listener );
 	
 	
 	
@@ -735,10 +735,10 @@ public:
 	 */
 	void EditSliderText( igdeContainer &form, const char *label, const char *description,
 		float lower, float upper, int columns, int precision, float tickSpacing,
-		igdeEditSliderTextReference &slider, igdeEditSliderTextListener *listener );
+		igdeEditSliderText::Ref &slider, igdeEditSliderTextListener *listener );
 	
 	void EditSliderText( igdeContainer &form, const char *label, const char *description,
-		int lower, int upper, int columns, int tickSpacing, igdeEditSliderTextReference &slider,
+		int lower, int upper, int columns, int tickSpacing, igdeEditSliderText::Ref &slider,
 		igdeEditSliderTextListener *listener );
 	
 	/**
@@ -748,18 +748,18 @@ public:
 	 */
 	void EditSliderText( igdeContainer &parent, const char *description,
 		float lower, float upper, int columns, int precision, float tickSpacing,
-		igdeEditSliderTextReference &slider, igdeEditSliderTextListener *listener );
+		igdeEditSliderText::Ref &slider, igdeEditSliderTextListener *listener );
 	
 	void EditSliderText( igdeContainer &parent, const char *description, int lower,
-		int upper, int columns, int tickSpacing, igdeEditSliderTextReference &slider,
+		int upper, int columns, int tickSpacing, igdeEditSliderText::Ref &slider,
 		igdeEditSliderTextListener *listener );
 	
 	void EditSliderText( const char *description, float lower, float upper, int columns,
-		int precision, float tickSpacing, igdeEditSliderTextReference &slider,
+		int precision, float tickSpacing, igdeEditSliderText::Ref &slider,
 		igdeEditSliderTextListener *listener );
 	
 	void EditSliderText( const char *description, int lower, int upper, int columns,
-		int tickSpacing, igdeEditSliderTextReference &slider, igdeEditSliderTextListener *listener );
+		int tickSpacing, igdeEditSliderText::Ref &slider, igdeEditSliderTextListener *listener );
 	
 	
 	
@@ -768,10 +768,10 @@ public:
 	 */
 	void Button( igdeContainer &parent, igdeAction *action, bool takeOverAction = false );
 	
-	void Button( igdeContainer &parent, igdeButtonReference &button, igdeAction *action,
+	void Button( igdeContainer &parent, igdeButton::Ref &button, igdeAction *action,
 		bool takeOverAction = false );
 	
-	void Button( igdeButtonReference &button, igdeAction *action, bool takeOverAction = false );
+	void Button( igdeButton::Ref &button, igdeAction *action, bool takeOverAction = false );
 	
 	void Button(igdeContainer &parent, igdeButton::Ref &button, const igdeAction::Ref &action);
 	
@@ -782,10 +782,10 @@ public:
 	 */
 	void ToggleButton( igdeContainer &parent, igdeAction *action, bool takeOverAction = false );
 	
-	void ToggleButton( igdeContainer &parent, igdeToggleButtonReference &button,
+	void ToggleButton( igdeContainer &parent, igdeToggleButton::Ref &button,
 		igdeAction *action, bool takeOverAction = false );
 	
-	void ToggleButton( igdeToggleButtonReference &button, igdeAction *action, bool takeOverAction = false );
+	void ToggleButton( igdeToggleButton::Ref &button, igdeAction *action, bool takeOverAction = false );
 	
 	
 	
@@ -795,39 +795,39 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void ListBox( igdeContainer &form, const char *label, int rows, const char *description,
-		igdeListBoxReference &listBox, igdeListBoxListener *listener );
+		igdeListBox::Ref &listBox, igdeListBoxListener *listener );
 	
 	/** \brief Add List Box with no header. */
 	void ListBox( igdeContainer &parent, int rows, const char *description,
-		igdeListBoxReference &listBox, igdeListBoxListener *listener );
+		igdeListBox::Ref &listBox, igdeListBoxListener *listener );
 	
-	void ListBox( int rows, const char *description, igdeListBoxReference &listBox,
+	void ListBox( int rows, const char *description, igdeListBox::Ref &listBox,
 		igdeListBoxListener *listener );
 	
 	
 	
 	/** \brief Add Icon List Box with. */
-	void IconListBox( igdeContainer &parent, igdeIconListBoxReference &listBox,
+	void IconListBox( igdeContainer &parent, igdeIconListBox::Ref &listBox,
 		const sColumnHeader *headers, int headerCount, const char *description,
 		igdeIconListBoxListener *listener );
 	
-	void IconListBox( igdeContainer &parent, igdeIconListBoxReference &listBox,
+	void IconListBox( igdeContainer &parent, igdeIconListBox::Ref &listBox,
 		const decPoint &minimumSize, const sColumnHeader *headers, int headerCount,
 		const char *description, igdeIconListBoxListener *listener );
 	
 	void IconListBox( const sColumnHeader *headers, int headerCount, const char *description,
-		igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener );
+		igdeIconListBox::Ref &listBox, igdeIconListBoxListener *listener );
 	
 	void IconListBox( const decPoint &minimumSize, const sColumnHeader *headers, int headerCount,
-		const char *description, igdeIconListBoxReference &listBox, igdeIconListBoxListener *listener );
+		const char *description, igdeIconListBox::Ref &listBox, igdeIconListBoxListener *listener );
 	
 	
 	
 	/** \brief Add Tree List with no header. */
-	void TreeList( igdeContainer &parent, igdeTreeListReference &treeList,
+	void TreeList( igdeContainer &parent, igdeTreeList::Ref &treeList,
 		int rows, const char *description, igdeTreeListListener *listener );
 	
-	void TreeList( int rows, const char *description, igdeTreeListReference &treeList,
+	void TreeList( int rows, const char *description, igdeTreeList::Ref &treeList,
 		igdeTreeListListener *listener );
 	
 	
@@ -840,14 +840,14 @@ public:
 	void Label( igdeContainer &parent, const char *text, const char *description, int alignment );
 	
 	/** \brief Add label. */
-	void Label( igdeContainer &parent, igdeLabelReference &label, const char *text );
+	void Label( igdeContainer &parent, igdeLabel::Ref &label, const char *text );
 	
-	void Label( igdeContainer &parent, igdeLabelReference &label, const char *text,
+	void Label( igdeContainer &parent, igdeLabel::Ref &label, const char *text,
 		const char *description, int alignment );
 	
-	void Label( igdeLabelReference &label, const char *text );
+	void Label( igdeLabel::Ref &label, const char *text );
 	
-	void Label( igdeLabelReference &label, const char *text, const char *description, int alignment );
+	void Label( igdeLabel::Ref &label, const char *text, const char *description, int alignment );
 	
 	
 	
@@ -857,10 +857,10 @@ public:
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
 	void ScrollBar( igdeContainer &parent, bool horizontal, int lower, int upper, int pageSize,
-		int value, igdeScrollBarReference &scrollBar, igdeScrollBarListener *listener );
+		int value, igdeScrollBar::Ref &scrollBar, igdeScrollBarListener *listener );
 	
 	void ScrollBar( bool horizontal, int lower, int upper, int pageSize,
-		int value, igdeScrollBarReference &scrollBar, igdeScrollBarListener *listener );
+		int value, igdeScrollBar::Ref &scrollBar, igdeScrollBarListener *listener );
 	
 	
 	
@@ -869,10 +869,10 @@ public:
 	 * 
 	 * \warning Listener reference is taken over. Only use with new created listeners.
 	 */
-	void ViewCurveBezier( igdeContainer &parent, igdeViewCurveBezierReference &viewCurveBezier,
+	void ViewCurveBezier( igdeContainer &parent, igdeViewCurveBezier::Ref &viewCurveBezier,
 		igdeViewCurveBezierListener *listener );
 	
-	void ViewCurveBezier( igdeViewCurveBezierReference &viewCurveBezier,
+	void ViewCurveBezier( igdeViewCurveBezier::Ref &viewCurveBezier,
 		igdeViewCurveBezierListener *listener );
 	
 	
@@ -885,7 +885,7 @@ public:
 	/** \brief Add fixed size spacer. */
 	void Spacer( igdeContainer &parent, const decPoint &size );
 	
-	void Spacer( igdeContainer &parent, const decPoint &size, igdeSpacerReference &spacer );
+	void Spacer( igdeContainer &parent, const decPoint &size, igdeSpacer::Ref &spacer );
 	
 	
 	/**
@@ -894,11 +894,11 @@ public:
 	void WPSky( igdeContainer &parent, igdeAction *action, const char *title,
 		bool stretchLast = false, bool collapsed = false, bool takeOverAction = false );
 	
-	void WPSky( igdeContainer &parent, igdeWPSkyReference &panel, igdeAction *action,
+	void WPSky( igdeContainer &parent, igdeWPSky::Ref &panel, igdeAction *action,
 		const char *title, bool stretchLast = false, bool collapsed = false,
 		bool takeOverAction = false );
 	
-	void WPSky( igdeWPSkyReference &panel, igdeAction *action, bool takeOverAction = false );
+	void WPSky( igdeWPSky::Ref &panel, igdeAction *action, bool takeOverAction = false );
 	
 	
 	
@@ -908,11 +908,11 @@ public:
 	void WPCamera( igdeContainer &parent, igdeAction *action, const char *title,
 		bool stretchLast = false, bool collapsed = false, bool takeOverAction = false );
 	
-	void WPCamera( igdeContainer &parent, igdeWPCameraReference &panel, igdeAction *action,
+	void WPCamera( igdeContainer &parent, igdeWPCamera::Ref &panel, igdeAction *action,
 		const char *title, bool stretchLast = false, bool collapsed = false,
 		bool takeOverAction = false );
 	
-	void WPCamera( igdeWPCameraReference &panel, igdeAction *action, bool takeOverAction = false );
+	void WPCamera( igdeWPCamera::Ref &panel, igdeAction *action, bool takeOverAction = false );
 	
 	
 	
@@ -922,35 +922,35 @@ public:
 	void WPWObject( igdeContainer &parent, igdeAction *action, const char *title,
 		bool stretchLast = false, bool collapsed = false, bool takeOverAction = false );
 	
-	void WPWObject( igdeContainer &parent, igdeWPWObjectReference &panel, igdeAction *action,
+	void WPWObject( igdeContainer &parent, igdeWPWObject::Ref &panel, igdeAction *action,
 		const char *title, bool stretchLast = false, bool collapsed = false,
 		bool takeOverAction = false );
 	
-	void WPWObject( igdeWPWObjectReference &panel, igdeAction *action, bool takeOverAction = false );
+	void WPWObject( igdeWPWObject::Ref &panel, igdeAction *action, bool takeOverAction = false );
 	
 	
 	
 	/** \brief Add edit tags panel. */
-	void EditTags( igdeEditTagsReference &editTags, igdeAction *action, bool takeOverAction = false );
+	void EditTags( igdeEditTags::Ref &editTags, igdeAction *action, bool takeOverAction = false );
 	
-	void EditTags( igdeContainer &parent, igdeEditTagsReference &editTags,
+	void EditTags( igdeContainer &parent, igdeEditTags::Ref &editTags,
 		igdeAction *action, bool takeOverAction = false );
 	
 	
 	
 	/** \brief Add toggle tags panel. */
-	void ToggleTags( igdeContainer &parent, igdeToggleTagsReference &toggleTags,
+	void ToggleTags( igdeContainer &parent, igdeToggleTags::Ref &toggleTags,
 		igdeAction *action, bool takeOverAction = false );
 	
-	void ToggleTags( igdeToggleTagsReference &toggleTags, igdeAction *action, bool takeOverAction = false );
+	void ToggleTags( igdeToggleTags::Ref &toggleTags, igdeAction *action, bool takeOverAction = false );
 	
 	
 	
 	/** \brief Add edit property value widget. */
-	void EditPropertyValue( igdeContainer &parent, igdeEditPropertyValueReference &widget,
+	void EditPropertyValue( igdeContainer &parent, igdeEditPropertyValue::Ref &widget,
 		igdeEditPropertyValueListener *listener );
 	
-	void EditPropertyValue( igdeEditPropertyValueReference &widget, igdeEditPropertyValueListener *listener );
+	void EditPropertyValue( igdeEditPropertyValue::Ref &widget, igdeEditPropertyValueListener *listener );
 	
 	
 	
@@ -960,11 +960,11 @@ public:
 	void WPTriggerTable( igdeContainer &parent, igdeAction *action, const char *title,
 		bool stretchLast = false, bool collapsed = false, bool takeOverAction = false );
 	
-	void WPTriggerTable( igdeContainer &parent, igdeWPTriggerTableReference &panel,
+	void WPTriggerTable( igdeContainer &parent, igdeWPTriggerTable::Ref &panel,
 		igdeAction *action, const char *title, bool stretchLast = false, bool collapsed = false,
 		bool takeOverAction = false );
 	
-	void WPTriggerTable( igdeWPTriggerTableReference &panel, igdeAction *action, bool takeOverAction = false );
+	void WPTriggerTable( igdeWPTriggerTable::Ref &panel, igdeAction *action, bool takeOverAction = false );
 	
 	
 	

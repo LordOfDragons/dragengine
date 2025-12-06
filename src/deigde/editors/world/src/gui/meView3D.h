@@ -26,11 +26,11 @@
 #define _MEVIEW3D_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/resources/canvas/deCanvasTextReference.h>
-#include <dragengine/resources/canvas/deCanvasViewReference.h>
+#include <dragengine/resources/canvas/deCanvasText.h>
+#include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
 
@@ -51,7 +51,7 @@ private:
 	
 	meWorld *pWorld;
 	
-	igdeMouseKeyListenerReference pListenerEditor;
+	igdeMouseKeyListener::Ref pListenerEditor;
 	meViewEditor *pEditor;
 	
 	int pFPSHistory[ 30 ];
@@ -59,8 +59,8 @@ private:
 	
 	deFont::Ref pFontStats;
 	deFontSize::Ref pFontSizeStats;
-	deCanvasViewReference pCanvasFPS;
-	deCanvasTextReference pCanvasFPSText;
+	deCanvasView::Ref pCanvasFPS;
+	deCanvasText::Ref pCanvasFPSText;
 	
 	
 	

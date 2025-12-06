@@ -27,16 +27,16 @@
 
 #include "projPanelRemoteClient.h"
 #include "../project/remote/projRemoteClient.h"
+#include "../project/profile/projProfile.h"
 
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeTabBookReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeTabBook.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
 
@@ -44,7 +44,6 @@ class projProject;
 class projPanelTestRunListener;
 class projTestRunner;
 class projWindowMain;
-class projProfile;
 
 
 
@@ -69,28 +68,28 @@ private:
 	bool pIsRunning;
 	int pMaxLines;
 	
-	deObjectReference pSelectedProfile;
+	projProfile::Ref pSelectedProfile;
 	
-	igdeActionReference pActionStart;
-	igdeActionReference pActionQuit;
-	igdeActionReference pActionKill;
+	igdeAction::Ref pActionStart;
+	igdeAction::Ref pActionQuit;
+	igdeAction::Ref pActionKill;
 	
-	igdeTabBookReference pTabContent;
+	igdeTabBook::Ref pTabContent;
 	
-	igdeTextAreaReference pEditLogs;
+	igdeTextArea::Ref pEditLogs;
 	
 	decObjectOrderedSet pRemoteClients;
 	
-	igdeComboBoxReference pCBProfile;
-	igdeComboBoxReference pCBLaunchProfile;
-	igdeButtonReference pBtnStart;
-	igdeButtonReference pBtnQuit;
-	igdeButtonReference pBtnKill;
+	igdeComboBox::Ref pCBProfile;
+	igdeComboBox::Ref pCBLaunchProfile;
+	igdeButton::Ref pBtnStart;
+	igdeButton::Ref pBtnQuit;
+	igdeButton::Ref pBtnKill;
 	
-	igdeTextFieldReference pEditRemoteAddress;
-	igdeButtonReference pBtnRemoteStartListen;
-	igdeButtonReference pBtnRemoteStopListen;
-	igdeButtonReference pBtnRemoteSynchronizeAll;
+	igdeTextField::Ref pEditRemoteAddress;
+	igdeButton::Ref pBtnRemoteStartListen;
+	igdeButton::Ref pBtnRemoteStopListen;
+	igdeButton::Ref pBtnRemoteSynchronizeAll;
 	
 	projRemoteClient::Set pPendingAddRemoteClient;
 	projRemoteClient::Set pPendingRemoveRemoteClient;

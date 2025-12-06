@@ -25,8 +25,8 @@
 #ifndef _IGDETREEITEM_H_
 #define _IGDETREEITEM_H_
 
-#include "igdeTreeItemReference.h"
-#include "../resources/igdeIconReference.h"
+#include "igdeTreeItem.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -43,14 +43,20 @@
  * can be collapsed or expanded. By default tree items are collapsed.
  */
 class DE_DLL_EXPORT igdeTreeItem : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTreeItem> Ref;
+	
+	
 private:
 	decString pText;
 	decString pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	igdeTreeItem *pParent;
 	igdeTreeItem *pPrevious;
-	igdeTreeItemReference pNext;
-	igdeTreeItemReference pFirstChild;
+	igdeTreeItem::Ref pNext;
+	igdeTreeItem::Ref pFirstChild;
 	void *pData;
 	bool pSelected;
 	bool pExpanded;

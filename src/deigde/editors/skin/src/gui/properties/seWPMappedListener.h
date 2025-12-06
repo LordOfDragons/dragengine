@@ -38,7 +38,6 @@ public:
 	typedef deTObjectReference<seWPMappedListener> Ref;
 	
 	
-	
 private:
 	seWPMapped &pPanel;
 	

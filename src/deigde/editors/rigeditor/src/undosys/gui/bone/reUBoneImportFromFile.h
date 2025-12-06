@@ -44,6 +44,11 @@ class reRigConstraintList;
  * Existing shapes and constraints are replaced with the imported ones.
  */
 class reUBoneImportFromFile : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reUBoneImportFromFile> Ref;
+	
+	
 private:
 	struct sBoneState{
 		decVector cmp;

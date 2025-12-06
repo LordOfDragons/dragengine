@@ -25,12 +25,11 @@
 #ifndef _IGDEETOGGLETAGS_H_
 #define _IGDEETOGGLETAGS_H_
 
-#include "../igdeListBoxReference.h"
+#include "../igdeListBox.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
-#include "../resources/igdeIconReference.h"
+#include "../resources/igdeIcon.h"
 
 #include <dragengine/common/string/decStringSet.h>
 
@@ -46,6 +45,11 @@ class decStringSet;
  * or using the context menu.
  */
 class DE_DLL_EXPORT igdeToggleTags : public igdeContainerFlow, igdeActionListener{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeToggleTags> Ref;
+	
+	
 protected:
 	/** \brief Action enable all tags. */
 	class DE_DLL_EXPORT cActionEnableAll : public igdeAction{
@@ -70,15 +74,15 @@ protected:
 	
 	
 private:
-	igdeIconReference pIconEnabled;
-	igdeIconReference pIconDisabled;
+	igdeIcon::Ref pIconEnabled;
+	igdeIcon::Ref pIconDisabled;
 	
-	igdeListBoxReference pListBox;
+	igdeListBox::Ref pListBox;
 	
-	igdeActionReference pActionEnableAll;
-	igdeActionReference pActionDisableAll;
+	igdeAction::Ref pActionEnableAll;
+	igdeAction::Ref pActionDisableAll;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

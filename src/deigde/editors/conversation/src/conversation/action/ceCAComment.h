@@ -35,6 +35,11 @@
  * \brief Comment conversation action ignored during game play.
  */
 class ceCAComment : public ceConversationAction{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceCAComment> Ref;
+	
+	
 private:
 	decString pComment;
 	

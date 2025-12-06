@@ -26,7 +26,7 @@
 #define _DESOUNDDECODER_H_
 
 #include "../../deObject.h"
-#include "deSoundReference.h"
+#include "deSound.h"
 
 class deSoundManager;
 class deBaseSoundDecoder;
@@ -46,10 +46,9 @@ public:
 	typedef deTObjectReference<deSoundDecoder> Ref;
 	
 	
-	
 private:
 	deSoundManager &pSoundManager;
-	deSoundReference pSound;
+	deSound::Ref pSound;
 	
 	deBaseSoundDecoder *pPeerSound;
 	

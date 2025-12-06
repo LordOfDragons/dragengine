@@ -39,6 +39,10 @@ class igdeTriggerTargetList;
  */
 class DE_DLL_EXPORT igdeTriggerExpressionComponent : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTriggerExpressionComponent> Ref;
+	
+	
 	/** \brief Component type. */
 	enum eComponentTypes{
 		/** \brief Target component. */

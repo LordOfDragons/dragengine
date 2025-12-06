@@ -331,7 +331,7 @@ void seDynamicSkinRenderable::SetImagePath( const char *imagePath ){
 }
 
 void seDynamicSkinRenderable::UpdateImage(){
-	deImageReference image;
+	deImage::Ref image;
 	
 	if( ! pPathImage.IsEmpty() ){
 		try{
@@ -370,7 +370,7 @@ void seDynamicSkinRenderable::SetVideoPath( const char *videoPath ){
 }
 
 void seDynamicSkinRenderable::UpdateVideo(){
-	deVideoReference video;
+	deVideo::Ref video;
 	
 	if( ! pPathVideo.IsEmpty() ){
 		try{

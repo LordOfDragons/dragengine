@@ -40,11 +40,11 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeTextField.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -72,7 +72,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUSetShapeCapsuleHalfHeight( capsule, value ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -97,7 +97,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUSetShapeCapsuleTopRadius( capsule, value ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -122,7 +122,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new reUSetShapeCapsuleBottomRadius( capsule, value ) );
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
@@ -144,7 +144,7 @@ reWPPanelShapeCapsule::reWPPanelShapeCapsule( reWPShape &wpShapes ) :
 reWPPanelShape( wpShapes, reRigShape::estCapsule )
 {
 	igdeEnvironment &env = wpShapes.GetEnvironment();
-	igdeContainerReference groupBox;
+	igdeContainer::Ref groupBox;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	

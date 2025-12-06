@@ -40,6 +40,10 @@ class deInputDevice;
  * \brief MacOS input device.
  */
 class demoiDevice : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<demoiDevice> Ref;
+
+
 public:
     /** \brief Source identifier. */
     enum eSources{

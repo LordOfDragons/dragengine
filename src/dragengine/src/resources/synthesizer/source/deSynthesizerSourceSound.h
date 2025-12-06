@@ -26,7 +26,7 @@
 #define _DESYNTHESIZERSOURCESOUND_H_
 
 #include "deSynthesizerSource.h"
-#include "../../sound/deSoundReference.h"
+#include "../../sound/deSound.h"
 
 
 /**
@@ -38,9 +38,8 @@ public:
 	typedef deTObjectReference<deSynthesizerSourceSound> Ref;
 	
 	
-	
 private:
-	deSoundReference pSound;
+	deSound::Ref pSound;
 	
 	float pMinSpeed;
 	float pMaxSpeed;

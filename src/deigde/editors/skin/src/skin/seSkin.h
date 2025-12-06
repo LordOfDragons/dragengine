@@ -34,7 +34,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectSet.h>
-#include <dragengine/resources/light/deLightReference.h>
+#include <dragengine/resources/light/deLight.h>
 
 class seDynamicSkin;
 class seDynamicSkinRenderable;
@@ -65,6 +65,7 @@ class seSkin : public igdeEditableEntity{
 public:
 	typedef deTObjectReference<seSkin> Ref;
 	
+	
 	enum ePreviewMode{
 		epmModel,
 		epmLight
@@ -84,7 +85,7 @@ private:
 	deAnimatorInstance *pEngAnimatorInstance;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deParticleEmitter *pEngParticleEmitter;
-	deLightReference pEngLight;
+	deLight::Ref pEngLight;
 	
 	ePreviewMode pPreviewMode;
 	

@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<deColliderVolume> Ref;
 	
 	
-	
 private:
 	decShapeList pShapes;
 	

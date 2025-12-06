@@ -41,6 +41,10 @@ class seMapped;
  */
 class seSkinListener : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seSkinListener> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create skin listener. */

@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXWINDOW_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeWindow;
 class igdeEnvironment;

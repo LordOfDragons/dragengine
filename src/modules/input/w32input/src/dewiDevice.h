@@ -49,6 +49,7 @@ public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<dewiDevice> Ref;
 	
+	
 	/** Source identifier. */
 	enum eSources{
 		/** Windows. */

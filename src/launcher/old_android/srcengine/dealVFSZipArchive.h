@@ -44,6 +44,10 @@ class dealVFSZipArchive : public deVFSContainer{
 private:
 	/** \brief Archive file. */
 	class cArchiveFile : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cArchiveFile> Ref;
+
+
 	private:
 		/** \brief Filename. */
 		decString pFilename;
@@ -88,6 +92,10 @@ private:
 	
 	/** \brief Archive directory. */
 	class cArchiveDirectory : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cArchiveDirectory> Ref;
+
+
 	private:
 		/** \brief Filename. */
 		decString pFilename;

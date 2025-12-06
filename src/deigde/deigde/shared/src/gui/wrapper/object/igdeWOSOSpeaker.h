@@ -26,11 +26,11 @@
 #define _IGDEWOSOSPEAKER_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
-#include "../../../triggersystem/igdeTriggerExpressionReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
-#include <dragengine/resources/sound/deSpeakerReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/sound/deSpeaker.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -41,15 +41,20 @@ class igdeGDCSpeaker;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOSpeaker : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOSpeaker> Ref;
+	
+	
 private:
 	const igdeGDCSpeaker &pGDSpeaker;
-	deSpeakerReference pSpeaker;
-	igdeResourceLoaderListenerReference pResLoad;
+	deSpeaker::Ref pSpeaker;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	igdeTriggerExpressionReference pTriggerPlaying;
-	igdeTriggerExpressionReference pTriggerMuted;
+	igdeTriggerExpression::Ref pTriggerPlaying;
+	igdeTriggerExpression::Ref pTriggerMuted;
 	
 	
 public:

@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -60,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Camera...",
 ///////////////
 
 igdeUndo *gdeMAOCCameraAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference camera;
-	camera.TakeOver( new gdeOCCamera );
-	return new gdeUOCAddCamera( &objectClass, ( gdeOCCamera* )( deObject* )camera );
+	return new gdeUOCAddCamera(&objectClass, gdeOCCamera::Ref::NewWith());
 }
 
 void gdeMAOCCameraAdd::Update(){

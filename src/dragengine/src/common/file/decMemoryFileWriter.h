@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<decMemoryFileWriter> Ref;
 	
 	
-	
 private:
 	decMemoryFile *pFile;
 	int pPosition;

@@ -36,11 +36,8 @@
 #include "../../gui/igdeIconListBox.h"
 #include "../../gui/browse/igdeBrowseItemGDPreviewListener.h"
 #include "../../gui/model/igdeListItem.h"
-#include "../../gui/model/igdeListItemReference.h"
 #include "../../gui/resources/igdeIcon.h"
-#include "../../gui/resources/igdeIconReference.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/image/deImage.h>
 
@@ -68,11 +65,11 @@ igdeGDAddToListVisitor::~igdeGDAddToListVisitor(){
 ///////////////
 
 void igdeGDAddToListVisitor::AddItemToList( const char *caption, deImage &image, void *userPointer ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	AddItemToList( item, caption, image, userPointer );
 }
 
-void igdeGDAddToListVisitor::AddItemToList( igdeListItemReference &item,
+void igdeGDAddToListVisitor::AddItemToList( igdeListItem::Ref &item,
 const char *caption, deImage &image, void *userPointer ){
 	if( ! caption ){
 		DETHROW( deeInvalidParam );
@@ -128,7 +125,7 @@ const char *caption, deImage &image, void *userPointer ){
 	*/
 	const char * const text = caption;
 	
-	igdeIconReference icon;
+	igdeIcon::Ref icon;
 	if( image.GetWidth() > image.GetHeight() ){
 		icon.TakeOver( new igdeIcon( image, pSize, pSize * image.GetHeight() / image.GetWidth() ) );
 		
@@ -157,7 +154,7 @@ void igdeGDAddToListVisitor::VisitObjectClass( igdeGDClass *gdclass ){
 	}
 	
 	deImage * const image = pEnvironment.GetGDPreviewManager()->GetPreviewObjectClass( gdclass );
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	if( image ){
 		AddItemToList( item, gdclass->GetName(), *image, gdclass );
 		return;
@@ -165,10 +162,9 @@ void igdeGDAddToListVisitor::VisitObjectClass( igdeGDClass *gdclass ){
 	
 	AddItemToList( item,  gdclass->GetName(), *pEnvironment.GetGDPreviewManager()->GetImageCreating(), gdclass );
 	
-	deObjectReference listener;
-	listener.TakeOver( new igdeBrowseItemGDPreviewListener( pIconListBox, item, pSize ) );
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pIconListBox, item, pSize));
 	pEnvironment.GetGDPreviewManager()->CreatePreviewObjectClass(
-		gdclass, ( igdeGDPreviewListener* )( deObject* )listener );
+		gdclass, listener );
 }
 
 void igdeGDAddToListVisitor::VisitSkin( igdeGDSkin *gdskin ){
@@ -179,7 +175,7 @@ void igdeGDAddToListVisitor::VisitSkin( igdeGDSkin *gdskin ){
 	}
 	
 	deImage * const image = pEnvironment.GetGDPreviewManager()->GetPreviewSkin( gdskin );
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	if( image ){
 		AddItemToList( item, gdskin->GetName(), *image, gdskin );
 		return;
@@ -187,10 +183,9 @@ void igdeGDAddToListVisitor::VisitSkin( igdeGDSkin *gdskin ){
 	
 	AddItemToList( item,  gdskin->GetName(), *pEnvironment.GetGDPreviewManager()->GetImageCreating(), gdskin );
 	
-	deObjectReference listener;
-	listener.TakeOver( new igdeBrowseItemGDPreviewListener( pIconListBox, item, pSize ) );
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pIconListBox, item, pSize));
 	pEnvironment.GetGDPreviewManager()->CreatePreviewSkin(
-		gdskin, ( igdeGDPreviewListener* )( deObject* )listener );
+		gdskin, listener );
 }
 
 void igdeGDAddToListVisitor::VisitSky( igdeGDSky *gdsky ){
@@ -201,7 +196,7 @@ void igdeGDAddToListVisitor::VisitSky( igdeGDSky *gdsky ){
 	}
 	
 	deImage * const image = pEnvironment.GetGDPreviewManager()->GetPreviewSky( gdsky );
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	if( image ){
 		AddItemToList( item, gdsky->GetName(), *image, gdsky );
 		return;
@@ -209,8 +204,7 @@ void igdeGDAddToListVisitor::VisitSky( igdeGDSky *gdsky ){
 	
 	AddItemToList( item,  gdsky->GetName(), *pEnvironment.GetGDPreviewManager()->GetImageCreating(), gdsky );
 	
-	deObjectReference listener;
-	listener.TakeOver( new igdeBrowseItemGDPreviewListener( pIconListBox, item, pSize ) );
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pIconListBox, item, pSize));
 	pEnvironment.GetGDPreviewManager()->CreatePreviewSky(
-		gdsky, ( igdeGDPreviewListener* )( deObject* )listener );
+		gdsky, listener );
 }

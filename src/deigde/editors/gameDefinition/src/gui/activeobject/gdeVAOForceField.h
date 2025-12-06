@@ -27,8 +27,8 @@
 
 #include "gdeVAOSubObject.h"
 
-#include <dragengine/resources/debug/deDebugDrawerReference.h>
-#include <dragengine/resources/forcefield/deForceFieldReference.h>
+#include <dragengine/resources/debug/deDebugDrawer.h>
+#include <dragengine/resources/forcefield/deForceField.h>
 
 class gdeOCForceField;
 class igdeWDebugDrawerShape;
@@ -39,12 +39,17 @@ class igdeWCoordSysArrows;
  * \brief Game definition active object force field for edit view.
  */
 class gdeVAOForceField : public gdeVAOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeVAOForceField> Ref;
+	
+	
 private:
 	gdeOCForceField *pOCForceField;
 	
-	deForceFieldReference pForceField;
+	deForceField::Ref pForceField;
 	
-	deDebugDrawerReference pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
 	igdeWCoordSysArrows *pDDSCoordSystem;
 	

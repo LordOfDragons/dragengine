@@ -43,6 +43,10 @@
  */
 class meHTVRuleMultiMath : public meHTVRule{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHTVRuleMultiMath> Ref;
+	
+	
 	/** Operators. */
 	enum eOperators{
 		/** Addition. */

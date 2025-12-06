@@ -52,7 +52,6 @@ public:
 	typedef deTObjectReference<deSynthesizerSourceChain> Ref;
 	
 	
-	
 private:
 	decObjectList pSounds;
 	

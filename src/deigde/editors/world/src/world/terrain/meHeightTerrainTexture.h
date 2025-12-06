@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/image/deImageReference.h>
-#include <dragengine/resources/skin/deSkinReference.h>
+#include <dragengine/resources/image/deImage.h>
+#include <dragengine/resources/skin/deSkin.h>
 
 class meHeightTerrainSector;
 class deEngine;
@@ -43,6 +43,11 @@ class deHeightTerrainTexture;
  * Texture layer in a height terrain.
  */
 class meHeightTerrainTexture : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meHeightTerrainTexture> Ref;
+	
+	
 private:
 	deEngine *pEngine;
 	deHeightTerrainTexture *pEngTexture;
@@ -53,7 +58,7 @@ private:
 	int pTypeNumber;
 	
 	decString pPathSkin;
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	
 	// projection
 	decVector2 pProjOffset;
@@ -62,7 +67,7 @@ private:
 	
 	// mask
 	decString pPathMask;
-	deImageReference pMaskImage;
+	deImage::Ref pMaskImage;
 	bool pMaskChanged;
 	bool pMaskSaved;
 	

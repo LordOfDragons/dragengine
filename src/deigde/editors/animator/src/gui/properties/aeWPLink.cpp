@@ -50,13 +50,13 @@
 #include "../../undosys/link/aeULinkToggleWrapY.h"
 #include "../../undosys/link/aeULinkPaste.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeListBox.h>
@@ -72,10 +72,9 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -108,7 +107,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( animator, link ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -143,7 +142,7 @@ public:
 		"Copy link to clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new aeClipboardDataLink( link ) );
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
 		return nullptr;
@@ -157,7 +156,7 @@ public:
 		"Cut link into clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		igdeClipboardDataReference cdata;
+		igdeClipboardData::Ref cdata;
 		cdata.TakeOver( new aeClipboardDataLink( link ) );
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
 		return new aeULinkRemove( link );
@@ -184,7 +183,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkPaste( animator, cdata->GetLinks() ) );
 		animator->GetUndoSystem()->Add( undo );
 	}
@@ -237,7 +236,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetName( link, value ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -264,7 +263,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetBone( link, bone ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -292,7 +291,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetController( link, controller ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -313,7 +312,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetRepeat( link, value ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -348,7 +347,7 @@ public:
 
 class cEditCurve : public igdeViewCurveBezierListener{
 	aeWPLink &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	
 public:
 	cEditCurve( aeWPLink &panel ) : pPanel( panel ){ }
@@ -399,7 +398,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetBone( link, value ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -422,7 +421,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetBoneParameter( link, parameter ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -443,7 +442,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetBoneMinimum( link, value ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -464,7 +463,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetBoneMaximum( link, value ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -492,7 +491,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetVertexPositionSet( link, vps ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -513,7 +512,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetVertexPositionSet( link, value ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -534,7 +533,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetVertexPositionSetMinimum( link, value ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -555,7 +554,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeULinkSetVertexPositionSetMaximum( link, value ) );
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -596,7 +595,7 @@ pPreventUpdate( false )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new aeWPLinkListener( *this );
 	

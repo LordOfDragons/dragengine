@@ -36,6 +36,12 @@ class igdeSpinTextField;
  * \brief IGDE UI SpinTextField Listener.
  */
 class DE_DLL_EXPORT igdeSpinTextFieldListener : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeSpinTextFieldListener> Ref;
+	
+	
 protected:
 	/** \text Constructors and Destructors */
 	/*@{*/

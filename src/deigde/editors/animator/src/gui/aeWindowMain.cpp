@@ -65,7 +65,7 @@
 #include "../aeIGDEModule.h"
 #include "../animatoreditor.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/engine/igdeEngineController.h>
 #include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
@@ -74,12 +74,10 @@
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBarSeparator.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/event/igdeAction.h>
@@ -94,7 +92,7 @@
 #include <deigde/gamedefinition/class/light/igdeGDCLight.h>
 #include <deigde/gameproject/igdeGameProject.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -136,7 +134,7 @@ pAnimator( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplittedReference splitted;
+	igdeContainerSplitted::Ref splitted;
 	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
 		igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
@@ -228,9 +226,8 @@ void aeWindowMain::SetAnimator( aeAnimator *animator ){
 }
 
 void aeWindowMain::CreateNewAnimator(){
-	deObjectReference animator;
-	animator.TakeOver( new aeAnimator( *this ) );
-	SetAnimator( ( aeAnimator* )( deObject* )animator );
+	const aeAnimator::Ref animator(aeAnimator::Ref::NewWith(*this));
+	SetAnimator( animator );
 }
 
 void aeWindowMain::SaveAnimator( const char *filename ){
@@ -262,8 +259,7 @@ void aeWindowMain::CreateRule( deAnimatorRuleVisitorIdentify::eRuleTypes type, b
 	aeRule * const activeRule = pAnimator->GetActiveRule();
 	int index = pAnimator->GetRules().GetCount();
 	aeRuleGroup *parentGroup = NULL;
-	deObjectReference refRule;
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	
 	if( activeRule ){
 		if( intoGroup ){
@@ -290,8 +286,7 @@ void aeWindowMain::CreateRule( deAnimatorRuleVisitorIdentify::eRuleTypes type, b
 		}
 	}
 	
-	refRule.TakeOver( aeRule::CreateRuleFromType( type ) );
-	aeRule * const rule = ( aeRule* )( deObject* )refRule;
+	const aeRule::Ref rule(aeRule::Ref::New(aeRule::CreateRuleFromType(type)));
 	
 	if( parentGroup ){
 		undo.TakeOver( new aeURuleGroupAddRule( parentGroup, rule, index ) );
@@ -473,7 +468,7 @@ public:
 		if( ! pWindow.GetAnimator() ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( pWindow.GetAnimator() ) );
 		if( undo ){
 			pWindow.GetAnimator()->GetUndoSystem()->Add( undo );
@@ -759,9 +754,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference controller;
-		controller.TakeOver( new aeController( name ) );
-		return new aeUAddController( animator, ( aeController* )( deObject* )controller );
+		const aeController::Ref controller(aeController::Ref::NewWith(name));
+		return new aeUAddController( animator, controller );
 	}
 };
 
@@ -904,9 +898,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference link;
-		link.TakeOver( new aeLink( name ) );
-		return new aeULinkAdd( animator, ( aeLink* )( deObject* )link );
+		const aeLink::Ref link(aeLink::Ref::NewWith(name));
+		return new aeULinkAdd( animator, link );
 	}
 };
 
@@ -922,10 +915,9 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference newLink;
-		newLink.TakeOver( new aeLink( *link ) );
+		const aeLink::Ref newLink(aeLink::Ref::NewWith(*link));
 		( ( aeLink& )( deObject& )newLink ).SetName( name );
-		return new aeULinkAdd( animator, ( aeLink* )( deObject* )newLink );
+		return new aeULinkAdd( animator, newLink );
 	}
 };
 
@@ -1360,7 +1352,7 @@ void aeWindowMain::pCreateToolBarEdit(){
 
 void aeWindowMain::pCreateMenu(){
 	igdeEnvironment &env = GetEnvironment();
-	igdeMenuCascadeReference cascade;
+	igdeMenuCascade::Ref cascade;
 	
 	cascade.TakeOver( new igdeMenuCascade( env, "File", deInputEvent::ekcF ) );
 	pCreateMenuFile( cascade );
@@ -1435,7 +1427,7 @@ void aeWindowMain::pCreateMenuLink( igdeMenuCascade &menu ){
 void aeWindowMain::pCreateMenuRule( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascadeReference subMenu;
+	igdeMenuCascade::Ref subMenu;
 	subMenu.TakeOver( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) );
 	menu.AddChild( subMenu );
 	helper.MenuCommand( subMenu, pActionRuleAddAnim );

@@ -27,7 +27,7 @@
 
 #include "meViewEditor.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -48,8 +48,8 @@ private:
 	
 	bool pNavigating;
 	
-	igdeUndoReference pUndoCameraMove;
-	igdeUndoReference pUndoCameraRotate;
+	igdeUndo::Ref pUndoCameraMove;
+	igdeUndo::Ref pUndoCameraRotate;
 	
 public:
 	/** \name Constructors and Destructors */

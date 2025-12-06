@@ -36,7 +36,6 @@
 #include "../event/igdeAction.h"
 #include "../resources/igdeIcon.h"
 #include "../resources/igdeFont.h"
-#include "../resources/igdeFontReference.h"
 #include "../theme/igdeGuiTheme.h"
 #include "../../environment/igdeEnvironment.h"
 
@@ -49,13 +48,12 @@
 
 // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 // TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
 	
 	// TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
-	igdeContainerReference nvnode;
+	igdeContainer::Ref nvnode;
 	nvnode.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
-	igdeNVSlotReference nvslot1, nvslot2, nvslot3, nvslot4;
+	igdeNVSlot::Ref nvslot1, nvslot2, nvslot3, nvslot4;
 	nvslot1.TakeOver( new igdeNVSlot( env, "Input 1", "This is a test input", true ) );
 	nvnode->AddChild( nvslot1 );
 	nvslot2.TakeOver( new igdeNVSlot( env, "Input 2", "This is a test input", true ) );

@@ -27,9 +27,9 @@
 
 #include "../../conversation/action/ceConversationActionList.h"
 
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextAreaReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextArea.h>
+#include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/dialog/igdeDialog.h>
 
 class ceStripList;
@@ -50,14 +50,14 @@ private:
 	
 	ceConversationActionList pActions;
 	
-	igdeTextAreaReference pEditSnippet;
-	igdeComboBoxFilterReference pCBCameraShot1;
-	igdeComboBoxFilterReference pCBCameraShot2;
-	igdeComboBoxFilterReference pCBTarget1;
-	igdeComboBoxFilterReference pCBTarget2;
-	igdeTextFieldReference pEditDelayCameraShot;
-	igdeTextFieldReference pEditDelayActorSpeak;
-	igdeTextFieldReference pEditScaleActorSpeak;
+	igdeTextArea::Ref pEditSnippet;
+	igdeComboBoxFilter::Ref pCBCameraShot1;
+	igdeComboBoxFilter::Ref pCBCameraShot2;
+	igdeComboBoxFilter::Ref pCBTarget1;
+	igdeComboBoxFilter::Ref pCBTarget2;
+	igdeTextField::Ref pEditDelayCameraShot;
+	igdeTextField::Ref pEditDelayActorSpeak;
+	igdeTextField::Ref pEditScaleActorSpeak;
 	
 	
 	

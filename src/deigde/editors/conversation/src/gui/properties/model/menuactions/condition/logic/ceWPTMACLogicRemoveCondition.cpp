@@ -37,7 +37,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -68,7 +68,7 @@ pCondition( condition )
 ///////////////
 
 void ceWPTMACLogicRemoveCondition::OnAction(){
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new ceUCCLogicRemove( pTopic, pAction, pLogic, pCondition ) );
 	pConversation->GetUndoSystem()->Add( undo );
 }

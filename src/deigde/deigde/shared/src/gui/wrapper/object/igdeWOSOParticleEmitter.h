@@ -26,11 +26,11 @@
 #define _IGDEWOSOPARTICLEEMITTER_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
-#include "../../../triggersystem/igdeTriggerExpressionReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
-#include <dragengine/resources/particle/deParticleEmitterInstanceReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/particle/deParticleEmitterInstance.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -41,14 +41,19 @@ class igdeGDCParticleEmitter;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOParticleEmitter : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOParticleEmitter> Ref;
+	
+	
 private:
 	const igdeGDCParticleEmitter &pGDParticleEmitter;
-	deParticleEmitterInstanceReference pParticleEmitter;
-	igdeResourceLoaderListenerReference pResLoad;
+	deParticleEmitterInstance::Ref pParticleEmitter;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	igdeTriggerExpressionReference pTriggerCasting;
+	igdeTriggerExpression::Ref pTriggerCasting;
 	decString pPathEmitter;
 	
 	

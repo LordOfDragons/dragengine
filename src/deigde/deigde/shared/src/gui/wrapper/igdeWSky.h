@@ -25,12 +25,12 @@
 #ifndef _IGDEWSKY_H_
 #define _IGDEWSKY_H_
 
-#include "../../gamedefinition/sky/igdeGDSkyReference.h"
+#include "../../gamedefinition/sky/igdeGDSky.h"
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
-#include <dragengine/resources/sky/deSkyInstanceReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/resources/sky/deSkyInstance.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeEnvironment;
 
@@ -64,10 +64,10 @@ public:
 private:
 	igdeEnvironment &pEnvironment;
 	
-	deWorldReference pEngWorld;
-	deSkyInstanceReference pEngSkyInstance;
+	deWorld::Ref pEngWorld;
+	deSkyInstance::Ref pEngSkyInstance;
 	float pMaxLightIntensity;
-	igdeGDSkyReference pGDSky;
+	igdeGDSky::Ref pGDSky;
 	decString pPath;
 	
 	cAsyncLoadFinished *pAsyncLoadFinished;

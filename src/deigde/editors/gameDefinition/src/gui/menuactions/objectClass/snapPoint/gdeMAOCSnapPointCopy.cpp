@@ -33,7 +33,7 @@
 #include "../../../../gamedef/objectClass/gdeObjectClass.h"
 #include "../../../../gamedef/objectClass/snappoint/gdeOCSnapPoint.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
@@ -69,11 +69,10 @@ igdeUndo *gdeMAOCSnapPointCopy::OnActionSubObject( gdeGameDefinition &gameDefini
 		return NULL;
 	}
 	
-	deObjectReference clipOCSnapPoint;
-	clipOCSnapPoint.TakeOver( new gdeOCSnapPoint( *snapPoint ) );
+	const gdeOCSnapPoint::Ref clipOCSnapPoint(gdeOCSnapPoint::Ref::NewWith(*snapPoint));
 	
-	igdeClipboardDataReference clipData;
-	clipData.TakeOver( new gdeClipboardDataOCSnapPoint( ( gdeOCSnapPoint* )( deObject* )clipOCSnapPoint ) );
+	igdeClipboardData::Ref clipData;
+	clipData.TakeOver( new gdeClipboardDataOCSnapPoint( clipOCSnapPoint ) );
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

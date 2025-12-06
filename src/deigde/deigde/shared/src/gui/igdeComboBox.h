@@ -28,7 +28,7 @@
 #include <stddef.h>
 
 #include "igdeWidget.h"
-#include "model/igdeListItemSorterReference.h"
+#include "model/igdeListItemSorter.h"
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
@@ -46,12 +46,18 @@ class igdeListItem;
  * \todo igdeComboBox has to be a subclass of igdeTextField once done.
  */
 class DE_DLL_EXPORT igdeComboBox : public igdeWidget{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeComboBox> Ref;
+	
+	
 private:
 	bool pEnabled;
 	decObjectList pItems;
 	int pSelection;
 	decString pText;
-	igdeListItemSorterReference pSorter;
+	igdeListItemSorter::Ref pSorter;
 	int pColumns;
 	int pRows;
 	bool pEditable;

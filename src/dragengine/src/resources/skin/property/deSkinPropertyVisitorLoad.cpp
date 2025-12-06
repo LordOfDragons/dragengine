@@ -32,10 +32,8 @@
 #include "deSkinPropertyVisitorLoad.h"
 #include "node/deSkinPropertyNodeGroup.h"
 #include "../../image/deImage.h"
-#include "../../image/deImageReference.h"
 #include "../../image/deImageManager.h"
 #include "../../video/deVideo.h"
-#include "../../video/deVideoReference.h"
 #include "../../video/deVideoManager.h"
 #include "../../../deEngine.h"
 #include "../../../common/exceptions.h"
@@ -69,7 +67,7 @@ void deSkinPropertyVisitorLoad::VisitImage( deSkinPropertyImage &property ){
 		return;
 	}
 	
-	deImageReference image;
+	deImage::Ref image;
 	
 	if( ! property.GetPath().IsEmpty() ){
 		try{
@@ -97,7 +95,7 @@ void deSkinPropertyVisitorLoad::VisitVideo( deSkinPropertyVideo &property ){
 		return;
 	}
 	
-	deVideoReference video;
+	deVideo::Ref video;
 	
 	if( ! property.GetPath().IsEmpty() ){
 		try{

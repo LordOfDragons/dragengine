@@ -32,7 +32,6 @@
 #include "../../../../world/object/meObject.h"
 #include "../../../../world/object/texture/meObjectTexture.h"
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringList.h>
 #include <deigde/gamedefinition/class/igdeGDClass.h>
@@ -99,7 +98,6 @@ void meUObjectAddUsedTextures::Undo(){
 }
 
 void meUObjectAddUsedTextures::Redo(){
-	deObjectReference texture;
 	int i, count;
 	
 	if( pTextureList.GetTextureCount() == 0 ){
@@ -127,8 +125,9 @@ void meUObjectAddUsedTextures::Redo(){
 				gdctex = gdccomptex->GetNamed( textureName );
 			}
 			
+			meObjectTexture::Ref texture;
 			meHelpers::CreateTexture( texture, pObject, textureName, gdctex );
-			pTextureList.AddTexture( ( meObjectTexture* )( deObject* )texture );
+			pTextureList.AddTexture( texture );
 		}
 	}
 	

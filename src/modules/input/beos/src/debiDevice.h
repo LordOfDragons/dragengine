@@ -42,6 +42,10 @@ class deInputDevice;
  * \brief Input device.
  */
 class debiDevice : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debiDevice> Ref;
+
+
 public:
 	/** \brief Source identifier. */
 	enum eSources{

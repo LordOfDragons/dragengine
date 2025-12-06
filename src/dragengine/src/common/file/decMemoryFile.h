@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<decMemoryFile> Ref;
 	
 	
-	
 private:
 	decString pFilename;
 	char *pData;

@@ -27,9 +27,9 @@
 
 #include "meWVNode.h"
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/igdeTextField.h>
 
 class meHTVRuleMath;
 
@@ -42,10 +42,10 @@ class meWVNodeMath : public meWVNode{
 private:
 	meHTVRuleMath *pRuleMath;
 	
-	igdeContainerReference pFraParameters;
-	igdeComboBoxReference pCBOperator;
-	igdeTextFieldReference pEditValueA;
-	igdeTextFieldReference pEditValueB;
+	igdeContainer::Ref pFraParameters;
+	igdeComboBox::Ref pCBOperator;
+	igdeTextField::Ref pEditValueA;
+	igdeTextField::Ref pEditValueB;
 	
 	
 	

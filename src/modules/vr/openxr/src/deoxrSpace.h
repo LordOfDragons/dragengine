@@ -43,6 +43,7 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrSpace> Ref;
 	
+	
 	/** Valid data. */
 	enum class eValidData{
 		space = 1 << 0,

@@ -46,6 +46,7 @@ class deoglWorldCompute : public deObject{
 public:
 	typedef deTObjectReference<deoglWorldCompute> Ref;
 	
+	
 	/** Element flags. */
 	enum eElementFlags{
 		eefComponent = 0x1,

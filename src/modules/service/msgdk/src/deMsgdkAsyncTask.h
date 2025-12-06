@@ -34,6 +34,10 @@
  */
 class deMsgdkAsyncTask : public deObject
 {
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deMsgdkAsyncTask> Ref;
+
+
 public:
 	/**
 	 * Invalidator used if owner of task is destroyed to avoid segfaults.
@@ -46,7 +50,8 @@ public:
 
 	public:
 		typedef deTObjectReference<Invalidator> Ref;
-
+	
+	
 		Invalidator();
 		inline bool IsValid() const{ return pValid; }
 		void Invalidate();

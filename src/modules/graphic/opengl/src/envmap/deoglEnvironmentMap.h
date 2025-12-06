@@ -53,6 +53,11 @@ class deoglWorldOctree;
  * elements can be included or excluded.
  */
 class deoglEnvironmentMap : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglEnvironmentMap> Ref;
+	
+	
 private:
 	deoglRenderThread &pRenderThread;
 	

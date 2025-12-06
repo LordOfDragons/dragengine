@@ -39,7 +39,6 @@ public:
 	typedef deTObjectReference<delGPDisableModuleVersion> Ref;
 	
 	
-	
 private:
 	decString pName;
 	decString pVersion;

@@ -61,7 +61,6 @@ public:
 	typedef deTObjectReference<deVirtualFileSystem> Ref;
 	
 	
-	
 private:
 	decObjectOrderedSet pContainers;
 	
@@ -107,7 +106,7 @@ public:
 	 * 
 	 * Throws an exception if file reader can not be created.
 	 * 
-	 * \warning File reader has reference counted added. Use decBaseFileReaderReference::TakeOver().
+	 * \warning File reader has reference counted added. Use decBaseFileReader::Ref::TakeOver().
 	 */
 	decBaseFileReader *OpenFileForReading( const decPath &path ) const;
 	
@@ -116,7 +115,7 @@ public:
 	 * 
 	 * Throws an exception if file writer can not be created.
 	 * 
-	 * \warning File reader has reference counted added. Use decBaseFileWriterReference::TakeOver().
+	 * \warning File reader has reference counted added. Use decBaseFileWriter::Ref::TakeOver().
 	 */
 	decBaseFileWriter *OpenFileForWriting( const decPath &path ) const;
 	

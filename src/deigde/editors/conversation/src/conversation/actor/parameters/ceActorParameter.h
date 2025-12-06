@@ -39,6 +39,10 @@ private:
 	int pValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceActorParameter> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new actor parameter. */

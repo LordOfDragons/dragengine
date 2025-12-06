@@ -27,13 +27,13 @@
 
 #include "../../../gamedef/objectClass/light/gdeOCLight.h"
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeColorBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeColorBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -54,33 +54,33 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeComboBoxReference pCBType;
-	igdeColorBoxReference pClrColor;
-	igdeTextFieldReference pEditIntensity;
-	igdeTextFieldReference pEditAmbientRatio;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
-	igdeTextFieldReference pEditRange;
-	igdeTextFieldReference pEditHalfIntensityDistance;
-	igdeTextFieldReference pEditSpotAngle;
-	igdeTextFieldReference pEditSpotRatio;
-	igdeTextFieldReference pEditSpotSmoothness;
-	igdeTextFieldReference pEditSpotExponent;
-	igdeCheckBoxReference pChkActivated;
-	igdeCheckBoxReference pChkCastShadows;
-	igdeTextFieldReference pEditHintLightImportance;
-	igdeTextFieldReference pEditHintShadowImportance;
-	igdeComboBoxReference pCBHintMovement;
-	igdeComboBoxReference pCBHintParameter;
+	igdeComboBox::Ref pCBType;
+	igdeColorBox::Ref pClrColor;
+	igdeTextField::Ref pEditIntensity;
+	igdeTextField::Ref pEditAmbientRatio;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
+	igdeTextField::Ref pEditRange;
+	igdeTextField::Ref pEditHalfIntensityDistance;
+	igdeTextField::Ref pEditSpotAngle;
+	igdeTextField::Ref pEditSpotRatio;
+	igdeTextField::Ref pEditSpotSmoothness;
+	igdeTextField::Ref pEditSpotExponent;
+	igdeCheckBox::Ref pChkActivated;
+	igdeCheckBox::Ref pChkCastShadows;
+	igdeTextField::Ref pEditHintLightImportance;
+	igdeTextField::Ref pEditHintShadowImportance;
+	igdeComboBox::Ref pCBHintMovement;
+	igdeComboBox::Ref pCBHintParameter;
 	
-	igdeEditPathReference pEditLightSkin;
+	igdeEditPath::Ref pEditLightSkin;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
-	igdeComboBoxReference pCBTriggerNames;
-	igdeComboBoxFilterReference pCBTriggerNameTarget;
+	igdeComboBox::Ref pCBTriggerNames;
+	igdeComboBoxFilter::Ref pCBTriggerNameTarget;
 	
 	
 	

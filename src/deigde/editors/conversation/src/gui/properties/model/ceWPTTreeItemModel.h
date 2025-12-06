@@ -25,7 +25,7 @@
 #ifndef _CEWPTTREEITEMMODEL_H_
 #define _CEWPTTREEITEMMODEL_H_
 
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/resources/igdeIcon.h>
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -51,6 +51,10 @@ class igdeMenuCascade;
  * of an assigned tree item.
  */
 class ceWPTTreeItemModel : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWPTTreeItemModel> Ref;
+
+
 public:
 	/** \brief Tree item types. */
 	enum eTypes{
@@ -102,7 +106,7 @@ private:
 	const eTypes pType;
 	
 	decString pText, pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	decObjectOrderedSet pChildren;
 	bool pExpanded;
 	

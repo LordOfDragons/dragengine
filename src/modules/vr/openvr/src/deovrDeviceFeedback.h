@@ -61,6 +61,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deovrDeviceFeedback> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create device feedback. */

@@ -25,13 +25,10 @@
 #ifndef _AEULINKSETCURVE_H_
 #define _AEULINKSETCURVE_H_
 
+#include "../../animator/link/aeLink.h"
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/curve/decCurveBezier.h>
-
-
-class aeLink;
 
 
 /**
@@ -39,7 +36,7 @@ class aeLink;
  */
 class aeULinkSetCurve : public igdeUndo{
 private:
-	deObjectReference pLink;
+	const aeLink::Ref pLink;
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;
 	

@@ -27,13 +27,13 @@
 
 #include <dragengine/common/math/decMath.h>
 
-#include "../igdeButtonReference.h"
-#include "../igdeCheckBoxReference.h"
-#include "../igdeContainerReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../composed/igdeEditVectorReference.h"
+#include "../igdeButton.h"
+#include "../igdeCheckBox.h"
+#include "../igdeContainer.h"
+#include "../igdeTextField.h"
+#include "../composed/igdeEditVector.h"
 #include "../event/igdeActionListener.h"
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
 #include "../wrapper/igdeWObject.h"
 #include "../../gamedefinition/class/igdeGDClass.h"
@@ -59,13 +59,14 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeWPWObject> Ref;
 	
+	
 	/** \brief Undo changes done by igdeWPWObject. */
 	class DE_DLL_EXPORT UndoChanges : public igdeUndo{
 	public:
 		/** \brief Type holding strong reference. */
 		typedef deTObjectReference<UndoChanges> Ref;
-		
-		
+	
+	
 	private:
 		const igdeWObject::Ref pObject;
 		
@@ -107,17 +108,17 @@ public:
 private:
 	igdeWObject::Ref pObject;
 	
-	igdeTextFieldReference pEditClass;
-	igdeButtonReference pBtnClass;
+	igdeTextField::Ref pEditClass;
+	igdeButton::Ref pBtnClass;
 	
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditOrientation;
-	igdeEditVectorReference pEditScaling;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditOrientation;
+	igdeEditVector::Ref pEditScaling;
 	
-	igdeCheckBoxReference pChkVisible;
-	igdeCheckBoxReference pChkDynamicCollider;
+	igdeCheckBox::Ref pChkVisible;
+	igdeCheckBox::Ref pChkDynamicCollider;
 	
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	igdeUndoSystem *pUndoSystem;
 	
 	

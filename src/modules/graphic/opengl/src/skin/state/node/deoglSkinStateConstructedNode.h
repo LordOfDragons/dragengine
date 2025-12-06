@@ -43,6 +43,7 @@ class deoglSkinStateConstructedNode : public deObject{
 public:
 	typedef deTObjectReference<deoglSkinStateConstructedNode> Ref;
 	
+	
 	enum eType{
 		etGroup,
 		etImage,

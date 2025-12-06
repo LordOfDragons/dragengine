@@ -34,7 +34,6 @@
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
@@ -92,7 +91,7 @@ deLangPackModule::~deLangPackModule(){
 ///////////////
 
 void deLangPackModule::LoadLanguagePack( decBaseFileReader &file, deLanguagePack &languagePack ){
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( GetGameEngine()->GetLogger() ).ParseXml( &file, xmlDoc );

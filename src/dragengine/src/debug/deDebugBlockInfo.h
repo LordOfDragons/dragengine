@@ -25,10 +25,10 @@
 #ifndef _DEDEBUGBLOCKINFO_H_
 #define _DEDEBUGBLOCKINFO_H_
 
-#include "../resources/canvas/deCanvasViewReference.h"
-#include "../resources/canvas/deCanvasTextReference.h"
-#include "../resources/canvas/deCanvasPaintReference.h"
-#include "../resources/font/deFontReference.h"
+#include "../resources/canvas/deCanvasView.h"
+#include "../resources/canvas/deCanvasText.h"
+#include "../resources/canvas/deCanvasPaint.h"
+#include "../resources/font/deFont.h"
 #include "../common/collection/decPointerList.h"
 #include "../common/math/decMath.h"
 #include "../common/string/decString.h"
@@ -49,19 +49,19 @@ private:
 		decString text;
 		decColor color;
 		decColor bgColor;
-		deCanvasViewReference view;
-		deCanvasPaintReference viewBg;
-		deCanvasTextReference viewLabel;
-		deCanvasTextReference viewText;
+		deCanvasView::Ref view;
+		deCanvasPaint::Ref viewBg;
+		deCanvasText::Ref viewLabel;
+		deCanvasText::Ref viewText;
 	};
 	
 	
 	deEngine &pEngine;
 	decPointerList pEntries;
-	deCanvasViewReference pView;
-	deCanvasPaintReference pViewTitleBg;
-	deCanvasTextReference pViewTitle;
-	deFontReference pFont;
+	deCanvasView::Ref pView;
+	deCanvasPaint::Ref pViewTitleBg;
+	deCanvasText::Ref pViewTitle;
+	deFont::Ref pFont;
 	int pPadding;
 	int pSpacing;
 	

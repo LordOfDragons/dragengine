@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<deoglSkinStateCNImage> Ref;
 	
 	
-	
 private:
 	const deImage::Ref pSyncImage;
 	const deoglRImage::Ref pImage;

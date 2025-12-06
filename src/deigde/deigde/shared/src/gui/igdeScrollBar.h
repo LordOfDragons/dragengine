@@ -26,7 +26,7 @@
 #define _IGDESCROLLBAR_H_
 
 #include "igdeWidget.h"
-#include "event/igdeActionReference.h"
+#include "event/igdeAction.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 
@@ -39,6 +39,10 @@ class igdeScrollBarListener;
  */
 class DE_DLL_EXPORT igdeScrollBar : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeScrollBar> Ref;
+	
+	
 	/** \brief Orientation. */
 	enum eOrientation{
 		/** \brief Horizontal. */

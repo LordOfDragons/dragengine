@@ -25,12 +25,12 @@
 #ifndef _MEWPADD_H_
 #define _MEWPADD_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/event/igdeAction.h>
 
 class meWorld;
 class meWPAddListener;
@@ -48,16 +48,16 @@ private:
 	
 	meWorld *pWorld;
 	
-	igdeActionReference pActionClassAdd;
-	igdeActionReference pActionClassRemove;
-	igdeActionReference pActionClassClear;
+	igdeAction::Ref pActionClassAdd;
+	igdeAction::Ref pActionClassRemove;
+	igdeAction::Ref pActionClassClear;
 	
-	igdeCheckBoxReference pChkFilterObjects;
-	igdeComboBoxFilterReference pComboObjClass;
-	igdeListBoxReference pListObjClasses;
-	igdeCheckBoxReference pChkObjInclusive;
+	igdeCheckBox::Ref pChkFilterObjects;
+	igdeComboBoxFilter::Ref pComboObjClass;
+	igdeListBox::Ref pListObjClasses;
+	igdeCheckBox::Ref pChkObjInclusive;
 	
-	igdeCheckBoxReference pChkRandomizeYAxis;
+	igdeCheckBox::Ref pChkRandomizeYAxis;
 	
 	
 public:

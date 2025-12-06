@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<deObject> Ref;
 	
 	
-	
 private:
 	int pRefCount;
 	

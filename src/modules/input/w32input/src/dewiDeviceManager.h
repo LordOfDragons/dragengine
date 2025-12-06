@@ -50,9 +50,8 @@ namespace wrgi = winrt::Windows::Gaming::Input;
 class dewiDeviceManager : public deObject{
 public:
 	typedef deTObjectReference<dewiDeviceManager> Ref;
-
-
-
+	
+	
 private:
 	deWindowsInput &pModule;
 	

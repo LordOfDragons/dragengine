@@ -26,7 +26,7 @@
 #include "../igdeLabel.h"
 #include "../igdeTextArea.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/exceptions.h>
@@ -45,13 +45,13 @@ igdeDialog( environment, title )
 {
 	igdeUIHelper &helper = environment.GetUIHelper();
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10 ) );
 	
 	helper.Label( content, message );
 	helper.EditString( content, "", pEditValue, columns, rows, NULL );
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Accept", "Discard" );
 	
 	AddContent( content, buttonBar );

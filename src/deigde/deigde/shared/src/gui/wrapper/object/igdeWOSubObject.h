@@ -25,7 +25,7 @@
 #ifndef _IGDEWOSUBOBJECT_H_
 #define _IGDEWOSUBOBJECT_H_
 
-#include "../../../triggersystem/igdeTriggerExpressionReference.h"
+#include "../../../triggersystem/igdeTriggerExpression.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
@@ -188,8 +188,8 @@ protected:
 	float GetFloatProperty( const decString &name, float defaultValue ) const;
 	int GetIntProperty( const decString &name, int defaultValue ) const;
 	
-	void pInitTrigger( igdeTriggerExpressionReference &trigger, const decString &propertyName );
-	void pClearTrigger( igdeTriggerExpressionReference &trigger );
+	void pInitTrigger( igdeTriggerExpression::Ref &trigger, const decString &propertyName );
+	void pClearTrigger( igdeTriggerExpression::Ref &trigger );
 	
 	deColliderComponent *GetAttachableColliderComponent() const;
 	decDMatrix GetBoneMatrix( const decString &name ) const;

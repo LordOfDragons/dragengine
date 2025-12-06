@@ -29,7 +29,7 @@
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/input/deInputEvent.h>
-#include <dragengine/resources/image/deImageReference.h>
+#include <dragengine/resources/image/deImage.h>
 
 class deBeOSInput;
 class deInputDeviceButton;
@@ -47,7 +47,7 @@ private:
 	decString pName;
 	bool pPressed;
 	
-	deImageReference pDisplayImage;
+	deImage::Ref pDisplayImage;
 	decObjectOrderedSet pDisplayIcons;
 	decString pDisplayText;
 	
@@ -59,6 +59,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<debiDeviceButton> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create device button. */

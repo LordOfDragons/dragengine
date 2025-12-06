@@ -34,16 +34,13 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
-#include <deigde/gui/event/igdeListBoxListenerReference.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/logger/deLogger.h>
@@ -57,11 +54,11 @@ namespace{
 
 class cActionAppend : public igdeAction {
 	gdeWPTagList &pPanel;
-	igdeComboBoxFilterReference &pComboBox;
-	igdeListBoxReference &pListBox;
+	igdeComboBoxFilter::Ref &pComboBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionAppend ( gdeWPTagList &panel, igdeComboBoxFilterReference &comboBox, igdeListBoxReference &listBox ) : 
+	cActionAppend ( gdeWPTagList &panel, igdeComboBoxFilter::Ref &comboBox, igdeListBox::Ref &listBox ) : 
 	igdeAction( "Add...", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add tag" ),
 	pPanel( panel ), pComboBox( comboBox ), pListBox( listBox ){ }
 	
@@ -70,7 +67,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( *pPanel.GetTagList() + pComboBox->GetText() ) );
 		pPanel.GetUndoSystem()->Add( undo );
 		
@@ -80,10 +77,10 @@ public:
 
 class cActionRemove : public igdeAction {
 	gdeWPTagList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionRemove( gdeWPTagList &panel, igdeListBoxReference &listBox ) :
+	cActionRemove( gdeWPTagList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Remove", panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiMinus ),
 		"Remove tag" ), pPanel( panel ), pListBox( listBox ){ }
 	
@@ -95,7 +92,7 @@ public:
 		decStringSet tags( *pPanel.GetTagList() );
 		tags.Remove( pListBox->GetSelectedItem()->GetText() );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( tags ) );
 		pPanel.GetUndoSystem()->Add( undo );
 		
@@ -107,10 +104,10 @@ public:
 
 class cActionClear : public igdeAction {
 	gdeWPTagList &pPanel;
-	igdeListBoxReference &pListBox;
+	igdeListBox::Ref &pListBox;
 	
 public:
-	cActionClear( gdeWPTagList &panel, igdeListBoxReference &listBox ) :
+	cActionClear( gdeWPTagList &panel, igdeListBox::Ref &listBox ) :
 	igdeAction( "Clear", NULL, "Clear tag" ), pPanel( panel ), pListBox( listBox ){ }
 	
 	virtual void OnAction(){
@@ -118,7 +115,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( pPanel.UndoSet( decStringSet() ) );
 		pPanel.GetUndoSystem()->Add( undo );
 	}
@@ -160,7 +157,7 @@ pUndoSystem( NULL )
 	pActionRemove.TakeOver( new cActionRemove( *this, pListBox ) );
 	pActionClear.TakeOver( new cActionClear( *this, pListBox ) );
 	
-	igdeContainerReference comboLine;
+	igdeContainer::Ref comboLine;
 	comboLine.TakeOver( new igdeContainerFlow( GetEnvironment(),
 		igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
 	helper.ComboBoxFilter( comboLine, true, description, pComboBox, NULL );

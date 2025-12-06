@@ -36,6 +36,10 @@ class deoglShaderParameterBlock;
  * OpenGL shared shader parameter block element.
  */
 class deoglSharedSPBElement : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglSharedSPBElement> Ref;
+
+
 public:
 	deoglSharedSPB &pSPB;
 	int pIndex;

@@ -45,6 +45,11 @@ class igdeEnvironment;
  *          to call the appropriate notification method in \ref igdeEnvironment.
  */
 class DE_DLL_EXPORT igdeGameProject : public deObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeGameProject> Ref;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	

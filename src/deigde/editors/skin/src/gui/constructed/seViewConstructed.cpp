@@ -36,11 +36,11 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeScrollBarListener.h>
@@ -132,7 +132,7 @@ pViewNode( NULL )
 	pListener = new seViewConstructedListener( *this );
 	
 	
-	igdeContainerReference bottomLine;
+	igdeContainer::Ref bottomLine;
 	bottomLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
 	helper.ScrollBar( bottomLine, true, 0, 0, 1, 0, pSBHorizontal, new cScrollView( *this ) );
 	helper.EditSpinInteger( bottomLine, "Select layer to edit", 0, 0, pSpinLayer, new cSpinLayer( *this ) );
@@ -156,7 +156,7 @@ pViewNode( NULL )
 	AddChild( pSBVertical, igdeContainerBorder::eaRight );
 	
 	
-	igdeWidgetReference view;
+	igdeWidget::Ref view;
 	view.TakeOver( pViewNode = new seViewConstructedView( windowMain ) );
 	AddChild( view, igdeContainerBorder::eaCenter );
 }

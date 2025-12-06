@@ -41,6 +41,7 @@ class dedsVRPlaceholder : public deObject{
 public:
 	typedef deTObjectReference<dedsVRPlaceholder> Ref;
 	
+	
 private:
 	deScriptingDragonScript &pDS;
 	deWorld::Ref pWorld;

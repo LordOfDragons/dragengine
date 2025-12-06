@@ -40,9 +40,8 @@
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeLabel.h>
-#include <deigde/gui/igdeLabelReference.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
@@ -140,7 +139,7 @@ pWindowMain( windowMain )
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 0)));
 	
-	igdeLabelReference label;
+	igdeLabel::Ref label;
 	label.TakeOver( new igdeLabel( env, "Recently used Game Projects" ) );
 	helper.ListBox( 10, "Recently loaded game projects", pListRecentProjects,
 		new igdeDialogStartUp_ListRecentProjects( *this ) );
@@ -152,7 +151,7 @@ pWindowMain( windowMain )
 	pActionQuit.TakeOver( new igdeDialogStartUp_ActionQuit( *this ) );
 	
 	igdeAction *actions[ 4 ] = { pActionLoadRecent, pActionLoadFile, pActionNewProject, pActionQuit };
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, actions, 4 );
 	
 	
@@ -201,7 +200,7 @@ void igdeDialogStartUp::LoadProjectFromFile(){
 }
 
 void igdeDialogStartUp::NewGameProject(){
-	igdeDialogReference dialog;
+	igdeDialog::Ref dialog;
 	dialog.TakeOver( new igdeDialogNewGameProject( pWindowMain ) );
 	if( ! dialog->Run( this ) ){
 		return;

@@ -41,9 +41,7 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/nodeview/igdeNVSlot.h>
-#include <deigde/gui/nodeview/igdeNVSlotReference.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/common/exceptions.h>
@@ -68,7 +66,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleResultSetProb( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRuleResult(), value ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -88,7 +86,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleResultSetVar( pNode.GetWindowVegetation().GetVLayer(),
 			pNode.GetRuleResult(), value ) );
 		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
@@ -111,12 +109,12 @@ pRuleResult( rule )
 {
 	igdeEnvironment &env = GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	SetTitle( "Result" );
 	
 	// slots
-	igdeNVSlotReference slot;
+	igdeNVSlot::Ref slot;
 	slot.TakeOver( new meWVNodeSlot( env, "Probability", "Probability in the range from 0 to 1",
 		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability ) );
 	helper.EditFloat( slot, "Probability if slot is not connected.",

@@ -55,6 +55,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceActorPose> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create actor pose. */

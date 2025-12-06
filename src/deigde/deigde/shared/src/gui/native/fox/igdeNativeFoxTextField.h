@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXTEXTFIELD_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeTextField;
 class igdeEnvironment;
@@ -50,7 +50,7 @@ public:
 	
 private:
 	igdeTextField *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXColor pOrgBackColor;
 	FXColor pInvalidBackColor;
 	bool pPreventKeyPressHook;

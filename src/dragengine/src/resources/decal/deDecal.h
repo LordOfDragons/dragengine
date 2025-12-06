@@ -26,8 +26,8 @@
 #define _DEDECAL_H_
 
 #include "../deResource.h"
-#include "../skin/deSkinReference.h"
-#include "../skin/dynamic/deDynamicSkinReference.h"
+#include "../skin/deSkin.h"
+#include "../skin/dynamic/deDynamicSkin.h"
 #include "../../common/math/decMath.h"
 
 class deDecalManager;
@@ -58,16 +58,15 @@ public:
 	typedef deTObjectReference<deDecal> Ref;
 	
 	
-	
 private:
 	decVector pPosition;
 	decQuaternion pOrientation;
 	decVector pSize;
 	decTexMatrix2 pTransform;
 	
-	deSkinReference pSkin;
+	deSkin::Ref pSkin;
 	int pTexture;
-	deDynamicSkinReference pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	bool pVisible;
 	

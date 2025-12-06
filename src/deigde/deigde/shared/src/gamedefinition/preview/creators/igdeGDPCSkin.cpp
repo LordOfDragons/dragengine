@@ -74,10 +74,10 @@ private:
 	decString pPathModelLightBox;
 	decString pPathSkin;
 	decString pPathSkinLightBox;
-	deModelReference pModel;
-	deModelReference pModelLightBox;
-	deSkinReference pSkin;
-	deSkinReference pSkinLightBox;
+	deModel::Ref pModel;
+	deModel::Ref pModelLightBox;
+	deSkin::Ref pSkin;
+	deSkin::Ref pSkinLightBox;
 	int pCounter;
 	bool pSuccess;
 	bool &pFinished;

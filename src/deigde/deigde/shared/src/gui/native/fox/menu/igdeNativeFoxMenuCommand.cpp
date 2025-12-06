@@ -29,7 +29,6 @@
 #include "../../../igdeCommonDialogs.h"
 #include "../../../event/igdeAction.h"
 #include "../../../menu/igdeMenuCommand.h"
-#include "../../../menu/igdeMenuCommand.h"
 #include "../../../resources/igdeIcon.h"
 
 #include <dragengine/common/exceptions.h>

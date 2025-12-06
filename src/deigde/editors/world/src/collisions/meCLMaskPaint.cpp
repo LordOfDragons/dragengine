@@ -35,14 +35,13 @@
 #include "../world/terrain/meTerrainMaskImage.h"
 #include "../undosys/gui/heightterrain/meUHTPaintMask.h"
 
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/image/deImage.h>
-#include <dragengine/resources/image/deImageReference.h>
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/collider/deCollisionInfo.h>
 #include <dragengine/common/exceptions.h>
@@ -177,7 +176,7 @@ void meCLMaskPaint::Paint(){
 void meCLMaskPaint::EndSession(){
 	// check if we have any changes at all
 	if( pOldValues ){
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTPaintMask( pDrawMode, pWorld, pSector, pTexture,
 			decPoint( pAreaGrid.x1, pAreaGrid.y1 ), decPoint( pModifyWidth, pModifyHeight ), pOldValues ) );
 //		pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "Mask Paint: Adding Undo with %i bytes memory consumption.\n", undo->GetMemoryConsumption() );

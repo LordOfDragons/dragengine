@@ -44,6 +44,10 @@ class deoglTexture;
  * Render particle emitter type.
  */
 class deoglRParticleEmitterType : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRParticleEmitterType> Ref;
+
+
 public:
 	/** Texture sampler curves. */
 	enum eSampleCurves{

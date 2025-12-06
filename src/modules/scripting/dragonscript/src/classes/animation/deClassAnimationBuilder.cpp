@@ -44,7 +44,6 @@
 #include <dragengine/resources/animation/deAnimationKeyframeVertexPositionSetList.h>
 #include <dragengine/resources/animation/deAnimationManager.h>
 #include <dragengine/resources/animation/deAnimationMove.h>
-#include <dragengine/resources/animation/deAnimationReference.h>
 
 
 class deClassAnimationBuilder_Builder : public deAnimationBuilder{
@@ -124,7 +123,7 @@ void deClassAnimationBuilder::nfBuild::RunFunction( dsRunTime *rt, dsValue *myse
 	const deScriptingDragonScript &ds = ( ( deClassAnimationBuilder* )GetOwnerClass() )->GetDS();
 	const char * const filename = rt->GetValue( 0 )->GetString();
 	deClassAnimationBuilder_Builder builder( rt, myself );
-	deAnimationReference animation;
+	deAnimation::Ref animation;
 	
 	nd.builder = &builder;
 	

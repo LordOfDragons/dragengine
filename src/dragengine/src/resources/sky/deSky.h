@@ -56,7 +56,6 @@ public:
 	typedef deTObjectReference<deSky> Ref;
 	
 	
-	
 private:
 	decColor pBgColor;
 	

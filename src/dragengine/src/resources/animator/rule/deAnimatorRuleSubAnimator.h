@@ -26,7 +26,7 @@
 #define _DEANIMATORRULESUBANIMATOR_H_
 
 #include "deAnimatorRule.h"
-#include "../deAnimatorReference.h"
+#include "../deAnimator.h"
 
 
 /**
@@ -50,9 +50,8 @@ public:
 	typedef deTObjectReference<deAnimatorRuleSubAnimator> Ref;
 	
 	
-	
 private:
-	deAnimatorReference pSubAnimator;
+	deAnimator::Ref pSubAnimator;
 	
 	bool pEnablePosition;
 	bool pEnableOrientation;

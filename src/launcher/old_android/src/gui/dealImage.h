@@ -46,6 +46,10 @@ private:
 	int pHeight;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealImage> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create image from file. */

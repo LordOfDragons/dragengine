@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<deLoggerBuffer> Ref;
 	
 	
-	
 public:
 	/** \brief Message types. */
 	enum eMessageTypes{

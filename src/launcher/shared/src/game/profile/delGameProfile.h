@@ -46,7 +46,6 @@ public:
 	typedef deTObjectReference<delGameProfile> Ref;
 	
 	
-	
 private:
 	decString pName;
 	

@@ -25,7 +25,7 @@
 #ifndef _SEWPAPANELSOURCESOUND_H_
 #define _SEWPAPANELSOURCESOUND_H_
 
-#include <deigde/gui/composed/igdeEditPathReference.h>
+#include <deigde/gui/composed/igdeEditPath.h>
 
 #include "seWPAPanelSource.h"
 
@@ -36,13 +36,13 @@
  */
 class seWPAPanelSourceSound : public seWPAPanelSource{
 private:
-	igdeEditPathReference pEditPathSound;
-	igdeTextFieldReference pEditMinSpeed;
-	igdeTextFieldReference pEditMaxSpeed;
-	igdeCheckBoxReference pChkLooping;
-	igdeTextFieldReference pLabSoundInfo;
-	igdeTextFieldReference pLabSoundMismatch;
-	igdeTextFieldReference pHiddenCopyText;
+	igdeEditPath::Ref pEditPathSound;
+	igdeTextField::Ref pEditMinSpeed;
+	igdeTextField::Ref pEditMaxSpeed;
+	igdeCheckBox::Ref pChkLooping;
+	igdeTextField::Ref pLabSoundInfo;
+	igdeTextField::Ref pLabSoundMismatch;
+	igdeTextField::Ref pHiddenCopyText;
 	
 	
 	

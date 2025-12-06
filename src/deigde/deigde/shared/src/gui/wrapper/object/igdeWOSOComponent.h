@@ -26,10 +26,10 @@
 #define _IGDEWOSOCOMPONENT_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
 
 #include <dragengine/common/collection/decObjectDictionary.h>
-#include <dragengine/resources/animator/deAnimatorInstanceReference.h>
+#include <dragengine/resources/animator/deAnimatorInstance.h>
 #include <dragengine/resources/collider/deColliderComponent.h>
 #include <dragengine/resources/component/deComponent.h>
 
@@ -44,17 +44,22 @@ class deAnimatorController;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOComponent : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOComponent> Ref;
+	
+	
 private:
 	const igdeGDCComponent &pGDComponent;
 	deComponent::Ref pComponent;
 	deComponent::Ref pComponentInteraction;
 	deColliderComponent::Ref pCollider;
 	deColliderComponent::Ref pColliderInteraction;
-	igdeResourceLoaderListenerReference pResLoad;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
 	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
-	deAnimatorInstanceReference pAnimator;
+	deAnimatorInstance::Ref pAnimator;
 	int pPlaybackControllerIndex;
 	decString pPathAnimator;
 	decString pMove;
@@ -64,7 +69,7 @@ private:
 	decObjectDictionary pTextureSkins;
 	bool pColliderCanInteract;
 	bool pColliderAddedToWorld;
-	deComponentReference pOutlineComponent;
+	deComponent::Ref pOutlineComponent;
 	
 	
 	

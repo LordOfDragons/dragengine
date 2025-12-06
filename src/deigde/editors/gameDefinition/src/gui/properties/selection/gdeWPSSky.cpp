@@ -48,7 +48,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeCheckBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
@@ -64,11 +64,10 @@
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringList.h>
 
@@ -98,7 +97,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUSkySetPath( sky, editPath->GetPath() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -116,7 +115,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUSkySetName( sky, textField->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -134,7 +133,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUSkySetDescription( sky, textArea->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -164,11 +163,10 @@ public:
 				continue;
 			}
 			
-			deObjectReference controller;
-			controller.TakeOver( new gdeSkyController( name, 0.0f ) );
+			const gdeSkyController::Ref controller(gdeSkyController::Ref::NewWith(name, 0.0f));
 			
-			igdeUndoReference undo;
-			undo.TakeOver( new gdeUSkyControllerAdd( sky, ( gdeSkyController* )( deObject* )controller ) );
+			igdeUndo::Ref undo;
+			undo.TakeOver( new gdeUSkyControllerAdd( sky, controller ) );
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 			
 			pComboBox.SetSelection( pComboBox.IndexOfItem( name ) );
@@ -192,7 +190,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUSkyControllerRemove( pPanel.GetSky(), controller ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
@@ -251,7 +249,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUSkyControllerSetName( pPanel.GetSky(), controller, textField->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -270,7 +268,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUSkyControllerSetValue( pPanel.GetSky(), controller, value ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -289,7 +287,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new gdeUSkySetCategory( sky, comboBox->GetText() ) );
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
@@ -344,7 +342,7 @@ pGameDefinition( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, frameLine;
+	igdeContainer::Ref content, groupBox, frameLine;
 	
 	pListener = new gdeWPSSkyListener( *this );
 	

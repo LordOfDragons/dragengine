@@ -41,7 +41,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -66,7 +66,7 @@ pPlayerChoice( &playerChoice ){
 void ceWPTMAPChoiceOptionAdd::OnAction(){
 	ceCAPlayerChoiceOption *selectOption = NULL;
 	ceCAPlayerChoiceOption *option = NULL;
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	
 	try{
 		option = new ceCAPlayerChoiceOption;

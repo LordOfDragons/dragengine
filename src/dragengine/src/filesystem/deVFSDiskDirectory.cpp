@@ -50,7 +50,7 @@
 #include "deVFSDiskDirectory.h"
 #include "../common/file/decDiskFileReader.h"
 #include "../common/file/decDiskFileWriter.h"
-#include "../common/file/decBaseFileWriterReference.h"
+#include "../common/file/decBaseFileWriter.h"
 #include "../common/exceptions.h"
 #include "../common/string/decStringList.h"
 #include "../common/string/unicode/decUnicodeString.h"
@@ -387,7 +387,7 @@ void deVFSDiskDirectory::TouchFile( const decPath &path ){
 	diskPath.RemoveLastComponent();
 	pEnsureDirectoryExists( diskPath );
 	
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( new decDiskFileWriter( npath, false ) );
 }
 

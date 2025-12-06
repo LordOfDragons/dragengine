@@ -31,8 +31,8 @@
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeArgumentList.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
-#include <dragengine/logger/deLoggerReference.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
+#include <dragengine/logger/deLogger.h>
 
 #ifdef OS_BEOS
 #include <delauncher/game/delGame.h>
@@ -53,6 +53,10 @@ public:
 	
 #ifdef OS_UNIX
 	class PreloadLibrary : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<PreloadLibrary> Ref;
+
+
 		void * const pHandle;
 	public:
 		PreloadLibrary( const decPath &basePath, const char *filename );

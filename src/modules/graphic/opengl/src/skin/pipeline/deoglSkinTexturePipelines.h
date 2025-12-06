@@ -46,6 +46,7 @@ class deoglSkinTexturePipelines : public deObject{
 public:
 	typedef deTObjectReference<deoglSkinTexturePipelines> Ref;
 	
+	
 	/** Type. */
 	enum eTypes{
 		etGeometry,

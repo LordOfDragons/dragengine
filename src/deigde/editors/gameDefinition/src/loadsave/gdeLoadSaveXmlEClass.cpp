@@ -48,7 +48,6 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -77,7 +76,7 @@ pPattern( ".deeclass" ){
 ///////////////////////
 
 gdeObjectClass *gdeLoadSaveXmlEClass::LoadXmlEClass( decBaseFileReader &reader ){
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );

@@ -39,6 +39,10 @@ private:
 	decString pVersion;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<dealGPDisableModuleVersion> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create disabled module version. */

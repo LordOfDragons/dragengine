@@ -36,7 +36,6 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -74,10 +73,9 @@ igdeUndo *gdeMAObjectClassDuplicate::OnAction( gdeGameDefinition &gameDefinition
 			continue;
 		}
 		
-		deObjectReference duplicate;
-		duplicate.TakeOver( new gdeObjectClass( *objectClass ) );
+		const gdeObjectClass::Ref duplicate(gdeObjectClass::Ref::NewWith(*objectClass));
 		( ( gdeObjectClass& )( deObject& )duplicate ).SetName( name );
-		return new gdeUAddObjectClass( &gameDefinition, ( gdeObjectClass* )( deObject* )duplicate );
+		return new gdeUAddObjectClass( &gameDefinition, duplicate );
 	}
 	return NULL;
 }

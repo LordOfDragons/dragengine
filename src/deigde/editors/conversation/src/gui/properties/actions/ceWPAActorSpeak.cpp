@@ -40,7 +40,6 @@
 #include "../../../configuration/ceConfiguration.h"
 #include "../../../langpack/ceLangPackEntry.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetActor.h"
-#include "../../../undosys/action/actorSpeak/ceUCAASpeakSetActor.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxText.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetTextBoxTextTranslate.h"
 #include "../../../undosys/action/actorSpeak/ceUCAASpeakSetMovement.h"
@@ -58,14 +57,14 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeWindow.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -91,7 +90,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetActor( topic, action, comboBox->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -110,7 +109,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action,
 			decUnicodeString::NewFromUTF8( textField->GetText() ) ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
@@ -140,7 +139,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action, decUnicodeString::NewFromUTF8( text ) ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -159,7 +158,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxTextTranslate( topic, action, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -197,7 +196,7 @@ public:
 		
 		conversation->SetLangPackEntryName( name );
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		ceLangPackEntry::Ref entry( langpack->GetEntryNamed( name ) );
 		if( entry ){
@@ -251,7 +250,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action, entry->GetText() ) );
 		conversation->GetUndoSystem()->Add( undo );
 	}
@@ -327,7 +326,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetTextBoxTextStyle( topic, action, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -346,7 +345,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetMovement( topic, action, textField->GetText() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -365,7 +364,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetPathSound( topic, action, editPath->GetPath() ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -385,7 +384,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakSetMinSpeechTime( topic, action, time ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -405,7 +404,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new ceUCAASpeakToggleUseSpeechAnimation( topic, action ) );
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
@@ -423,7 +422,7 @@ public:
 
 ceWPAActorSpeak::ceWPAActorSpeak( ceWPTopic &parentPanel ) : ceWPAction( parentPanel ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelperProperties();
-	igdeContainerReference formLine;
+	igdeContainer::Ref formLine;
 	
 	CreateGUICommon( *this );
 	

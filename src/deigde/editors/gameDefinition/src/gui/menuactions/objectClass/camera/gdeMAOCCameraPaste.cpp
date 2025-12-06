@@ -34,7 +34,7 @@
 #include "../../../../gamedef/objectClass/camera/gdeOCCamera.h"
 #include "../../../../undosys/objectClass/camera/gdeUOCAddCamera.h"
 
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 
@@ -62,7 +62,7 @@ gdeBaseMAOCSubObject( windowMain, "Paste Object Class Camera",
 ///////////////
 
 igdeUndo *gdeMAOCCameraPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	igdeClipboardDataReference clip( pWindowMain.GetClipboard()
+	igdeClipboardData::Ref clip( pWindowMain.GetClipboard()
 		.GetWithTypeName( gdeClipboardDataOCCamera::TYPE_NAME ) );
 	if( ! clip ){
 		return NULL;
@@ -71,11 +71,10 @@ igdeUndo *gdeMAOCCameraPaste::OnActionSubObject( gdeGameDefinition&, gdeObjectCl
 	const gdeClipboardDataOCCamera &clipOCCamera =
 		( const gdeClipboardDataOCCamera & )( igdeClipboardData& )clip;
 	
-	deObjectReference camera;
-	camera.TakeOver( new gdeOCCamera( *clipOCCamera.GetCamera() ) );
+	const gdeOCCamera::Ref camera(gdeOCCamera::Ref::NewWith(*clipOCCamera.GetCamera()));
 	
 	igdeUndo * const undo = new gdeUOCAddCamera( &objectClass,
-		( gdeOCCamera* )( deObject* )camera );
+		camera );
 	undo->SetShortInfo( "Paste object class camera" );
 	return undo;
 }

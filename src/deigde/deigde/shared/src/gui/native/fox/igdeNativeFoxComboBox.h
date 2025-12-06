@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXCOMBOBOX_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeComboBox;
 class igdeEnvironment;
@@ -51,7 +51,7 @@ public:
 	
 private:
 	igdeComboBox *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXColor pOrgBackColor;
 	FXColor pInvalidBackColor;
 	

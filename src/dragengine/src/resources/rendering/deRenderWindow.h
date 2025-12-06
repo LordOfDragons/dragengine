@@ -28,8 +28,8 @@
 #include "../../dragengine_configuration.h"
 
 #include "../deResource.h"
-#include "../image/deImageReference.h"
-#include "../canvas/deCanvasViewReference.h"
+#include "../image/deImage.h"
+#include "../canvas/deCanvasView.h"
 #include "../../common/string/decString.h"
 
 #ifdef OS_UNIX_X11
@@ -84,7 +84,6 @@ public:
 	typedef deTObjectReference<deRenderWindow> Ref;
 	
 	
-	
 private:
 	#ifdef OS_ANDROID
 	void *pHostWindow;
@@ -120,9 +119,9 @@ private:
 	int pScaleFactor;
 	bool pNotifyScriptOnResize;
 	bool pPaint;
-	deImageReference pIcon;
+	deImage::Ref pIcon;
 	
-	deCanvasViewReference pCanvasView;
+	deCanvasView::Ref pCanvasView;
 	
 	deBaseGraphicRenderWindow *pPeerGraphic;
 	

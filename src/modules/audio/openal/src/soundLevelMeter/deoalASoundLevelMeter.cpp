@@ -331,9 +331,8 @@ void deoalASoundLevelMeter::pCleanUp(){
 }
 
 void deoalASoundLevelMeter::pAddSpeaker( deoalASpeaker *speaker ){
-	deObjectReference reference;
-	reference.TakeOver( new deoalASoundLevelMeterSpeaker( *this, speaker ) );
-	pSpeakers.Add( reference );
+	pSpeakers.Add(deoalASoundLevelMeterSpeaker::Ref::New(
+		new deoalASoundLevelMeterSpeaker(*this, speaker)));
 	
 	speaker->GetSoundLevelMeters().AddIfAbsent( this );
 }

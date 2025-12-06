@@ -41,6 +41,10 @@ private:
 	float pCostPerMeter;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<mePathFindTestType> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new path find test type. */

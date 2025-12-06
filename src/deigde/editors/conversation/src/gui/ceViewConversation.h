@@ -26,10 +26,10 @@
 #define _CEVIEWCONVO_H_
 
 #include <deigde/gui/igdeViewRenderWindow.h>
-#include <deigde/gui/event/igdeMouseCameraListenerReference.h>
-#include <deigde/gui/event/igdeMouseKeyListenerReference.h>
+#include <deigde/gui/event/igdeMouseCameraListener.h>
+#include <deigde/gui/event/igdeMouseKeyListener.h>
 
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
 
 
 class ceViewConversationListener;
@@ -51,10 +51,10 @@ private:
 	ceConversation *pConversation;
 	
 	ceCanvasRuleOfThirdsAid *pRuleOfThirdsAid;
-	deCanvasPaintReference pCanvasBackground;
+	deCanvasPaint::Ref pCanvasBackground;
 	
-	igdeMouseCameraListenerReference pCameraMouseListener;
-	igdeMouseKeyListenerReference pPlaybackListener;
+	igdeMouseCameraListener::Ref pCameraMouseListener;
+	igdeMouseKeyListener::Ref pPlaybackListener;
 	
 	
 public:

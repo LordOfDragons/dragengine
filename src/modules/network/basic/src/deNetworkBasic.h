@@ -29,9 +29,9 @@
 #include "configuration/debnConfiguration.h"
 #include "parameters/debnParameterList.h"
 
-#include <dragengine/common/file/decBaseFileWriterReference.h>
+#include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/string/decStringList.h>
-#include <dragengine/resources/network/deNetworkMessageReference.h>
+#include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/network/deBaseNetworkModule.h>
 
 class debnSocket;
@@ -177,8 +177,8 @@ private:
 	// sending and receiving
 	deNetworkMessage *pDatagram;
 	debnAddress pAddressReceive;
-	deNetworkMessageReference pSharedSendDatagram;
-	decBaseFileWriterReference pSharedSendDatagramWriter;
+	deNetworkMessage::Ref pSharedSendDatagram;
+	decBaseFileWriter::Ref pSharedSendDatagramWriter;
 	
 	//debnMessageQueue *pMessagesSend;
 	//debnMessageQueue *pMessagesReceive;

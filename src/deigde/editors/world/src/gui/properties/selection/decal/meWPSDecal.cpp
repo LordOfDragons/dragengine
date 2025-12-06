@@ -66,7 +66,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeColorBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
@@ -83,7 +83,7 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 
 
@@ -107,7 +107,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -132,7 +132,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -155,7 +155,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -178,7 +178,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editDVector->GetDVector(), decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -201,7 +201,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector2->GetVector2(), decal ) );
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
@@ -292,7 +292,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUDecalSkin( decal, editPath->GetPath() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -341,7 +341,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUDecalColorTint( decal, colorBox->GetColor() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -478,7 +478,7 @@ pWorld( NULL )
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new meWPSDecalListener( *this );
 	

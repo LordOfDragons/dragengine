@@ -60,10 +60,8 @@ dewiDevice( module, esWindows )
 	SetName( " Mouse" );
 	SetType( deInputDevice::edtMouse );
 	
-	deObjectReference refObject;
-	
-	refObject.TakeOver( new dewiDeviceAxis( module ) );
-	AddAxis( ( dewiDeviceAxis* )( deObject* )refObject );
+	const dewiDeviceAxis::Ref refObject(dewiDeviceAxis::Ref::NewWith(module));
+	AddAxis( refObject );
 	dewiDeviceAxis &axisX = ( dewiDeviceAxis& )( deObject& )refObject;
 	axisX.SetIndex( 0 );
 	axisX.SetAbsolute( false );
@@ -73,7 +71,7 @@ dewiDevice( module, esWindows )
 	axisX.SetDisplayImages( "mouseX" );
 	
 	refObject.TakeOver( new dewiDeviceAxis( module ) );
-	AddAxis( ( dewiDeviceAxis* )( deObject* )refObject );
+	AddAxis( refObject );
 	dewiDeviceAxis &axisY = ( dewiDeviceAxis& )( deObject& )refObject;
 	axisY.SetIndex( 1 );
 	axisY.SetAbsolute( false );
@@ -83,7 +81,7 @@ dewiDevice( module, esWindows )
 	axisY.SetDisplayImages( "mouseY" );
 	
 	refObject.TakeOver( new dewiDeviceAxis( module ) );
-	AddAxis( ( dewiDeviceAxis* )( deObject* )refObject );
+	AddAxis( refObject );
 	dewiDeviceAxis &wheelY = ( dewiDeviceAxis& )( deObject& )refObject;
 	wheelY.SetIndex( 2 );
 	wheelY.SetAbsolute( false );
@@ -96,7 +94,7 @@ dewiDevice( module, esWindows )
 	
 	/*
 	refObject.TakeOver( new dewiDeviceAxis( module ) );
-	AddAxis( ( dewiDeviceAxis* )( deObject* )refObject );
+	AddAxis( refObject );
 	dewiDeviceAxis &wheelX = ( dewiDeviceAxis& )( deObject& )refObject;
 	wheelX.SetAbsolute( false );
 	wheelX.SetWheelOtherAxis( true );
@@ -108,28 +106,28 @@ dewiDevice( module, esWindows )
 	*/
 	
 	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( ( dewiDeviceButton* )( deObject* )refObject );
+	AddButton( refObject );
 	dewiDeviceButton &buttonLeft = ( dewiDeviceButton& )( deObject& )refObject;
 	buttonLeft.SetID( "left" );
 	buttonLeft.SetName( "Left" );
 	buttonLeft.SetDisplayImages( "mouseL" );
 	
 	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( ( dewiDeviceButton* )( deObject* )refObject );
+	AddButton( refObject );
 	dewiDeviceButton &buttonRight = ( dewiDeviceButton& )( deObject& )refObject;
 	buttonRight.SetID( "right" );
 	buttonRight.SetName( "Right" );
 	buttonRight.SetDisplayImages( "mouseR" );
 	
 	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( ( dewiDeviceButton* )( deObject* )refObject );
+	AddButton( refObject );
 	dewiDeviceButton &buttonMiddle = ( dewiDeviceButton& )( deObject& )refObject;
 	buttonMiddle.SetID( "middle" );
 	buttonMiddle.SetName( "Middle" );
 	buttonMiddle.SetDisplayImages( "mouseM" );
 	
 	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( ( dewiDeviceButton* )( deObject* )refObject );
+	AddButton( refObject );
 	dewiDeviceButton &buttonBackward = ( dewiDeviceButton& )( deObject& )refObject;
 	buttonBackward.SetID( "backward" );
 	buttonBackward.SetName( "Backward" );
@@ -137,7 +135,7 @@ dewiDevice( module, esWindows )
 	buttonBackward.SetDisplayText( "B" );
 	
 	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( ( dewiDeviceButton* )( deObject* )refObject );
+	AddButton( refObject );
 	dewiDeviceButton &buttonForward = ( dewiDeviceButton& )( deObject& )refObject;
 	buttonForward.SetID( "forward" );
 	buttonForward.SetName( "Forward" );

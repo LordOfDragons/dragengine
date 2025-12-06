@@ -36,6 +36,7 @@ class aeRuleAnimation : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleAnimation> Ref;
 	
+	
 private:
 	decString pMoveName;
 	float pMoveTime;

@@ -42,6 +42,10 @@ private:
 	bool pEnabled;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglREffect> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create render effect. */

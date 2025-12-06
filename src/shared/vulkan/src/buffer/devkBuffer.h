@@ -45,7 +45,6 @@ public:
 	typedef deTObjectReference<devkBuffer> Ref;
 	
 	
-	
 private:
 	devkDevice &pDevice;
 	

@@ -36,7 +36,6 @@
 #include <deigde/environment/igdeEnvironment.h>
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 
 
@@ -60,9 +59,7 @@ gdeBaseMAOCSubObject( windowMain, "Add Object Class Particle Emitter...",
 ///////////////
 
 igdeUndo *gdeMAOCParticleEmitterAdd::OnActionSubObject( gdeGameDefinition&, gdeObjectClass &objectClass ){
-	deObjectReference particleEmitter;
-	particleEmitter.TakeOver( new gdeOCParticleEmitter );
-	return new gdeUOCAddParticleEmitter( &objectClass, ( gdeOCParticleEmitter* )( deObject* )particleEmitter );
+	return new gdeUOCAddParticleEmitter(&objectClass, gdeOCParticleEmitter::Ref::NewWith());
 }
 
 void gdeMAOCParticleEmitterAdd::Update(){

@@ -43,6 +43,7 @@ class deoglWorldCSOctree : public deObject{
 public:
 	typedef deTObjectReference<deoglWorldCSOctree> Ref;
 	
+	
 	/** Compute shader element flags. */
 	enum eCSElementFlags{
 		ecsefComponent = 0x1,

@@ -42,6 +42,12 @@ class igdeTextField;
  * igdeTextField to obtain/store the file path.
  */
 class DE_DLL_EXPORT igdeActionSelectFile : public igdeAction{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeActionSelectFile> Ref;
+	
+	
 private:
 	igdeEnvironment &pEnvironment;
 	igdeFilePatternList pFilePatterns;

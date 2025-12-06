@@ -42,6 +42,10 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoalFakeSpeaker> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create speaker peer. */

@@ -26,7 +26,7 @@
 #define _DECANVASRENDERWORLD_H_
 
 #include "deCanvas.h"
-#include "../camera/deCameraReference.h"
+#include "../camera/deCamera.h"
 
 
 /**
@@ -38,9 +38,8 @@ public:
 	typedef deTObjectReference<deCanvasRenderWorld> Ref;
 	
 	
-	
 private:
-	deCameraReference pCamera;
+	deCamera::Ref pCamera;
 	
 	
 	

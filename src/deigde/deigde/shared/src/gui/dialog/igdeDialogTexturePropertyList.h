@@ -26,9 +26,9 @@
 #define _IGDEDIALOGTEXTUREPROPERTYLIST_H
 
 #include "igdeDialog.h"
-#include "../igdeListBoxReference.h"
-#include "../igdeTextFieldReference.h"
-#include "../igdeTextAreaReference.h"
+#include "../igdeListBox.h"
+#include "../igdeTextField.h"
+#include "../igdeTextArea.h"
 
 
 class igdeTexturePropertyList;
@@ -41,13 +41,13 @@ class igdeTexturePropertyList;
  */
 class DE_DLL_EXPORT igdeDialogTexturePropertyList : public igdeDialog{
 private:
-	igdeListBoxReference pListProperties;
-	igdeTextFieldReference pEditName;
-	igdeTextAreaReference pEditDescription;
-	igdeTextFieldReference pEditType;
-	igdeTextFieldReference pEditComponentCount;
-	igdeTextFieldReference pEditDefault;
-	igdeTextFieldReference pEditAffectedModules;
+	igdeListBox::Ref pListProperties;
+	igdeTextField::Ref pEditName;
+	igdeTextArea::Ref pEditDescription;
+	igdeTextField::Ref pEditType;
+	igdeTextField::Ref pEditComponentCount;
+	igdeTextField::Ref pEditDefault;
+	igdeTextField::Ref pEditAffectedModules;
 	
 	
 	

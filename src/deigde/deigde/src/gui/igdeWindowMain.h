@@ -31,29 +31,28 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/logger/igdeLoggerHistory.h>
 #include <deigde/gui/igdeMainWindow.h>
-#include <deigde/gui/igdeSwitcherReference.h>
-#include <deigde/gui/igdeProgressBarReference.h>
-#include <deigde/gui/igdeStatusBarReference.h>
-#include <deigde/gui/igdeTimerReference.h>
-#include <deigde/gui/igdeToolBarReference.h>
-#include <deigde/gui/igdeToolBarDockReference.h>
-#include <deigde/gui/igdeContainerReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
-#include <deigde/gui/logger/igdeWindowLoggerReference.h>
-#include <deigde/gui/menu/igdeMenuBarReference.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
-#include <deigde/gui/resources/igdeIconReference.h>
+#include <deigde/gui/igdeSwitcher.h>
+#include <deigde/gui/igdeProgressBar.h>
+#include <deigde/gui/igdeStatusBar.h>
+#include <deigde/gui/igdeTimer.h>
+#include <deigde/gui/igdeToolBar.h>
+#include <deigde/gui/igdeToolBarDock.h>
+#include <deigde/gui/igdeContainer.h>
+#include <deigde/gui/event/igdeAction.h>
+#include <deigde/gui/logger/igdeWindowLogger.h>
+#include <deigde/gui/menu/igdeMenuBar.h>
+#include <deigde/gui/menu/igdeMenuCascade.h>
+#include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/resources/igdeFont.h>
-#include <deigde/gui/theme/igdeGuiThemeReference.h>
+#include <deigde/gui/theme/igdeGuiTheme.h>
 #include <deigde/resourceloader/igdeResourceLoader.h>
 
 #include <dragengine/common/collection/decObjectDictionary.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
-#include <dragengine/logger/deLoggerReference.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
-#include <dragengine/resources/rig/deRigReference.h>
+#include <dragengine/logger/deLogger.h>
+#include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/skin/deSkin.h>
 
@@ -90,37 +89,37 @@ private:
 	igdeGDPreviewManager *pGDPreviewManager;
 	igdeTexturePropertyList *pTexturePropertyList;
 	igdeLoggerHistory::Ref pLoggerHistory;
-	igdeWindowLoggerReference pWindowLogger;
-	deVirtualFileSystemReference pVFS;
+	igdeWindowLogger::Ref pWindowLogger;
+	deVirtualFileSystem::Ref pVFS;
 	igdeTemplateList *pTemplates;
 	igdeGameDefinitionList *pSharedGameDefinitions;
 	igdeGameDefinition *pIGDEGameDefinition;
 	igdeGameProject *pGameProject;
-	igdeGuiThemeReference pDefaultGuiTheme;
+	igdeGuiTheme::Ref pDefaultGuiTheme;
 	decObjectDictionary pGuiThemes;
 	igdeSharedFontList *pSharedFontList;
-	deRigReference pSharedModelCollisionRig;
+	deRig::Ref pSharedModelCollisionRig;
 	igdeResourceLoader *pResourceLoader;
 	igdeUIHelper *pUIHelper;
 	igdeUIHelper *pUIHelperProperties;
-	igdeTimerReference pTimerFrameUpdate;
-	igdeTimerReference pTimerSyncProject;
+	igdeTimer::Ref pTimerFrameUpdate;
+	igdeTimer::Ref pTimerSyncProject;
 	
 	
-	igdeIconReference pIconApplication;
+	igdeIcon::Ref pIconApplication;
 	
-	igdeIconReference pIconGameNew;
-	igdeIconReference pIconGameOpen;
-	igdeIconReference pIconGameSave;
-	igdeIconReference pIconGameSaveAs;
-	igdeIconReference pIconGameExit;
-	igdeIconReference pIconGameReloadXMLElementClasses;
-	igdeIconReference pIconSettingsIGDE;
-	igdeIconReference pIconSettingsEngine;
-	igdeIconReference pIconSettingsTexPropList;
+	igdeIcon::Ref pIconGameNew;
+	igdeIcon::Ref pIconGameOpen;
+	igdeIcon::Ref pIconGameSave;
+	igdeIcon::Ref pIconGameSaveAs;
+	igdeIcon::Ref pIconGameExit;
+	igdeIcon::Ref pIconGameReloadXMLElementClasses;
+	igdeIcon::Ref pIconSettingsIGDE;
+	igdeIcon::Ref pIconSettingsEngine;
+	igdeIcon::Ref pIconSettingsTexPropList;
 	
 	static const int pStockImageCount = igdeEnvironment::esiConfig + 1;
-	igdeIconReference pStockIcons[ pStockImageCount ];
+	igdeIcon::Ref pStockIcons[ pStockImageCount ];
 	
 	static const int pStockSkinCount = igdeEnvironment::essEditRimOutline + 1;
 	deSkin::Ref pStockSkins[ pStockSkinCount ];
@@ -131,36 +130,36 @@ private:
 	static const int pStockModelCount = igdeEnvironment::esmGizmoMove + 1;
 	deModel::Ref pStockModels[ pStockModelCount ];
 	
-	igdeActionReference pActionGameNew;
-	igdeActionReference pActionGameOpen;
-	igdeActionReference pActionGameSave;
-	igdeActionReference pActionGameSaveAs;
-	igdeActionReference pActionGameSettings;
-	igdeActionReference pActionGameQuit;
-	igdeActionReference pActionGameReloadXMLElementClasses;
-	igdeActionReference pActionSettingsIgde;
-	igdeActionReference pActionSettingsEngine;
-	igdeActionReference pActionSettingsModules;
-	igdeActionReference pActionSettingsTexPropList;
-	igdeActionReference pActionSettingsLogging;
+	igdeAction::Ref pActionGameNew;
+	igdeAction::Ref pActionGameOpen;
+	igdeAction::Ref pActionGameSave;
+	igdeAction::Ref pActionGameSaveAs;
+	igdeAction::Ref pActionGameSettings;
+	igdeAction::Ref pActionGameQuit;
+	igdeAction::Ref pActionGameReloadXMLElementClasses;
+	igdeAction::Ref pActionSettingsIgde;
+	igdeAction::Ref pActionSettingsEngine;
+	igdeAction::Ref pActionSettingsModules;
+	igdeAction::Ref pActionSettingsTexPropList;
+	igdeAction::Ref pActionSettingsLogging;
 	
-	igdeMenuCascadeReference pMenuGame;
-	igdeMenuCascadeReference pMenuRecentProjects;
-	igdeMenuCascadeReference pMenuSettings;
-	igdeMenuCascadeReference pMenuWindow;
+	igdeMenuCascade::Ref pMenuGame;
+	igdeMenuCascade::Ref pMenuRecentProjects;
+	igdeMenuCascade::Ref pMenuSettings;
+	igdeMenuCascade::Ref pMenuWindow;
 	
-	igdeMenuBarReference pMenuBar;
+	igdeMenuBar::Ref pMenuBar;
 	
-	igdeToolBarDockReference pToolBarDockLeft;
-	igdeToolBarDockReference pToolBarDockTop;
-	igdeToolBarDockReference pToolBarDockRight;
-	igdeToolBarDockReference pToolBarDockBottom;
-	igdeStatusBarReference pStatusBar;
-	igdeProgressBarReference pSBProgress;
-	igdeSwitcherReference pSwiContent;
+	igdeToolBarDock::Ref pToolBarDockLeft;
+	igdeToolBarDock::Ref pToolBarDockTop;
+	igdeToolBarDock::Ref pToolBarDockRight;
+	igdeToolBarDock::Ref pToolBarDockBottom;
+	igdeStatusBar::Ref pStatusBar;
+	igdeProgressBar::Ref pSBProgress;
+	igdeSwitcher::Ref pSwiContent;
 	
-	igdeToolBarReference pTBGame;
-	igdeContainerReference pFraEditors;
+	igdeToolBar::Ref pTBGame;
+	igdeContainer::Ref pFraEditors;
 	
 	float pElapsedTime;
 	float pMinUpdateTime;

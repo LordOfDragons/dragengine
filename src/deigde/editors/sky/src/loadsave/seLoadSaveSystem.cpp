@@ -40,7 +40,7 @@
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decDiskFileWriter.h>
 #include <dragengine/filesystem/dePatternList.h>
@@ -87,7 +87,7 @@ seSky *seLoadSaveSystem::LoadSky( const char *filename ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference fileReader;
+	decBaseFileReader::Ref fileReader;
 	seSky *sky = NULL;
 	decPath path;
 	

@@ -30,8 +30,6 @@
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/common/math/decMath.h>
-#include <dragengine/deObjectReference.h>
-
 class deoglRenderThread;
 class deoglROcclusionMesh;
 

@@ -44,7 +44,6 @@
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/xmlparser/decXmlWriter.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 
@@ -128,7 +127,7 @@ void meASubclassAsEClass::OnAction(){
 	
 	// write file
 	{
-	decBaseFileWriterReference writer;
+	decBaseFileWriter::Ref writer;
 	writer.TakeOver( pWindow.GetEnvironment().GetFileSystemGame()
 		->OpenFileForWriting( decPath::CreatePathUnix( filename ) ) );
 	decXmlWriter xmlWriter( writer );

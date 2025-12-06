@@ -58,6 +58,10 @@ private:
 	decVector pOrientation;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceTarget> Ref;
+
+
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new target. */

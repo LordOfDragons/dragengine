@@ -298,7 +298,7 @@ public:
 
 class cMoveInteraction : public cBaseInteraction {
 private:
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	decMatrix pViewMatrix;
 	decMatrix pRotationMatrix;
 	decMatrix pInvRotationMatrix;
@@ -437,7 +437,7 @@ public:
 
 class cRotateInteraction : public cBaseInteraction {
 private:
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 	decMatrix pRotationMatrix;
 	decMatrix pInvRotationMatrix;
 	float pNullAngle;

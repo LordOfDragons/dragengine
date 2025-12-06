@@ -28,10 +28,10 @@
 #include "igdeDEParameters.h"
 #include "igdeDEConsole.h"
 #include "../igdeApplication.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../igdeMainWindow.h"
 #include "../igdeTabBook.h"
-#include "../igdeWidgetReference.h"
+#include "../igdeWidget.h"
 
 #include <dragengine/common/exceptions.h>
 
@@ -48,7 +48,7 @@ igdeDialog( mainWindow.GetEnvironment(), "Engine Control Center" ),
 pMainWindow( mainWindow )
 {
 	igdeEnvironment &environment = mainWindow.GetEnvironment();
-	igdeWidgetReference panel;
+	igdeWidget::Ref panel;
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(800, 600)));
 	
@@ -67,7 +67,7 @@ pMainWindow( mainWindow )
 	pTabPanels->AddChild( panel, "Console" );
 	
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	CreateButtonBar( buttonBar, "Close" );
 	
 	AddContent( pTabPanels, buttonBar );

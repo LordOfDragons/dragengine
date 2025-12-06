@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXTREELIST_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 
 class igdeTreeList;
@@ -52,7 +52,7 @@ public:
 	
 private:
 	igdeTreeList *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	FXTreeList *pTreeList;
 	igdeNativeFoxResizer *pResizer;
 	

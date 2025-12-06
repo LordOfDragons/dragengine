@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXSPINTEXTFIELD_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeSpinTextField;
 class igdeEnvironment;
@@ -50,7 +50,7 @@ public:
 	
 private:
 	igdeSpinTextField *pOwner;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	
 public:
 	/** \name Constructors and Destructors */

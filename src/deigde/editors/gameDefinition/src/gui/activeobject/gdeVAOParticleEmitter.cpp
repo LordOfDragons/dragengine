@@ -44,7 +44,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/file/decBaseFileReader.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
@@ -241,7 +240,7 @@ void gdeVAOParticleEmitter::pCreateParticleEmitter(){
 	igdeEnvironment &environment = pView.GetWindowMain().GetEnvironment();
 	igdeLoadParticleEmitter loader( environment, environment.GetLogger(), "gdeVAOParticleEmitter" );
 	const deEngine &engine = *pView.GetGameDefinition()->GetEngine();
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	
 	try{
 		pEmitter.TakeOver( engine.GetParticleEmitterManager()->CreateParticleEmitter() );

@@ -69,18 +69,17 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeColorBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeLabel.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeSpinTextField.h>
 #include <deigde/gui/igdeUIHelper.h>
-#include <deigde/gui/igdeWidgetReference.h>
+#include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorderReference.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
@@ -90,7 +89,6 @@
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/composed/igdeEditVector2Listener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
@@ -99,9 +97,8 @@
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/event/igdeActionSelectFile.h>
 #include <deigde/gui/event/igdeSpinTextFieldListener.h>
-#include <deigde/gui/event/igdeSpinTextFieldListenerReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -127,7 +124,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -151,7 +148,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -175,7 +172,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector2->GetVector2(), sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -199,7 +196,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( colorBox->GetColor(), sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -223,7 +220,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editPath->GetPath(), sky, layer ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -256,7 +253,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( sky ) );
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
@@ -352,9 +349,8 @@ public:
 		"Add a layer to the end of the list." ){ }
 	
 	virtual igdeUndo *OnAction( seSky *sky ){
-		deObjectReference layer;
-		layer.TakeOver( new seLayer( pPanel.GetEnvironment() ) );
-		return new seULayerAdd( sky, ( seLayer* )( deObject* )layer );
+		const seLayer::Ref layer(seLayer::Ref::NewWith(pPanel.GetEnvironment()));
+		return new seULayerAdd( sky, layer );
 	}
 };
 
@@ -480,7 +476,7 @@ public:
 
 class cSliderTransparency : public igdeEditSliderTextListener{
 	seWPLayer &pPanel;
-	igdeUndoReference pUndo;
+	igdeUndo::Ref pUndo;
 public:
 	cSliderTransparency( seWPLayer &panel ) : pPanel( panel ){ }
 	
@@ -506,7 +502,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo( pUndo );
+		igdeUndo::Ref undo( pUndo );
 		pUndo = NULL;
 		
 		( ( seULayerSetTransparency& )( igdeUndo& )undo ).SetNewTransparency( sliderText->GetValue() );
@@ -608,14 +604,14 @@ public:
 };
 
 class cActionBody : public cBaseActionLayer{
-	igdeButtonReference &pButton;
+	igdeButton::Ref &pButton;
 public:
-	cActionBody( seWPLayer &panel, igdeButtonReference &button ) :
+	cActionBody( seWPLayer &panel, igdeButton::Ref &button ) :
 	cBaseActionLayer( panel, "...", "Body menu" ), pButton( button ){ }
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer* ){
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		igdeMenuCascadeReference menu;
+		igdeMenuCascade::Ref menu;
 		menu.TakeOver( new igdeMenuCascade( pPanel.GetEnvironment() ) );
 		helper.MenuCommand( menu, pPanel.GetActionBodyAdd() );
 		helper.MenuCommand( menu, pPanel.GetActionBodyRemove() );
@@ -634,8 +630,7 @@ public:
 		"Add body to end of list" ){ }
 	
 	virtual igdeUndo *OnActionLayer( seSky*, seLayer *layer ){
-		deObjectReference refBody;
-		refBody.TakeOver( new seBody( pPanel.GetEngine() ) );
+		const seBody::Ref refBody(seBody::Ref::NewWith(pPanel.GetEngine()));
 		return new seUBodyAdd( layer, ( seBody* )refBody.operator->() );
 	}
 };
@@ -855,7 +850,7 @@ pListener( NULL ),
 pSky( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, groupBox, frameLine, frameLine2;
+	igdeContainer::Ref content, groupBox, frameLine, frameLine2;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener = new seWPLayerListener( *this );

@@ -25,7 +25,7 @@
 #ifndef _DEPARTICLEEMITTERINSTANCE_H_
 #define _DEPARTICLEEMITTERINSTANCE_H_
 
-#include "deParticleEmitterReference.h"
+#include "deParticleEmitter.h"
 #include "../deResource.h"
 #include "../../common/collection/decObjectSet.h"
 #include "../../common/math/decMath.h"
@@ -54,9 +54,8 @@ public:
 	typedef deTObjectReference<deParticleEmitterInstance> Ref;
 	
 	
-	
 private:
-	deParticleEmitterReference pEmitter;
+	deParticleEmitter::Ref pEmitter;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;

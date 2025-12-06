@@ -38,7 +38,7 @@
 
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -66,7 +66,7 @@ pIfCase( &ifCase ){
 void ceWPTMAIfElseCaseCutAction::OnAction(){
 	ceWPTMACopyAction::OnAction();
 	
-	igdeUndoReference undo;
+	igdeUndo::Ref undo;
 	undo.TakeOver( new ceUCAIfElseRemove( pTopic, pIfElse, pIfCase, GetAction() ) );
 	undo->SetShortInfo( "Cut Action" );
 	pConversation->GetUndoSystem()->Add( undo );

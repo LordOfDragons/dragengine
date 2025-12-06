@@ -26,7 +26,7 @@
 #define _MEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class meWorld;
 class meWindowMain;
@@ -53,7 +53,7 @@ private:
 	meWPWorld *pPropWorld;
 	meWPSensors *pPropSensors;
 	meWPHeightTerrain *pPropHT;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	meWPBrowser *pPropBrowser;
 	meWPAdd *pPropAdd;
 	

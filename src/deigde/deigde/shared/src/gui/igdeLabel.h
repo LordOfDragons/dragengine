@@ -26,7 +26,7 @@
 #define _IGDELABEL_H_
 
 #include "igdeWidget.h"
-#include "resources/igdeIconReference.h"
+#include "resources/igdeIcon.h"
 
 #include <dragengine/common/string/decString.h>
 
@@ -36,6 +36,10 @@
  */
 class DE_DLL_EXPORT igdeLabel : public igdeWidget{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeLabel> Ref;
+	
+	
 	/** \brief Alignment. */
 	enum eAlignment{
 		/** \brief Center alignment. */
@@ -63,7 +67,7 @@ private:
 	decString pText;
 	int pAlignment;
 	decString pDescription;
-	igdeIconReference pIcon;
+	igdeIcon::Ref pIcon;
 	
 	
 	

@@ -25,7 +25,7 @@
 #ifndef _DEVIDEOPLAYER_H_
 #define _DEVIDEOPLAYER_H_
 
-#include "deVideoReference.h"
+#include "deVideo.h"
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
 
@@ -41,7 +41,6 @@ class DE_DLL_EXPORT deVideoPlayer : public deResource{
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<deVideoPlayer> Ref;
-	
 	
 	
 public:
@@ -60,7 +59,7 @@ public:
 	
 	
 private:
-	deVideoReference pVideo;
+	deVideo::Ref pVideo;
 	
 	ePlayState pPlayState;
 	bool pLooping;

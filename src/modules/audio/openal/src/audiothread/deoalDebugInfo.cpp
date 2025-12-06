@@ -606,9 +606,8 @@ void deoalDebugInfo::UpdateDIClosestSpeakers(){
 
 void deoalDebugInfo::PrepareDDClosestSpeakersDirect( int count ){
 	while( pDDClosestSpeakersDirect.GetCount() < count ){
-		deObjectReference dd;
-		dd.TakeOver( pAudioThread.GetOal().GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer() );
-		pDDClosestSpeakersDirect.Add( dd );
+		pDDClosestSpeakersDirect.Add(deDebugDrawer::Ref::New(
+			pAudioThread.GetOal().GetGameEngine()->GetDebugDrawerManager()->CreateDebugDrawer()));
 	}
 	
 	while( pDDClosestSpeakersDirect.GetCount() > count ){

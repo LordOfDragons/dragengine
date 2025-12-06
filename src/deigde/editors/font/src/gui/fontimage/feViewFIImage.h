@@ -27,8 +27,8 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
+#include <dragengine/resources/canvas/deCanvasPaint.h>
+#include <dragengine/resources/canvas/deCanvasImage.h>
 
 class feWindowMain;
 class feFont;
@@ -48,9 +48,9 @@ private:
 	int pZoom;
 	decPoint pOffset;
 	
-	deCanvasPaintReference pCanvasImageBackground;
-	deCanvasImageReference pCanvasFontImage;
-	deCanvasPaintReference pCanvasActiveGlyph;
+	deCanvasPaint::Ref pCanvasImageBackground;
+	deCanvasImage::Ref pCanvasFontImage;
+	deCanvasPaint::Ref pCanvasActiveGlyph;
 	
 	
 	

@@ -30,10 +30,10 @@
 #include "igdeEditPointListener.h"
 #include "../igdeLabel.h"
 #include "../igdeTextField.h"
-#include "../igdeWidgetReference.h"
-#include "../igdeContainerReference.h"
+#include "../igdeWidget.h"
+#include "../igdeContainer.h"
 #include "../igdeUIHelper.h"
-#include "../event/igdeTextFieldListenerReference.h"
+#include "../event/igdeTextFieldListener.h"
 #include "../layout/igdeContainerFlow.h"
 
 #include <dragengine/common/exceptions.h>
@@ -219,7 +219,7 @@ void igdeEditPoint::pCreateContent( igdeUIHelper &helper ){
 	pTextY->SetInteger( pPoint.y );
 	
 	// add listener
-	igdeTextFieldListenerReference listener;
+	igdeTextFieldListener::Ref listener;
 	listener.TakeOver( new cListener( *this, pTextX, pTextY ) );
 	pTextX->AddListener( listener );
 	pTextY->AddListener( listener );

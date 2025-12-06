@@ -25,12 +25,12 @@
 #ifndef _PEEWPCONTROLLER_H_
 #define _PEEWPCONTROLLER_H_
 
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeButtonReference.h>
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/composed/igdeEditSliderTextReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeButton.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/composed/igdeEditSliderText.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class peeEmitter;
@@ -49,19 +49,19 @@ private:
 	
 	peeEmitter *pEmitter;
 	
-	igdeActionReference pActionControllerAdd;
-	igdeActionReference pActionControllerRemove;
-	igdeActionReference pActionControllerUp;
-	igdeActionReference pActionControllerDown;
+	igdeAction::Ref pActionControllerAdd;
+	igdeAction::Ref pActionControllerRemove;
+	igdeAction::Ref pActionControllerUp;
+	igdeAction::Ref pActionControllerDown;
 	
-	igdeListBoxReference pListController;
+	igdeListBox::Ref pListController;
 	
-	igdeTextFieldReference pEditName;
-	igdeTextFieldReference pEditMin;
-	igdeTextFieldReference pEditMax;
-	igdeEditSliderTextReference pSldValue;
-	igdeCheckBoxReference pChkClamp;
-	igdeCheckBoxReference pChkFrozen;
+	igdeTextField::Ref pEditName;
+	igdeTextField::Ref pEditMin;
+	igdeTextField::Ref pEditMax;
+	igdeEditSliderText::Ref pSldValue;
+	igdeCheckBox::Ref pChkClamp;
+	igdeCheckBox::Ref pChkFrozen;
 	
 	
 	

@@ -31,7 +31,6 @@
 #include "igdeGDCategory.h"
 #include "igdeTagManager.h"
 #include "class/igdeGDClass.h"
-#include "class/igdeGDClassReference.h"
 #include "class/igdeGDClassInherit.h"
 #include "class/igdeGDClassManager.h"
 #include "class/igdeGDCamera.h"
@@ -73,7 +72,6 @@
 #include <dragengine/common/file/decBaseFileWriter.h>
 #include <dragengine/common/xmlparser/decXmlParser.h>
 #include <dragengine/common/xmlparser/decXmlDocument.h>
-#include <dragengine/common/xmlparser/decXmlDocumentReference.h>
 #include <dragengine/common/xmlparser/decXmlCharacterData.h>
 #include <dragengine/common/xmlparser/decXmlElementTag.h>
 #include <dragengine/common/xmlparser/decXmlAttValue.h>
@@ -111,7 +109,7 @@ igdeXMLGameDefinition::~igdeXMLGameDefinition(){
 ////////////
 
 void igdeXMLGameDefinition::Load( decBaseFileReader &file, igdeGameDefinition &gamedef ){
-	decXmlDocumentReference xmlDoc;
+	decXmlDocument::Ref xmlDoc;
 	xmlDoc.TakeOver( new decXmlDocument );
 	
 	// parse xml
@@ -267,7 +265,7 @@ void igdeXMLGameDefinition::pParseGameDefinition( const decXmlElementTag &root, 
 void igdeXMLGameDefinition::pParseClass( const decXmlElementTag &root, igdeGameDefinition &gamedef ){
 	decStringDictionary propertyValues;
 	igdeGDProperty *property = NULL;
-	igdeGDClassReference gdClass;
+	igdeGDClass::Ref gdClass;
 	const char *scaleMode;
 	int i;
 	
@@ -726,9 +724,8 @@ void igdeXMLGameDefinition::pParseClassBillboard( const decXmlElementTag &root, 
 }
 
 void igdeXMLGameDefinition::pParseClassInherit( const decXmlElementTag &root, igdeGDClass &gdclass ){
-	deObjectReference objRef;
-	objRef.TakeOver( new igdeGDClassInherit( GetAttributeString( root, "name" ) ) );
-	igdeGDClassInherit * const inherit = ( igdeGDClassInherit* )( deObject* )objRef;
+	const igdeGDClassInherit::Ref inherit(igdeGDClassInherit::Ref::NewWith(
+		GetAttributeString(root, "name")));
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -2400,7 +2397,7 @@ void igdeXMLGameDefinition::pParseRootCategory( const decXmlElementTag &root, ig
 }
 
 void igdeXMLGameDefinition::pParseCategory( const decXmlElementTag &root, igdeGDCategory *parent ){
-	deObjectReference refCategory;
+	igdeGDCategory::Ref category;
 	int i;
 	
 	// first we have to look for the important name tag which is required to construct and add a new category.
@@ -2411,7 +2408,7 @@ void igdeXMLGameDefinition::pParseCategory( const decXmlElementTag &root, igdeGD
 		}
 		
 		if( tag->GetName() == "name" ){
-			if( refCategory ){
+			if(category){
 				continue;
 			}
 			
@@ -2420,14 +2417,13 @@ void igdeXMLGameDefinition::pParseCategory( const decXmlElementTag &root, igdeGD
 				LogErrorGenericProblemValue( *tag, categoryName, "Category with this name exists already" );
 			}
 			
-			refCategory.TakeOver( new igdeGDCategory( categoryName ) );
+			category.TakeOverWith(categoryName);
 		}
 	}
-	if( ! refCategory ){
-		LogErrorMissingTag( root, "name" );
+	if(!category){
+		LogErrorMissingTag(root, "name");
 	}
 	
-	igdeGDCategory * const category = ( igdeGDCategory* )( deObject* )refCategory;
 	parent->AddCategory( category );
 	
 	// now we read all the other tags.

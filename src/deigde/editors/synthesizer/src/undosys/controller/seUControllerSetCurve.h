@@ -26,12 +26,10 @@
 #ifndef _SEUCONTROLLERSETCURVE_H_
 #define _SEUCONTROLLERSETCURVE_H_
 
+#include "../../synthesizer/controller/seController.h"
 #include <deigde/undo/igdeUndo.h>
 
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/curve/decCurveBezier.h>
-
-class seController;
 
 
 
@@ -40,7 +38,7 @@ class seController;
  */
 class seUControllerSetCurve : public igdeUndo{
 private:
-	deObjectReference pController;
+	const seController::Ref pController;
 	decCurveBezier pOldValue;
 	decCurveBezier pNewValue;
 	

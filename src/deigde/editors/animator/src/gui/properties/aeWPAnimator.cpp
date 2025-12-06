@@ -46,12 +46,12 @@
 #include "../../undosys/animator/aeUAnimatorSetVertexPositionSets.h"
 
 #include <deigde/clipboard/igdeClipboard.h>
-#include <deigde/clipboard/igdeClipboardDataReference.h>
+#include <deigde/clipboard/igdeClipboardData.h>
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeWindow.h>
@@ -64,10 +64,9 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/animator/deAnimator.h>
@@ -99,7 +98,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( animator ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -137,7 +136,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeUAnimatorSetRigPath( animator, editPath->GetPath() ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -156,7 +155,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new aeUAnimatorSetAnimationPath( animator, editPath->GetPath() ) );
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
@@ -220,7 +219,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		clip.TakeOver( new aeClipboardDataBones( animator->GetListBones() ) );
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
 		return nullptr;
@@ -396,7 +395,7 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position sets" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator ){
-		igdeClipboardDataReference clip;
+		igdeClipboardData::Ref clip;
 		clip.TakeOver( new aeClipboardDataVertexPositionSets( animator->GetListVertexPositionSets() ) );
 		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( clip );
 		return nullptr;
@@ -535,7 +534,7 @@ pAnimator( nullptr )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new aeWPAnimatorListener( *this );
 	

@@ -25,7 +25,7 @@
 #ifndef _IGDETEXTSEGMENT_H_
 #define _IGDETEXTSEGMENT_H_
 
-#include "../event/igdeActionReference.h"
+#include "../event/igdeAction.h"
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
@@ -39,11 +39,17 @@
  * segment is "end - start + 1". Thus text segments can not be empty.
  */
 class DE_DLL_EXPORT igdeTextSegment : public deObject{
+
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeTextSegment> Ref;
+	
+	
 private:
 	int pBegin;
 	int pEnd;
 	decString pStyle;
-	igdeActionReference pAction;
+	igdeAction::Ref pAction;
 	
 	
 	

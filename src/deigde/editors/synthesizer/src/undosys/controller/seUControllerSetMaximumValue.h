@@ -26,11 +26,8 @@
 #ifndef _SEUCONTROLLERSETMINAXUMVALUE_H_
 #define _SEUCONTROLLERSETMINAXUMVALUE_H_
 
+#include "../../synthesizer/controller/seController.h"
 #include <deigde/undo/igdeUndo.h>
-
-#include <dragengine/deObjectReference.h>
-
-class seController;
 
 
 
@@ -39,7 +36,7 @@ class seController;
  */
 class seUControllerSetMaximumValue : public igdeUndo{
 private:
-	deObjectReference pController;
+	const seController::Ref pController;
 	float pOldValue;
 	float pNewValue;
 	

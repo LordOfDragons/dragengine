@@ -27,12 +27,12 @@
 
 #include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 
-#include <deigde/gui/igdeCheckBoxReference.h>
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeComboBoxFilterReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/composed/igdeEditPathReference.h>
-#include <deigde/gui/composed/igdeEditVectorReference.h>
+#include <deigde/gui/igdeCheckBox.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeComboBoxFilter.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/composed/igdeEditPath.h>
+#include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class gdeGameDefinition;
@@ -53,23 +53,23 @@ private:
 	
 	gdeGameDefinition *pGameDefinition;
 	
-	igdeEditPathReference pEditPathSound;
-	igdeEditVectorReference pEditPosition;
-	igdeEditVectorReference pEditRotation;
-	igdeTextFieldReference pEditBoneName;
-	igdeCheckBoxReference pChkLooping;
-	igdeCheckBoxReference pChkPlaying;
-	igdeTextFieldReference pEditVolume;
-	igdeTextFieldReference pEditRange;
-	igdeTextFieldReference pEditRollOff;
-	igdeTextFieldReference pEditDistanceOffset;
-	igdeTextFieldReference pEditPlaySpeed;
+	igdeEditPath::Ref pEditPathSound;
+	igdeEditVector::Ref pEditPosition;
+	igdeEditVector::Ref pEditRotation;
+	igdeTextField::Ref pEditBoneName;
+	igdeCheckBox::Ref pChkLooping;
+	igdeCheckBox::Ref pChkPlaying;
+	igdeTextField::Ref pEditVolume;
+	igdeTextField::Ref pEditRange;
+	igdeTextField::Ref pEditRollOff;
+	igdeTextField::Ref pEditDistanceOffset;
+	igdeTextField::Ref pEditPlaySpeed;
 	
-	igdeComboBoxReference pCBPropertyNames;
-	igdeComboBoxFilterReference pCBPropertyNameTarget;
+	igdeComboBox::Ref pCBPropertyNames;
+	igdeComboBoxFilter::Ref pCBPropertyNameTarget;
 	
-	igdeComboBoxReference pCBTriggerNames;
-	igdeComboBoxFilterReference pCBTriggerNameTarget;
+	igdeComboBox::Ref pCBTriggerNames;
+	igdeComboBoxFilter::Ref pCBTriggerNameTarget;
 	
 	
 	

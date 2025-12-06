@@ -39,6 +39,7 @@ class aeRuleGroup : public aeRule{
 public:
 	typedef deTObjectReference<aeRuleGroup> Ref;
 	
+	
 private:
 	aeRuleList pRules;
 	

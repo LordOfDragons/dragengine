@@ -41,6 +41,11 @@
  * Thus it is important to ensure make sure this action is used in the proper situation.
  */
 class ceCAActorCommand : public ceConversationAction{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceCAActorCommand> Ref;
+	
+	
 private:
 	decString pActor;
 	decString pCommand;

@@ -25,12 +25,12 @@
 #ifndef _SEWPLINK_H_
 #define _SEWPLINK_H_
 
-#include <deigde/gui/igdeComboBoxReference.h>
-#include <deigde/gui/igdeTextFieldReference.h>
-#include <deigde/gui/igdeListBoxReference.h>
-#include <deigde/gui/igdeSpinTextFieldReference.h>
-#include <deigde/gui/curveedit/igdeViewCurveBezierReference.h>
-#include <deigde/gui/event/igdeActionReference.h>
+#include <deigde/gui/igdeComboBox.h>
+#include <deigde/gui/igdeTextField.h>
+#include <deigde/gui/igdeListBox.h>
+#include <deigde/gui/igdeSpinTextField.h>
+#include <deigde/gui/curveedit/igdeViewCurveBezier.h>
+#include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 class seSynthesizer;
@@ -50,15 +50,15 @@ private:
 	
 	seSynthesizer *pSynthesizer;
 	
-	igdeActionReference pActionLinkAdd;
-	igdeActionReference pActionLinkRemove;
+	igdeAction::Ref pActionLinkAdd;
+	igdeAction::Ref pActionLinkRemove;
 	
-	igdeListBoxReference pListLink;
+	igdeListBox::Ref pListLink;
 	
-	igdeTextFieldReference pEditName;
-	igdeComboBoxReference pCBController;
-	igdeSpinTextFieldReference pSpinRepeat;
-	igdeViewCurveBezierReference pEditCurve;
+	igdeTextField::Ref pEditName;
+	igdeComboBox::Ref pCBController;
+	igdeSpinTextField::Ref pSpinRepeat;
+	igdeViewCurveBezier::Ref pEditCurve;
 	
 	bool pPreventUpdate;
 	

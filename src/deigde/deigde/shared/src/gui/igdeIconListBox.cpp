@@ -32,14 +32,11 @@
 #include "igdeCommonDialogs.h"
 #include "event/igdeIconListBoxListener.h"
 #include "menu/igdeMenuCascade.h"
-#include "menu/igdeMenuCascadeReference.h"
 #include "model/igdeListHeader.h"
 #include "model/igdeListItem.h"
-#include "model/igdeListItemReference.h"
 #include "model/igdeListItemSorter.h"
 #include "resources/igdeIcon.h"
 #include "resources/igdeFont.h"
-#include "resources/igdeFontReference.h"
 #include "theme/igdeGuiTheme.h"
 #include "theme/propertyNames.h"
 #include "../environment/igdeEnvironment.h"
@@ -203,23 +200,23 @@ void igdeIconListBox::AddItem( igdeListItem *item ){
 }
 
 void igdeIconListBox::AddItem( const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	AddItem( item, text, icon, data );
 }
 
 void igdeIconListBox::AddItem( const char *text, const decStringList &details,
 igdeIcon *icon, void *data ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	AddItem( item, text, details, icon, data );
 }
 
-void igdeIconListBox::AddItem( igdeListItemReference &item, const char *text,
+void igdeIconListBox::AddItem( igdeListItem::Ref &item, const char *text,
 igdeIcon *icon, void *data ){
 	item.TakeOver( new igdeListItem( text, icon, data ) );
 	AddItem( item );
 }
 
-void igdeIconListBox::AddItem( igdeListItemReference &item, const char *text,
+void igdeIconListBox::AddItem( igdeListItem::Ref &item, const char *text,
 const decStringList &details, igdeIcon *icon, void *data ){
 	item.TakeOver( new igdeListItem( text, icon, data ) );
 	item->GetDetails() = details;
@@ -247,23 +244,23 @@ void igdeIconListBox::InsertItem( int index, igdeListItem *item ){
 }
 
 void igdeIconListBox::InsertItem( int index, const char *text, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	InsertItem( item, index, text, icon, data );
 }
 
 void igdeIconListBox::InsertItem( int index, const char *text,
 const decStringList &details, igdeIcon *icon, void *data ){
-	igdeListItemReference item;
+	igdeListItem::Ref item;
 	InsertItem( item, index, text, details, icon, data );
 }
 
-void igdeIconListBox::InsertItem( igdeListItemReference &item, int index, const char *text,
+void igdeIconListBox::InsertItem( igdeListItem::Ref &item, int index, const char *text,
 igdeIcon *icon, void *data ){
 	item.TakeOver( new igdeListItem( text, icon, data ) );
 	InsertItem( index, item );
 }
 
-void igdeIconListBox::InsertItem( igdeListItemReference &item, int index, const char *text,
+void igdeIconListBox::InsertItem( igdeListItem::Ref &item, int index, const char *text,
 const decStringList &details, igdeIcon *icon, void *data ){
 	item.TakeOver( new igdeListItem( text, icon, data ) );
 	item->GetDetails() = details;
@@ -326,7 +323,7 @@ void igdeIconListBox::SetDefaultSorter(){
 }
 
 static void igdeIconListBox_Sort( decObjectList &items, igdeListItemSorter &sorter, int left, int right ){
-	igdeListItemReference pivot = ( igdeListItem* )items.GetAt( left );
+	igdeListItem::Ref pivot = ( igdeListItem* )items.GetAt( left );
 	const int r_hold = right;
 	const int l_hold = left;
 	
@@ -593,7 +590,7 @@ void igdeIconListBox::ShowContextMenu( const decPoint &position ){
 		return;
 	}
 	
-	igdeMenuCascadeReference menu;
+	igdeMenuCascade::Ref menu;
 	menu.TakeOver( new igdeMenuCascade( GetEnvironment() ) );
 	
 	const int count = pListeners.GetCount();

@@ -46,6 +46,10 @@ class deoglVAO;
  */
 class deoglSharedVBO : public deObject{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglSharedVBO> Ref;
+	
+	
 	deoglSharedVBOList *pParentList;
 	GLuint pVBO;
 	GLuint pIBO;

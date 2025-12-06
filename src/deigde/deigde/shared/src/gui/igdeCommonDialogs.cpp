@@ -29,15 +29,10 @@
 #include "igdeCommonDialogs.h"
 #include "igdeWidget.h"
 #include "igdeContainer.h"
-#include "igdeContainerReference.h"
 #include "igdeComboBoxFilter.h"
-#include "igdeComboBoxFilterReference.h"
-#include "igdeComboBoxFilterReference.h"
 #include "igdeUIHelper.h"
 #include "dialog/igdeDialog.h"
-#include "dialog/igdeDialogReference.h"
 #include "dialog/igdeDialogMultilineValue.h"
-#include "dialog/igdeDialogMultilineValueReference.h"
 #include "filedialog/igdeFilePattern.h"
 #include "filedialog/igdeFilePatternList.h"
 #include "layout/igdeContainerFlow.h"
@@ -213,7 +208,7 @@ const char *text, decString &value ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeDialogMultilineValueReference dialog;
+	igdeDialogMultilineValue::Ref dialog;
 	
 	dialog.TakeOver( new igdeDialogMultilineValue( owner->GetEnvironment(), title, text ) );
 	dialog->SetValue( value );
@@ -234,13 +229,13 @@ const char *text, decString &value, const decStringList &proposals ){
 	
 	igdeEnvironment &environment = owner->GetEnvironment();
 	igdeUIHelper &helper = environment.GetUIHelper();
-	igdeDialogReference dialog;
+	igdeDialog::Ref dialog;
 	dialog.TakeOver( new igdeDialog( environment, title ) );
 	
-	igdeContainerReference content;
+	igdeContainer::Ref content;
 	content.TakeOver( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10 ) );
 	
-	igdeComboBoxFilterReference comboBox;
+	igdeComboBoxFilter::Ref comboBox;
 	helper.Label( content, text );
 	helper.ComboBoxFilter( content, 50, 10, true, "Enter value or select from list", comboBox, NULL );
 	const int count = proposals.GetCount();
@@ -251,7 +246,7 @@ const char *text, decString &value, const decStringList &proposals ){
 	comboBox->StoreFilterItems();
 	comboBox->SetText( value );
 	
-	igdeContainerReference buttonBar;
+	igdeContainer::Ref buttonBar;
 	dialog->CreateButtonBar( buttonBar, "Accept", "Discard" );
 	
 	dialog->AddContent( content, buttonBar );

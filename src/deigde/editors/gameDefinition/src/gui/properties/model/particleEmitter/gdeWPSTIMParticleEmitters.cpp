@@ -37,7 +37,7 @@
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/model/igdeTreeItemReference.h>
+#include <deigde/gui/model/igdeTreeItem.h>
 
 #include <dragengine/common/exceptions.h>
 
@@ -78,7 +78,7 @@ gdeParticleEmitter *particleEmitter ) const{
 void gdeWPSTIMParticleEmitters::StructureChanged(){
 	const gdeParticleEmitterList &list = GetGameDefinition().GetParticleEmitters();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	// update existing and add new categories
@@ -112,7 +112,7 @@ void gdeWPSTIMParticleEmitters::StructureChanged(){
 void gdeWPSTIMParticleEmitters::OnAddedToTree(){
 	const gdeParticleEmitterList &list = GetGameDefinition().GetParticleEmitters();
 	const int count = list.GetCount();
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	int i;
 	
 	for( i=0; i<count; i++ ){

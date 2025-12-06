@@ -52,6 +52,7 @@ public:
 	/** Type holding strong reference. */
 	typedef deTObjectReference<deoglRHTSector> Ref;
 	
+	
 private:
 	deoglRHeightTerrain &pHeightTerrain;
 	int pIndex;

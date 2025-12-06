@@ -31,19 +31,16 @@
 #include "../igdeCommonDialogs.h"
 #include "../igdeListBox.h"
 #include "../igdeUIHelper.h"
-#include "../igdeContainerReference.h"
+#include "../igdeContainer.h"
 #include "../event/igdeAction.h"
 #include "../event/igdeListBoxListener.h"
-#include "../event/igdeListBoxListenerReference.h"
 #include "../menu/igdeMenuCascade.h"
 #include "../model/igdeListItem.h"
 #include "../../environment/igdeEnvironment.h"
 #include "../../undo/igdeUndo.h"
-#include "../../undo/igdeUndoReference.h"
 #include "../../undo/igdeUndoSystem.h"
 
 #include <dragengine/deEngine.h>
-#include <dragengine/deObjectReference.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/logger/deLogger.h>
@@ -256,7 +253,7 @@ void igdeEditTags::pCreateContent( igdeUIHelper &helper, int rows ){
 	pActionRemove.TakeOver( new cActionRemove( *this ) );
 	pActionClear.TakeOver( new cActionClear( *this ) );
 	
-	igdeContainerReference comboLine;
+	igdeContainer::Ref comboLine;
 	comboLine.TakeOver( new igdeContainerFlow( GetEnvironment(),
 		igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
 	helper.ComboBoxFilter( comboLine, true, "", pComboBox, NULL );

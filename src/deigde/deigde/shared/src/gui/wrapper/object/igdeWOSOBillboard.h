@@ -26,10 +26,10 @@
 #define _IGDEWOSOBILLBOARD_H_
 
 #include "igdeWOSubObject.h"
-#include "../../../resourceloader/igdeResourceLoaderListenerReference.h"
+#include "../../../resourceloader/igdeResourceLoaderListener.h"
 
-#include <dragengine/resources/billboard/deBillboardReference.h>
-#include <dragengine/resources/collider/deColliderReference.h>
+#include <dragengine/resources/billboard/deBillboard.h>
+#include <dragengine/resources/collider/deCollider.h>
 
 
 class deColliderAttachment;
@@ -40,12 +40,17 @@ class igdeGDCBillboard;
  * \brief Object wrapper sub object.
  */
 class DE_DLL_EXPORT igdeWOSOBillboard : public igdeWOSubObject{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeWOSOBillboard> Ref;
+	
+	
 private:
 	const igdeGDCBillboard &pGDBillboard;
-	deBillboardReference pBillboard;
-	igdeResourceLoaderListenerReference pResLoad;
+	deBillboard::Ref pBillboard;
+	igdeResourceLoaderListener::Ref pResLoad;
 	bool pAddedToWorld;
-	deColliderReference pAttachedToCollider;
+	deCollider::Ref pAttachedToCollider;
 	deColliderAttachment *pAttachment;
 	decVector2 pBaseOffset;
 	bool pRenderEnvMap;

@@ -25,7 +25,7 @@
 #ifndef _CEWPAGAMECOMMAND_H_
 #define _CEWPAGAMECOMMAND_H_
 
-#include <deigde/gui/igdeButtonReference.h>
+#include <deigde/gui/igdeButton.h>
 
 #include "ceWPAction.h"
 
@@ -38,8 +38,8 @@ class ceCAGameCommand;
  */
 class ceWPAGameCommand : public ceWPAction{
 private:
-	igdeTextFieldReference pEditCommand;
-	igdeButtonReference pBtnCommand;
+	igdeTextField::Ref pEditCommand;
+	igdeButton::Ref pBtnCommand;
 	
 	
 	

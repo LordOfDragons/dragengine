@@ -26,8 +26,8 @@
 #define _SAEWINDOWPROPERTIES_H_
 
 #include <deigde/gui/igdeTabBook.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/properties/igdeWPUndoHistoryReference.h>
+#include <deigde/gui/igdeWidget.h>
+#include <deigde/gui/properties/igdeWPUndoHistory.h>
 
 class saeWindowMain;
 class saeSAnimation;
@@ -41,9 +41,9 @@ class saeWindowProperties : public igdeTabBook{
 private:
 	saeWindowMain &pWindowMain;
 	
-	igdeWidgetReference pPanelSAnimation;
-	igdeWidgetReference pPanelView;
-	igdeWPUndoHistoryReference pPanelUndoHistory;
+	igdeWidget::Ref pPanelSAnimation;
+	igdeWidget::Ref pPanelView;
+	igdeWPUndoHistory::Ref pPanelUndoHistory;
 	
 	
 	

@@ -27,7 +27,7 @@
 
 #include "foxtoolkit.h"
 #include "../../igdeTabBook.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeTabBook;
 class igdeEnvironment;
@@ -61,7 +61,7 @@ private:
 	igdeNativeFoxAutoScroller *pAutoScroller;
 	FXHorizontalFrame *pHeaders;
 	FXSwitcher *pSwitcher;
-	igdeFontReference pFont;
+	igdeFont::Ref pFont;
 	int pPadLeft;
 	int pPadRight;
 	int pPadTop;

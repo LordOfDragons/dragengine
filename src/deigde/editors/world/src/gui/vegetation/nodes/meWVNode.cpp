@@ -39,9 +39,7 @@
 #include <deigde/environment/igdeEnvironment.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/nodeview/igdeNVNodeListener.h>
-#include <deigde/gui/nodeview/igdeNVNodeListenerReference.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/undo/igdeUndo.h>
 #include <deigde/undo/igdeUndoSystem.h>
@@ -69,7 +67,7 @@ public:
 		}
 		
 		meWindowVegetation &view = *( ( meWindowVegetation* )pNode.GetOwnerBoard() );
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUHTVRuleRemove( view.GetVLayer(), pNode.GetRule() ) );
 		view.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -93,15 +91,11 @@ public:
 		}
 		
 		meWindowVegetation &view = pNode.GetWindowVegetation();
-		deObjectReference refRule;
-		refRule.TakeOver( pNode.GetRule()->Copy() );
 		
-		meHTVRule &rule = ( meHTVRule& )( deObject& )refRule;
-		rule.SetPosition( rule.GetPosition() + decVector2( 0.5f, 0.5f ) );
+		const meHTVRule::Ref rule(meHTVRule::Ref::New(pNode.GetRule()->Copy()));
+		rule->SetPosition(rule->GetPosition() + decVector2(0.5f, 0.5f));
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUHTVRuleAdd( view.GetVLayer(), &rule ) );
-		view.GetWorld()->GetUndoSystem()->Add( undo );
+		view.GetWorld()->GetUndoSystem()->Add(meUHTVRuleAdd::Ref::NewWith(view.GetVLayer(), rule));
 	}
 	
 	virtual void Update(){
@@ -133,10 +127,10 @@ public:
 
 class cDragNodeListener : public igdeNVNodeListener{
 	meWVNode &pNode;
-	igdeUndoReference &pUndo;
+	igdeUndo::Ref &pUndo;
 	
 public:
-	cDragNodeListener( meWVNode &node, igdeUndoReference &undo ) :
+	cDragNodeListener( meWVNode &node, igdeUndo::Ref &undo ) :
 		pNode( node ), pUndo( undo ){ }
 	
 	virtual void OnDragBegin( igdeNVNode* ){
@@ -185,7 +179,7 @@ pRule( NULL )
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeNVNodeListenerReference listener;
+	igdeNVNodeListener::Ref listener;
 	listener.TakeOver( new cActivationListener( *this ) );
 	AddListener( listener );
 	

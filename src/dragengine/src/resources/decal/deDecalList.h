@@ -43,7 +43,6 @@ public:
 	typedef deTObjectReference<deDecalList> Ref;
 	
 	
-	
 private:
 	deDecal **pDecals;
 	int pDecalCount;

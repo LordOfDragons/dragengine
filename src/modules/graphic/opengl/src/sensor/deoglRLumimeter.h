@@ -40,6 +40,10 @@ class deoglWorldOctree;
  * Render lumimeter.
  */
 class deoglRLumimeter : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deoglRLumimeter> Ref;
+
+
 public:
 	deoglRenderThread &pRenderThread;
 	

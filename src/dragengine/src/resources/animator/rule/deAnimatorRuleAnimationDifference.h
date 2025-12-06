@@ -47,7 +47,6 @@ public:
 	typedef deTObjectReference<deAnimatorRuleAnimationDifference> Ref;
 	
 	
-	
 private:
 	decString pMove1Name;
 	float pMove1Time;

@@ -99,7 +99,7 @@
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/igdeListBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditPathListener.h>
 #include <deigde/gui/composed/igdeEditVector.h>
@@ -114,7 +114,7 @@
 #include <deigde/gui/menu/igdeMenuCascade.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -140,7 +140,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( conversation ) );
 		if( undo ){
 			conversation->GetUndoSystem()->Add( undo );
@@ -211,7 +211,7 @@ public:
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( OnChanged( *comboBox, conversation ) );
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
@@ -232,7 +232,7 @@ public:
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( OnChanged( *textField, conversation ) );
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
@@ -253,7 +253,7 @@ public:
 	virtual void OnVectorChanged( igdeEditVector *editVector ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndoReference undo;
+			igdeUndo::Ref undo;
 			undo.TakeOver( OnChanged( *editVector, conversation ) );
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
@@ -427,9 +427,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference target;
-		target.TakeOver( new ceTarget( name ) );
-		return new ceUCTargetAdd( conversation, ( ceTarget* )( deObject* )target );
+		const ceTarget::Ref target(ceTarget::Ref::NewWith(name));
+		return new ceUCTargetAdd( conversation, target );
 	}
 };
 
@@ -571,9 +570,7 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference cameraShot;
-		cameraShot.TakeOver( new ceCameraShot( name ) );
-		return new ceUCCShotAdd( conversation, ( ceCameraShot* )( deObject* )cameraShot );
+		return new ceUCCShotAdd(conversation, ceCameraShot::Ref::NewWith(name));
 	}
 };
 
@@ -640,10 +637,9 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference duplicate;
-		duplicate.TakeOver( new ceCameraShot( *cameraShot ) );
+		const ceCameraShot::Ref duplicate(ceCameraShot::Ref::NewWith(*cameraShot));
 		( ( ceCameraShot& )( deObject& )duplicate ).SetName( name );
-		return new ceUCCShotAdd( conversation, ( ceCameraShot* )( deObject* )duplicate );
+		return new ceUCCShotAdd( conversation, duplicate );
 	}
 	
 	virtual void Update( const ceConversation & ){
@@ -996,9 +992,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference gesture;
-		gesture.TakeOver( new ceGesture( name ) );
-		return new ceUCGestureAdd( conversation, ( ceGesture* )( deObject* )gesture );
+		const ceGesture::Ref gesture(ceGesture::Ref::NewWith(name));
+		return new ceUCGestureAdd( conversation, gesture );
 	}
 };
 
@@ -1125,9 +1120,8 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference facePose;
-		facePose.TakeOver( new ceFacePose( name ) );
-		return new ceUCFacePoseAdd( conversation, ( ceFacePose* )( deObject* )facePose );
+		const ceFacePose::Ref facePose(ceFacePose::Ref::NewWith(name));
+		return new ceUCFacePoseAdd( conversation, facePose );
 	}
 };
 
@@ -1222,13 +1216,12 @@ public:
 			return NULL;
 		}
 		
-		deObjectReference controller;
-		controller.TakeOver( new ceControllerValue( name, 1.0f ) );
-		igdeUndoReference undo;
-		undo.TakeOver( new ceUCFPControllerAdd( facePose, ( ceControllerValue* )( deObject* )controller ) );
+		const ceControllerValue::Ref controller(ceControllerValue::Ref::NewWith(name, 1.0f));
+		igdeUndo::Ref undo;
+		undo.TakeOver( new ceUCFPControllerAdd( facePose, controller ) );
 		conversation->GetUndoSystem()->Add( undo );
 		
-		pPanel.SelectFacePoseController( ( ceControllerValue* )( deObject* )controller );
+		pPanel.SelectFacePoseController( controller );
 		return NULL;
 	}
 	
@@ -1295,7 +1288,7 @@ pConversation( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, groupBox2, form, formLine;
+	igdeContainer::Ref content, groupBox, groupBox2, form, formLine;
 	igdeActionContextMenu *actionContextMenu;
 	
 	pListener = new ceWPConversationListener( *this );

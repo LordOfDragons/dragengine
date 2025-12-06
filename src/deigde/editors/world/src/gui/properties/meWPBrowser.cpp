@@ -64,7 +64,7 @@
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeIconListBox.h>
@@ -82,17 +82,14 @@
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
-#include <deigde/gui/layout/igdeContainerSplittedReference.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/model/igdeTreeItem.h>
 #include <deigde/gui/resources/igdeIcon.h>
-#include <deigde/gui/resources/igdeIconReference.h>
 #include <deigde/gui/wrapper/igdeWSky.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
@@ -188,7 +185,7 @@ public:
 		
 		meObjectTexture *texture = object->GetTextureNamed( pName );
 		const decString &newskin = gdskin->GetPath();
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		if( texture ){
 			if( newskin.Equals( texture->GetSkinPath() ) ){
@@ -198,9 +195,8 @@ public:
 			undo.TakeOver( new meUObjectTextureSetSkin( texture, newskin ) );
 			
 		}else{
-			deObjectReference refTexture;
-			refTexture.TakeOver( new meObjectTexture( object->GetEnvironment(), pName ) );
-			texture = ( meObjectTexture* )( deObject* )refTexture;
+			const meObjectTexture::Ref refTexture(meObjectTexture::Ref::NewWith(object->GetEnvironment(), pName));
+			texture = refTexture;
 			texture->SetSkinPath( newskin );
 			
 			undo.TakeOver( new meUObjectAddTexture( object, texture ) );
@@ -230,7 +226,7 @@ public:
 		}
 		
 		const decString &newValue = gdskin->GetPath();
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		
 		if( object->GetProperties().Has( pName ) ){
 			const decString &oldValue = object->GetProperties().GetAt( pName );
@@ -359,7 +355,7 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionPIRebuild() );
 		
 		// view
-		igdeMenuCascadeReference menuView;
+		igdeMenuCascade::Ref menuView;
 		menuView.TakeOver( new igdeMenuCascade( helper.GetEnvironment(), "View" ) );
 		
 		helper.MenuOption( menuView, pPanel.GetActionPISizeSmall() );
@@ -406,7 +402,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUSetObjectClass( list, cname ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -447,7 +443,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUObjectTextureSetSkin( list, newskin ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -488,7 +484,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUDecalSkin( list, newskin ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -593,8 +589,8 @@ pViewMode( evmPreview )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerSplittedReference content;
-	igdeContainerReference groupBox, form, frameLine;
+	igdeContainerSplitted::Ref content;
+	igdeContainer::Ref groupBox, form, frameLine;
 	
 	
 	pListener = new meWPBrowserListener( *this );
@@ -781,7 +777,7 @@ void meWPBrowser::AddCategoryToList( igdeGDCategory *category, igdeTreeItem *par
 	const int categoryCount = category->GetCategoryCount();
 	int i;
 	
-	igdeTreeItemReference item;
+	igdeTreeItem::Ref item;
 	item.TakeOver( new igdeTreeItem( category->GetName(), category ) );
 	pTreeCategories->AppendItem( parent, item );
 	
@@ -854,12 +850,11 @@ void meWPBrowser::RebuildPISelectedItem(){
 	igdeGDPreviewManager &pvmgr = *GetEnvironment().GetGDPreviewManager();
 	igdeGDAddToListVisitor visitor( GetEnvironment(), pListItems, GetPreviewIconSize() );
 	
-	igdeIconReference icon;
+	igdeIcon::Ref icon;
 	const int iconSize = GetPreviewIconSize();
 	icon.TakeOver( new igdeIcon( *pvmgr.GetImageCreating(), iconSize, iconSize ) );
 	
-	deObjectReference listener;
-	listener.TakeOver( new igdeBrowseItemGDPreviewListener( pListItems, item, iconSize ) );
+	const igdeBrowseItemGDPreviewListener::Ref listener(igdeBrowseItemGDPreviewListener::Ref::NewWith(pListItems, item, iconSize));
 	
 	switch( GetPreviewItemType() ){
 	case meWPBrowser::epitObjectClass:{
@@ -871,7 +866,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 		pvmgr.ClearPreviewObjectClass( gdclass );
 		item->SetIcon( icon );
 		pListItems->ItemChangedAt( pListItems->GetSelection() );
-		pvmgr.CreatePreviewObjectClass( gdclass, ( igdeGDPreviewListener* )( deObject* )listener );
+		pvmgr.CreatePreviewObjectClass( gdclass, listener );
 		}break;
 		
 	case meWPBrowser::epitSkin:{
@@ -883,7 +878,7 @@ void meWPBrowser::RebuildPISelectedItem(){
 		pvmgr.ClearPreviewSkin( gdskin );
 		item->SetIcon( icon );
 		pListItems->ItemChangedAt( pListItems->GetSelection() );
-		pvmgr.CreatePreviewSkin( gdskin, ( igdeGDPreviewListener* )( deObject* )listener );
+		pvmgr.CreatePreviewSkin( gdskin, listener );
 		}break;
 		
 	case meWPBrowser::epitSky:

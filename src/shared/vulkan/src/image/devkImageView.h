@@ -40,7 +40,6 @@ public:
 	typedef deTObjectReference<devkImageView> Ref;
 	
 	
-	
 protected:
 	const devkImage::Ref pImage;
 	

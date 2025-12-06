@@ -60,7 +60,8 @@ public:
 	class Framebuffer : public deObject{
 	public:
 		typedef deTObjectReference<Framebuffer> Ref;
-		
+	
+	
 		Framebuffer( deoxrGraphicApiOpenGL &gaogl, unsigned int image );
 		
 	protected:

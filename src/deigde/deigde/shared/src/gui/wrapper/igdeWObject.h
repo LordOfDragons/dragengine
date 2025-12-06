@@ -25,8 +25,8 @@
 #ifndef _IGDEWOBJECT_H_
 #define _IGDEWOBJECT_H_
 
-#include "../../gamedefinition/class/igdeGDClassReference.h"
-#include "../../triggersystem/igdeTriggerListenerReference.h"
+#include "../../gamedefinition/class/igdeGDClass.h"
+#include "../../triggersystem/igdeTriggerListener.h"
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decObjectList.h>
@@ -34,12 +34,12 @@
 #include <dragengine/common/string/decStringDictionary.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decCollisionFilter.h>
-#include <dragengine/resources/camera/deCameraReference.h>
+#include <dragengine/resources/camera/deCamera.h>
 #include <dragengine/resources/collider/deColliderComponent.h>
 #include <dragengine/resources/collider/deColliderVolume.h>
 #include <dragengine/resources/skin/deSkin.h>
-#include <dragengine/resources/skin/dynamic/deDynamicSkinReference.h>
-#include <dragengine/resources/world/deWorldReference.h>
+#include <dragengine/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/resources/world/deWorld.h>
 
 class igdeTriggerTargetList;
 class igdeEnvironment;
@@ -70,6 +70,7 @@ public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeWObject> Ref;
 	
+	
 	/** \brief Asynchronous loading finished. */
 	class DE_DLL_EXPORT cAsyncLoadFinished{
 	public:
@@ -94,9 +95,9 @@ public:
 private:
 	igdeEnvironment &pEnvironment;
 	
-	deWorldReference pWorld;
-	deCameraReference pCamera;
-	igdeGDClassReference pGDClass;
+	deWorld::Ref pWorld;
+	deCamera::Ref pCamera;
+	igdeGDClass::Ref pGDClass;
 	
 	deColliderComponent::Ref pColliderComponent;
 	deColliderVolume::Ref pColliderFallback;
@@ -107,7 +108,7 @@ private:
 	decString pAttachToBone;
 	
 	decObjectOrderedSet pSubObjects;
-	igdeTriggerListenerReference pTriggerListener;
+	igdeTriggerListener::Ref pTriggerListener;
 	
 	decDVector pPosition;
 	decQuaternion pOrientation;
@@ -142,7 +143,7 @@ private:
 	bool pDirtyFallbackColliderShape;
 	
 	deSkin::Ref pOutlineSkin;
-	deDynamicSkinReference pOutlineDynamicSkin;
+	deDynamicSkin::Ref pOutlineDynamicSkin;
 	decColor pOutlineColor;
 	
 	cAsyncLoadFinished *pAsyncLoadFinished;

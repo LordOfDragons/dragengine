@@ -41,6 +41,7 @@ public:
 	/** Reference. */
 	typedef deTObjectReference<deoxrSystem> Ref;
 	
+	
 	/** System. */
 	enum eSystem{
 		/** Unknown system. */

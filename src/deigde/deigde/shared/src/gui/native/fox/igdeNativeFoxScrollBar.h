@@ -26,7 +26,7 @@
 #define _IGDENATIVEFOXSCROLLBAR_H_
 
 #include "foxtoolkit.h"
-#include "../../resources/igdeFontReference.h"
+#include "../../resources/igdeFont.h"
 
 class igdeScrollBar;
 class igdeEnvironment;

@@ -47,38 +47,33 @@
 #include <deigde/gui/igdeStepableTask.h>
 #include <deigde/gui/igdeCommonDialogs.h>
 #include <deigde/gui/igdeButton.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeEditorWindow.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeTimer.h>
 #include <deigde/gui/igdeToggleButton.h>
-#include <deigde/gui/igdeToggleButtonReference.h>
 #include <deigde/gui/igdeToolBarDock.h>
 #include <deigde/gui/igdeToolBar.h>
 #include <deigde/gui/igdeStatusBar.h>
 #include <deigde/gui/igdeProgressBar.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/igdeWidget.h>
-#include <deigde/gui/igdeWidgetReference.h>
-#include <deigde/gui/dialog/igdeDialogReference.h>
+#include <deigde/gui/dialog/igdeDialog.h>
 #include <deigde/gui/dialog/igdeDialogTexturePropertyList.h>
 #include <deigde/gui/enginestatus/igdeDialogEngine.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/filedialog/igdeFilePattern.h>
 #include <deigde/gui/filedialog/igdeFilePatternList.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
-#include <deigde/gui/layout/igdeContainerBorderReference.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/logger/igdeWindowLogger.h>
 #include <deigde/gui/menu/igdeMenuBar.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/menu/igdeMenuOption.h>
 #include <deigde/gui/menu/igdeMenuSeparator.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/gui/theme/igdeGuiTheme.h>
-#include <deigde/gui/theme/igdeGuiThemeReference.h>
 #include <deigde/gui/theme/propertyNames.h>
 #include <deigde/gui/theme/themeNames.h>
 #include <deigde/gameproject/igdeGameProject.h>
@@ -102,19 +97,16 @@
 #include <dragengine/app/deOS.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/common/utils/decTimer.h>
-#include <dragengine/common/file/decBaseFileReaderReference.h>
+#include <dragengine/common/file/decBaseFileReader.h>
 #include <dragengine/common/file/decDiskFileReader.h>
 #include <dragengine/common/file/decBaseFileWriter.h>
-#include <dragengine/common/file/decBaseFileWriterReference.h>
 #include <dragengine/common/file/decPath.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/unicode/decUnicodeStringList.h>
 #include <dragengine/errortracing/deErrorTrace.h>
 #include <dragengine/filesystem/deVirtualFileSystem.h>
-#include <dragengine/filesystem/deVirtualFileSystemReference.h>
 #include <dragengine/filesystem/deVFSDiskDirectory.h>
 #include <dragengine/filesystem/deVFSContainer.h>
-#include <dragengine/filesystem/deVFSContainerReference.h>
 #include <dragengine/filesystem/deVFSRedirect.h>
 #include <dragengine/filesystem/dePathList.h>
 #include <dragengine/filesystem/deCollectDirectorySearchVisitor.h>
@@ -122,11 +114,10 @@
 #include <dragengine/logger/deLoggerConsoleColor.h>
 #include <dragengine/logger/deLoggerFile.h>
 #include <dragengine/logger/deLoggerChain.h>
-#include <dragengine/logger/deLoggerReference.h>
+#include <dragengine/logger/deLogger.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/model/deModel.h>
 #include <dragengine/resources/model/deModelManager.h>
-#include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/rig/deRigBuilder.h>
 #include <dragengine/resources/rig/deRigManager.h>
@@ -286,7 +277,7 @@ public:
 		"Settings...", NULL, "Game project settings", deInputEvent::ekcT ){}
 	
 	virtual void OnAction(){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new igdeDialogProjectSettings( pWindow ) );
 		if( dialog->Run( &pWindow )
 		&& ( ( igdeDialogProjectSettings& )( igdeDialog& )dialog ).GetBaseGameDefsChanged() ){
@@ -338,7 +329,7 @@ public:
 		"Shows the engine control system window", deInputEvent::ekcE ){}
 	
 	virtual void OnAction(){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new igdeDialogEngine( pWindow ) );
 		dialog->Run( &pWindow );
 	}
@@ -364,7 +355,7 @@ public:
 		"Shows the list of texture properties", deInputEvent::ekcT ){}
 	
 	virtual void OnAction(){
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new igdeDialogTexturePropertyList( pWindow.GetEnvironment() ) );
 		dialog->Run( &pWindow );
 	}
@@ -397,7 +388,7 @@ public:
 	cActionWindowEditor( igdeWindowMain &window, igdeEditorModuleDefinition &module, bool smallIcon = true ) :
 	cActionBase( window, module.GetName(), NULL, BuildDescription( module ) ),
 	pModule( module ){
-		igdeIconReference icon;
+		igdeIcon::Ref icon;
 		const decString &path = smallIcon || module.GetIconLarge().IsEmpty() ? module.GetIconSmall() : module.GetIconLarge();
 		if( ! path.IsEmpty() ){
 			try{
@@ -581,13 +572,13 @@ pTaskSyncGameDefinition( NULL )
 		
 		
 		// create window content
-		igdeContainerBorderReference content;
+		igdeContainerBorder::Ref content;
 		content.TakeOver( new igdeContainerBorder( pEnvironmentIGDE ) );
 		AddChild( content );
 		
 		
 		// top side
-		igdeContainerReference panel;
+		igdeContainer::Ref panel;
 		panel.TakeOver( new igdeContainerFlow( pEnvironmentIGDE, igdeContainerFlow::eaY ) );
 		content->AddChild( panel, igdeContainerBorder::eaTop );
 		
@@ -635,7 +626,7 @@ pTaskSyncGameDefinition( NULL )
 		// center
 		pSwiContent.TakeOver( new igdeSwitcher( pEnvironmentIGDE ) );
 		
-		igdeContainerBorderReference emptyContainer;
+		igdeContainerBorder::Ref emptyContainer;
 		emptyContainer.TakeOver( new igdeContainerBorder( pEnvironmentIGDE ) );
 		pSwiContent->AddChild( emptyContainer );
 		
@@ -706,7 +697,7 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
 		#endif
 		
-		igdeDialogReference dialog;
+		igdeDialog::Ref dialog;
 		dialog.TakeOver( new igdeDialogStartUp( *this ) );
 		return dialog->Run( this );
 	}
@@ -784,7 +775,7 @@ void igdeWindowMain::SetGameProject( igdeGameProject *project ){
 }
 
 bool igdeWindowMain::CreateNewGameProject(){
-	igdeDialogReference dialog;
+	igdeDialog::Ref dialog;
 	dialog.TakeOver( new igdeDialogNewGameProject( *this ) );
 	if( dialog->Run( this ) ){
 		SetGameProject( ( ( igdeDialogNewGameProject& )( igdeDialog& )dialog ).GetNewProject() );
@@ -795,16 +786,10 @@ bool igdeWindowMain::CreateNewGameProject(){
 }
 
 void igdeWindowMain::CreatePlaceholderGameProject(){
-	deObjectReference refProject;
-	refProject.TakeOver( new igdeGameProject( pEnvironmentIGDE ) );
-	igdeGameProject * const project = ( igdeGameProject* )( deObject* )refProject;
-	
-	deObjectReference refGameDef;
-	refGameDef.TakeOver( CreateNewGameDefinition() );
-	project->SetProjectGameDefinition( ( igdeGameDefinition* )( deObject* )refGameDef );
-	
+	const igdeGameProject::Ref project(igdeGameProject::Ref::NewWith(pEnvironmentIGDE));
+	project->SetProjectGameDefinition(igdeGameDefinition::Ref::New(CreateNewGameDefinition()));
 	project->MergeGameDefinitions();
-	SetGameProject( project );
+	SetGameProject(project);
 	
 	pModuleManager->ActivateProjectManager();
 }
@@ -813,13 +798,12 @@ bool igdeWindowMain::LoadGameProject( const char *filename ){
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Open game project %s", filename );
 	
 	try{
-		deObjectReference refProject;
-		refProject.TakeOver( pLoadSaveSystem->LoadGameProject( filename ) );
-		igdeGameProject * const project = ( igdeGameProject* )( deObject* )refProject;
+		const igdeGameProject::Ref project(igdeGameProject::Ref::New(
+			pLoadSaveSystem->LoadGameProject(filename)));
 		
-		pLoadXMLElementClasses( *project );
-		pFindAndAddSkins( *project );
-		pFindAndAddSkies( *project );
+		pLoadXMLElementClasses(project);
+		pFindAndAddSkins(project);
+		pFindAndAddSkies(project);
 		project->MergeGameDefinitions();
 		
 		SetGameProject( project );
@@ -886,7 +870,7 @@ igdeGameDefinition *igdeWindowMain::CreateNewGameDefinition(){
 	path.SetFromNative( pConfiguration.GetPathShares() );
 	path.AddComponent( "newproject.degd" );
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	
 	try{
 		reader.TakeOver( new decDiskFileReader( path.GetPathNative() ) );
@@ -1876,7 +1860,7 @@ void igdeWindowMain::pCreateGuiThemes(){
 	pGuiThemes.SetAt( pDefaultGuiTheme->GetName(), pDefaultGuiTheme.operator->() );
 	
 	// properties theme
-	igdeGuiThemeReference guitheme;
+	igdeGuiTheme::Ref guitheme;
 	guitheme.TakeOver( new igdeGuiTheme( igdeGuiThemeNames::properties, pDefaultGuiTheme ) );
 	
 	// guitheme->SetFloatProperty( igdeGuiThemePropertyNames::fontSize, 0.85f );
@@ -1924,7 +1908,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	path.SetFromNative( pConfiguration.GetPathShares() );
 	path.AddComponent( "igde.degd" );
 	
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	reader.TakeOver( new decDiskFileReader( path.GetPathNative() ) );
 	
 	pIGDEGameDefinition = new igdeGameDefinition( pEnvironmentIGDE );
@@ -1936,10 +1920,10 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	GetLogger()->LogInfoFormat( "IGDE", "IGDE Game Definition find content in %s",
 		pConfiguration.GetPathIGDEData().GetString() );
 	
-	deVirtualFileSystemReference vfs;
+	deVirtualFileSystem::Ref vfs;
 	vfs.TakeOver( new deVirtualFileSystem );
 	
-	deVFSContainerReference diskContainer;
+	deVFSContainer::Ref diskContainer;
 	diskContainer.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/igde" ),
 		decPath::CreatePathNative( pConfiguration.GetPathIGDEData() ) ) );
 	vfs->AddContainer( diskContainer );
@@ -1960,10 +1944,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 void igdeWindowMain::pAddIGDEEngineModules(){
 	igdeEngineController &engineController = GetEngineController();
 	deModuleSystem *modsys = engineController.GetEngine()->GetModuleSystem();
-	deObjectReference module;
-	
-	module.TakeOver( new igdeScriptModule::cModule( modsys, *this ) );
-	engineController.AddInternalModule( ( deInternalModule* )( deObject* )module );
+	engineController.AddInternalModule(igdeScriptModule::cModule::Ref::NewWith(modsys, *this));
 }
 
 void igdeWindowMain::pLoadTexturePropertyList(){
@@ -1978,7 +1959,7 @@ void igdeWindowMain::pLoadTexturePropertyList(){
 	}
 	
 	igdeXMLLoadTexturePropertyList readXML( &logger );
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	
 	if( pVFS->GetFileType( pathFile ) != deVFSContainer::eftRegularFile ){
 		logger.LogError( LOGSOURCE, "Texture property list file is not a regular file" );
@@ -1994,11 +1975,11 @@ void igdeWindowMain::pLoadTemplates(){
 	deLogger &logger = *GetLogger();
 	logger.LogInfo( LOGSOURCE, "Loading project templates" );
 	
-	deVirtualFileSystemReference vfs;
+	deVirtualFileSystem::Ref vfs;
 	vfs.TakeOver( new deVirtualFileSystem );
 	
 	const decPath basePath( decPath::CreatePathNative( pConfiguration.GetPathIGDETemplates() ) );
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	container.TakeOver( new deVFSDiskDirectory( basePath ) );
 	vfs->AddContainer( container );
 	
@@ -2022,7 +2003,7 @@ void igdeWindowMain::pLoadTemplates(){
 	// load found templates
 	igdeLoadTemplate loadTemplate( &logger );
 	const int count = pathList.GetCount();
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	
 	for( i=0; i<count; i++ ){
 		igdeTemplate *atemplate = NULL;
@@ -2068,10 +2049,10 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	
 	const decPath gameDefPath( decPath::CreatePathNative( pConfiguration.GetPathIGDEGameDefs() ) );
 	
-	deVirtualFileSystemReference vfs;
+	deVirtualFileSystem::Ref vfs;
 	vfs.TakeOver( new deVirtualFileSystem );
 	
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	container.TakeOver( new deVFSDiskDirectory( gameDefPath ) );
 	vfs->AddContainer( container );
 	
@@ -2085,7 +2066,7 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	const dePathList &pathList = collectFiles.GetFiles();
 	igdeXMLGameDefinition loadGameDef( pEnvironmentIGDE, &logger );
 	const int count = pathList.GetCount();
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	int i;
 	
 	for( i=0; i<count; i++ ){
@@ -2207,8 +2188,8 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 	moduleIDs.SortAscending();
 	
 	const int count = moduleIDs.GetCount();
-	igdeToggleButtonReference button;
-	igdeActionReference action;
+	igdeToggleButton::Ref button;
+	igdeAction::Ref action;
 	
 	for( i=0; i<count; i++ ){
 		igdeEditorModuleDefinition &moduleDef = *pModuleManager->GetModuleWithID( moduleIDs.GetAt( i ) );
@@ -2216,7 +2197,7 @@ void igdeWindowMain::pRebuildToolBarEditors(){
 			continue;
 		}
 		
-		igdeIconReference icon;
+		igdeIcon::Ref icon;
 		if( ! moduleDef.GetIconSmall().IsEmpty() ){
 			try{
 				icon.TakeOver( igdeIcon::LoadPNG( *moduleDef.GetModule(), moduleDef.GetIconSmall() ) );
@@ -2254,7 +2235,7 @@ void igdeWindowMain::pCreateMenu(){
 }
 
 void igdeWindowMain::pCreateMenuGame( igdeMenuCascade &menu ){
-	igdeWidgetReference entry;
+	igdeWidget::Ref entry;
 	
 	entry.TakeOver( new igdeMenuCommand( pEnvironmentIGDE, pActionGameNew ) );
 	menu.AddChild( entry );
@@ -2285,7 +2266,7 @@ void igdeWindowMain::pCreateMenuGame( igdeMenuCascade &menu ){
 }
 
 void igdeWindowMain::pCreateMenuSettings( igdeMenuCascade &menu ){
-	igdeWidgetReference entry;
+	igdeWidget::Ref entry;
 	
 	entry.TakeOver( new igdeMenuCommand( pEnvironmentIGDE, pActionSettingsEngine ) );
 	menu.AddChild( entry );
@@ -2300,8 +2281,8 @@ void igdeWindowMain::pCreateMenuSettings( igdeMenuCascade &menu ){
 void igdeWindowMain::pUpdateMenuRecentProjects( igdeMenuCascade &menu ){
 	const decStringList &list = pConfiguration.GetRecentProjectList();
 	const int count = list.GetCount();
-	igdeActionReference action;
-	igdeWidgetReference entry;
+	igdeAction::Ref action;
+	igdeWidget::Ref entry;
 	int i;
 	
 	menu.RemoveAllChildren();
@@ -2332,8 +2313,8 @@ void igdeWindowMain::pUpdateMenuWindow( igdeMenuCascade &menu ){
 	
 	// add a menu entry for each module
 	const int addModuleCount = addModules.GetCount();
-	igdeActionReference action;
-	igdeWidgetReference entry;
+	igdeAction::Ref action;
+	igdeWidget::Ref entry;
 	
 	for( i=0; i<addModuleCount; i++ ){
 		action.TakeOver( new cActionWindowEditor( *this,
@@ -2354,10 +2335,10 @@ void igdeWindowMain::pLoadXMLElementClasses( igdeGameProject &gameProject ){
 	igdeXMLElementClass loader( GetLogger() );
 	gameProject.GetXMLEClassGameDefinition()->GetClassManager()->RemoveAll();
 	
-	deVirtualFileSystemReference vfs;
+	deVirtualFileSystem::Ref vfs;
 	vfs.TakeOver( new deVirtualFileSystem );
 	
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
 	pathData.AddUnixPath( gameProject.GetPathData() );
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
@@ -2397,10 +2378,10 @@ void igdeWindowMain::pFindAndAddSkins( igdeGameProject &gameProject ){
 	igdeGDSkinManager &gdskins = *gameDefinition.GetSkinManager();
 	gdskins.RemoveAllSkins();
 	
-	deVirtualFileSystemReference vfs;
+	deVirtualFileSystem::Ref vfs;
 	vfs.TakeOver( new deVirtualFileSystem );
 	
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
 	pathData.AddUnixPath( gameProject.GetPathData() );
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );
@@ -2434,10 +2415,10 @@ void igdeWindowMain::pFindAndAddSkies( igdeGameProject &gameProject ){
 	igdeGDSkyManager &gdskies = *gameDefinition.GetSkyManager();
 	gdskies.RemoveAllSkies();
 	
-	deVirtualFileSystemReference vfs;
+	deVirtualFileSystem::Ref vfs;
 	vfs.TakeOver( new deVirtualFileSystem );
 	
-	deVFSContainerReference container;
+	deVFSContainer::Ref container;
 	decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
 	pathData.AddUnixPath( gameProject.GetPathData() );
 	container.TakeOver( new deVFSDiskDirectory( pathData ) );

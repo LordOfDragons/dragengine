@@ -85,7 +85,7 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/igdeColorBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/igdeComboBoxFilter.h>
 #include <deigde/gui/igdeSpinTextField.h>
@@ -107,15 +107,13 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
-#include <deigde/gui/event/igdeListBoxListenerReference.h>
 #include <deigde/gui/layout/igdeContainerForm.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/menu/igdeMenuCommand.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/undo/igdeUndoSystem.h>
-#include <deigde/undo/igdeUndoReference.h>
+#include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/logger/deLogger.h>
@@ -144,7 +142,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( textField, object ) );
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
@@ -169,7 +167,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnAction( object ) );
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
@@ -207,7 +205,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( comboBox, object ) );
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
@@ -230,7 +228,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editVector->GetVector(), object ) );
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
@@ -253,7 +251,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChanged( editDVector->GetDVector(), object ) );
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
@@ -694,7 +692,7 @@ public:
 		if( ! texture ){
 			return;
 		}
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( OnChangedTexture( editVector2->GetVector2(), pPanel.GetActiveObject(), texture ) );
 		if( undo ){
 			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
@@ -726,14 +724,12 @@ public:
 	cBaseAction( panel, name, NULL, "Add model texture" ), pTextureName( name ){ }
 	
 	virtual igdeUndo *OnAction( meObject *object ){
-		deObjectReference texture;
+		meObjectTexture::Ref texture;
 		meHelpers::CreateTexture( texture, object, pTextureName );
 		
-		igdeUndoReference undo;
-		undo.TakeOver( new meUObjectAddTexture( object, ( meObjectTexture* )( deObject* )texture ) );
-		object->GetWorld()->GetUndoSystem()->Add( undo );
+		object->GetWorld()->GetUndoSystem()->Add(meUObjectAddTexture::Ref::NewWith(object, texture));
 		
-		object->SetActiveTexture( ( meObjectTexture* )( deObject* )texture );
+		object->SetActiveTexture( texture );
 		return NULL;
 	}
 	
@@ -778,7 +774,7 @@ public:
 		
 		igdeEnvironment &env = pPanel.GetEnvironment();
 		igdeUIHelper &helper = env.GetUIHelper();
-		igdeMenuCascadeReference cascade;
+		igdeMenuCascade::Ref cascade;
 		int count, i;
 		
 		// add texture
@@ -831,13 +827,11 @@ public:
 				continue;
 			}
 			
-			deObjectReference texture;
+			meObjectTexture::Ref texture;
 			meHelpers::CreateTexture( texture, object, name );
 			
-			igdeUndoReference undo;
-			undo.TakeOver( new meUObjectAddTexture( object, ( meObjectTexture* )( deObject* )texture ) );
-			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
-			object->SetActiveTexture( ( meObjectTexture* )( deObject* )texture );
+			pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectAddTexture::Ref::NewWith(object, texture));
+			object->SetActiveTexture( texture );
 			break;
 		}
 		return NULL;
@@ -1263,7 +1257,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUObjectTextureSetSkin( texture, editPath->GetPath() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -1312,7 +1306,7 @@ public:
 			return;
 		}
 		
-		igdeUndoReference undo;
+		igdeUndo::Ref undo;
 		undo.TakeOver( new meUObjectTextureColorTint( texture, colorBox->GetColor() ) );
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
@@ -1461,7 +1455,7 @@ pPreventUpdate(false)
 {
 	igdeEnvironment &env = wpselection.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
-	igdeContainerReference content, groupBox, formLine;
+	igdeContainer::Ref content, groupBox, formLine;
 	
 	pListener = new meWPSObjectListener( *this );
 	

@@ -74,7 +74,6 @@ public:
 	typedef deTObjectReference<meObject> Ref;
 	
 	
-	
 private:
 	class cWOAsyncFinished : public igdeWObject::cAsyncLoadFinished{
 		meObject &pObject;
@@ -87,6 +86,10 @@ private:
 	};
 	
 	class cWOTexture : public deObject{
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<cWOTexture> Ref;
+
+
 	public:
 		deSkin::Ref skin;
 		int texture;

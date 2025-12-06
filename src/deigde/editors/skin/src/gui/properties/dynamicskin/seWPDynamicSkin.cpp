@@ -41,7 +41,7 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeColorBox.h>
 #include <deigde/gui/igdeComboBox.h>
-#include <deigde/gui/igdeContainerReference.h>
+#include <deigde/gui/igdeContainer.h>
 #include <deigde/gui/igdeGroupBox.h>
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/igdeSwitcher.h>
@@ -54,17 +54,14 @@
 #include <deigde/gui/composed/igdeEditSliderTextListener.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
-#include <deigde/gui/event/igdeActionContextMenuReference.h>
 #include <deigde/gui/event/igdeColorBoxListener.h>
 #include <deigde/gui/event/igdeComboBoxListener.h>
 #include <deigde/gui/event/igdeListBoxListener.h>
 #include <deigde/gui/event/igdeTextFieldListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 #include <deigde/gui/model/igdeListItem.h>
 #include <deigde/gui/model/igdeTreeItem.h>
 #include <deigde/undo/igdeUndo.h>
-#include <deigde/undo/igdeUndoReference.h>
 #include <deigde/undo/igdeUndoSystem.h>
 
 #include <dragengine/deEngine.h>
@@ -232,10 +229,9 @@ public:
 			return;
 		}
 		
-		deObjectReference renderable;
-		renderable.TakeOver( new seDynamicSkinRenderable( pPanel.GetSkin()->GetEngine(), name ) );
-		dynamicSkin.AddRenderable( ( seDynamicSkinRenderable* )( deObject* )renderable );
-		dynamicSkin.SetActiveRenderable( ( seDynamicSkinRenderable* )( deObject* )renderable );
+		const seDynamicSkinRenderable::Ref renderable(seDynamicSkinRenderable::Ref::NewWith(pPanel.GetSkin()->GetEngine(), name));
+		dynamicSkin.AddRenderable( renderable );
+		dynamicSkin.SetActiveRenderable( renderable );
 	}
 	
 	virtual void Update(){
@@ -421,7 +417,7 @@ pListener( NULL ),
 pSkin( NULL )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();
-	igdeContainerReference content, panel, groupBox, form, formLine;
+	igdeContainer::Ref content, panel, groupBox, form, formLine;
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
 	pListener = new seWPDynamicSkinListener( *this );
@@ -479,7 +475,7 @@ pSkin( NULL )
 		pSldColorGreen, new cSliderColorGreen( *this ) );
 	helper.EditSliderText( groupBox, "Blue:", "Blue color value", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorBlue, new cSliderColorBlue( *this ) );
-	helper.EditSliderText( groupBox, "ALpha:", "ALpha color value", 0.0f, 1.0f, 6, 3, 0.1f,
+	helper.EditSliderText( groupBox, "Alpha:", "Alpha color value", 0.0f, 1.0f, 6, 3, 0.1f,
 		pSldColorAlpha, new cSliderColorAlpha( *this ) );
 	
 	

@@ -33,6 +33,10 @@
  */
 class ceWDSLaneFacePose : public ceWDSLane{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceWDSLaneFacePose> Ref;
+	
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dope sheet lane. */

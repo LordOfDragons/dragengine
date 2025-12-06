@@ -38,17 +38,13 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
-#include <deigde/gui/menu/igdeMenuCascadeReference.h>
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
-#include <dragengine/resources/canvas/deCanvasImageReference.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
-#include <dragengine/resources/canvas/deCanvasPaintReference.h>
 #include <dragengine/resources/canvas/deCanvasText.h>
-#include <dragengine/resources/canvas/deCanvasTextReference.h>
 #include <dragengine/resources/canvas/deCanvasManager.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontManager.h>
@@ -56,7 +52,6 @@
 #include <dragengine/resources/image/deImageManager.h>
 #include <dragengine/resources/sound/deSound.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
-#include <dragengine/resources/sound/deSoundDecoderReference.h>
 #include <dragengine/resources/sound/deSoundManager.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSpeakerManager.h>
@@ -137,7 +132,7 @@ public:
 		}
 		
 		/*
-		igdeMenuCascadeReference contextMenu;
+		igdeMenuCascade::Ref contextMenu;
 		contextMenu.TakeOver( new igdeMenuCascade( pVAPreview.GetWindow().GetEnvironment() ) );
 		
 		// TODO
@@ -314,7 +309,7 @@ void ceWDSVAPreview::UpdateVAPreviewImage(){
 		if( ! pPreviewSamples ){
 			const int bufferSize = sampleCount * bytesPerSample * sound->GetChannelCount();
 			pPreviewSamples = new char[ bufferSize ];
-			deSoundDecoderReference decoder;
+			deSoundDecoder::Ref decoder;
 			
 			try{
 				decoder.TakeOver( pWindow.GetEngine()->GetSoundManager()->CreateDecoder( sound ) );

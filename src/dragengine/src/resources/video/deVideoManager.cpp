@@ -33,7 +33,6 @@
 #include "../../deEngine.h"
 #include "../../common/exceptions.h"
 #include "../../common/file/decBaseFileReader.h"
-#include "../../common/file/decBaseFileReaderReference.h"
 #include "../../common/file/decBaseFileWriter.h"
 #include "../../common/file/decPath.h"
 #include "../../errortracing/deErrorTrace.h"
@@ -107,7 +106,7 @@ const char *basePath, bool asynchron ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReaderReference fileReader;
+	decBaseFileReader::Ref fileReader;
 	deVideo *video = NULL;
 	decPath path;
 	
@@ -208,7 +207,7 @@ deVideoDecoder *deVideoManager::CreateDecoder( deVideo *video ){
 	
 	deVideoDecoder *videoDecoder = NULL;
 	deBaseVideoDecoder *peer = NULL;
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	deBaseVideoModule *module = NULL;
 	
 	try{
@@ -273,7 +272,7 @@ deVideoAudioDecoder *deVideoManager::CreateAudioDecoder( deVideo *video ){
 	
 	deVideoAudioDecoder *audioDecoder = NULL;
 	deBaseVideoAudioDecoder *peer = NULL;
-	decBaseFileReaderReference reader;
+	decBaseFileReader::Ref reader;
 	deBaseVideoModule *module = NULL;
 	
 	try{
