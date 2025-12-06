@@ -79,7 +79,8 @@ public:
 			return;
 		}
 		
-		ceUCASetVarSetName::Ref undo(ceUCASetVarSetName::Ref::New( new ceUCASetVarSetName( topic, action, textField->GetText() ) ));
+		ceUCASetVarSetName::Ref undo(ceUCASetVarSetName::Ref::New(
+			new ceUCASetVarSetName( topic, action, textField->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -103,7 +104,8 @@ public:
 			return;
 		}
 		
-		ceUCASetVarSetOp::Ref undo(ceUCASetVarSetOp::Ref::New( new ceUCASetVarSetOp( topic, action, newOperator ) ));
+		ceUCASetVarSetOp::Ref undo(ceUCASetVarSetOp::Ref::New(
+			new ceUCASetVarSetOp( topic, action, newOperator ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -122,7 +124,8 @@ public:
 			return;
 		}
 		
-		ceUCASetVarSetValue::Ref undo(ceUCASetVarSetValue::Ref::New( new ceUCASetVarSetValue( topic, action, value ) ));
+		ceUCASetVarSetValue::Ref undo(ceUCASetVarSetValue::Ref::New(
+			new ceUCASetVarSetValue( topic, action, value ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -140,7 +143,8 @@ public:
 			return;
 		}
 		
-		ceUCASetVarSetValueVariable::Ref undo(ceUCASetVarSetValueVariable::Ref::New( new ceUCASetVarSetValueVariable( topic, action, textField->GetText() ) ));
+		ceUCASetVarSetValueVariable::Ref undo(ceUCASetVarSetValueVariable::Ref::New(
+			new ceUCASetVarSetValueVariable( topic, action, textField->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

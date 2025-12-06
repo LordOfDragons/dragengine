@@ -155,7 +155,8 @@ bool stretchLast, int spacing ){
 
 void igdeUIHelper::GroupBox( igdeContainer &parent, igdeContainer::Ref &groupBox,
 const char *title, bool collapsed ) const{
-	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New( new igdeGroupBox( pEnvironment, title, collapsed ) ));
+	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(
+		new igdeGroupBox( pEnvironment, title, collapsed ) ));
 	parent.AddChild( frame );
 	
 	groupBox.TakeOver( new igdeContainerForm( pEnvironment ) );
@@ -173,7 +174,8 @@ igdeContainer::Ref &groupBox, const char *title ) const{
 
 void igdeUIHelper::GroupBoxFlow( igdeContainer &parent, igdeContainer::Ref &groupBox,
 const char *title, bool stretchLast, bool collapsed ) const{
-	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New( new igdeGroupBox( pEnvironment, title, collapsed ) ));
+	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(
+		new igdeGroupBox( pEnvironment, title, collapsed ) ));
 	parent.AddChild( frame );
 	
 	groupBox.TakeOver( new igdeContainerFlow( pEnvironment, igdeContainerFlow::eaY,
@@ -183,7 +185,8 @@ const char *title, bool stretchLast, bool collapsed ) const{
 
 void igdeUIHelper::GroupBoxBorder( igdeContainer &parent, igdeContainerBorder::Ref &groupBox,
 const char *title, bool collapsed ) const{
-	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New( new igdeGroupBox( pEnvironment, title, collapsed ) ));
+	igdeGroupBox::Ref frame(igdeGroupBox::Ref::New(
+		new igdeGroupBox( pEnvironment, title, collapsed ) ));
 	parent.AddChild( frame );
 	
 	groupBox.TakeOver( new igdeContainerBorder( pEnvironment ) );
@@ -224,7 +227,8 @@ igdeWidget *widget ){
 
 void igdeUIHelper::FormLine( igdeContainer &form, const char *label, const char *description,
 igdeWidget *widget, int labelAlignment ){
-	igdeLabel::Ref wlabel(igdeLabel::Ref::New( new igdeLabel( pEnvironment, label, description, labelAlignment ) ));
+	igdeLabel::Ref wlabel(igdeLabel::Ref::New(
+		new igdeLabel( pEnvironment, label, description, labelAlignment ) ));
 	form.AddChild( wlabel );
 	form.AddChild( widget );
 }
@@ -236,7 +240,8 @@ igdeContainer::Ref &line ){
 
 void igdeUIHelper::FormLine( igdeContainer &form, const char *label, const char *description,
 igdeContainer::Ref &line, int labelAlignment ){
-	igdeLabel::Ref wlabel(igdeLabel::Ref::New( new igdeLabel( pEnvironment, label, description, labelAlignment ) ));
+	igdeLabel::Ref wlabel(igdeLabel::Ref::New(
+		new igdeLabel( pEnvironment, label, description, labelAlignment ) ));
 	form.AddChild( wlabel );
 	line.TakeOver( new igdeContainerBox( pEnvironment, igdeContainerBox::eaX ) );
 	form.AddChild( line );
@@ -249,7 +254,8 @@ const char *description, igdeContainer::Ref &line ){
 
 void igdeUIHelper::FormLineStretchFirst( igdeContainer &form, const char *label,
 const char *description, igdeContainer::Ref &line, int labelAlignment ){
-	igdeLabel::Ref wlabel(igdeLabel::Ref::New( new igdeLabel( pEnvironment, label, description, labelAlignment ) ));
+	igdeLabel::Ref wlabel(igdeLabel::Ref::New(
+		new igdeLabel( pEnvironment, label, description, labelAlignment ) ));
 	form.AddChild( wlabel );
 	line.TakeOver( new igdeContainerFlow( pEnvironment, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) );
 	form.AddChild( line );
@@ -262,7 +268,8 @@ const char *description, igdeContainer::Ref &line ){
 
 void igdeUIHelper::FormLineDownFlow( igdeContainer &form, const char *label,
 const char *description, igdeContainer::Ref &line, int labelAlignment ){
-	igdeLabel::Ref wlabel(igdeLabel::Ref::New( new igdeLabel( pEnvironment, label, description, labelAlignment ) ));
+	igdeLabel::Ref wlabel(igdeLabel::Ref::New(
+		new igdeLabel( pEnvironment, label, description, labelAlignment ) ));
 	form.AddChild( wlabel );
 	line.TakeOver( new igdeContainerFlow( pEnvironment, igdeContainerFlow::eaY ) );
 	form.AddChild( line );
@@ -1144,7 +1151,8 @@ void igdeUIHelper::Label( igdeContainer &parent, const char *text, const char *d
 
 void igdeUIHelper::Label( igdeContainer &parent, const char *text,
 const char *description, int alignment ){
-	igdeLabel::Ref label(igdeLabel::Ref::New( new igdeLabel( pEnvironment, text, description, alignment ) ));
+	igdeLabel::Ref label(igdeLabel::Ref::New(
+		new igdeLabel( pEnvironment, text, description, alignment ) ));
 	parent.AddChild( label );
 }
 
@@ -1368,7 +1376,8 @@ bool takeOverAction ){
 
 
 void igdeUIHelper::MenuCommand( igdeMenuCascade &menu, igdeAction *action, bool takeOverAction ){
-	igdeMenuCommand::Ref entry(igdeMenuCommand::Ref::New( new igdeMenuCommand( pEnvironment, action ) ));
+	igdeMenuCommand::Ref entry(igdeMenuCommand::Ref::New(
+		new igdeMenuCommand( pEnvironment, action ) ));
 	if( takeOverAction && action ){
 		action->FreeReference();
 	}
@@ -1417,7 +1426,8 @@ void igdeUIHelper::MenuRecentFiles(igdeMenuCascade &menu, igdeRecentFiles &recen
 
 
 void igdeUIHelper::ToolBarButton( igdeToolBar &toolBar, igdeAction *action, bool takeOverAction ){
-	igdeButton::Ref widget(igdeButton::Ref::New( new igdeButton( pEnvironment, action, igdeButton::ebsToolBar ) ));
+	igdeButton::Ref widget(igdeButton::Ref::New(
+		new igdeButton( pEnvironment, action, igdeButton::ebsToolBar ) ));
 	if( takeOverAction && action ){
 		action->FreeReference();
 	}
@@ -1425,7 +1435,8 @@ void igdeUIHelper::ToolBarButton( igdeToolBar &toolBar, igdeAction *action, bool
 }
 
 void igdeUIHelper::ToolBarToggleButton( igdeToolBar &toolBar, igdeAction *action, bool takeOverAction ){
-	igdeToggleButton::Ref widget(igdeToggleButton::Ref::New( new igdeToggleButton( pEnvironment, action, igdeToggleButton::ebsToolBar ) ));
+	igdeToggleButton::Ref widget(igdeToggleButton::Ref::New(
+		new igdeToggleButton( pEnvironment, action, igdeToggleButton::ebsToolBar ) ));
 	if( takeOverAction && action ){
 		action->FreeReference();
 	}
@@ -1433,7 +1444,8 @@ void igdeUIHelper::ToolBarToggleButton( igdeToolBar &toolBar, igdeAction *action
 }
 
 void igdeUIHelper::ToolBarSeparator( igdeToolBar &toolBar ){
-	igdeToolBarSeparator::Ref widget(igdeToolBarSeparator::Ref::New( new igdeToolBarSeparator( pEnvironment ) ));
+	igdeToolBarSeparator::Ref widget(igdeToolBarSeparator::Ref::New(
+		new igdeToolBarSeparator( pEnvironment ) ));
 	toolBar.AddChild( widget );
 }
 

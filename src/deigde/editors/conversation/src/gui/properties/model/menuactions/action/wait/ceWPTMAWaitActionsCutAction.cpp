@@ -64,7 +64,8 @@ pWait( &wait ){
 void ceWPTMAWaitActionsCutAction::OnAction(){
 	ceWPTMACopyAction::OnAction();
 	
-	ceUCAWaitRemove::Ref undo(ceUCAWaitRemove::Ref::New( new ceUCAWaitRemove( pTopic, pWait, GetAction() ) ));
+	ceUCAWaitRemove::Ref undo(ceUCAWaitRemove::Ref::New(
+		new ceUCAWaitRemove( pTopic, pWait, GetAction() ) ));
 	undo->SetShortInfo( "Cut Action" );
 	pConversation->GetUndoSystem()->Add( undo );
 }

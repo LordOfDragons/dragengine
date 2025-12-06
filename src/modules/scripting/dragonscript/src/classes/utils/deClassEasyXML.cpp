@@ -127,7 +127,8 @@ void deClassEasyXML::nfNewFile::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dedsXmlParser parser( ds.GetGameEngine()->GetLogger() );
 	
 	try{
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) ));
+		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+			 vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) ));
 		
 		nd.document = new dedsXmlDocument( filename );
 		
@@ -186,7 +187,8 @@ void deClassEasyXML::nfNewFile2::RunFunction( dsRunTime *rt, dsValue *myself ){
 	dedsXmlParser parser( ds.GetGameEngine()->GetLogger() );
 	
 	try{
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) ));
+		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+			 vfs.OpenFileForReading( decPath::CreatePathUnix( filename ) ) ));
 		
 		nd.document = new dedsXmlDocument( filename );
 		

@@ -67,7 +67,8 @@ public:
 		}
 		
 		meWindowVegetation &view = *( ( meWindowVegetation* )pNode.GetOwnerBoard() );
-		meUHTVRuleRemove::Ref undo(meUHTVRuleRemove::Ref::New( new meUHTVRuleRemove( view.GetVLayer(), pNode.GetRule() ) ));
+		meUHTVRuleRemove::Ref undo(meUHTVRuleRemove::Ref::New(
+			new meUHTVRuleRemove( view.GetVLayer(), pNode.GetRule() ) ));
 		view.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -178,7 +179,8 @@ pRule( NULL )
 		DETHROW( deeInvalidParam );
 	}
 	
-	cActivationListener::Ref listener(cActivationListener::Ref::New( new cActivationListener( *this ) ));
+	cActivationListener::Ref listener(cActivationListener::Ref::New(
+		new cActivationListener( *this ) ));
 	AddListener( listener );
 	
 	listener.TakeOver( new cDragNodeListener( *this, pUndoMove ) );

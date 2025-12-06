@@ -400,7 +400,8 @@ void igdeNativeFoxMenuCascade::PostCreateNativePopup( igdeMenuCascade&, void *na
 
 void igdeNativeFoxMenuCascade::ShowPopupWindow( igdeMenuCascade &powner,
 igdeWidget &widgetOwner, const decPoint &position ){
-	igdeNativeFoxMenuCascade_PopupWindow::Ref window(igdeNativeFoxMenuCascade_PopupWindow::Ref::New( new igdeNativeFoxMenuCascade_PopupWindow( powner ) ));
+	igdeNativeFoxMenuCascade_PopupWindow::Ref window(igdeNativeFoxMenuCascade_PopupWindow::Ref::New(
+		new igdeNativeFoxMenuCascade_PopupWindow( powner ) ));
 	( ( igdeNativeFoxMenuCascade_PopupWindow& )( igdeWidget& )window ).Popup( position );
 }
 

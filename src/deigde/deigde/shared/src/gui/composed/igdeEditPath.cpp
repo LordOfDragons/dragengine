@@ -672,7 +672,8 @@ void igdeEditPath::BrowsePath(){
 	
 	path.RemoveLastComponent();
 	
-	igdeActionExternOpen::Ref action(igdeActionExternOpen::Ref::New( new igdeActionExternOpen( GetEnvironment(), "", nullptr, "", path.GetPathNative() ) ));
+	igdeActionExternOpen::Ref action(igdeActionExternOpen::Ref::New(
+		new igdeActionExternOpen( GetEnvironment(), "", nullptr, "", path.GetPathNative() ) ));
 	action->OnAction();
 }
 

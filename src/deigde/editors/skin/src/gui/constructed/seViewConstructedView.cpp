@@ -218,7 +218,7 @@ public:
 			pView.GetEngine()->GetImageManager()->LoadImage(path, "/")));
 		
 		const sePropertyNodeImage::Ref node(sePropertyNodeImage::Ref::New(
-			new sePropertyNodeImage(*pView.GetEngine())));
+		new sePropertyNodeImage(*pView.GetEngine())));
 		
 		if(!skin.GetDirectoryPath().IsEmpty() && decPath::IsUnixPathAbsolute(path)){
 			path = decPath::RelativePathUnix(path, skin.GetDirectoryPath(), true).GetPathUnix();
@@ -263,7 +263,8 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode* ){
-		seClipboardDataPropertyNode::Ref data(seClipboardDataPropertyNode::Ref::New( new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) ));
+		seClipboardDataPropertyNode::Ref data(seClipboardDataPropertyNode::Ref::New(
+			new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) ));
 		pView.GetWindowMain().GetClipboard().Set( data );
 		return NULL;
 	}
@@ -275,7 +276,8 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ), "Cut nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode *node ){
-		seClipboardDataPropertyNode::Ref data(seClipboardDataPropertyNode::Ref::New( new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) ));
+		seClipboardDataPropertyNode::Ref data(seClipboardDataPropertyNode::Ref::New(
+			new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) ));
 		pView.GetWindowMain().GetClipboard().Set( data );
 		
 		return new seUPNGroupRemoveNodes( node->GetParent(), property->GetNodeSelection().GetSelected() );

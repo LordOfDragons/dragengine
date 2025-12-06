@@ -67,7 +67,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoSet( *pPanel.GetTagList() + pComboBox->GetText() ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 pPanel.UndoSet( *pPanel.GetTagList() + pComboBox->GetText() ) ));
 		pPanel.GetUndoSystem()->Add( undo );
 		
 		pListBox->SetSelection( pListBox->IndexOfItem( pComboBox->GetText() ) );

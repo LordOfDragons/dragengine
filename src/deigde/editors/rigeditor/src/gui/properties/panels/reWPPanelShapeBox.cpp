@@ -69,7 +69,8 @@ public:
 			return;
 		}
 		
-		reUSetShapeBoxHalfExtends::Ref undo(reUSetShapeBoxHalfExtends::Ref::New( new reUSetShapeBoxHalfExtends( box, editVector->GetVector() ) ));
+		reUSetShapeBoxHalfExtends::Ref undo(reUSetShapeBoxHalfExtends::Ref::New(
+			new reUSetShapeBoxHalfExtends( box, editVector->GetVector() ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}

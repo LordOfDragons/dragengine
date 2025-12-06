@@ -687,7 +687,8 @@ public:
 		if( ! texture ){
 			return;
 		}
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChangedTexture( editVector2->GetVector2(), pPanel.GetActiveObject(), texture ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChangedTexture( editVector2->GetVector2(), pPanel.GetActiveObject(), texture ) ));
 		if( undo ){
 			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -1109,7 +1110,7 @@ public:
 		const meObjectList &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
 		const decString &property = pPanel.GetActiveProperty();
 		return ! property.IsEmpty() && list.GetCount() > 0 ?
-			new meUObjectPropertyRemoveFromSelected( list, property ) : NULL;
+		new meUObjectPropertyRemoveFromSelected( list, property ) : NULL;
 	}
 	
 	virtual void Update(){
@@ -1251,7 +1252,8 @@ public:
 			return;
 		}
 		
-		meUObjectTextureSetSkin::Ref undo(meUObjectTextureSetSkin::Ref::New( new meUObjectTextureSetSkin( texture, editPath->GetPath() ) ));
+		meUObjectTextureSetSkin::Ref undo(meUObjectTextureSetSkin::Ref::New(
+			new meUObjectTextureSetSkin( texture, editPath->GetPath() ) ));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -1299,7 +1301,8 @@ public:
 			return;
 		}
 		
-		meUObjectTextureColorTint::Ref undo(meUObjectTextureColorTint::Ref::New( new meUObjectTextureColorTint( texture, colorBox->GetColor() ) ));
+		meUObjectTextureColorTint::Ref undo(meUObjectTextureColorTint::Ref::New(
+			new meUObjectTextureColorTint( texture, colorBox->GetColor() ) ));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };

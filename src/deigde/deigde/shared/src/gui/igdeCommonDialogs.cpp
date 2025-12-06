@@ -231,7 +231,8 @@ const char *text, decString &value, const decStringList &proposals ){
 	igdeUIHelper &helper = environment.GetUIHelper();
 	igdeDialog::Ref dialog(igdeDialog::Ref::New( new igdeDialog( environment, title ) ));
 	
-	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10 ) ));
+	igdeContainerFlow::Ref content(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 10 ) ));
 	
 	igdeComboBoxFilter::Ref comboBox;
 	helper.Label( content, text );

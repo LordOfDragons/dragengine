@@ -128,7 +128,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), component ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *textField, pPanel.GetObjectClass(), component ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -151,7 +152,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), component ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), component ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -174,7 +176,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, pPanel.GetObjectClass(), component ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *comboBox, pPanel.GetObjectClass(), component ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -670,7 +673,8 @@ public:
 		
 		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
 		
-		gdeUOCCAddTexture::Ref undo(gdeUOCCAddTexture::Ref::New( new gdeUOCCAddTexture( objectClass, component, texture ) ));
+		gdeUOCCAddTexture::Ref undo(gdeUOCCAddTexture::Ref::New(
+			new gdeUOCCAddTexture( objectClass, component, texture ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
 		component->SetActiveTexture( texture );

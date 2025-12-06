@@ -289,7 +289,8 @@ public:
 			return;
 		}
 		
-		seUTextureSetName::Ref undo(seUTextureSetName::Ref::New( new seUTextureSetName( texture, value ) ));
+		seUTextureSetName::Ref undo(seUTextureSetName::Ref::New(
+			new seUTextureSetName( texture, value ) ));
 		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -374,7 +375,8 @@ public:
 			return;
 		}
 		
-		seUPropertySetValueType::Ref undo(seUPropertySetValueType::Ref::New( new seUPropertySetValueType( property, value ) ));
+		seUPropertySetValueType::Ref undo(seUPropertySetValueType::Ref::New(
+			new seUPropertySetValueType( property, value ) ));
 		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -496,7 +498,8 @@ public:
 			return;
 		}
 		
-		seUPropertySetMappedComponent::Ref undo(seUPropertySetMappedComponent::Ref::New( new seUPropertySetMappedComponent( property, index, newMapped ) ));
+		seUPropertySetMappedComponent::Ref undo(seUPropertySetMappedComponent::Ref::New(
+			new seUPropertySetMappedComponent( property, index, newMapped ) ));
 		skin->GetUndoSystem()->Add( undo );
 	}
 };
@@ -523,7 +526,8 @@ public:
 			return;
 		}
 		
-		seUPropertySetConstructedSize::Ref undo(seUPropertySetConstructedSize::Ref::New( new seUPropertySetConstructedSize( property, editPoint3->GetPoint3() ) ));
+		seUPropertySetConstructedSize::Ref undo(seUPropertySetConstructedSize::Ref::New(
+			new seUPropertySetConstructedSize( property, editPoint3->GetPoint3() ) ));
 		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -575,7 +579,8 @@ public:
 			return;
 		}
 		
-		seUPropertyConstructedSetBitCount::Ref undo(seUPropertyConstructedSetBitCount::Ref::New( new seUPropertyConstructedSetBitCount( property, bitCount ) ));
+		seUPropertyConstructedSetBitCount::Ref undo(seUPropertyConstructedSetBitCount::Ref::New(
+			new seUPropertyConstructedSetBitCount( property, bitCount ) ));
 		skin->GetUndoSystem()->Add( undo );
 	}
 };

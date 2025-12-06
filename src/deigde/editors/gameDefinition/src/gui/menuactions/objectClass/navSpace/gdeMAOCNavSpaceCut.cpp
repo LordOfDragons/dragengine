@@ -73,7 +73,8 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCNavigationSpace::Ref clipOCNavigationSpace(gdeOCNavigationSpace::Ref::NewWith(*navSpace));
 	
-	gdeClipboardDataOCNavSpace::Ref clipData(gdeClipboardDataOCNavSpace::Ref::New( new gdeClipboardDataOCNavSpace( clipOCNavigationSpace ) ));
+	gdeClipboardDataOCNavSpace::Ref clipData(gdeClipboardDataOCNavSpace::Ref::New(
+		new gdeClipboardDataOCNavSpace( clipOCNavigationSpace ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	

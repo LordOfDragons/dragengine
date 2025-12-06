@@ -298,7 +298,8 @@ void meView3D::CreateCanvas(){
 		pCanvasFPS->SetSize(decPoint(lineHeight * 4, lineHeight));
 		AddCanvas( pCanvasFPS );
 		
-		deCanvasPaint::Ref canvasBackground(deCanvasPaint::Ref::New( GetEngine()->GetCanvasManager()->CreateCanvasPaint() ));
+		deCanvasPaint::Ref canvasBackground(deCanvasPaint::Ref::New(
+			 GetEngine()->GetCanvasManager()->CreateCanvasPaint() ));
 		canvasBackground->SetShapeType( deCanvasPaint::estRectangle );
 		canvasBackground->SetFillColor( decColor( 0.0f, 0.0f, 0.0f, 0.5f ) );
 		canvasBackground->SetLineColor( decColor( 0.0f, 0.0f, 0.0f, 0.0f ) );

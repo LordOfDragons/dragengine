@@ -83,7 +83,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), camera ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *textField, pPanel.GetObjectClass(), camera ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -106,7 +107,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), camera ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), camera ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}

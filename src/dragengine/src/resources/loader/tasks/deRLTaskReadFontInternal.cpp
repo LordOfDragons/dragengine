@@ -98,7 +98,8 @@ void deRLTaskReadFontInternal::Run(){
 	
 	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( GetVFS()->OpenFileForReading( vfsPath ) ));
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+		 GetVFS()->OpenFileForReading( vfsPath ) ));
 	
 	pFont->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
 	pFont->SetAsynchron( true );

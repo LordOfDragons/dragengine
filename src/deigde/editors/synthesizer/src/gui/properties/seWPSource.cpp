@@ -132,7 +132,8 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( menu.GetEnvironment(), "Add" ) ));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
+			new igdeMenuCascade( menu.GetEnvironment(), "Add" ) ));
 		helper.MenuCommand( submenu, windowMain.GetActionSourceAddWave() );
 		helper.MenuCommand( submenu, windowMain.GetActionSourceAddSound() );
 		helper.MenuCommand( submenu, windowMain.GetActionSourceAddChain() );
@@ -183,7 +184,8 @@ public:
 			return;
 		}
 		
-		seClipboardDataSource::Ref cdata(seClipboardDataSource::Ref::New( new seClipboardDataSource( source ) ));
+		seClipboardDataSource::Ref cdata(seClipboardDataSource::Ref::New(
+			new seClipboardDataSource( source ) ));
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 	}
 	
@@ -206,7 +208,8 @@ public:
 			return;
 		}
 		
-		seClipboardDataSource::Ref cdata(seClipboardDataSource::Ref::New( new seClipboardDataSource( source ) ));
+		seClipboardDataSource::Ref cdata(seClipboardDataSource::Ref::New(
+			new seClipboardDataSource( source ) ));
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 		
 		igdeUndo::Ref undo;
@@ -347,7 +350,8 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	content->AddChild( pSwitcher );
 	
-	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
 	pSwitcher->AddChild( panel );
 	
 	panel.TakeOver( pPanelSound = new seWPAPanelSourceSound( *this ) );

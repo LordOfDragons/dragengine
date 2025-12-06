@@ -250,7 +250,8 @@ deImage *meHeightTerrainTexture::GetOrAddMaskImage(){
 	}
 	
 	const int imageDim =  pSector->GetHeightTerrain()->GetSectorResolution();
-	deImage::Ref image(deImage::Ref::New( pEngine->GetImageManager()->CreateImage( imageDim, imageDim, 1, 1, 8 ) ));
+	deImage::Ref image(deImage::Ref::New(
+		 pEngine->GetImageManager()->CreateImage( imageDim, imageDim, 1, 1, 8 ) ));
 	sGrayscale8 * const pixels = image->GetDataGrayscale8();
 	const int pixelCount = imageDim * imageDim;
 	int i;

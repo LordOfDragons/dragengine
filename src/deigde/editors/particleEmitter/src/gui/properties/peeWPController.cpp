@@ -113,7 +113,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editSlider->GetValue(), emitter, controller ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( editSlider->GetValue(), emitter, controller ) ));
 		if( undo ){
 			emitter->GetUndoSystem()->Add( undo );
 		}

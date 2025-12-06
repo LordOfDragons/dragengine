@@ -378,7 +378,8 @@ void igdeNVBoard::ShowContextMenu( const decPoint &position ){
 	
 	const igdeNativeNVBoard &native = *( ( igdeNativeNVBoard* )GetNativeWidget() );
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
-	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New( new igdeMenuCascade( helper.GetEnvironment() ) ));
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(
+		new igdeMenuCascade( helper.GetEnvironment() ) ));
 	
 	// link
 	igdeNVLink * const link = native.GetHoverLink();

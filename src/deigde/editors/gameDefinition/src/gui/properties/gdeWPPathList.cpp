@@ -70,7 +70,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoSet( *pPanel.GetPathList() + pEditPath->GetPath() ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 pPanel.UndoSet( *pPanel.GetPathList() + pEditPath->GetPath() ) ));
 		pPanel.GetUndoSystem()->Add( undo );
 		
 		pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );

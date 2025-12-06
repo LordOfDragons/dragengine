@@ -193,7 +193,8 @@ public:
 		
 		const gdeProperty::Ref clipProperty(gdeProperty::Ref::NewWith(*property));
 		
-		gdeClipboardDataProperty::Ref clipData(gdeClipboardDataProperty::Ref::New( new gdeClipboardDataProperty( clipProperty ) ));
+		gdeClipboardDataProperty::Ref clipData(gdeClipboardDataProperty::Ref::New(
+			new gdeClipboardDataProperty( clipProperty ) ));
 		
 		pPanel.GetClipboard()->Set( clipData );
 	}
@@ -611,7 +612,8 @@ public:
 		const gdeFilePattern::Ref refFilePattern(gdeFilePattern::Ref::NewWith(name, "*.ext", "*.ext"));
 		gdeFilePattern * const filePattern = refFilePattern;
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoCustomFilePatternAdd( property, filePattern ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 pPanel.UndoCustomFilePatternAdd( property, filePattern ) ));
 		pPanel.GetUndoSystem()->Add( undo );
 		
 		pPanel.SelectCustomPattern( filePattern );
@@ -841,7 +843,7 @@ pClipboard( NULL )
 	
 	helper.FormLineStretchFirst( form, "Custom pattern:", "Custom pattern to edit.", frameLine );
 	helper.ComboBox( frameLine, "Custom pattern to edit.", pCBCustomPattern,
-		new cComboCustomPattern( *this ) );
+	new cComboCustomPattern( *this ) );
 	pCBCustomPattern->SetDefaultSorter();
 	helper.Button( frameLine, pBtnCustomPatternMenu, pActionCustomPatternMenu );
 	pActionCustomPatternMenu->SetWidget( pBtnCustomPatternMenu );
@@ -859,7 +861,7 @@ pClipboard( NULL )
 	pSwiParameters->AddChild( form );
 	
 	helper.ComboBox( form, "Group:", true, "Identifier group name", pCBIdentifierGroup,
-		new cComboIdentifierGroup( *this ) );
+	new cComboIdentifierGroup( *this ) );
 	pCBIdentifierGroup->SetDefaultSorter();
 	
 	helper.CheckBox( form, pChkIdentifierUsage, new cActionIdentifierUsage( *this ), true );
@@ -1209,6 +1211,7 @@ void gdeWPPropertyList::SetDefaultValueFromType(){
 		return;
 	}
 	
-	igdeUndo::Ref undo(igdeUndo::Ref::New( UndoDefaultValue( property, value, pEditDefault->GetValue() ) ));
+	igdeUndo::Ref undo(igdeUndo::Ref::New(
+		 UndoDefaultValue( property, value, pEditDefault->GetValue() ) ));
 	pGameDefinition->GetUndoSystem()->Add( undo );
 }

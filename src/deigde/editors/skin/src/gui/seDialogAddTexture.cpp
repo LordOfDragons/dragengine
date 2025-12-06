@@ -103,13 +103,14 @@ pWindowMain( windowMain )
 	igdeContainer::Ref content, formLine;
 	
 	
-	igdeLabel::Ref header(igdeLabel::Ref::New( new igdeLabel( env, "Enter texture name or choose from model textures." ) ));
+	igdeLabel::Ref header(igdeLabel::Ref::New(
+		new igdeLabel( env, "Enter texture name or choose from model textures." ) ));
 	
 	
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) );
 	
 	helper.ListBox( content, 5, "Textures names in model", pListModelTextureNames,
-		new cListTextureNames( *this ) );
+	new cListTextureNames( *this ) );
 	pListModelTextureNames->SetDefaultSorter();
 	
 	formLine.TakeOver( new igdeContainerForm( env ) );

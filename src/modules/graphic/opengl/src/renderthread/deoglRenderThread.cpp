@@ -1175,7 +1175,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		const devkCommandPool::Ref commandPool( queue.CreateCommandPool() );
 		const int inputDataCount = 32;
 		devkBuffer::Ref bufferInput( devkBuffer::Ref::New(
-			new devkBuffer( pVulkanDevice, sizeof( uint32_t ) * inputDataCount, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT ) ) );
+		new devkBuffer( pVulkanDevice, sizeof( uint32_t ) * inputDataCount,
+			VK_BUFFER_USAGE_STORAGE_BUFFER_BIT ) ) );
 		int i;
 		uint32_t bufferInputData[ inputDataCount ];
 		for( i=0; i<inputDataCount; i++ ){
@@ -1197,7 +1198,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 		
 		devkDescriptorSetLayout * const dslSSBO = pVulkanDevice->GetDescriptorSetLayoutManager().GetWith( dslSSBOConfig );
 		
-		devkDescriptorPool::Ref dpSSBO(devkDescriptorPool::Ref::New( new devkDescriptorPool( pVulkanDevice, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, dslSSBO ) ));
+		devkDescriptorPool::Ref dpSSBO(devkDescriptorPool::Ref::New(
+			new devkDescriptorPool( pVulkanDevice, VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, dslSSBO ) ));
 		
 		devkDescriptorSet::Ref dsSSBO;
 		VKTLOG( dsSSBO.TakeOver( new devkDescriptorSet( dpSSBO ) ), "DescriptorSet SSBO")
@@ -1274,7 +1276,8 @@ void deoglRenderThread::pInitThreadPhase4(){
 			uint32_t valueCount = inputDataCount;
 		} shaderConfig;
 		
-		devkSpecialization::Ref specialization(devkSpecialization::Ref::New( new devkSpecialization( &shaderConfig, sizeof( shaderConfig ), 1 ) ));
+		devkSpecialization::Ref specialization(devkSpecialization::Ref::New(
+			new devkSpecialization( &shaderConfig, sizeof( shaderConfig ), 1 ) ));
 		specialization->SetEntryUIntAt( 0, 0, offsetof( ShaderConfig, valueCount ) );
 		pipelineConfig.SetSpecialization( specialization );
 		

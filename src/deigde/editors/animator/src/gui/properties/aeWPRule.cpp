@@ -258,7 +258,8 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const aeWindowMain &windowMain = pPanel.GetWindowProperties().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( menu.GetEnvironment(), "Add" ) ));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
+			new igdeMenuCascade( menu.GetEnvironment(), "Add" ) ));
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddAnim() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddAnimDiff() );
 		helper.MenuCommand( submenu, windowMain.GetActionRuleAddAnimSelect() );
@@ -367,7 +368,8 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	content->AddChild( pSwitcher );
 	
-	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
 	pSwitcher->AddChild( panel );
 	
 	panel.TakeOver( pPanelAnim = new aeWPAPanelRuleAnimation( *this ) );

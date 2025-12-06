@@ -540,7 +540,8 @@ public:
 			return;
 		}
 		
-		lpeULangPackEntryRemove::Ref undo(lpeULangPackEntryRemove::Ref::New( new lpeULangPackEntryRemove( langpack, list, pWindow.GetReferenceLangPack() ) ));
+		lpeULangPackEntryRemove::Ref undo(lpeULangPackEntryRemove::Ref::New(
+			new lpeULangPackEntryRemove( langpack, list, pWindow.GetReferenceLangPack() ) ));
 		langpack->GetUndoSystem()->Add( undo );
 	}
 	

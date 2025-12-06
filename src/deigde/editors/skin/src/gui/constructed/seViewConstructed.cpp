@@ -132,7 +132,8 @@ pViewNode( NULL )
 	pListener = new seViewConstructedListener( *this );
 	
 	
-	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) ));
+	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) ));
 	helper.ScrollBar( bottomLine, true, 0, 0, 1, 0, pSBHorizontal, new cScrollView( *this ) );
 	helper.EditSpinInteger( bottomLine, "Select layer to edit", 0, 0, pSpinLayer, new cSpinLayer( *this ) );
 	

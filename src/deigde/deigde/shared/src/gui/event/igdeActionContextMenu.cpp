@@ -84,7 +84,8 @@ void igdeActionContextMenu::OnAction(){
 		return;
 	}
 	
-	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New( new igdeMenuCascade( pWidget->GetEnvironment() ) ));
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(
+		new igdeMenuCascade( pWidget->GetEnvironment() ) ));
 	
 	AddContextMenuEntries( menu );
 	

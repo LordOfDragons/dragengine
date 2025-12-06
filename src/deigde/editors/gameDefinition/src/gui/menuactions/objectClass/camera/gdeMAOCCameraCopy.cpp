@@ -71,7 +71,8 @@ igdeUndo *gdeMAOCCameraCopy::OnActionSubObject( gdeGameDefinition &gameDefinitio
 	
 	const gdeOCCamera::Ref clipOCCamera(gdeOCCamera::Ref::NewWith(*camera));
 	
-	gdeClipboardDataOCCamera::Ref clipData(gdeClipboardDataOCCamera::Ref::New( new gdeClipboardDataOCCamera( clipOCCamera ) ));
+	gdeClipboardDataOCCamera::Ref clipData(gdeClipboardDataOCCamera::Ref::New(
+		new gdeClipboardDataOCCamera( clipOCCamera ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

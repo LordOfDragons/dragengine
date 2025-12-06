@@ -1278,8 +1278,10 @@ const char *basePath, deAnimator &animator ){
 				
 				try{
 					const decPath realPath( decPath::AbsolutePathNative( pathAnimator, basePath ) );
-					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( realPath ) ));
-					deAnimator::Ref subAnimator(deAnimator::Ref::New( animator.GetEngine()->GetAnimatorManager()->CreateAnimator() ));
+					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+						 vfs.OpenFileForReading( realPath ) ));
+					deAnimator::Ref subAnimator(deAnimator::Ref::New(
+						 animator.GetEngine()->GetAnimatorManager()->CreateAnimator() ));
 					Load( realPath.GetPathUnix(), subAnimator, reader );
 					rule->SetSubAnimator( subAnimator );
 					

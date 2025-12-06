@@ -97,7 +97,8 @@ public:
 			return;
 		}
 		
-		gdeUSkySetPath::Ref undo(gdeUSkySetPath::Ref::New( new gdeUSkySetPath( sky, editPath->GetPath() ) ));
+		gdeUSkySetPath::Ref undo(gdeUSkySetPath::Ref::New(
+			new gdeUSkySetPath( sky, editPath->GetPath() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -114,7 +115,8 @@ public:
 			return;
 		}
 		
-		gdeUSkySetName::Ref undo(gdeUSkySetName::Ref::New( new gdeUSkySetName( sky, textField->GetText() ) ));
+		gdeUSkySetName::Ref undo(gdeUSkySetName::Ref::New(
+			new gdeUSkySetName( sky, textField->GetText() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -131,7 +133,8 @@ public:
 			return;
 		}
 		
-		gdeUSkySetDescription::Ref undo(gdeUSkySetDescription::Ref::New( new gdeUSkySetDescription( sky, textArea->GetText() ) ));
+		gdeUSkySetDescription::Ref undo(gdeUSkySetDescription::Ref::New(
+			new gdeUSkySetDescription( sky, textArea->GetText() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -162,7 +165,8 @@ public:
 			
 			const gdeSkyController::Ref controller(gdeSkyController::Ref::NewWith(name, 0.0f));
 			
-			gdeUSkyControllerAdd::Ref undo(gdeUSkyControllerAdd::Ref::New( new gdeUSkyControllerAdd( sky, controller ) ));
+			gdeUSkyControllerAdd::Ref undo(gdeUSkyControllerAdd::Ref::New(
+				new gdeUSkyControllerAdd( sky, controller ) ));
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 			
 			pComboBox.SetSelection( pComboBox.IndexOfItem( name ) );
@@ -186,7 +190,8 @@ public:
 			return;
 		}
 		
-		gdeUSkyControllerRemove::Ref undo(gdeUSkyControllerRemove::Ref::New( new gdeUSkyControllerRemove( pPanel.GetSky(), controller ) ));
+		gdeUSkyControllerRemove::Ref undo(gdeUSkyControllerRemove::Ref::New(
+			new gdeUSkyControllerRemove( pPanel.GetSky(), controller ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
 		if( pComboBox.GetItemCount() > 0 ){
@@ -244,7 +249,8 @@ public:
 			return;
 		}
 		
-		gdeUSkyControllerSetName::Ref undo(gdeUSkyControllerSetName::Ref::New( new gdeUSkyControllerSetName( pPanel.GetSky(), controller, textField->GetText() ) ));
+		gdeUSkyControllerSetName::Ref undo(gdeUSkyControllerSetName::Ref::New(
+			new gdeUSkyControllerSetName( pPanel.GetSky(), controller, textField->GetText() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -262,7 +268,8 @@ public:
 			return;
 		}
 		
-		gdeUSkyControllerSetValue::Ref undo(gdeUSkyControllerSetValue::Ref::New( new gdeUSkyControllerSetValue( pPanel.GetSky(), controller, value ) ));
+		gdeUSkyControllerSetValue::Ref undo(gdeUSkyControllerSetValue::Ref::New(
+			new gdeUSkyControllerSetValue( pPanel.GetSky(), controller, value ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -280,7 +287,8 @@ public:
 			return;
 		}
 		
-		gdeUSkySetCategory::Ref undo(gdeUSkySetCategory::Ref::New( new gdeUSkySetCategory( sky, comboBox->GetText() ) ));
+		gdeUSkySetCategory::Ref undo(gdeUSkySetCategory::Ref::New(
+			new gdeUSkySetCategory( sky, comboBox->GetText() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -366,9 +374,9 @@ pGameDefinition( NULL )
 	helper.Button( frameLine, pActionControllerMenu );
 	
 	helper.EditString( groupBox, "Name:", "Controller name", pEditControllerName,
-		new cTextControllerName( *this ) );
+	new cTextControllerName( *this ) );
 	helper.EditFloat( groupBox, "Value:", "Controller value", pEditControllerValue,
-		new cTextControllerValue( *this ) );
+	new cTextControllerValue( *this ) );
 }
 
 gdeWPSSky::~gdeWPSSky(){

@@ -77,7 +77,8 @@ void ceWPTMAPasteCondition::OnAction(){
 		return;
 	}
 	
-	ceConversationCondition::Ref condition(ceConversationCondition::Ref::New( cdata->GetConditions().GetAt( 0 )->CreateCopy() ));
+	ceConversationCondition::Ref condition(ceConversationCondition::Ref::New(
+		 cdata->GetConditions().GetAt( 0 )->CreateCopy() ));
 	
 	ceConversationConditionList conditions;
 	conditions.Add( condition );

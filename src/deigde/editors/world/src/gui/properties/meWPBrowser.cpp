@@ -355,7 +355,8 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionPIRebuild() );
 		
 		// view
-		igdeMenuCascade::Ref menuView(igdeMenuCascade::Ref::New( new igdeMenuCascade( helper.GetEnvironment(), "View" ) ));
+		igdeMenuCascade::Ref menuView(igdeMenuCascade::Ref::New(
+			new igdeMenuCascade( helper.GetEnvironment(), "View" ) ));
 		
 		helper.MenuOption( menuView, pPanel.GetActionPISizeSmall() );
 		helper.MenuOption( menuView, pPanel.GetActionPISizeMedium() );
@@ -441,7 +442,8 @@ public:
 			return;
 		}
 		
-		meUObjectTextureSetSkin::Ref undo(meUObjectTextureSetSkin::Ref::New( new meUObjectTextureSetSkin( list, newskin ) ));
+		meUObjectTextureSetSkin::Ref undo(meUObjectTextureSetSkin::Ref::New(
+			new meUObjectTextureSetSkin( list, newskin ) ));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -773,7 +775,8 @@ void meWPBrowser::AddCategoryToList( igdeGDCategory *category, igdeTreeItem *par
 	const int categoryCount = category->GetCategoryCount();
 	int i;
 	
-	igdeTreeItem::Ref item(igdeTreeItem::Ref::New( new igdeTreeItem( category->GetName(), category ) ));
+	igdeTreeItem::Ref item(igdeTreeItem::Ref::New(
+		new igdeTreeItem( category->GetName(), category ) ));
 	pTreeCategories->AppendItem( parent, item );
 	
 	for( i=0; i<categoryCount; i++ ){

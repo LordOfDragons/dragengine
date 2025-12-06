@@ -106,7 +106,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), world)));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), world)));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
@@ -152,7 +153,8 @@ public:
 			return;
 		}
 		
-		gdeUOCWorldSetPath::Ref undo(gdeUOCWorldSetPath::Ref::New(new gdeUOCWorldSetPath(pPanel.GetObjectClass(), world, editPath->GetPath())));
+		gdeUOCWorldSetPath::Ref undo(gdeUOCWorldSetPath::Ref::New(
+		new gdeUOCWorldSetPath(pPanel.GetObjectClass(), world, editPath->GetPath())));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 	}
 };

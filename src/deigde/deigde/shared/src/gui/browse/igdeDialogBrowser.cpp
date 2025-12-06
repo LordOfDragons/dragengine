@@ -208,9 +208,11 @@ pViewMode( evmPreview )
 		igdeApplication::app().DisplayScaled(250))));
 	
 	// left side: category list with filter
-	igdeContainerFlow::Ref panelCategory(igdeContainerFlow::Ref::New( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 3 ) ));
+	igdeContainerFlow::Ref panelCategory(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 3 ) ));
 	
-	igdeContainerForm::Ref filterLine(igdeContainerForm::Ref::New( new igdeContainerForm( environment ) ));
+	igdeContainerForm::Ref filterLine(igdeContainerForm::Ref::New(
+		new igdeContainerForm( environment ) ));
 	helper.EditString( filterLine, "Filter:", "Show items containing filter case insensitive",
 		pEditFilter, new igdeDialogBrowser_TextFilter( *this ) );
 	panelCategory->AddChild( filterLine );
@@ -221,7 +223,8 @@ pViewMode( evmPreview )
 	content->AddChild( panelCategory, igdeContainerSplitted::eaSide );
 	
 	// right side: item list with information
-	igdeContainerFlow::Ref panelItems(igdeContainerFlow::Ref::New( new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 3 ) ));
+	igdeContainerFlow::Ref panelItems(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 3 ) ));
 	
 	const igdeUIHelper::sColumnHeader headers[] = {
 		igdeUIHelper::sColumnHeader("Name", nullptr, igdeApplication::app().DisplayScaled(200))
@@ -289,7 +292,8 @@ void igdeDialogBrowser::AddCategoryToList( igdeGDCategory *category, igdeTreeIte
 	const int categoryCount = category->GetCategoryCount();
 	int i;
 	
-	igdeTreeItem::Ref item(igdeTreeItem::Ref::New( new igdeTreeItem( category->GetName(), category ) ));
+	igdeTreeItem::Ref item(igdeTreeItem::Ref::New(
+		new igdeTreeItem( category->GetName(), category ) ));
 	pTreeCategories->AppendItem( parent, item );
 	
 	for( i=0; i<categoryCount; i++ ){

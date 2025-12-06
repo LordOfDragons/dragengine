@@ -197,7 +197,8 @@ pRecentFilesLangPack( *this )
 	pWindowProperties = new ceWindowProperties( *this );
 	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
 	
-	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) ));
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) ));
 	splitted->AddChild( panel, igdeContainerSplitted::eaCenter );
 	
 	pViewConversation = new ceViewConversation( *this );
@@ -353,7 +354,7 @@ void ceWindowMain::LoadCTA( const char *filename ){
 		
 	}else{
 		const ceConversationActor::Ref actor( ceConversationActor::Ref::New(
-			new ceConversationActor( GetEnvironment() ) ) );
+		new ceConversationActor( GetEnvironment() ) ) );
 		pLoadSaveSystem->LoadCTA( filename, actor );
 		pConversation->AddActor( actor );
 	}

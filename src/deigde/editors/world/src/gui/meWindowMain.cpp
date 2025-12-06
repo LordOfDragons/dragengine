@@ -438,7 +438,8 @@ void meWindowMain::RotateActiveObjectBy( const decVector &rotation ){
 		return;
 	}
 	
-	meUSetObjectRotation::Ref undo(meUSetObjectRotation::Ref::New( new meUSetObjectRotation( object, object->GetRotation() + rotation ) ));
+	meUSetObjectRotation::Ref undo(meUSetObjectRotation::Ref::New(
+		new meUSetObjectRotation( object, object->GetRotation() + rotation ) ));
 	pWorld->GetUndoSystem()->Add( undo );
 }
 

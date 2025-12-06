@@ -71,7 +71,8 @@ igdeUndo *gdeMAOCParticleEmitterCopy::OnActionSubObject( gdeGameDefinition &game
 	
 	const gdeOCParticleEmitter::Ref clipOCParticleEmitter(gdeOCParticleEmitter::Ref::NewWith(*particleEmitter));
 	
-	gdeClipboardDataOCParticleEmitter::Ref clipData(gdeClipboardDataOCParticleEmitter::Ref::New( new gdeClipboardDataOCParticleEmitter( clipOCParticleEmitter ) ));
+	gdeClipboardDataOCParticleEmitter::Ref clipData(gdeClipboardDataOCParticleEmitter::Ref::New(
+		new gdeClipboardDataOCParticleEmitter( clipOCParticleEmitter ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

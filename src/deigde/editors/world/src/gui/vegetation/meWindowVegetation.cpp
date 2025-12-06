@@ -398,7 +398,8 @@ public:
 		const meHTVRLink::Ref ruleLink(meHTVRLink::Ref::NewWith(wvnodeSource.GetRule(), indexSlotSource,
 			wvnodeTarget.GetRule(), indexSlotTarget));
 		
-		meUHTVLinkAdd::Ref undo(meUHTVLinkAdd::Ref::New( new meUHTVLinkAdd( pView.GetVLayer(), ruleLink ) ));
+		meUHTVLinkAdd::Ref undo(meUHTVLinkAdd::Ref::New(
+			new meUHTVLinkAdd( pView.GetVLayer(), ruleLink ) ));
 		pView.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 	

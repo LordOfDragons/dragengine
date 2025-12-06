@@ -103,7 +103,8 @@ public:
 			return;
 		}
 		
-		lpeULangPackEntrySetName::Ref undo(lpeULangPackEntrySetName::Ref::New( new lpeULangPackEntrySetName( entry, name ) ));
+		lpeULangPackEntrySetName::Ref undo(lpeULangPackEntrySetName::Ref::New(
+			new lpeULangPackEntrySetName( entry, name ) ));
 		if( undo ){
 			langpack.GetUndoSystem()->Add( undo );
 		}
@@ -258,7 +259,8 @@ preventUpdate( false )
 		igdeApplication::app().DisplayScaled(100))));
 	AddChild( splitted, igdeContainerBorder::eaCenter );
 	
-	igdeContainerForm::Ref sidePanel(igdeContainerForm::Ref::New( new igdeContainerForm( env, igdeContainerForm::esLast ) ));
+	igdeContainerForm::Ref sidePanel(igdeContainerForm::Ref::New(
+		new igdeContainerForm( env, igdeContainerForm::esLast ) ));
 	helper.EditString( sidePanel, "Identifier:", "Unique identifier name of the entry.",
 		pEditEntryName, new cTextName( *this ) );
 	helper.EditString( sidePanel, "Reference Text:", "Reference text of the reference language pack entry.",

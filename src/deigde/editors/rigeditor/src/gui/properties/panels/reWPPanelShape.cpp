@@ -74,7 +74,8 @@ public:
 			return;
 		}
 		
-		reUShapeSetProperty::Ref undo(reUShapeSetProperty::Ref::New( new reUShapeSetProperty( shape, textField->GetText() ) ));
+		reUShapeSetProperty::Ref undo(reUShapeSetProperty::Ref::New(
+			new reUShapeSetProperty( shape, textField->GetText() ) ));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -103,7 +104,8 @@ void reWPPanelShape::cEditPosition::OnVectorChanged( igdeEditVector *editVector 
 		return;
 	}
 	
-	reUSetShapePosition::Ref undo(reUSetShapePosition::Ref::New( new reUSetShapePosition( shape, editVector->GetVector() ) ));
+	reUSetShapePosition::Ref undo(reUSetShapePosition::Ref::New(
+		new reUSetShapePosition( shape, editVector->GetVector() ) ));
 	if( undo ){
 		rig->GetUndoSystem()->Add( undo );
 	}
@@ -129,7 +131,8 @@ void reWPPanelShape::cEditRotation::OnVectorChanged( igdeEditVector *editVector 
 		return;
 	}
 	
-	reUSetShapeOrientation::Ref undo(reUSetShapeOrientation::Ref::New( new reUSetShapeOrientation( shape, editVector->GetVector() ) ));
+	reUSetShapeOrientation::Ref undo(reUSetShapeOrientation::Ref::New(
+		new reUSetShapeOrientation( shape, editVector->GetVector() ) ));
 	if( undo ){
 		rig->GetUndoSystem()->Add( undo );
 	}

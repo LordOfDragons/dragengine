@@ -71,7 +71,8 @@ igdeUndo *gdeMAOCEnvMapProbeCopy::OnActionSubObject( gdeGameDefinition &gameDefi
 	
 	const gdeOCEnvMapProbe::Ref clipOCEnvMapProbe(gdeOCEnvMapProbe::Ref::NewWith(*envMapProbe));
 	
-	gdeClipboardDataOCEnvMapProbe::Ref clipData(gdeClipboardDataOCEnvMapProbe::Ref::New( new gdeClipboardDataOCEnvMapProbe( clipOCEnvMapProbe ) ));
+	gdeClipboardDataOCEnvMapProbe::Ref clipData(gdeClipboardDataOCEnvMapProbe::Ref::New(
+		new gdeClipboardDataOCEnvMapProbe( clipOCEnvMapProbe ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

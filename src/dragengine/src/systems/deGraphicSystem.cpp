@@ -165,7 +165,8 @@ void deGraphicSystem::SetRenderWindow( deRenderWindow *renderWindow ){
 
 void deGraphicSystem::CreateAndSetRenderWindow( int width, int height, bool fullScreen,
 const char *title, deImage *icon ){
-	deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New( GetEngine()->GetRenderWindowManager()->CreateRenderWindow() ));
+	deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New(
+		 GetEngine()->GetRenderWindowManager()->CreateRenderWindow() ));
 	renderWindow->SetSize( width, height );
 	renderWindow->SetTitle( title );
 	renderWindow->SetFullScreen( fullScreen );
@@ -202,7 +203,8 @@ bool fullScreen, const char *title, deImage *icon, HWND hostWindow )
 
 #ifdef IMPLEMENT_CreateAndSetHostedRenderWindow
 {
-	deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New( GetEngine()->GetRenderWindowManager()->CreateRenderWindowInside( hostWindow ) ));
+	deRenderWindow::Ref renderWindow(deRenderWindow::Ref::New(
+		 GetEngine()->GetRenderWindowManager()->CreateRenderWindowInside( hostWindow ) ));
 	renderWindow->SetSize( width, height );
 	renderWindow->SetTitle( title );
 	renderWindow->SetFullScreen( fullScreen );

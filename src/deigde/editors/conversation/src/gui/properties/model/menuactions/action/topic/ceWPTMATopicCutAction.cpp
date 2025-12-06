@@ -63,7 +63,8 @@ void ceWPTMATopicCutAction::OnAction(){
 	ceWPTMACopyAction::OnAction();
 	
 	// remove
-	ceUCActionRemove::Ref undo(ceUCActionRemove::Ref::New( new ceUCActionRemove( pTopic, GetAction() ) ));
+	ceUCActionRemove::Ref undo(ceUCActionRemove::Ref::New(
+		new ceUCActionRemove( pTopic, GetAction() ) ));
 	undo->SetShortInfo( "Cut Action" );
 	pConversation->GetUndoSystem()->Add( undo );
 }

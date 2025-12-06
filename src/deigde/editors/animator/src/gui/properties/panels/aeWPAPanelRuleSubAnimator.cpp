@@ -149,7 +149,8 @@ public:
 			return;
 		}
 		
-		aeURuleSASetPathAnimator::Ref undo(aeURuleSASetPathAnimator::Ref::New( new aeURuleSASetPathAnimator( rule, editPath->GetPath() ) ));
+		aeURuleSASetPathAnimator::Ref undo(aeURuleSASetPathAnimator::Ref::New(
+			new aeURuleSASetPathAnimator( rule, editPath->GetPath() ) ));
 		pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 	}
 };

@@ -482,7 +482,8 @@ void deoalASound::pLoadEntireSound( deSound &sound ){
 		return;
 	}
 	
-	deSoundDecoder::Ref decoder(deSoundDecoder::Ref::New( pAudioThread.GetOal().GetGameEngine()->GetSoundManager()->CreateDecoder( &sound ) ));
+	deSoundDecoder::Ref decoder(deSoundDecoder::Ref::New(
+		 pAudioThread.GetOal().GetGameEngine()->GetSoundManager()->CreateDecoder( &sound ) ));
 	
 	pStreamData = new char[ bufferSize ];
 	pStreamDataSize = bufferSize;

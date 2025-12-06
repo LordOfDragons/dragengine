@@ -76,7 +76,8 @@ igdeDialog( environment, "Texture Property List" ){
 	pListProperties->SetDefaultSorter();
 	content->AddChild( pListProperties, igdeContainerSplitted::eaSide );
 	
-	igdeContainerForm::Ref form(igdeContainerForm::Ref::New( new igdeContainerForm( environment, igdeContainerForm::esLast ) ));
+	igdeContainerForm::Ref form(igdeContainerForm::Ref::New(
+		new igdeContainerForm( environment, igdeContainerForm::esLast ) ));
 	content->AddChild( form, igdeContainerSplitted::eaCenter );
 	
 	helper.EditString( form, "Name:", "Property name", pEditName, NULL );

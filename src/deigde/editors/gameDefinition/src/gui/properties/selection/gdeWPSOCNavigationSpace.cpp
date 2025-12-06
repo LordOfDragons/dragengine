@@ -93,7 +93,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), navspace ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *textField, pPanel.GetObjectClass(), navspace ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -116,7 +117,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), navspace ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), navspace ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -139,7 +141,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, pPanel.GetObjectClass(), navspace ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *comboBox, pPanel.GetObjectClass(), navspace ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -162,7 +165,8 @@ public:
 			return;
 		}
 		
-		gdeUOCNavSpaceSetPath::Ref undo(gdeUOCNavSpaceSetPath::Ref::New( new gdeUOCNavSpaceSetPath( pPanel.GetObjectClass(), navspace, editPath->GetPath() ) ));
+		gdeUOCNavSpaceSetPath::Ref undo(gdeUOCNavSpaceSetPath::Ref::New(
+			new gdeUOCNavSpaceSetPath( pPanel.GetObjectClass(), navspace, editPath->GetPath() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

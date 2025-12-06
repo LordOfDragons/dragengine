@@ -79,7 +79,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), snapPoint ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), snapPoint ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -102,7 +103,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), snapPoint ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *textField, pPanel.GetObjectClass(), snapPoint ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -179,7 +181,8 @@ public:
 			return;
 		}
 		
-		gdeUOCSnapPointToggleSnapToRotation::Ref undo(gdeUOCSnapPointToggleSnapToRotation::Ref::New( new gdeUOCSnapPointToggleSnapToRotation( pPanel.GetObjectClass(), snapPoint ) ));
+		gdeUOCSnapPointToggleSnapToRotation::Ref undo(gdeUOCSnapPointToggleSnapToRotation::Ref::New(
+			new gdeUOCSnapPointToggleSnapToRotation( pPanel.GetObjectClass(), snapPoint ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

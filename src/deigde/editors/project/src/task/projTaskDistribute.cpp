@@ -662,9 +662,11 @@ void projTaskDistribute::pWriteGameXml(){
 		pathGameXml.AddComponent( pProfile.GetIdentifier().ToHexString( false ) + ".degame" );
 	}
 	
-	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New( new decMemoryFile( pathGameXml.GetPathUnix() ) ));
+	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New(
+		new decMemoryFile( pathGameXml.GetPathUnix() ) ));
 	
-	decMemoryFileWriter::Ref memoryFileWriter(decMemoryFileWriter::Ref::New( new decMemoryFileWriter( memoryFile, false ) ));
+	decMemoryFileWriter::Ref memoryFileWriter(decMemoryFileWriter::Ref::New(
+		new decMemoryFileWriter( memoryFile, false ) ));
 	
 	// write xml file
 	{

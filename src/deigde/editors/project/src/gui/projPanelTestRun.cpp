@@ -277,7 +277,8 @@ pMaxLines( 500 )
 	AddChild( scroll, eaSide );
 	
 	
-	igdeContainerFlow::Ref groupBox(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
+	igdeContainerFlow::Ref groupBox(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
 	helper.Label( groupBox, "Profile:" );
 	helper.ComboBox( groupBox, "Distribution profile to run.",
 		pCBProfile, new cComboProfile( *this ) );
@@ -844,7 +845,7 @@ void projPanelTestRun::pProcessPendingAddRemoteClient(){
 		}
 		
 		const projPanelRemoteClient::Ref panel(projPanelRemoteClient::Ref::New(
-			new projPanelRemoteClient(*this, each)));
+		new projPanelRemoteClient(*this, each)));
 		pTabContent->AddChild(panel, each->GetName().c_str());
 		pRemoteClients.Add(panel);
 	}

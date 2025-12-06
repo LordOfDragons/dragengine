@@ -126,7 +126,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), light ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), light ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -210,7 +211,8 @@ public:
 			return;
 		}
 		
-		gdeUOCLightSetColor::Ref undo(gdeUOCLightSetColor::Ref::New( new gdeUOCLightSetColor( pPanel.GetObjectClass(), light, colorBox->GetColor() ) ));
+		gdeUOCLightSetColor::Ref undo(gdeUOCLightSetColor::Ref::New(
+			new gdeUOCLightSetColor( pPanel.GetObjectClass(), light, colorBox->GetColor() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };

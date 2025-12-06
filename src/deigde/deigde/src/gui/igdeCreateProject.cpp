@@ -245,7 +245,8 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	decPath path( pNativePathProject );
 	path.AddComponent( ".gitignore" );
 	
-	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New( new decDiskFileWriter( path.GetPathNative(), false ) ));
+	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New(
+		new decDiskFileWriter( path.GetPathNative(), false ) ));
 	writer->WriteString( pProject->GetPathLocal() + "\n" );
 	writer->WriteString( pPathCache + "\n" );
 	writer->WriteString( "distribute\n" );
@@ -324,7 +325,7 @@ void igdeCreateProject::pLoadSharedGameDefContent(){
 	path.SetFromNative( pWindowMain.GetConfiguration().GetPathShares() );
 	path.AddComponent( "newproject.degd" );
 	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New(
-		new decDiskFileReader( path.GetPathNative() ) ) );
+	new decDiskFileReader( path.GetPathNative() ) ) );
 	
 	const int contentLen = reader->GetLength();
 	pSharedGameDefContent.Set( ' ', contentLen );

@@ -84,7 +84,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), particleEmitter ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), particleEmitter ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -107,7 +108,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, pPanel.GetObjectClass(), particleEmitter ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *comboBox, pPanel.GetObjectClass(), particleEmitter ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -131,7 +133,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionParticleEmitter( pPanel.GetObjectClass(), particleEmitter ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnActionParticleEmitter( pPanel.GetObjectClass(), particleEmitter ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -167,7 +170,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, pPanel.GetObjectClass(), particleEmitter ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *textField, pPanel.GetObjectClass(), particleEmitter ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}

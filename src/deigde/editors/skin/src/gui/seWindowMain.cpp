@@ -988,7 +988,8 @@ public:
 		"Add property", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnActionTexture( seSkin*, seTexture *texture ){
-		seDialogAddProperty::Ref refDialog(seDialogAddProperty::Ref::New( new seDialogAddProperty( pWindow ) ));
+		seDialogAddProperty::Ref refDialog(seDialogAddProperty::Ref::New(
+			new seDialogAddProperty( pWindow ) ));
 		if( ! refDialog->Run( &pWindow ) ){
 			return NULL;
 		}

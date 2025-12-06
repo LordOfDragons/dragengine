@@ -71,7 +71,8 @@ public:
 			return;
 		}
 		
-		seUSkySetBgColor::Ref undo(seUSkySetBgColor::Ref::New( new seUSkySetBgColor( sky, colorBox->GetColor() ) ));
+		seUSkySetBgColor::Ref undo(seUSkySetBgColor::Ref::New(
+			new seUSkySetBgColor( sky, colorBox->GetColor() ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}

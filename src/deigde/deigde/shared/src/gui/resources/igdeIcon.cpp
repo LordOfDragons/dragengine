@@ -91,7 +91,8 @@ igdeIcon *igdeIcon::LoadPNG( const igdeEditorModule &editor, const char *filenam
 	path.AddComponent( editor.GetEditorDirectory() );
 	path.AddUnixPath( filename );
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading( path ) ));
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+		 editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading( path ) ));
 	void * const native = igdeNativeIcon::CreateNativeIconPNG( reader );
 	
 	try{

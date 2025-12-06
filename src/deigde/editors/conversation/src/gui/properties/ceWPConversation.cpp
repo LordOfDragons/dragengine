@@ -1213,7 +1213,8 @@ public:
 		}
 		
 		const ceControllerValue::Ref controller(ceControllerValue::Ref::NewWith(name, 1.0f));
-		ceUCFPControllerAdd::Ref undo(ceUCFPControllerAdd::Ref::New( new ceUCFPControllerAdd( facePose, controller ) ));
+		ceUCFPControllerAdd::Ref undo(ceUCFPControllerAdd::Ref::New(
+			new ceUCFPControllerAdd( facePose, controller ) ));
 		conversation->GetUndoSystem()->Add( undo );
 		
 		pPanel.SelectFacePoseController( controller );

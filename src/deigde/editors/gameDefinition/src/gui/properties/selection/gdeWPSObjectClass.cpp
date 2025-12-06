@@ -241,7 +241,8 @@ public:
 			return;
 		}
 		
-		gdeUOCSetDescription::Ref undo(gdeUOCSetDescription::Ref::New( new gdeUOCSetDescription( objectClass, textArea->GetText() ) ));
+		gdeUOCSetDescription::Ref undo(gdeUOCSetDescription::Ref::New(
+			new gdeUOCSetDescription( objectClass, textArea->GetText() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -562,7 +563,8 @@ public:
 			inherit.SetPropertyPrefix( ioc->GetDefaultInheritPropertyPrefix() );
 		}
 		
-		gdeUOCAddInherit::Ref undo(gdeUOCAddInherit::Ref::New( new gdeUOCAddInherit( objectClass, &inherit ) ));
+		gdeUOCAddInherit::Ref undo(gdeUOCAddInherit::Ref::New(
+			new gdeUOCAddInherit( objectClass, &inherit ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
 		pPanel.SelectInherit( &inherit );
@@ -841,7 +843,8 @@ public:
 		decStringDictionary values( objectClass->GetPropertyValues() );
 		values.SetAt( key, value );
 		
-		gdeUOCSetPropertyValues::Ref undo(gdeUOCSetPropertyValues::Ref::New( new gdeUOCSetPropertyValues( objectClass, values ) ));
+		gdeUOCSetPropertyValues::Ref undo(gdeUOCSetPropertyValues::Ref::New(
+			new gdeUOCSetPropertyValues( objectClass, values ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -914,7 +917,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChangedTexture( editVector2->GetVector2(), pPanel.GetObjectClass(), texture ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChangedTexture( editVector2->GetVector2(), pPanel.GetObjectClass(), texture ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -969,7 +973,8 @@ public:
 		
 		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
 		
-		gdeUOCAddTexture::Ref undo(gdeUOCAddTexture::Ref::New( new gdeUOCAddTexture( objectClass, texture ) ));
+		gdeUOCAddTexture::Ref undo(gdeUOCAddTexture::Ref::New(
+			new gdeUOCAddTexture( objectClass, texture ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		
 		objectClass->SetActiveTexture( texture );
@@ -1041,7 +1046,8 @@ public:
 			return;
 		}
 		
-		gdeUOCTextureSetPathSkin::Ref undo(gdeUOCTextureSetPathSkin::Ref::New( new gdeUOCTextureSetPathSkin( pPanel.GetObjectClass(), texture, editPath->GetPath() ) ));
+		gdeUOCTextureSetPathSkin::Ref undo(gdeUOCTextureSetPathSkin::Ref::New(
+			new gdeUOCTextureSetPathSkin( pPanel.GetObjectClass(), texture, editPath->GetPath() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -1095,7 +1101,8 @@ public:
 			return;
 		}
 		
-		gdeUOCTextureSetColorTint::Ref undo(gdeUOCTextureSetColorTint::Ref::New( new gdeUOCTextureSetColorTint( pPanel.GetObjectClass(), texture, colorBox->GetColor() ) ));
+		gdeUOCTextureSetColorTint::Ref undo(gdeUOCTextureSetColorTint::Ref::New(
+			new gdeUOCTextureSetColorTint( pPanel.GetObjectClass(), texture, colorBox->GetColor() ) ));
 		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -1148,7 +1155,7 @@ pGameDefinition( NULL )
 		pEditDescription, 15, 5, new cTextDescription( *this ) );
 	
 	helper.ComboBox( groupBox, "Scale Mode:", "Object scale mode", pCBScaleMode,
-		new cComboScaleMode( *this ) );
+	new cComboScaleMode( *this ) );
 	pCBScaleMode->AddItem( "Fixed", NULL, ( void* )( intptr_t )gdeObjectClass::esmFixed );
 	pCBScaleMode->AddItem( "Uniform", NULL, ( void* )( intptr_t )gdeObjectClass::esmUniform );
 	pCBScaleMode->AddItem( "Free", NULL, ( void* )( intptr_t )gdeObjectClass::esmFree );

@@ -77,7 +77,8 @@ pLog( 1000 )
 	
 	helper.EditString( *this, "Console Logs", pEditLogs, 10, NULL );
 	
-	igdeContainerFlow::Ref line(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) ));
+	igdeContainerFlow::Ref line(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst ) ));
 	AddChild( line );
 	
 	helper.EditString( line, "Command to send", pEditCommand, new igdeDEConsole_TextCommand( *this ) );

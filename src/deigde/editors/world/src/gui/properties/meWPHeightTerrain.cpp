@@ -346,7 +346,8 @@ public:
 				
 			}else if( answer == igdeCommonDialogs::ebYes ){
 				const int resolution = world->GetHeightTerrain()->GetSectorResolution();
-				deImage::Ref image(deImage::Ref::New( pPanel.GetEngine()->GetImageManager()->LoadImage( editPath->GetPath(), "/" ) ));
+				deImage::Ref image(deImage::Ref::New(
+					 pPanel.GetEngine()->GetImageManager()->LoadImage( editPath->GetPath(), "/" ) ));
 				
 				if( image->GetComponentCount() != 1 ){
 					image = NULL;
@@ -363,7 +364,8 @@ public:
 				}
 				
 				if( image ){
-					meUHTImportHeightImage::Ref undo(meUHTImportHeightImage::Ref::New( new meUHTImportHeightImage( world, sector, image ) ));
+					meUHTImportHeightImage::Ref undo(meUHTImportHeightImage::Ref::New(
+						new meUHTImportHeightImage( world, sector, image ) ));
 					world->GetUndoSystem()->Add( undo );
 				}
 			}
@@ -416,7 +418,8 @@ public:
 				}
 				
 				if( image ){
-					meUHTImportVisibilityImage::Ref undo(meUHTImportVisibilityImage::Ref::New( new meUHTImportVisibilityImage( world, sector, image ) ));
+					meUHTImportVisibilityImage::Ref undo(meUHTImportVisibilityImage::Ref::New(
+						new meUHTImportVisibilityImage( world, sector, image ) ));
 					world->GetUndoSystem()->Add( undo );
 				}
 			}
@@ -800,7 +803,8 @@ public:
 		if( ! type || colorBox->GetColor().IsEqualTo( type->GetColor() ) ){
 			return;
 		}
-		meUHTNavSpaceTypeSetColor::Ref undo(meUHTNavSpaceTypeSetColor::Ref::New( new meUHTNavSpaceTypeSetColor( type, colorBox->GetColor() ) ));
+		meUHTNavSpaceTypeSetColor::Ref undo(meUHTNavSpaceTypeSetColor::Ref::New(
+			new meUHTNavSpaceTypeSetColor( type, colorBox->GetColor() ) ));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };

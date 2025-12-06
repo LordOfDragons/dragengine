@@ -283,7 +283,8 @@ void projWindowMain::SaveProject(){
 		return;
 	}
 	
-	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New( new decDiskFileWriter( pProject->GetFilePath(), false ) ));
+	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::New(
+		new decDiskFileWriter( pProject->GetFilePath(), false ) ));
 	projProjectXml( GetLogger(), LOGSOURCE ).WriteToFile( writer, *pProject );
 	pProject->SetChanged( false );
 }
@@ -639,7 +640,8 @@ public:
 			return;
 		}
 		
-		projUProfileRemove::Ref undo(projUProfileRemove::Ref::New( new projUProfileRemove( project, profile ) ));
+		projUProfileRemove::Ref undo(projUProfileRemove::Ref::New(
+			new projUProfileRemove( project, profile ) ));
 		project->GetUndoSystem()->Add( undo );
 	}
 	
@@ -736,7 +738,8 @@ public:
 			return;
 		}
 		
-		projDialogDistribute::Ref dialog(projDialogDistribute::Ref::New( new projDialogDistribute( pWindow, project->GetActiveProfile() ) ));
+		projDialogDistribute::Ref dialog(projDialogDistribute::Ref::New(
+			new projDialogDistribute( pWindow, project->GetActiveProfile() ) ));
 		dialog->Run( &pWindow );
 	}
 	
@@ -945,7 +948,7 @@ bool projWindowMain::pCmdLineProfileDistribute( decUnicodeStringList &arguments 
 	GetEnvironment().ActivateEditor( &GetEditorModule() );
 	
 	const projDialogDistribute::Ref dialog( projDialogDistribute::Ref::New(
-		new projDialogDistribute( *this, profile ) ) );
+	new projDialogDistribute( *this, profile ) ) );
 	dialog->SetCloseDialogOnFinished( true );
 	dialog->SetPrintToConsole( true );
 	dialog->Run( this );

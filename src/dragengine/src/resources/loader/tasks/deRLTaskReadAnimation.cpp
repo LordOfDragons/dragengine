@@ -86,7 +86,8 @@ void deRLTaskReadAnimation::Run(){
 	
 	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( GetVFS()->OpenFileForReading( vfsPath ) ));
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+		 GetVFS()->OpenFileForReading( vfsPath ) ));
 	
 	pAnimation->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
 	pAnimation->SetAsynchron( true );

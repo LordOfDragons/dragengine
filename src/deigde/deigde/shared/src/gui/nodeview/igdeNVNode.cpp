@@ -244,7 +244,8 @@ void igdeNVNode::ShowContextMenu( const decPoint &position ){
 	}
 	
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
-	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New( new igdeMenuCascade( helper.GetEnvironment() ) ));
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(
+		new igdeMenuCascade( helper.GetEnvironment() ) ));
 	
 	const int count = pListeners.GetCount();
 	int i;

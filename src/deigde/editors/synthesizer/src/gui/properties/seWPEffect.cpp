@@ -103,7 +103,8 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionEffectPasteInsert() );
 		
 		const seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( menu.GetEnvironment(), "Add" ) ));
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
+			new igdeMenuCascade( menu.GetEnvironment(), "Add" ) ));
 		helper.MenuCommand( submenu, windowMain.GetActionEffectAddStretch() );
 		menu.AddChild( submenu );
 		
@@ -132,7 +133,8 @@ public:
 			return;
 		}
 		
-		seClipboardDataEffect::Ref cdata(seClipboardDataEffect::Ref::New( new seClipboardDataEffect( effect ) ));
+		seClipboardDataEffect::Ref cdata(seClipboardDataEffect::Ref::New(
+			new seClipboardDataEffect( effect ) ));
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 	}
 	
@@ -155,10 +157,12 @@ public:
 			return;
 		}
 		
-		seClipboardDataEffect::Ref cdata(seClipboardDataEffect::Ref::New( new seClipboardDataEffect( effect ) ));
+		seClipboardDataEffect::Ref cdata(seClipboardDataEffect::Ref::New(
+			new seClipboardDataEffect( effect ) ));
 		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
 		
-		seUSourceRemoveEffect::Ref undo(seUSourceRemoveEffect::Ref::New( new seUSourceRemoveEffect( pPanel.GetSource(), effect ) ));
+		seUSourceRemoveEffect::Ref undo(seUSourceRemoveEffect::Ref::New(
+			new seUSourceRemoveEffect( pPanel.GetSource(), effect ) ));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -191,7 +195,8 @@ public:
 		const seEffectList &list = pPanel.GetSource()->GetEffects();
 		const int index = effect ? list.IndexOf( effect ) : list.GetCount();
 		
-		seUSourcePasteEffect::Ref undo(seUSourcePasteEffect::Ref::New( new seUSourcePasteEffect( pPanel.GetSource(), cdata->GetEffects(), index ) ));
+		seUSourcePasteEffect::Ref undo(seUSourcePasteEffect::Ref::New(
+			new seUSourcePasteEffect( pPanel.GetSource(), cdata->GetEffects(), index ) ));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -263,7 +268,8 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	AddChild( pSwitcher );
 	
-	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New( new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::New(
+		new igdeContainerFlow( env, igdeContainerFlow::eaY ) ));
 	pSwitcher->AddChild( panel );
 	
 	panel.TakeOver( pPanelStretch = new seWPAPanelEffectStretch( *this ) );

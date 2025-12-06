@@ -304,7 +304,8 @@ igdeWidget *rightPanel, igdeWidget *buttonBar ){
 	igdeEnvironment &env = GetEnvironment();
 	const int spacing = igdeNativeDialog::DialogPadContent( *GetGuiTheme() );
 	
-	igdeContainerBorder::Ref border(igdeContainerBorder::Ref::New( new igdeContainerBorder( env, spacing ) ));
+	igdeContainerBorder::Ref border(igdeContainerBorder::Ref::New(
+		new igdeContainerBorder( env, spacing ) ));
 	AddChild( border );
 	
 	if( header ){
@@ -323,7 +324,8 @@ igdeWidget *rightPanel, igdeWidget *buttonBar ){
 		igdeContainerFlow::esNone, spacing )));
 	border->AddChild( bottom, igdeContainerBorder::eaBottom );
 	
-	igdeSeparator::Ref separator(igdeSeparator::Ref::New( new igdeSeparator( env, igdeSeparator::eoHorizontal ) ));
+	igdeSeparator::Ref separator(igdeSeparator::Ref::New(
+		new igdeSeparator( env, igdeSeparator::eoHorizontal ) ));
 	bottom->AddChild( separator );
 	bottom->AddChild( buttonBar );
 }

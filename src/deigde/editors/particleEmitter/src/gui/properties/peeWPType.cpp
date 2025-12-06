@@ -204,7 +204,8 @@ public:
 			return;
 		}
 		
-		peeUEmitterToggleEmitBurst::Ref undo(peeUEmitterToggleEmitBurst::Ref::New( new peeUEmitterToggleEmitBurst( emitter ) ));
+		peeUEmitterToggleEmitBurst::Ref undo(peeUEmitterToggleEmitBurst::Ref::New(
+			new peeUEmitterToggleEmitBurst( emitter ) ));
 		emitter->GetUndoSystem()->Add( undo );
 	}
 };
@@ -225,7 +226,8 @@ public:
 			return;
 		}
 		
-		peeUEmitterSetBurstLifetime::Ref undo(peeUEmitterSetBurstLifetime::Ref::New( new peeUEmitterSetBurstLifetime( emitter, value ) ));
+		peeUEmitterSetBurstLifetime::Ref undo(peeUEmitterSetBurstLifetime::Ref::New(
+			new peeUEmitterSetBurstLifetime( emitter, value ) ));
 		emitter->GetUndoSystem()->Add( undo );
 	}
 };
@@ -264,7 +266,8 @@ public:
 		}
 		
 		igdeUIHelper &helper = pPanel.GetEnvironment().GetUIHelperProperties();
-		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New( new igdeMenuCascade( pPanel.GetEnvironment() ) ));
+		igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::New(
+			new igdeMenuCascade( pPanel.GetEnvironment() ) ));
 		helper.MenuCommand( menu, pPanel.GetActionTypeAdd() );
 		helper.MenuCommand( menu, pPanel.GetActionTypeRemove() );
 		helper.MenuCommand( menu, pPanel.GetActionTypeRename() );
@@ -853,7 +856,7 @@ pPreventUpdate( false )
 	
 	helper.EditPath( groupBox, "Emitter:", "Path to the particle emitter to create for impacts",
 		igdeEnvironment::efpltParticleEmitter, pEditPathCollisionEmitter,
-		new cPathCollisionEmitter( *this ) );
+	new cPathCollisionEmitter( *this ) );
 	helper.EditFloat( groupBox, "Min Impulse:",
 		"Minimal impact impulse required to create a new collision emitter instance",
 		pEditEmitMinImpulse, new cTextEmitMinImpulse( *this ) );

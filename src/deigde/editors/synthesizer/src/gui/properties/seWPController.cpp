@@ -256,7 +256,8 @@ public:
 		decCurveBezier curve;
 		CreateCurve( *controller, curve );
 		
-		seUControllerSetCurve::Ref undo(seUControllerSetCurve::Ref::New( new seUControllerSetCurve( controller, curve ) ));
+		seUControllerSetCurve::Ref undo(seUControllerSetCurve::Ref::New(
+			new seUControllerSetCurve( controller, curve ) ));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 		pEditCurve->ResetView();
 		return NULL;
@@ -419,19 +420,19 @@ pSynthesizer( NULL )
 	helper.EditFloat( formLine, "Constant curve value", 6, 3,
 		pEditCurveSetConstValue, new cTextCurveConstValue( *this ) );
 	helper.Button( formLine, pBtnCurveSetConstant,
-		new cActionCurveSetConstValue( *this, pEditCurve, pEditCurveSetConstValue ), true );
+	new cActionCurveSetConstValue( *this, pEditCurve, pEditCurveSetConstValue ), true );
 	
 	helper.Separator( formLine );
 	helper.Button( formLine, pBtnCurveSetLinear,
-		new cActionCurveSetLinear( *this, pEditCurve ), true );
+	new cActionCurveSetLinear( *this, pEditCurve ), true );
 	helper.Button( formLine, pBtnCurveSetLinearInverse,
-		new cActionCurveSetLinearInverse( *this, pEditCurve ), true );
+	new cActionCurveSetLinearInverse( *this, pEditCurve ), true );
 	
 	helper.Separator( formLine );
 	helper.Button( formLine, pBtnCurveSetBezier,
-		new cActionCurveSetBezier( *this, pEditCurve ), true );
+	new cActionCurveSetBezier( *this, pEditCurve ), true );
 	helper.Button( formLine, pBtnCurveSetBezierInverse,
-		new cActionCurveSetBezierInverse( *this, pEditCurve ), true );
+	new cActionCurveSetBezierInverse( *this, pEditCurve ), true );
 }
 
 seWPController::~seWPController(){

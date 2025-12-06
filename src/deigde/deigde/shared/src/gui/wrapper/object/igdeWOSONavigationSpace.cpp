@@ -122,7 +122,8 @@ void igdeWOSONavigationSpace::pUpdateNavigationSpace(){
 			
 			if( engine.GetVirtualFileSystem()->ExistsFile( vfsPath ) ){
 				try{
-					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) ));
+					decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+						 engine.GetVirtualFileSystem()->OpenFileForReading( vfsPath ) ));
 					loadNavSpace.Load( pNavigationSpace, reader );
 					
 				}catch( const deException &e ){

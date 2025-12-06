@@ -82,7 +82,8 @@ public:
 			return;
 		}
 		
-		ceUCACameraShotSetName::Ref undo(ceUCACameraShotSetName::Ref::New( new ceUCACameraShotSetName( topic, action, comboBox->GetText() ) ));
+		ceUCACameraShotSetName::Ref undo(ceUCACameraShotSetName::Ref::New(
+			new ceUCACameraShotSetName( topic, action, comboBox->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -101,7 +102,8 @@ public:
 			return;
 		}
 		
-		ceUCACShotSetDuration::Ref undo(ceUCACShotSetDuration::Ref::New( new ceUCACShotSetDuration( topic, action, duration ) ));
+		ceUCACShotSetDuration::Ref undo(ceUCACShotSetDuration::Ref::New(
+			new ceUCACShotSetDuration( topic, action, duration ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -119,7 +121,8 @@ public:
 			return;
 		}
 		
-		ceUCACShotSetCameraTarget::Ref undo(ceUCACShotSetCameraTarget::Ref::New( new ceUCACShotSetCameraTarget( topic, action, comboBox->GetText() ) ));
+		ceUCACShotSetCameraTarget::Ref undo(ceUCACShotSetCameraTarget::Ref::New(
+			new ceUCACShotSetCameraTarget( topic, action, comboBox->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -137,7 +140,8 @@ public:
 			return;
 		}
 		
-		ceUCACShotSetLookAtTarget::Ref undo(ceUCACShotSetLookAtTarget::Ref::New( new ceUCACShotSetLookAtTarget( topic, action, comboBox->GetText() ) ));
+		ceUCACShotSetLookAtTarget::Ref undo(ceUCACShotSetLookAtTarget::Ref::New(
+			new ceUCACShotSetLookAtTarget( topic, action, comboBox->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

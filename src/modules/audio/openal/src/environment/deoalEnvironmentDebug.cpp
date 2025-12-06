@@ -178,7 +178,8 @@ void deoalEnvironmentDebug::UpdateInfo( deDebugBlockInfo &debugInfo ){
 		debugInfo.AddEntry( "  LateRev. Pan", "", ct, ceaxLateRev );
 		
 		deEngine &engine = *pEnvironment.GetAudioThread().GetOal().GetGameEngine();
-		deCanvasImage::Ref canvasHistogram(deCanvasImage::Ref::New( engine.GetCanvasManager()->CreateCanvasImage() ));
+		deCanvasImage::Ref canvasHistogram(deCanvasImage::Ref::New(
+			 engine.GetCanvasManager()->CreateCanvasImage() ));
 		deImage::Ref imageHistogram(deImage::Ref::New(engine.GetImageManager()->CreateImage(
 			pHistogramSize.x, pHistogramSize.y, 1, 4, 8 )));
 		memset( imageHistogram->GetDataRGBA8(), 0, sizeof( sRGBA8 ) * ( pHistogramSize.x * pHistogramSize.y ) );

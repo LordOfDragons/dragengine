@@ -1099,7 +1099,8 @@ void seWindowMain::pCreateMenuController( igdeMenuCascade &menu ){
 void seWindowMain::pCreateMenuSource( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) ));
+	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
+		new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) ));
 	helper.MenuCommand( submenu, pActionSourceAddWave );
 	helper.MenuCommand( submenu, pActionSourceAddSound );
 	helper.MenuCommand( submenu, pActionSourceAddChain );
@@ -1131,7 +1132,8 @@ void seWindowMain::pCreateMenuSource( igdeMenuCascade &menu ){
 void seWindowMain::pCreateMenuEffect( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) ));
+	igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::New(
+		new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) ));
 	helper.MenuCommand( submenu, pActionEffectAddStretch );
 	menu.AddChild( submenu );
 	

@@ -173,7 +173,8 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiPlus ), "Add match name" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
-		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::New( new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Add match name" ) ));
+		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::New(
+			new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Add match name" ) ));
 		return dialog->Run( &pPanel ) ? new aeURuleMirrorAddMatchName( rule, 
 			( ( aeDialogMirrorMatchName& )( igdeDialog& )dialog ).CreateMatchName() ) : nullptr;
 	}
@@ -221,7 +222,7 @@ public:
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
 		return new aeURuleMirrorAddMatchName( rule, aeRuleMirror::cMatchName::Ref::New(
-			new aeRuleMirror::cMatchName( pFirst, pSecond, pType ) ) );
+		new aeRuleMirror::cMatchName( pFirst, pSecond, pType ) ) );
 	}
 };
 
@@ -236,7 +237,8 @@ public:
 			return nullptr;
 		}
 		
-		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::New( new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Edit match name" ) ));
+		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::New(
+			new aeDialogMirrorMatchName( pPanel.GetEnvironment(), "Edit match name" ) ));
 		( ( aeDialogMirrorMatchName& )( igdeDialog& )dialog ).Set( *matchName );
 		if( ! dialog->Run( &pPanel ) ){
 			return nullptr;
@@ -290,7 +292,8 @@ public:
 	cListMatchNames( aeWPAPanelRuleMirror &panel ) : pPanel( panel ){ }
 	
 	virtual void OnDoubleClickItem( igdeListBox*, int ){
-		cActionMatchNameEdit::Ref action(cActionMatchNameEdit::Ref::New( new cActionMatchNameEdit( pPanel ) ));
+		cActionMatchNameEdit::Ref action(cActionMatchNameEdit::Ref::New(
+			new cActionMatchNameEdit( pPanel ) ));
 		action->OnAction();
 	}
 	

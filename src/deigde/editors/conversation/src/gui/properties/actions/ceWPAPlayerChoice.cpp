@@ -84,7 +84,8 @@ public:
 			return;
 		}
 		
-		ceUCAPChoiceSetVarName::Ref undo(ceUCAPChoiceSetVarName::Ref::New( new ceUCAPChoiceSetVarName( topic, action, textField->GetText() ) ));
+		ceUCAPChoiceSetVarName::Ref undo(ceUCAPChoiceSetVarName::Ref::New(
+			new ceUCAPChoiceSetVarName( topic, action, textField->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

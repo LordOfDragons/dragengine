@@ -71,7 +71,8 @@ igdeUndo *gdeMAOCForceFieldCopy::OnActionSubObject( gdeGameDefinition &gameDefin
 	
 	const gdeOCForceField::Ref clipOCForceField(gdeOCForceField::Ref::NewWith(*forceField));
 	
-	gdeClipboardDataOCForceField::Ref clipData(gdeClipboardDataOCForceField::Ref::New( new gdeClipboardDataOCForceField( clipOCForceField ) ));
+	gdeClipboardDataOCForceField::Ref clipData(gdeClipboardDataOCForceField::Ref::New(
+		new gdeClipboardDataOCForceField( clipOCForceField ) ));
 	
 	pWindowMain.GetClipboard().Set( clipData );
 	return NULL;

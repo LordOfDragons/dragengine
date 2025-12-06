@@ -182,7 +182,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex - 1 ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex - 1 ) ));
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -205,7 +206,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex + 1 ) ));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 pLane.UndoStripMove( pLane.GetStripList().GetAt( pIndex ), pIndex + 1 ) ));
 		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 	
@@ -459,7 +461,8 @@ public:
 			return;
 		}
 		
-		igdeMenuCascade::Ref contextMenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( pLane.GetWindow().GetEnvironment() ) ));
+		igdeMenuCascade::Ref contextMenu(igdeMenuCascade::Ref::New(
+			new igdeMenuCascade( pLane.GetWindow().GetEnvironment() ) ));
 		
 		pLane.OnContextMenu( contextMenu, position );
 		

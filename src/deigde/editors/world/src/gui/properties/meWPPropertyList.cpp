@@ -289,7 +289,8 @@ public:
 			return;
 		}
 		
-		meCDProperties::Ref clip(meCDProperties::Ref::New( new meCDProperties( pPanel.GetProperties() ) ));
+		meCDProperties::Ref clip(meCDProperties::Ref::New(
+			new meCDProperties( pPanel.GetProperties() ) ));
 		pPanel.GetClipboard()->Set( clip );
 	}
 	
@@ -781,7 +782,8 @@ void meWPPropertyList::EditPropertyValueInDialog(){
 		return;
 	}
 	
-	igdeUndo::Ref undo(igdeUndo::Ref::New( UndoSetProperty( selection->GetText(), oldValue, newValue ) ));
+	igdeUndo::Ref undo(igdeUndo::Ref::New(
+		 UndoSetProperty( selection->GetText(), oldValue, newValue ) ));
 	if( undo ){
 		pUndoSystem->Add( undo );
 	}

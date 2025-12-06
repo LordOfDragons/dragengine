@@ -200,7 +200,8 @@ public:
 			return;
 		}
 		
-		seULinkSetController::Ref undo(seULinkSetController::Ref::New( new seULinkSetController( link, controller ) ));
+		seULinkSetController::Ref undo(seULinkSetController::Ref::New(
+			new seULinkSetController( link, controller ) ));
 		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };

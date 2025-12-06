@@ -73,7 +73,8 @@ public:
 			return;
 		}
 		
-		ceUCCAInConvoSetActor::Ref undo(ceUCCAInConvoSetActor::Ref::New( new ceUCCAInConvoSetActor( topic, action, condition, comboBox->GetText() ) ));
+		ceUCCAInConvoSetActor::Ref undo(ceUCCAInConvoSetActor::Ref::New(
+			new ceUCCAInConvoSetActor( topic, action, condition, comboBox->GetText() ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -93,7 +94,8 @@ public:
 			return;
 		}
 		
-		ceUCCAInConvoToggleNegate::Ref undo(ceUCCAInConvoToggleNegate::Ref::New( new ceUCCAInConvoToggleNegate( topic, action, condition ) ));
+		ceUCCAInConvoToggleNegate::Ref undo(ceUCCAInConvoToggleNegate::Ref::New(
+			new ceUCCAInConvoToggleNegate( topic, action, condition ) ));
 		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
 	}
 };

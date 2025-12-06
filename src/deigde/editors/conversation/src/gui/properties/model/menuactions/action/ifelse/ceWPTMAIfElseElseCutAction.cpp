@@ -64,7 +64,8 @@ pIfElse( &ifElse ){
 void ceWPTMAIfElseElseCutAction::OnAction(){
 	ceWPTMACopyAction::OnAction();
 	
-	ceUCAIfElseRemove::Ref undo(ceUCAIfElseRemove::Ref::New( new ceUCAIfElseRemove( pTopic, pIfElse, NULL, GetAction() ) ));
+	ceUCAIfElseRemove::Ref undo(ceUCAIfElseRemove::Ref::New(
+		new ceUCAIfElseRemove( pTopic, pIfElse, NULL, GetAction() ) ));
 	undo->SetShortInfo( "Cut Action" );
 	pConversation->GetUndoSystem()->Add( undo );
 }

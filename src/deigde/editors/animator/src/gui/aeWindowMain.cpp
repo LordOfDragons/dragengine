@@ -1425,7 +1425,8 @@ void aeWindowMain::pCreateMenuLink( igdeMenuCascade &menu ){
 void aeWindowMain::pCreateMenuRule( igdeMenuCascade &menu ){
 	igdeUIHelper &helper = GetEnvironment().GetUIHelper();
 	
-	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New( new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) ));
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::New(
+		new igdeMenuCascade( GetEnvironment(), "Add", deInputEvent::ekcA ) ));
 	menu.AddChild( subMenu );
 	helper.MenuCommand( subMenu, pActionRuleAddAnim );
 	helper.MenuCommand( subMenu, pActionRuleAddAnimDiff );

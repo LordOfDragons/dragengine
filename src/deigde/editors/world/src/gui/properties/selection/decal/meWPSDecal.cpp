@@ -335,7 +335,8 @@ public:
 			return;
 		}
 		
-		meUDecalColorTint::Ref undo(meUDecalColorTint::Ref::New( new meUDecalColorTint( decal, colorBox->GetColor() ) ));
+		meUDecalColorTint::Ref undo(meUDecalColorTint::Ref::New(
+			new meUDecalColorTint( decal, colorBox->GetColor() ) ));
 		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
@@ -427,7 +428,7 @@ public:
 		const meDecalList &list = pPanel.GetWorld()->GetSelectionDecal().GetSelected();
 		const decString &property = pPanel.GetActiveProperty();
 		return ! property.IsEmpty() && list.GetCount() > 0 ?
-			new meUDecalPropertyRemoveFromSelected( list, property ) : NULL;
+		new meUDecalPropertyRemoveFromSelected( list, property ) : NULL;
 	}
 	
 	virtual void Update(){
