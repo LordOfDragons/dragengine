@@ -46,6 +46,9 @@ private:
 	meHTVVariation *pVariation;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVVariationAdd> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

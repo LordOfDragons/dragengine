@@ -50,6 +50,9 @@ private:
 	decCurveBezier pNewCurve;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seUPropertySetCurve> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -44,6 +44,9 @@ private:
 	decVector pNewSize;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUDecalSize> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

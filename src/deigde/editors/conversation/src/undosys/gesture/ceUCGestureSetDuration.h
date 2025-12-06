@@ -41,6 +41,9 @@ private:
 	float pNewValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCGestureSetDuration> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

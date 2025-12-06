@@ -47,6 +47,9 @@ private:
 	int pOldIndex;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meULowerDecalBottom> Ref;
+	
 	// constructor, destructor
 	meULowerDecalBottom( meWorld *world, meDecal *decal );
 	virtual ~meULowerDecalBottom();

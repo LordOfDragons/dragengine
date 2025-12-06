@@ -42,6 +42,9 @@ private:
 	float pNewDist;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCShotSetCamDistFrom> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -53,6 +53,9 @@ private:
 	decVector2 pNewOffset;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTSetTexUVOffset> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

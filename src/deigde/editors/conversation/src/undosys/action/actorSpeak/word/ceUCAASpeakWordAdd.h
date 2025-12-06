@@ -44,6 +44,9 @@ private:
 	int pIndex;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAASpeakWordAdd> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

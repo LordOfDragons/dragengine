@@ -45,6 +45,9 @@ private:
 	float pNewDuration;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAASpeakStripSetDuration> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

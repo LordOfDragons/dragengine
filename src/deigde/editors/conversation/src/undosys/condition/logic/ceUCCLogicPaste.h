@@ -46,6 +46,9 @@ private:
 	ceConversationConditionList pConditions;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCLogicPaste> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

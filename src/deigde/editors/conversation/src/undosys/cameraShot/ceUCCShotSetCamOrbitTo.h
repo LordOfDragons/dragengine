@@ -44,6 +44,9 @@ private:
 	decVector pNewRot;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCShotSetCamOrbitTo> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -44,6 +44,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<saeUWordSetName> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

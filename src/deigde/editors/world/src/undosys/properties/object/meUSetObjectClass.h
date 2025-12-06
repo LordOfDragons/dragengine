@@ -55,6 +55,9 @@ private:
 	int pObjectCount;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUSetObjectClass> Ref;
+	
 	// constructor, destructor
 	meUSetObjectClass( meObject *object, const char *newcname );
 	meUSetObjectClass( meObjectList &objects, const char *newcname );

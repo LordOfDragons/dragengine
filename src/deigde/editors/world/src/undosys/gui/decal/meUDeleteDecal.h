@@ -46,6 +46,9 @@ private:
 	int pDecalCount;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUDeleteDecal> Ref;
+	
 	// constructor, destructor
 	meUDeleteDecal( meWorld *world );
 	~meUDeleteDecal();

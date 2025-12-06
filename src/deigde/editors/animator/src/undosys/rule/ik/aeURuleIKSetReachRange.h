@@ -42,6 +42,9 @@ private:
 	float pNewValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleIKSetReachRange> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**

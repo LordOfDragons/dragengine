@@ -44,6 +44,9 @@ private:
 	ceCASetVariable::eOperators pNewOperator;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCASetVarSetOp> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

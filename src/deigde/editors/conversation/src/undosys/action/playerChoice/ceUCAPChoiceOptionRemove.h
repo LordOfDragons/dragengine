@@ -44,6 +44,9 @@ private:
 	int pIndex;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAPChoiceOptionRemove> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

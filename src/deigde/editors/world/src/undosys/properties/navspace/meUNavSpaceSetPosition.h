@@ -44,6 +44,9 @@ private:
 	decDVector pNewPosition;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUNavSpaceSetPosition> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

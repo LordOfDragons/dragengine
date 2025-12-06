@@ -46,6 +46,9 @@ private:
 	ceStrip *pNewStrip;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAASpeakBodyLASet> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

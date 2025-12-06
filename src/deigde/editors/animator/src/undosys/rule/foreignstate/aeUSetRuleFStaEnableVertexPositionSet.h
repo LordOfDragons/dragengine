@@ -39,6 +39,9 @@ private:
 	aeRuleForeignState *pRule;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeUSetRuleFStaEnableVertexPositionSet> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

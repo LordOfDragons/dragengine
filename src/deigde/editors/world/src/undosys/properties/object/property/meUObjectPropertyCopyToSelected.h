@@ -45,6 +45,9 @@ private:
 	decString pValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUObjectPropertyCopyToSelected> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

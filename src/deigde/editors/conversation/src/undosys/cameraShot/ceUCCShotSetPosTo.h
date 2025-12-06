@@ -44,6 +44,9 @@ private:
 	decVector pNewPos;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCShotSetPosTo> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo action. */

@@ -45,6 +45,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reUConstraintSetDampingAngular> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create a new undo. */

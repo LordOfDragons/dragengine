@@ -44,6 +44,9 @@ private:
 	ceCATrigger::eActions pNewAction;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCATriggerSetAction> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

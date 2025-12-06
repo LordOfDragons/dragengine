@@ -39,6 +39,9 @@ private:
 	const aeRule::Ref pRule;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeUToggleRuleInvertBlendFactor> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */

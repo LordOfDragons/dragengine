@@ -45,6 +45,9 @@ protected:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seUMappedAdd> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

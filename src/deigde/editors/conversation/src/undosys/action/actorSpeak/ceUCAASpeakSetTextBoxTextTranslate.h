@@ -44,6 +44,9 @@ private:
 	decString pNewText;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAASpeakSetTextBoxTextTranslate> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

@@ -41,6 +41,9 @@ private:
 	ceCAActorSpeak *pActorSpeak;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAASpeakToggleUseSpeechAnimation> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

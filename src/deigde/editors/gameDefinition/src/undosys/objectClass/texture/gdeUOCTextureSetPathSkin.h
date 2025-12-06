@@ -47,6 +47,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeUOCTextureSetPathSkin> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */

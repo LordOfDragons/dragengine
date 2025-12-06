@@ -43,6 +43,9 @@ private:
 	int pIndex;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleGroupRemoveRule> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

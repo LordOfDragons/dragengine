@@ -38,6 +38,9 @@ class ceConversationTopic;
  */
 class ceUCAASpeakStripsScale : public igdeUndo{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAASpeakStripsScale> Ref;
+	
 	struct sStrip{
 		float pause;
 		float duration;

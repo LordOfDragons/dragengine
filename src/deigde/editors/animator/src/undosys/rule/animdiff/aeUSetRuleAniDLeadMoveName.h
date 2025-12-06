@@ -48,6 +48,9 @@ private:
 	decString pNewName;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeUSetRuleAniDLeadMoveName> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

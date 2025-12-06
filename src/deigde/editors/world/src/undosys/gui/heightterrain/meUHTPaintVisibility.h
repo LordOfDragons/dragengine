@@ -53,6 +53,9 @@ private:
 	meBitArray *pNewVis;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTPaintVisibility> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

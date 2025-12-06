@@ -39,6 +39,11 @@ class reRigBone;
  * \brief Undo action setting the mass of bones to the volume of their shapes times density.
  */
 class reUBoneMassFromVolume : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reUBoneMassFromVolume> Ref;
+	
+
 private:
 	struct sBone{
 		reRigBone *bone;

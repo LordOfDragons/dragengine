@@ -42,6 +42,9 @@ private:
 	decString pNewName;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seUPropertySetRenderableName> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

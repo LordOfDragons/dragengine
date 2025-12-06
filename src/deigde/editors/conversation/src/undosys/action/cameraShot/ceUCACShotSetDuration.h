@@ -43,6 +43,9 @@ private:
 	float pNewDuration;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCACShotSetDuration> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

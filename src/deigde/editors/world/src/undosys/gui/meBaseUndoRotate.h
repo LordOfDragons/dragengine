@@ -45,6 +45,9 @@ private:
 	decDMatrix pMatrix;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meBaseUndoRotate> Ref;
+	
 	// constructor, destructor
 	meBaseUndoRotate();
 	~meBaseUndoRotate();

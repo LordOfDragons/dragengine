@@ -43,6 +43,9 @@ private:
 	deAnimatorRuleTrackTo::eTrackAxis pNewAxis;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleTrackToSetTrackAxis> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

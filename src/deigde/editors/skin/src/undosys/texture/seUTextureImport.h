@@ -43,6 +43,9 @@ private:
 	sePropertyList pNewProperties;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seUTextureImport> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo action. */

@@ -47,6 +47,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCAParamSetTestVariable> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \birief Create undo. */

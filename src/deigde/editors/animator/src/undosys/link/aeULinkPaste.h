@@ -43,6 +43,9 @@ private:
 	aeControllerList pRemoveControllerList;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeULinkPaste> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo object. */

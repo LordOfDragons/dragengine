@@ -51,6 +51,9 @@ private:
 	decVector2 pNewPosition;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleMove> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

@@ -43,6 +43,9 @@ private:
 	deAnimatorRuleTrackTo::eUpTarget pNewTarget;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleTrackToSetUpTarget> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

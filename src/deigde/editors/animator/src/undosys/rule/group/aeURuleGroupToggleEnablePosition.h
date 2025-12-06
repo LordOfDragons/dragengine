@@ -40,6 +40,9 @@ private:
 	aeRuleGroup *pRule;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleGroupToggleEnablePosition> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

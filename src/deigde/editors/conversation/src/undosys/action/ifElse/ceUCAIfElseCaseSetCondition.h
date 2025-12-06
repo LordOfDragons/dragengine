@@ -46,6 +46,9 @@ private:
 	ceConversationCondition *pNewCondition;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAIfElseCaseSetCondition> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

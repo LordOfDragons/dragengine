@@ -40,6 +40,9 @@ private:
 	aeRuleAnimation *pRule;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleAnimToggleEnableVertexPositionSet> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

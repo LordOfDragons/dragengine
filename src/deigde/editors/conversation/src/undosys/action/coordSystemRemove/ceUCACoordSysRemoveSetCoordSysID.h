@@ -43,6 +43,9 @@ private:
 	decString pNewCoordSystemID;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCACoordSysRemoveSetCoordSysID> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

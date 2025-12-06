@@ -43,6 +43,9 @@ private:
 	decString pNewActorID;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCASetAParamSetActor> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

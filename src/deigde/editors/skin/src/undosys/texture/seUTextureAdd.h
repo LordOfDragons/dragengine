@@ -42,6 +42,9 @@ private:
 	seSkin *pSkin;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seUTextureAdd> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -43,6 +43,9 @@ private:
 	int pNewValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCASetAParamSetValue> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

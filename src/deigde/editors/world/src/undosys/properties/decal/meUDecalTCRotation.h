@@ -41,6 +41,9 @@ private:
 	float pNewRotation;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUDecalTCRotation> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

@@ -41,6 +41,9 @@ private:
 	seTexture *pTexture;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seUPropertyRemove> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

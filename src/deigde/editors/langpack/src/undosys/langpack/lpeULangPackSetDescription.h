@@ -46,6 +46,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<lpeULangPackSetDescription> Ref;
+	
 	/** \description Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

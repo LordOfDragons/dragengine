@@ -48,6 +48,9 @@ private:
 	meHeightTerrainTexture *pTexture;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTAddTexture> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

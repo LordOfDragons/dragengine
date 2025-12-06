@@ -41,6 +41,9 @@ private:
 	ceTarget *pTarget;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCTargetAdd> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -42,6 +42,9 @@ private:
 	decString pNewValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeULinkSetBone> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */

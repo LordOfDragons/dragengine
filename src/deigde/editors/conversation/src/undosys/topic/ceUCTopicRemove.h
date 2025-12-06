@@ -41,6 +41,9 @@ private:
 	ceConversationTopic *pTopic;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCTopicRemove> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

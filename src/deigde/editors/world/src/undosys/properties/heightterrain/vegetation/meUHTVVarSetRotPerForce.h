@@ -46,6 +46,9 @@ private:
 	float pNewRotPerForce;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVVarSetRotPerForce> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

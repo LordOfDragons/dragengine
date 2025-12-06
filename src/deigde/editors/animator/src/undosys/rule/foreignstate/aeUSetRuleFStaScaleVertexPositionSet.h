@@ -41,6 +41,9 @@ private:
 	float pNewScale;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeUSetRuleFStaScaleVertexPositionSet> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

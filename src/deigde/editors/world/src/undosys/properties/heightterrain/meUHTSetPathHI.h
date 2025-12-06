@@ -51,6 +51,9 @@ private:
 	decString pNewPath;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTSetPathHI> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

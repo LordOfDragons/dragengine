@@ -43,6 +43,9 @@ private:
 	decString pNewComment;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCACommentSetComment> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

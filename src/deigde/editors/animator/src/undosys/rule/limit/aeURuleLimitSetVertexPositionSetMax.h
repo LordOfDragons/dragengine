@@ -44,6 +44,9 @@ private:
 	float pNewMax;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleLimitSetVertexPositionSetMax> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

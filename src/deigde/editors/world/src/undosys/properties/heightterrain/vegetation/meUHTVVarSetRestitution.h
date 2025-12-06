@@ -46,6 +46,9 @@ private:
 	float pNewRestitution;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVVarSetRestitution> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

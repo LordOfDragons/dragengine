@@ -48,6 +48,9 @@ private:
 	meHTVegetationLayer *pVLayer;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVLayerAdd> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

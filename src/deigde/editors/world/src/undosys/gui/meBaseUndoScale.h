@@ -45,6 +45,9 @@ private:
 	bool pScaleUniform;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meBaseUndoScale> Ref;
+	
 	// constructor, destructor
 	meBaseUndoScale();
 	~meBaseUndoScale();

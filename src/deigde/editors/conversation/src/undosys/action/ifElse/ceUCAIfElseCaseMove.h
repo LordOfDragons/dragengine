@@ -45,6 +45,9 @@ private:
 	int pNewIndex;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAIfElseCaseMove> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

@@ -43,6 +43,9 @@ private:
 	decVector2 pNewScaling;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUDecalTCScaling> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

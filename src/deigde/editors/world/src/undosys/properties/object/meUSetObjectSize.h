@@ -46,6 +46,9 @@ private:
 	decVector pNewSize;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUSetObjectSize> Ref;
+	
 	// constructor, destructor
 	meUSetObjectSize( meObject *object, const decVector &newSize );
 	

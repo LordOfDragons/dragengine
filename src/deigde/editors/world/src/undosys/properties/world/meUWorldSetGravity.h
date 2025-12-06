@@ -45,6 +45,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUWorldSetGravity> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */

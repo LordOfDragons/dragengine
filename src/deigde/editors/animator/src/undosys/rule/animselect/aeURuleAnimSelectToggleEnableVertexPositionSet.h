@@ -42,6 +42,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleAnimSelectToggleEnableVertexPositionSet> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */

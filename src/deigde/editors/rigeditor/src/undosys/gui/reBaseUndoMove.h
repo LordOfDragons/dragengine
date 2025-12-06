@@ -37,6 +37,9 @@ class reBaseUndoMove : public igdeUndo{
 private:
 	decVector pDist;
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reBaseUndoMove> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -41,6 +41,9 @@ private:
 	decDVector pOldPosition, pNewPosition;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUCameraMoveObject> Ref;
+	
 	// constructor, destructor
 	meUCameraMoveObject(meObject *object);
 	~meUCameraMoveObject() override;

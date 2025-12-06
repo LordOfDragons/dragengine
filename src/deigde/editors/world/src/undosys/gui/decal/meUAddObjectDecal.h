@@ -45,6 +45,9 @@ private:
 	meObject *pParentObject;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUAddObjectDecal> Ref;
+	
 	// constructor, destructor
 	meUAddObjectDecal( meWorld *world, meObject *parentObject );
 	~meUAddObjectDecal();

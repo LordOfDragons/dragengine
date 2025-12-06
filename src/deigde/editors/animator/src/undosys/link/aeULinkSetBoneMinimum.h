@@ -42,6 +42,9 @@ private:
 	float pNewValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeULinkSetBoneMinimum> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */

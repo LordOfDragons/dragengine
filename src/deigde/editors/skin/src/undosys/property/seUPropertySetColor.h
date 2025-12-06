@@ -44,6 +44,9 @@ private:
 	decColor pNewColor;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seUPropertySetColor> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -40,6 +40,9 @@ private:
 	ceCASnippet *pSnippet;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCASnippetToggleCreateSideLane> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -53,6 +53,9 @@ private:
 	decVector2 pNewScaling;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTSetTexUVScaling> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

@@ -49,6 +49,9 @@ private:
 	float pNewHeightScaling;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTSetHeightScaling> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

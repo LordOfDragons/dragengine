@@ -49,6 +49,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeUOCCTextureSetRotation> Ref;
+	
 	/** \rotation Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

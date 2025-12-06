@@ -52,6 +52,9 @@ private:
 	int pTargetCount;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeULinkRemove> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

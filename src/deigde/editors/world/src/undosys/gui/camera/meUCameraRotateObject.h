@@ -42,6 +42,9 @@ private:
 	decVector pOldRotation, pNewRotation;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUCameraRotateObject> Ref;
+	
 	// constructor, destructor
 	meUCameraRotateObject(meObject *object);
 	~meUCameraRotateObject() override;

@@ -43,6 +43,9 @@ private:
 	ceCConditionHasActor *pHasActor;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCHasActorToggleNegate> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */
