@@ -248,7 +248,7 @@ void gdeWPSelection::SetGameDefinition( gdeGameDefinition *gameDefinition ){
 	( ( gdeWPSOCForceField& )( igdeWidget& )pPanelOCForceField ).SetGameDefinition( NULL );
 	( ( gdeWPSOCSnapPoint& )( igdeWidget& )pPanelOCSnapPoint ).SetGameDefinition( NULL );
 	( ( gdeWPSOCSpeaker& )( igdeWidget& )pPanelOCSpeaker ).SetGameDefinition( NULL );
-	((gdeWPSOCWorld&)(igdeWidget&)pPanelOCWorld).SetGameDefinition(nullptr);
+	pPanelOCWorld->SetGameDefinition(nullptr);
 	( ( gdeWPSParticleEmitter& )( igdeWidget& )pPanelParticleEmitter ).SetGameDefinition( NULL );
 	( ( gdeWPSSkin& )( igdeWidget& )pPanelSkin ).SetGameDefinition( NULL );
 	( ( gdeWPSSky& )( igdeWidget& )pPanelSky ).SetGameDefinition( NULL );
@@ -285,7 +285,7 @@ void gdeWPSelection::SetGameDefinition( gdeGameDefinition *gameDefinition ){
 	( ( gdeWPSOCForceField& )( igdeWidget& )pPanelOCForceField ).SetGameDefinition( gameDefinition );
 	( ( gdeWPSOCSnapPoint& )( igdeWidget& )pPanelOCSnapPoint ).SetGameDefinition( gameDefinition );
 	( ( gdeWPSOCSpeaker& )( igdeWidget& )pPanelOCSpeaker ).SetGameDefinition( gameDefinition );
-	((gdeWPSOCWorld&)(igdeWidget&)pPanelOCWorld).SetGameDefinition(gameDefinition);
+	pPanelOCWorld->SetGameDefinition(gameDefinition);
 	( ( gdeWPSParticleEmitter& )( igdeWidget& )pPanelParticleEmitter ).SetGameDefinition( gameDefinition );
 	( ( gdeWPSSkin& )( igdeWidget& )pPanelSkin ).SetGameDefinition( gameDefinition );
 	( ( gdeWPSSky& )( igdeWidget& )pPanelSky ).SetGameDefinition( gameDefinition );
