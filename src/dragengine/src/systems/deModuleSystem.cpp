@@ -67,7 +67,7 @@
 deModuleSystem::deModuleSystem(deEngine *engine) :
 pEngine(engine),
 pInternalModulesLibrary(nullptr),
-pVFSAssetLibraries(deVirtualFileSystem::Ref::NewWith()
+pVFSAssetLibraries(deVirtualFileSystem::Ref::NewWith())
 {
 	DEASSERT_NOTNULL(engine)
 }
