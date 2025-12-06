@@ -53,6 +53,9 @@
 ///////////
 
 class cScrollView : public igdeScrollBarListener{
+public:
+	typedef deTObjectReference<cScrollView> Ref;
+	
 protected:
 	feViewFontImage &pView;
 	
@@ -66,6 +69,9 @@ public:
 
 
 class cChangeZoom : public igdeComboBoxListener{
+public:
+	typedef deTObjectReference<cChangeZoom> Ref;
+	
 protected:
 	feViewFontImage &pView;
 	

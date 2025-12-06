@@ -493,6 +493,8 @@ public:
 class cActionMenuAttach : public igdeActionContextMenu{
 	aeWPView &pPanel;
 public:
+	typedef deTObjectReference<cActionMenuAttach> Ref;
+	
 	cActionMenuAttach( aeWPView &panel ) : igdeActionContextMenu( "",
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiSmallDown ), "Reset animation" ),
 	pPanel( panel ){ }

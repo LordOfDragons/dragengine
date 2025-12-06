@@ -228,6 +228,8 @@ public:
 
 class cActionMatchNameEdit : public cBaseAction{
 public:
+	typedef deTObjectReference<cActionMatchNameEdit> Ref;
+	
 	cActionMatchNameEdit( aeWPAPanelRuleMirror &panel ) :
 	cBaseAction( panel, "Edit...", nullptr, "Edit match name" ){}
 	
@@ -292,8 +294,7 @@ public:
 	cListMatchNames( aeWPAPanelRuleMirror &panel ) : pPanel( panel ){ }
 	
 	virtual void OnDoubleClickItem( igdeListBox*, int ){
-		cActionMatchNameEdit::Ref action(cActionMatchNameEdit::Ref::NewWith(pPanel));
-		action->OnAction();
+		((cBaseAction&)cActionMatchNameEdit::Ref::NewWith(pPanel)).OnAction();
 	}
 	
 	virtual void AddContextMenuEntries( igdeListBox*, igdeMenuCascade &menu ){
