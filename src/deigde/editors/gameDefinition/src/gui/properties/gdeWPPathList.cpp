@@ -70,9 +70,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(
 			 pPanel.UndoSet( *pPanel.GetPathList() + pEditPath->GetPath() ) ));
-		pPanel.GetUndoSystem()->Add( undo );
 		
 		pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );
 	}
@@ -136,8 +135,7 @@ public:
 			paths.RemoveFrom( index );
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoSet( paths ) ));
-		pPanel.GetUndoSystem()->Add( undo );
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( paths ) ));
 		
 		if( pListBox->GetItemCount() > 0 ){
 			pListBox->SetSelection( 0 );
@@ -158,8 +156,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoSet( decStringList() ) ));
-		pPanel.GetUndoSystem()->Add( undo );
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( decStringList() ) ));
 	}
 };
 

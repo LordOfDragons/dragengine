@@ -313,9 +313,9 @@ public:
 			return;
 		}
 		
-		gdeUOCEnvMapProbeSetPropertyName::Ref undo(gdeUOCEnvMapProbeSetPropertyName::Ref::NewWith(
-			pPanel.GetObjectClass(), envprobe, propertyName, comboBox->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCEnvMapProbeSetPropertyName::Ref::NewWith(pPanel.GetObjectClass(),
+				envprobe, propertyName, comboBox->GetText()));
 	}
 };
 

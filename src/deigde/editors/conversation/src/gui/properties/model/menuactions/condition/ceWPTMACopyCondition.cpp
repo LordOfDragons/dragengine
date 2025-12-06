@@ -74,6 +74,5 @@ void ceWPTMACopyCondition::OnAction(){
 	ceConversationConditionList conditions;
 	conditions.Add( pCondition );
 	
-	ceClipboardDataCondition::Ref cdata(ceClipboardDataCondition::Ref::NewWith(conditions));
-	GetWindowMain().GetClipboard().Set( cdata );
+	GetWindowMain().GetClipboard().Set(ceClipboardDataCondition::Ref::NewWith(conditions));
 }

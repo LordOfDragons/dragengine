@@ -124,8 +124,8 @@ public:
 			return;
 		}
 		
-		aeUSetRuleAnimMoveName::Ref undo(aeUSetRuleAnimMoveName::Ref::NewWith(rule, comboBox->GetText()));
-		pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		pPanel.GetAnimator()->GetUndoSystem()->Add(
+			aeUSetRuleAnimMoveName::Ref::NewWith(rule, comboBox->GetText()));
 	}
 };
 
@@ -142,8 +142,7 @@ public:
 			return;
 		}
 		
-		aeUSetRuleAnimMoveTime::Ref undo(aeUSetRuleAnimMoveTime::Ref::NewWith(rule, value));
-		pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		pPanel.GetAnimator()->GetUndoSystem()->Add(aeUSetRuleAnimMoveTime::Ref::NewWith(rule, value));
 	}
 };
 

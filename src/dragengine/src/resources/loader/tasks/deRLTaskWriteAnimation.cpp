@@ -79,8 +79,8 @@ void deRLTaskWriteAnimation::Run(){
 	decPath path;
 	path.SetFromUnix( GetPath() );
 	
-	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New( GetVFS()->OpenFileForWriting( path ) ));
-	module->SaveAnimation( writer, pAnimation );
+	module->SaveAnimation(decBaseFileWriter::Ref::New(
+		GetVFS()->OpenFileForWriting(path)), pAnimation);
 	
 	pSucceeded = true;
 	LogRunExit();

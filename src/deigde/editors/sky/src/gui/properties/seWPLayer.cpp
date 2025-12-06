@@ -866,15 +866,15 @@ pSky( NULL )
 	helper.EditPath( groupBox, "Skin:", "Background skin of the layer",
 		igdeEnvironment::efpltSkin, pEditSkin, new cPathSkin( *this ) );
 	helper.EditVector( groupBox, "Offset:", "Offset of the layer", pEditOffset,
-	new cEditOffset( *this ) );
+		new cEditOffset( *this ) );
 	helper.EditVector( groupBox, "Orientation:", "Orientation of the layer", pEditOrientation,
-	new cEditOrientation( *this ) );
+		new cEditOrientation( *this ) );
 	
 	helper.FormLine( groupBox, "Color:",
 		"Color and intensity the content layer is multiplied with", frameLine );
 	helper.ColorBox( frameLine, "Color or layer content", pClrLayer, new cEditColor( *this ) );
 	helper.EditFloat( frameLine, "Intensity of the layer content", pEditIntensity,
-	new cTextIntensity( *this ) );
+		new cTextIntensity( *this ) );
 	
 	helper.EditSliderText( groupBox, "Transparency:", "Transparency of the layer",
 		0.0f, 1.0f, 3, 3, 0.1f, pSldTransparency, new cSliderTransparency( *this ) );
@@ -888,9 +888,9 @@ pSky( NULL )
 	helper.FormLine( groupBox, "Light:", "Light color, intensity and ambient intensity", frameLine );
 	helper.ColorBox( frameLine, "Color or layer light", pClrLight, new cEditLightColor( *this ) );
 	helper.EditFloat( frameLine, "Intensity of the layer light", pEditLightIntensity,
-	new cTextLightIntensity( *this ) );
+		new cTextLightIntensity( *this ) );
 	helper.EditFloat( frameLine, "Ambient intensity of the layer light", pEditAmbientIntensity,
-	new cTextAmbientIntensity( *this ) );
+		new cTextAmbientIntensity( *this ) );
 	
 	helper.EditVector( groupBox, "Orientation:", "Orientation of the light relative to the layer",
 		pEditLightOrientation, new cEditLightOrientation( *this ) );

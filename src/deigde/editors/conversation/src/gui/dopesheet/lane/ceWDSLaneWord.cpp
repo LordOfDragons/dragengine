@@ -81,9 +81,8 @@ public:
 		
 		ceUCAASpeakWordFromText::Ref undo(ceUCAASpeakWordFromText::Ref::NewWith(
 			pLane.GetWindow().GetTopic(), action));
-		( ( ceUCAASpeakWordFromText& )( igdeUndo& )undo ).SetWordsFromText(
-			action->ResolveTextBoxText( *conversation ), 0.075f );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		undo->SetWordsFromText(action->ResolveTextBoxText(*conversation), 0.075f);
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(undo);
 	}
 	
 	virtual void Update(){

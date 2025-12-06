@@ -724,7 +724,7 @@ void igdeWPCamera::pCreateContent(){
 	
 	helper.GroupBox( *this, group, "Internal parameters:", true );
 	helper.EditFloat( group, "Field of view:", "Field of view in degrees", pEditFov,
-	new cTextFov( *this ) );
+		new cTextFov( *this ) );
 	helper.EditFloat( group, "Field of view ratio:", "Field of view ratio (height / width)",
 		pEditFovRatio, new cTextFovRatio( *this ) );
 	
@@ -740,9 +740,9 @@ void igdeWPCamera::pCreateContent(){
 	helper.EditFloat( group, "Higher intensity:", "Higher intensity to adapt to",
 		pEditHiInt, new cTextHighIntensity( *this ) );
 	helper.EditFloat( group, "Exposure:", "Exposure multiplier", pEditExposure,
-	new cTextExposure( *this ) );
+		new cTextExposure( *this ) );
 	helper.EditFloat( group, "Adaption time:", "Adaption time in seconds", pEditAdaptTime,
-	new cTextAdaptionTime( *this ) );
+		new cTextAdaptionTime( *this ) );
 	
 	
 	helper.GroupBoxFlow( *this, group, "Tone mapping:", true, true );

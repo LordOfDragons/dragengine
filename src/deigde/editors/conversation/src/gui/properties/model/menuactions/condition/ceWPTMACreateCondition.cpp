@@ -68,10 +68,8 @@ pConditionType( conditionType ){
 ///////////////
 
 void ceWPTMACreateCondition::OnAction(){
-	ceConversationCondition::Ref condition(ceConversationCondition::Ref::New( CreateCondition() ));
-	
-	igdeUndo::Ref undo(igdeUndo::Ref::New( CreateUndo( condition ) ));
-	GetConversation().GetUndoSystem()->Add( undo );
+	GetConversation().GetUndoSystem()->Add(igdeUndo::Ref::New(
+		CreateUndo(ceConversationCondition::Ref::New(CreateCondition()))));
 }
 
 igdeUndo *ceWPTMACreateCondition::CreateUndo( ceConversationCondition *condition ){

@@ -71,10 +71,7 @@ igdeUndo *gdeMAOCComponentCopy::OnActionSubObject( gdeGameDefinition &gameDefini
 	
 	const gdeOCComponent::Ref clipOCComponent(gdeOCComponent::Ref::NewWith(*component));
 	
-	gdeClipboardDataOCComponent::Ref clipData(gdeClipboardDataOCComponent::Ref::NewWith(
-		clipOCComponent));
-	
-	pWindowMain.GetClipboard().Set( clipData );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCComponent::Ref::NewWith(clipOCComponent));
 	return NULL;
 }
 

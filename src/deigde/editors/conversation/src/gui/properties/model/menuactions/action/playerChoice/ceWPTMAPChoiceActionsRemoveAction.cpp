@@ -67,7 +67,6 @@ pAction( action )
 ///////////////
 
 void ceWPTMAPChoiceActionsRemoveAction::OnAction(){
-	ceUCAPChoiceActionRemove::Ref undo(ceUCAPChoiceActionRemove::Ref::NewWith(
+	pConversation->GetUndoSystem()->Add(ceUCAPChoiceActionRemove::Ref::NewWith(
 		pTopic, pPlayerChoice, nullptr, pAction));
-	pConversation->GetUndoSystem()->Add( undo );
 }

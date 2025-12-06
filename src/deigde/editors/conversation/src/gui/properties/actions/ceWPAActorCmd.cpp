@@ -78,8 +78,8 @@ public:
 			return;
 		}
 		
-		ceUCAACmdSetActor::Ref undo(ceUCAACmdSetActor::Ref::NewWith(topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAACmdSetActor::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -96,9 +96,8 @@ public:
 			return;
 		}
 		
-		ceUCAACmdSetCommand::Ref undo(ceUCAACmdSetCommand::Ref::NewWith(
-			topic, action, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAACmdSetCommand::Ref::NewWith(topic, action, textField->GetText()));
 	}
 };
 
@@ -125,8 +124,8 @@ public:
 			return;
 		}
 		
-		ceUCAACmdSetCommand::Ref undo(ceUCAACmdSetCommand::Ref::NewWith(topic, action, text));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAACmdSetCommand::Ref::NewWith(topic, action, text));
 	}
 };
 

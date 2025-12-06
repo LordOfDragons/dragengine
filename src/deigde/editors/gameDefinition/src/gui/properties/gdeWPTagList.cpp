@@ -67,9 +67,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New(
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(
 			 pPanel.UndoSet( *pPanel.GetTagList() + pComboBox->GetText() ) ));
-		pPanel.GetUndoSystem()->Add( undo );
 		
 		pListBox->SetSelection( pListBox->IndexOfItem( pComboBox->GetText() ) );
 	}
@@ -92,8 +91,7 @@ public:
 		decStringSet tags( *pPanel.GetTagList() );
 		tags.Remove( pListBox->GetSelectedItem()->GetText() );
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoSet( tags ) ));
-		pPanel.GetUndoSystem()->Add( undo );
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( tags ) ));
 		
 		if( pListBox->GetItemCount() > 0 ){
 			pListBox->SetSelection( 0 );
@@ -114,8 +112,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoSet( decStringSet() ) ));
-		pPanel.GetUndoSystem()->Add( undo );
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( decStringSet() ) ));
 	}
 };
 

@@ -68,9 +68,7 @@ public:
 	pDialog( dialog ){ }
 	
 	virtual void OnAction(){
-		igdeDialogTexturePropertyList::Ref dialog(igdeDialogTexturePropertyList::Ref::NewWith(
-			pDialog.GetEnvironment()));
-		dialog->Run( &pDialog );
+		igdeDialogTexturePropertyList::Ref::NewWith(pDialog.GetEnvironment())->Run(&pDialog);
 	}
 };
 

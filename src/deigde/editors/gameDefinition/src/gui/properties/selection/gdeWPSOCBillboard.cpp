@@ -205,9 +205,8 @@ public:
 			return;
 		}
 		
-		gdeUOCBillboardSetSkinPath::Ref undo(gdeUOCBillboardSetSkinPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCBillboardSetSkinPath::Ref::NewWith(
 			pPanel.GetObjectClass(), billboard, editPath->GetPath()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -394,9 +393,9 @@ public:
 			return;
 		}
 		
-		gdeUOCBillboardSetPropertyName::Ref undo(gdeUOCBillboardSetPropertyName::Ref::NewWith(
-			pPanel.GetObjectClass(), billboard, propertyName, comboBox->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCBillboardSetPropertyName::Ref::NewWith(pPanel.GetObjectClass(),
+				billboard, propertyName, comboBox->GetText()));
 	}
 };
 

@@ -71,9 +71,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakEyesLAFromHeadLA::Ref undo(ceUCAASpeakEyesLAFromHeadLA::Ref::NewWith(
-			pLane.GetWindow().GetTopic(), action));
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakEyesLAFromHeadLA::Ref::NewWith(pLane.GetWindow().GetTopic(), action));
 	}
 	
 	virtual void Update(){

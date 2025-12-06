@@ -192,11 +192,9 @@ void delGameManager::LoadGameFromDisk(delEngineInstance &instance, const decStri
 		}
 		
 	}else{
-		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::NewWith(path) );
-		
 		try{
 			const delGame::Ref game( delGame::Ref::New( pLauncher.CreateGame() ) );
-			gameXML.ReadFromFile( reader, game );
+			gameXML.ReadFromFile(decDiskFileReader::Ref::NewWith(path), game);
 			
 			if( ! decPath::IsNativePathAbsolute( game->GetGameDirectory() ) ){
 				decPath baseDir( decPath::CreatePathNative( path ) );

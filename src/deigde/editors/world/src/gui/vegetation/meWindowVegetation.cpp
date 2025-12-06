@@ -398,8 +398,8 @@ public:
 		const meHTVRLink::Ref ruleLink(meHTVRLink::Ref::NewWith(wvnodeSource.GetRule(), indexSlotSource,
 			wvnodeTarget.GetRule(), indexSlotTarget));
 		
-		meUHTVLinkAdd::Ref undo(meUHTVLinkAdd::Ref::NewWith(pView.GetVLayer(), ruleLink));
-		pView.GetWorld()->GetUndoSystem()->Add( undo );
+			pView.GetWorld()->GetUndoSystem()->Add(
+				meUHTVLinkAdd::Ref::NewWith(pView.GetVLayer(), ruleLink));
 	}
 	
 	virtual void OnLinkRemoved( igdeNVBoard*, igdeNVSlot *source, igdeNVSlot *target ){
@@ -413,8 +413,8 @@ public:
 		}
 		
 		meUHTVLinkCut::Ref undo(meUHTVLinkCut::Ref::NewWith(pView.GetVLayer()));
-		( ( meUHTVLinkCut& )( igdeUndo& )undo ).AddLinkToCut( ruleLink );
-		pView.GetWorld()->GetUndoSystem()->Add( undo );
+		undo->AddLinkToCut(ruleLink);
+		pView.GetWorld()->GetUndoSystem()->Add(undo);
 	}
 	
 	virtual void OnOffsetChanged( igdeNVBoard *board ){

@@ -92,8 +92,8 @@ void igdeConfigurationLocal::LoadConfiguration(){
 			return;
 		}
 		
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ));
-		igdeConfigurationLocalXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		igdeConfigurationLocalXML(pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile(
+			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
 	}catch( const deException &e ){

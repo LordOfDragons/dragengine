@@ -67,8 +67,8 @@ public:
 		}
 		
 		meWindowVegetation &view = *( ( meWindowVegetation* )pNode.GetOwnerBoard() );
-		meUHTVRuleRemove::Ref undo(meUHTVRuleRemove::Ref::NewWith(view.GetVLayer(), pNode.GetRule()));
-		view.GetWorld()->GetUndoSystem()->Add( undo );
+		view.GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleRemove::Ref::NewWith(view.GetVLayer(), pNode.GetRule()));
 	}
 	
 	virtual void Update(){

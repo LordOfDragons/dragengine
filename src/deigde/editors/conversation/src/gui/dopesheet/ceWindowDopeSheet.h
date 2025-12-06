@@ -73,6 +73,9 @@ public:
 	
 	/** \brief Dope sheet view. */
 	class cDopeSheet : public igdeViewRenderWindow{
+	public:
+		typedef deTObjectReference<cDopeSheet> Ref;
+		
 	private:
 		ceWindowDopeSheet &pWindow;
 		
@@ -106,7 +109,7 @@ private:
 	
 	igdeScrollBar::Ref pSBTime;
 	igdeComboBox::Ref pCBTimeScale;
-	igdeWidget::Ref pDopeSheet;
+	cDopeSheet::Ref pDopeSheet;
 	
 	decObjectList pTimeLineLabels;
 	decObjectList pTimeLines;

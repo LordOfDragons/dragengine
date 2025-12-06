@@ -160,8 +160,8 @@ public:
 		"Copy controller to clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeController *controller ){
-		aeClipboardDataController::Ref cdata(aeClipboardDataController::Ref::NewWith(controller));
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataController::Ref::NewWith(controller));
 		return nullptr;
 	}
 };
@@ -173,8 +173,8 @@ public:
 		"Cut controller into clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator, aeController *controller ){
-		aeClipboardDataController::Ref cdata(aeClipboardDataController::Ref::NewWith(controller));
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataController::Ref::NewWith(controller));
 		return new aeURemoveController( animator, controller );
 	}
 };
@@ -199,8 +199,8 @@ public:
 			return;
 		}
 		
-		aeUControllerPaste::Ref undo(aeUControllerPaste::Ref::NewWith(animator, cdata->GetControllers()));
-		animator->GetUndoSystem()->Add( undo );
+		animator->GetUndoSystem()->Add(
+			aeUControllerPaste::Ref::NewWith(animator, cdata->GetControllers()));
 	}
 	
 	virtual void Update(){
@@ -454,9 +454,8 @@ public:
 		
 		const decVector &vector = editVector->GetVector();
 		if( ! controller->GetDefaultVector().IsEqualTo( vector ) ){
-			aeUControllerSetDefaultVector::Ref undo(aeUControllerSetDefaultVector::Ref::NewWith(
-				controller, vector));
-			animator->GetUndoSystem()->Add( undo );
+			animator->GetUndoSystem()->Add(
+				aeUControllerSetDefaultVector::Ref::NewWith(controller, vector));
 		}
 	}
 };

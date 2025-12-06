@@ -399,8 +399,7 @@ void projRemoteClient::pBuildGameXml(derlRunParameters &params, const projProfil
 	const decMemoryFile::Ref file(decMemoryFile::Ref::NewWith("run.degame"));
 	
 	{
-	const decMemoryFileWriter::Ref writer(decMemoryFileWriter::Ref::NewWith(file, false));
-	decXmlWriter xmlWriter(writer);
+	decXmlWriter xmlWriter(decMemoryFileWriter::Ref::NewWith(file, false));
 	pBuildGameXml(xmlWriter, profile);
 	}
 	

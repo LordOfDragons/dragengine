@@ -82,9 +82,8 @@ public:
 			return;
 		}
 		
-		ceUCACameraShotSetName::Ref undo(ceUCACameraShotSetName::Ref::NewWith(
-			topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACameraShotSetName::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -102,8 +101,8 @@ public:
 			return;
 		}
 		
-		ceUCACShotSetDuration::Ref undo(ceUCACShotSetDuration::Ref::NewWith(topic, action, duration));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACShotSetDuration::Ref::NewWith(topic, action, duration));
 	}
 };
 
@@ -120,9 +119,8 @@ public:
 			return;
 		}
 		
-		ceUCACShotSetCameraTarget::Ref undo(ceUCACShotSetCameraTarget::Ref::NewWith(
-			topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACShotSetCameraTarget::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -139,9 +137,8 @@ public:
 			return;
 		}
 		
-		ceUCACShotSetLookAtTarget::Ref undo(ceUCACShotSetLookAtTarget::Ref::NewWith(
-			topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACShotSetLookAtTarget::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 

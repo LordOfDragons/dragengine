@@ -401,8 +401,7 @@ public:
 			return;
 		}
 		
-		meUSetObjectClass::Ref undo(meUSetObjectClass::Ref::NewWith(list, cname));
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUSetObjectClass::Ref::NewWith(list, cname));
 	}
 	
 	virtual void Update(){
@@ -441,8 +440,7 @@ public:
 			return;
 		}
 		
-		meUObjectTextureSetSkin::Ref undo(meUObjectTextureSetSkin::Ref::NewWith(list, newskin));
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectTextureSetSkin::Ref::NewWith(list, newskin));
 	}
 	
 	virtual void Update(){
@@ -481,8 +479,7 @@ public:
 			return;
 		}
 		
-		meUDecalSkin::Ref undo(meUDecalSkin::Ref::NewWith(list, newskin));
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUDecalSkin::Ref::NewWith(list, newskin));
 	}
 	
 	virtual void Update(){

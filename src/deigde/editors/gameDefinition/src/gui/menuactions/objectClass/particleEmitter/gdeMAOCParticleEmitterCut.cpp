@@ -73,10 +73,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCParticleEmitter::Ref clipOCParticleEmitter(gdeOCParticleEmitter::Ref::NewWith(*particleEmitter));
 	
-	gdeClipboardDataOCParticleEmitter::Ref clipData(gdeClipboardDataOCParticleEmitter::Ref::NewWith(
-		clipOCParticleEmitter));
-	
-	pWindowMain.GetClipboard().Set( clipData );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCParticleEmitter::Ref::NewWith(clipOCParticleEmitter));
 	
 	return new gdeUOCRemoveParticleEmitter( &objectClass, particleEmitter );
 }

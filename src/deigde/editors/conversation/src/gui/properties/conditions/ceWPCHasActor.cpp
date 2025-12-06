@@ -73,9 +73,8 @@ public:
 			return;
 		}
 		
-		ceUCCHasActorSetActor::Ref undo(ceUCCHasActorSetActor::Ref::NewWith(
-			topic, action, condition, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCHasActorSetActor::Ref::NewWith(topic, action, condition, comboBox->GetText()));
 	}
 };
 
@@ -94,9 +93,8 @@ public:
 			return;
 		}
 		
-		ceUCCHasActorToggleNegate::Ref undo(ceUCCHasActorToggleNegate::Ref::NewWith(
-			topic, action, condition));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCHasActorToggleNegate::Ref::NewWith(topic, action, condition));
 	}
 };
 

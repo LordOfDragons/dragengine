@@ -74,9 +74,8 @@ public:
 			return;
 		}
 		
-		ceUCASnippetSetFile::Ref undo(ceUCASnippetSetFile::Ref::NewWith(
-			topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCASnippetSetFile::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -93,9 +92,8 @@ public:
 			return;
 		}
 		
-		ceUCASnippetSetTopic::Ref undo(ceUCASnippetSetTopic::Ref::NewWith(
-			topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCASnippetSetTopic::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -113,9 +111,8 @@ public:
 			return;
 		}
 		
-		ceUCASnippetToggleCreateSideLane::Ref undo(ceUCASnippetToggleCreateSideLane::Ref::NewWith(
-			topic, action));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(undo);
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCASnippetToggleCreateSideLane::Ref::NewWith(topic, action));
 	}
 };
 

@@ -81,9 +81,8 @@ public:
 			return;
 		}
 		
-		ceUCCAParamSetActor::Ref undo(ceUCCAParamSetActor::Ref::NewWith(
-			topic, action, condition, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCAParamSetActor::Ref::NewWith(topic, action, condition, comboBox->GetText()));
 	}
 };
 
@@ -107,9 +106,8 @@ public:
 			return;
 		}
 		
-		ceUCCAParamSetOperator::Ref undo(ceUCCAParamSetOperator::Ref::NewWith(
-			topic, action, condition, newOperator));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCAParamSetOperator::Ref::NewWith(topic, action, condition, newOperator));
 	}
 };
 
@@ -127,9 +125,8 @@ public:
 			return;
 		}
 		
-		ceUCCAParamSetParameter::Ref undo(ceUCCAParamSetParameter::Ref::NewWith(
-			topic, action, condition, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCAParamSetParameter::Ref::NewWith(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -152,9 +149,8 @@ public:
 			return;
 		}
 		
-		ceUCCAParamSetTestValue::Ref undo(ceUCCAParamSetTestValue::Ref::NewWith(
-			topic, action, condition, value));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCAParamSetTestValue::Ref::NewWith(topic, action, condition, value));
 	}
 };
 
@@ -172,9 +168,8 @@ public:
 			return;
 		}
 		
-		ceUCCAParamSetTestVariable::Ref undo(ceUCCAParamSetTestVariable::Ref::NewWith(
-			topic, action, condition, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCAParamSetTestVariable::Ref::NewWith(topic, action, condition, textField->GetText()));
 	}
 };
 

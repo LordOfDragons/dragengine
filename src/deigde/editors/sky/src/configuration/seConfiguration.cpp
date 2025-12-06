@@ -92,8 +92,8 @@ void seConfiguration::LoadConfiguration(){
 			return;
 		}
 		
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ));
-		seConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		seConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile(
+			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
 	}catch( const deException &e ){

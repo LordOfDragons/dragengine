@@ -287,8 +287,8 @@ public:
 			return;
 		}
 		
-		meUDecalSkin::Ref undo(meUDecalSkin::Ref::NewWith(decal, editPath->GetPath()));
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(
+			meUDecalSkin::Ref::NewWith(decal, editPath->GetPath()));
 	}
 };
 
@@ -335,8 +335,8 @@ public:
 			return;
 		}
 		
-		meUDecalColorTint::Ref undo(meUDecalColorTint::Ref::NewWith(decal, colorBox->GetColor()));
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(
+			meUDecalColorTint::Ref::NewWith(decal, colorBox->GetColor()));
 	}
 };
 
@@ -427,7 +427,7 @@ public:
 		const meDecalList &list = pPanel.GetWorld()->GetSelectionDecal().GetSelected();
 		const decString &property = pPanel.GetActiveProperty();
 		return ! property.IsEmpty() && list.GetCount() > 0 ?
-		new meUDecalPropertyRemoveFromSelected( list, property ) : NULL;
+			new meUDecalPropertyRemoveFromSelected( list, property ) : NULL;
 	}
 	
 	virtual void Update(){

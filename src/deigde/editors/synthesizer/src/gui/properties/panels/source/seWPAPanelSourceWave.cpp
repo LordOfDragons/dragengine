@@ -97,8 +97,8 @@ public:
 			return;
 		}
 		
-		seUSourceWaveSetType::Ref undo(seUSourceWaveSetType::Ref::NewWith(source, type));
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUSourceWaveSetType::Ref::NewWith(source, type));
 	}
 };
 

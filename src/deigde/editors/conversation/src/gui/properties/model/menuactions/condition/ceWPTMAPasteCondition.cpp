@@ -83,8 +83,7 @@ void ceWPTMAPasteCondition::OnAction(){
 	ceConversationConditionList conditions;
 	conditions.Add( condition );
 	
-	igdeUndo::Ref undo(igdeUndo::Ref::New( CreateUndo( conditions ) ));
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(igdeUndo::Ref::New(CreateUndo(conditions)));
 }
 
 igdeUndo *ceWPTMAPasteCondition::CreateUndo( const ceConversationConditionList &conditions ){

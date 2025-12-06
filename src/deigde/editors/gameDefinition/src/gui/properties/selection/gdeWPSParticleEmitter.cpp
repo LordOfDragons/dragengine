@@ -91,9 +91,8 @@ public:
 			return;
 		}
 		
-		gdeUParticleEmitterSetPath::Ref undo(gdeUParticleEmitterSetPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUParticleEmitterSetPath::Ref::NewWith(
 			particleEmitter, editPath->GetPath()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -109,9 +108,8 @@ public:
 			return;
 		}
 		
-		gdeUParticleEmitterSetName::Ref undo(gdeUParticleEmitterSetName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUParticleEmitterSetName::Ref::NewWith(
 			particleEmitter, textField->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -127,9 +125,8 @@ public:
 			return;
 		}
 		
-		gdeUParticleEmitterSetDescription::Ref undo(gdeUParticleEmitterSetDescription::Ref::NewWith(
-			particleEmitter, textArea->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUParticleEmitterSetDescription::Ref::NewWith(particleEmitter, textArea->GetText()));
 	}
 };
 
@@ -145,9 +142,8 @@ public:
 			return;
 		}
 		
-		gdeUParticleEmitterSetCategory::Ref undo(gdeUParticleEmitterSetCategory::Ref::NewWith(
-			particleEmitter, comboBox->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUParticleEmitterSetCategory::Ref::NewWith(particleEmitter, comboBox->GetText()));
 	}
 };
 

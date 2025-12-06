@@ -315,8 +315,8 @@ void igdeCreateProject::pCreateGameDefinition(){
 	decPath path( pNativePathProject );
 	path.AddUnixPath( pPathGameDefProject );
 	
-	( decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false) )
-		->Write( pSharedGameDefContent.GetString(), pSharedGameDefContent.GetLength() );
+	decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false)->Write(
+		pSharedGameDefContent, pSharedGameDefContent.GetLength());
 }
 
 void igdeCreateProject::pLoadSharedGameDefContent(){

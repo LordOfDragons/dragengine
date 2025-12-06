@@ -79,9 +79,8 @@ public:
 			return;
 		}
 		
-		ceUCCLogicSetOperator::Ref undo(ceUCCLogicSetOperator::Ref::NewWith(
-			topic, action, condition, newOperator));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCLogicSetOperator::Ref::NewWith(topic, action, condition, newOperator));
 	}
 };
 

@@ -52,6 +52,8 @@ namespace {
 
 class cChangelogSorter : public igdeListItemSorter{
 public:
+	typedef deTObjectReference<cChangelogSorter> Ref;
+	
 	cChangelogSorter(){}
 	
 	virtual bool Precedes( const igdeListItem &item1, const igdeListItem &item2 ){
@@ -126,8 +128,7 @@ pWorld( NULL )
 		headers, 3, "Changes", pListChanges, new cListChangelog( *this ) );
 	AddChild( pListChanges, igdeContainerBorder::eaCenter );
 	
-	cChangelogSorter::Ref sorter(cChangelogSorter::Ref::NewWith());
-	pListChanges->SetSorter( sorter );
+	pListChanges->SetSorter(cChangelogSorter::Ref::NewWith());
 }
 
 meWindowChangelog::~meWindowChangelog(){

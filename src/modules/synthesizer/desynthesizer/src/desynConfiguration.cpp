@@ -78,8 +78,7 @@ void desynConfiguration::LoadConfig(){
 		return;
 	}
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( path ) ));
-	pLoadConfig( reader );
+	pLoadConfig(decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
 }
 
 void desynConfiguration::SaveConfig(){

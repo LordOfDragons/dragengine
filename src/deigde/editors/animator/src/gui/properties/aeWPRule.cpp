@@ -129,8 +129,8 @@ public:
 		"Copy rule to clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		aeClipboardDataRule::Ref cdata(aeClipboardDataRule::Ref::NewWith(rule));
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataRule::Ref::NewWith(rule));
 		return NULL;
 	}
 };
@@ -142,8 +142,8 @@ public:
 		"Cut rule into clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator, aeRule *rule ){
-		aeClipboardDataRule::Ref cdata(aeClipboardDataRule::Ref::NewWith(rule));
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataRule::Ref::NewWith(rule));
 		
 		if( rule->GetParentGroup() ){
 			return new aeURuleGroupRemoveRule( rule->GetParentGroup(), rule );

@@ -183,8 +183,8 @@ public:
 			return;
 		}
 		
-		seClipboardDataSource::Ref cdata(seClipboardDataSource::Ref::NewWith(source));
-		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
+			seClipboardDataSource::Ref::NewWith(source));
 	}
 	
 	virtual void Update(){
@@ -206,8 +206,8 @@ public:
 			return;
 		}
 		
-		seClipboardDataSource::Ref cdata(seClipboardDataSource::Ref::NewWith(source));
-		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
+			seClipboardDataSource::Ref::NewWith(source));
 		
 		igdeUndo::Ref undo;
 		if( source->GetParentGroup() ){

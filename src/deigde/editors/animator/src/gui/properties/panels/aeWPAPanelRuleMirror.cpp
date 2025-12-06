@@ -175,8 +175,8 @@ public:
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
 		aeDialogMirrorMatchName::Ref dialog(aeDialogMirrorMatchName::Ref::NewWith(
 			pPanel.GetEnvironment(), "Add match name"));
-		return dialog->Run( &pPanel ) ? new aeURuleMirrorAddMatchName( rule, 
-			( ( aeDialogMirrorMatchName& )( igdeDialog& )dialog ).CreateMatchName() ) : nullptr;
+		return dialog->Run(&pPanel) ?
+			new aeURuleMirrorAddMatchName(rule, dialog->CreateMatchName()) : nullptr;
 	}
 };
 
@@ -221,8 +221,8 @@ public:
 	}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRuleMirror *rule ){
-		return new aeURuleMirrorAddMatchName( rule, aeRuleMirror::cMatchName::Ref::New(
-		new aeRuleMirror::cMatchName( pFirst, pSecond, pType ) ) );
+		return new aeURuleMirrorAddMatchName(rule, aeRuleMirror::cMatchName::Ref::New(
+				new aeRuleMirror::cMatchName(pFirst, pSecond, pType)));
 	}
 };
 

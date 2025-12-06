@@ -328,8 +328,7 @@ public:
 		"Shows the engine control system window", deInputEvent::ekcE ){}
 	
 	virtual void OnAction(){
-		igdeDialogEngine::Ref dialog(igdeDialogEngine::Ref::NewWith(pWindow));
-		dialog->Run( &pWindow );
+		igdeDialogEngine::Ref::NewWith(pWindow)->Run(&pWindow);
 	}
 };
 
@@ -353,9 +352,7 @@ public:
 		"Shows the list of texture properties", deInputEvent::ekcT ){}
 	
 	virtual void OnAction(){
-		igdeDialogTexturePropertyList::Ref dialog(igdeDialogTexturePropertyList::Ref::NewWith(
-			pWindow.GetEnvironment()));
-		dialog->Run( &pWindow );
+		igdeDialogTexturePropertyList::Ref::NewWith(pWindow.GetEnvironment())->Run(&pWindow);
 	}
 };
 
@@ -693,8 +690,7 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
 		#endif
 		
-		igdeDialogStartUp::Ref dialog(igdeDialogStartUp::Ref::NewWith(*this));
-		return dialog->Run( this );
+		return igdeDialogStartUp::Ref::NewWith(*this)->Run(this);
 	}
 	
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", loadFile.GetString() );

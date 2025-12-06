@@ -265,8 +265,7 @@ public:
 		
 		decStringDictionary properties;
 		properties.SetAt( property, pPanel.GetPropertyValue() );
-		meCDProperties::Ref clip(meCDProperties::Ref::NewWith(properties));
-		pPanel.GetClipboard()->Set( clip );
+		pPanel.GetClipboard()->Set(meCDProperties::Ref::NewWith(properties));
 	}
 	
 	virtual void Update(){
@@ -289,8 +288,7 @@ public:
 			return;
 		}
 		
-		meCDProperties::Ref clip(meCDProperties::Ref::NewWith(pPanel.GetProperties()));
-		pPanel.GetClipboard()->Set( clip );
+		pPanel.GetClipboard()->Set(meCDProperties::Ref::NewWith(pPanel.GetProperties()));
 	}
 	
 	virtual void Update(){

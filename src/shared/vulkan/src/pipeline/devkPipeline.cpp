@@ -186,8 +186,6 @@ void devkPipeline::pCleanUp(){
 			baseModule.LogInfoFormat( "Vulkan Pipeline: Save Cache for device %x", pDevice.GetProperties().deviceID );
 			
 			try{
-				decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New( vfs.OpenFileForWriting( path ) ));
-				
 				size_t sizeData = 0;
 				VK_CHECK( vulkan, pDevice.vkGetPipelineCacheData( device, pCache, &sizeData, VK_NULL_HANDLE ) );
 				
@@ -195,7 +193,7 @@ void devkPipeline::pCleanUp(){
 					data = new char[ sizeData ];
 					VK_CHECK( vulkan, pDevice.vkGetPipelineCacheData( device, pCache, &sizeData, data ) );
 					
-					writer->Write( data, ( int )sizeData );
+					decBaseFileWriter::Ref::New(vfs.OpenFileForWriting(path))->Write(data, (int)sizeData);
 				}
 				
 			}catch( const deException &e ){

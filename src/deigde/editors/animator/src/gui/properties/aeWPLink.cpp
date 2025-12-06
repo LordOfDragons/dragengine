@@ -141,8 +141,8 @@ public:
 		"Copy link to clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		aeClipboardDataLink::Ref cdata(aeClipboardDataLink::Ref::NewWith(link));
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataLink::Ref::NewWith(link));
 		return nullptr;
 	}
 };
@@ -154,8 +154,8 @@ public:
 		"Cut link into clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		aeClipboardDataLink::Ref cdata(aeClipboardDataLink::Ref::NewWith(link));
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataLink::Ref::NewWith(link));
 		return new aeULinkRemove( link );
 	}
 };
@@ -180,8 +180,7 @@ public:
 			return;
 		}
 		
-		aeULinkPaste::Ref undo(aeULinkPaste::Ref::NewWith(animator, cdata->GetLinks()));
-		animator->GetUndoSystem()->Add( undo );
+		animator->GetUndoSystem()->Add(aeULinkPaste::Ref::NewWith(animator, cdata->GetLinks()));
 	}
 	
 	virtual void Update(){

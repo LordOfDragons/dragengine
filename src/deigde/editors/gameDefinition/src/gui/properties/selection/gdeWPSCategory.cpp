@@ -91,9 +91,8 @@ public:
 			return;
 		}
 		
-		gdeUCategorySetName::Ref undo(gdeUCategorySetName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUCategorySetName::Ref::NewWith(
 			pPanel.GetGameDefinition(), category, pPanel.GetCategoryType(), textField->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -109,9 +108,8 @@ public:
 			return;
 		}
 		
-		gdeUCategorySetDescription::Ref undo(gdeUCategorySetDescription::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUCategorySetDescription::Ref::NewWith(
 			pPanel.GetGameDefinition(), category, pPanel.GetCategoryType(), textArea->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -151,9 +149,8 @@ public:
 			return;
 		}
 		
-		gdeUCategoryToggleHidden::Ref undo(gdeUCategoryToggleHidden::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUCategoryToggleHidden::Ref::NewWith(
 			pPanel.GetGameDefinition(), category, pPanel.GetCategoryType()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
 

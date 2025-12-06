@@ -240,7 +240,8 @@ void igdeWOSOWorld::LoadXmlWorld::pReadObject(const decXmlElementTag &root, Chil
 			wo.SetProperty(GetAttributeString(*tag, "key"), ReadMultilineString(*tag));
 			
 		}else if(tagName == "texture"){
-			ChildObjectTexture::Ref texture(ChildObjectTexture::Ref::NewWith(GetAttributeString(*tag, "name")));
+			ChildObjectTexture::Ref texture(ChildObjectTexture::Ref::NewWith(
+				GetAttributeString(*tag, "name")));
 			pReadObjectTexture(*tag, object, texture);
 			object.AddTexture(texture);
 		}

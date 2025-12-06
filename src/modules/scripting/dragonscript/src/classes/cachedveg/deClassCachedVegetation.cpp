@@ -516,8 +516,7 @@ public:
 		try{
 			path.SetFromUnix( cacheFile );
 			
-			decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs->OpenFileForReading( path ) ));
-			sector->LoadCacheFile( pEngine, reader );
+			sector->LoadCacheFile(pEngine, decBaseFileReader::Ref::New(vfs->OpenFileForReading(path)));
 			
 		}catch( ... ){
 			sector->Clear();

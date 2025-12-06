@@ -199,12 +199,11 @@ reRig *reLoadSaveSystem::LoadRig( const char *filename ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReader::Ref fileReader(decBaseFileReader::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForReading( decPath::CreatePathUnix( filename ) )));
-	
 	const reRig::Ref rig(reRig::Ref::NewWith(&pWindowMain.GetEnvironment()));
 	
-	pLSRigs[ lsIndex ]->LoadRig( rig, fileReader );
+	pLSRigs[lsIndex]->LoadRig(rig, decBaseFileReader::Ref::New(
+		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+			decPath::CreatePathUnix(filename))));
 	
 	rig->SetFilePath( filename );
 	rig->SetChanged( false );
@@ -220,9 +219,9 @@ void reLoadSaveSystem::SaveRig( reRig *rig, const char *filename ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileWriter::Ref fileWriter(decBaseFileWriter::Ref::New(pWindowMain.GetEnvironment().GetFileSystemGame()
-		->OpenFileForWriting( decPath::CreatePathUnix( filename ) )));
-	pLSRigs[ lsIndex ]->SaveRig( rig, fileWriter );
+	pLSRigs[lsIndex]->SaveRig(rig, decBaseFileWriter::Ref::New(
+		pWindowMain.GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix(filename))));
 }
 
 

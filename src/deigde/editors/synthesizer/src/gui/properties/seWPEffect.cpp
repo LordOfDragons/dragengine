@@ -132,8 +132,8 @@ public:
 			return;
 		}
 		
-		seClipboardDataEffect::Ref cdata(seClipboardDataEffect::Ref::NewWith(effect));
-		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
+			seClipboardDataEffect::Ref::NewWith(effect));
 	}
 	
 	virtual void Update(){
@@ -155,11 +155,12 @@ public:
 			return;
 		}
 		
-		seClipboardDataEffect::Ref cdata(seClipboardDataEffect::Ref::NewWith(effect));
-		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
+			seClipboardDataEffect::Ref::NewWith(effect));
 		
-		seUSourceRemoveEffect::Ref undo(seUSourceRemoveEffect::Ref::NewWith(pPanel.GetSource(), effect));
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
+		
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(
+			seUSourceRemoveEffect::Ref::NewWith(pPanel.GetSource(), effect));
 	}
 	
 	virtual void Update(){
@@ -191,9 +192,8 @@ public:
 		const seEffectList &list = pPanel.GetSource()->GetEffects();
 		const int index = effect ? list.IndexOf( effect ) : list.GetCount();
 		
-		seUSourcePasteEffect::Ref undo(seUSourcePasteEffect::Ref::NewWith(
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seUSourcePasteEffect::Ref::NewWith(
 			pPanel.GetSource(), cdata->GetEffects(), index));
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 	
 	virtual void Update(){
@@ -220,9 +220,8 @@ public:
 			return;
 		}
 		
-		seUSourcePasteEffect::Ref undo(seUSourcePasteEffect::Ref::NewWith(
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seUSourcePasteEffect::Ref::NewWith(
 			pPanel.GetSource(), cdata->GetEffects(), pPanel.GetSource()->GetEffects().GetCount()));
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
 	}
 };
 

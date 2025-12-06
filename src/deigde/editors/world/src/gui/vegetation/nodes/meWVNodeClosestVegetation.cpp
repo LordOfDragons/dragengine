@@ -106,13 +106,13 @@ pRuleCV( rule )
 	SetTitle( "Closest Vegetation" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
-		env, "Distance", "Distance in meters from closest vegetation", false, *this, meWVNodeSlot::estValue, meHTVRuleClosestVegetation::eosDistance));
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Distance", "Distance in meters from closest vegetation",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestVegetation::eosDistance));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Direction", "Direction (normalized vector) towards closest vegetation",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestVegetation::eosDirection ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Direction", "Direction (normalized vector) towards closest vegetation",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestVegetation::eosDirection));
 	
 	// parameters
 	pFraParameters.TakeOver( new igdeContainerForm( env ) );

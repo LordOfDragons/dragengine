@@ -225,9 +225,9 @@ public:
 	
 	static void AddToListBox( lpeViewLangPack &window, igdeIconListBox &listBox ){
 		cListEntries::Ref listener(cListEntries::Ref::NewWith(window));
-		listBox.AddListener( listener );
+		listBox.AddListener(listener);
 		
-		( ( cListEntries& )( igdeIconListBoxListener& )listener ).UpdateSorter( listBox );
+		listener->UpdateSorter(listBox);
 	}
 };
 

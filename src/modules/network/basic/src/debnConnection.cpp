@@ -1038,27 +1038,23 @@ void debnConnection::pProcessQueuedMessages(){
 		type = bnMessage->GetType();
 		switch( type ){
 		case eccReliableMessage:{
-			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(
-				bnMessage->GetMessage() ));
-			pProcessReliableMessage( pReliableNumberRecv, reader );
+			pProcessReliableMessage(pReliableNumberRecv,
+				deNetworkMessageReader::Ref::NewWith(bnMessage->GetMessage()));
 			}break;
 			
 		case eccReliableLinkState:{
-			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(
-				bnMessage->GetMessage() ));
-			pProcessLinkState( pReliableNumberRecv, reader );
+			pProcessLinkState(pReliableNumberRecv,
+				deNetworkMessageReader::Ref::NewWith(bnMessage->GetMessage()));
 			}break;
 			
 		case eccReliableMessageLong:{
-			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(
-				bnMessage->GetMessage() ));
-			pProcessReliableMessageLong( pReliableNumberRecv, reader );
+			pProcessReliableMessageLong(pReliableNumberRecv,
+				deNetworkMessageReader::Ref::NewWith(bnMessage->GetMessage()));
 			}break;
 			
 		case eccReliableLinkStateLong:{
-			deNetworkMessageReader::Ref reader(deNetworkMessageReader::Ref::NewWith(
-				bnMessage->GetMessage() ));
-			pProcessLinkStateLong( pReliableNumberRecv, reader );
+			pProcessLinkStateLong(pReliableNumberRecv,
+				deNetworkMessageReader::Ref::NewWith(bnMessage->GetMessage()));
 			}break;
 		}
 		

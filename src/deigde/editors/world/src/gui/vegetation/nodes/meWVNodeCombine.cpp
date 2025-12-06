@@ -67,9 +67,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleCombineSetX::Ref undo(meUHTVRuleCombineSetX::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleCombine(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCombineSetX::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleCombine(), value));
 	}
 };
 
@@ -86,9 +86,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleCombineSetY::Ref undo(meUHTVRuleCombineSetY::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleCombine(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCombineSetY::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleCombine(), value));
 	}
 };
 
@@ -105,9 +105,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleCombineSetZ::Ref undo(meUHTVRuleCombineSetZ::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleCombine(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCombineSetZ::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleCombine(), value));
 	}
 };
 
@@ -132,24 +132,25 @@ pRuleCombine( rule )
 	SetTitle( "Combine" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
-		env, "Vector", "Vector composed of the input values", false, *this, meWVNodeSlot::estVector, meHTVRuleCombine::eosVector));
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Vector", "Vector composed of the input values",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleCombine::eosVector));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "X", "X component of vector",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisX ) );
-	helper.EditFloat( slot, "X component of vector if slot is not connected.",
-		pEditX, new cTextX( *this ) );
-	AddSlot( slot );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+		"X", "X component of vector",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisX));
+	helper.EditFloat(slot, "X component of vector if slot is not connected.",
+		pEditX, new cTextX(*this));
+	AddSlot(slot);
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Y", "Y component of vector",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisY ) );
+	slot.TakeOverWith(env, "Y", "Y component of vector",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisY);
 	helper.EditFloat( slot, "Y component of vector if slot is not connected.",
 		pEditY, new cTextY( *this ) );
 	AddSlot( slot );
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Z", "Z component of vector",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisZ ) );
+	slot.TakeOverWith(env, "Z", "Z component of vector",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleCombine::eisZ);
 	helper.EditFloat( slot, "Z component of vector if slot is not connected.",
 		pEditZ, new cTextZ( *this ) );
 	AddSlot( slot );

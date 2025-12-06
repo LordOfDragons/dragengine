@@ -84,9 +84,8 @@ public:
 			return;
 		}
 		
-		ceUCAPChoiceSetVarName::Ref undo(ceUCAPChoiceSetVarName::Ref::NewWith(
-			topic, action, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAPChoiceSetVarName::Ref::NewWith(topic, action, textField->GetText()));
 	}
 };
 
@@ -104,9 +103,9 @@ public:
 			return;
 		}
 		
-		ceUCAPChoiceOptionSetText::Ref undo(ceUCAPChoiceOptionSetText::Ref::NewWith(
-			topic, action, option, decUnicodeString::NewFromUTF8( textField->GetText() )));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAPChoiceOptionSetText::Ref::NewWith(topic, action, option,
+				decUnicodeString::NewFromUTF8(textField->GetText())));
 	}
 };
 
@@ -134,9 +133,9 @@ public:
 			return;
 		}
 		
-		ceUCAPChoiceOptionSetText::Ref undo(ceUCAPChoiceOptionSetText::Ref::NewWith(
-			topic, action, option, decUnicodeString::NewFromUTF8( text )));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAPChoiceOptionSetText::Ref::NewWith(topic, action, option,
+				decUnicodeString::NewFromUTF8(text)));
 	}
 };
 

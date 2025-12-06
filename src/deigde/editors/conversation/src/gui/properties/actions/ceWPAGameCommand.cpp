@@ -77,9 +77,8 @@ public:
 			return;
 		}
 		
-		ceUCAGameCmdSetCommand::Ref undo(ceUCAGameCmdSetCommand::Ref::NewWith(
-			topic, action, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAGameCmdSetCommand::Ref::NewWith(topic, action, textField->GetText()));
 	}
 };
 
@@ -106,8 +105,8 @@ public:
 			return;
 		}
 		
-		ceUCAGameCmdSetCommand::Ref undo(ceUCAGameCmdSetCommand::Ref::NewWith(topic, action, text));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAGameCmdSetCommand::Ref::NewWith(topic, action, text));
 	}
 };
 

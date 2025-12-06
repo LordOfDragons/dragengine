@@ -73,10 +73,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCNavigationBlocker::Ref clipOCNavigationBlocker(gdeOCNavigationBlocker::Ref::NewWith(*navBlocker));
 	
-	gdeClipboardDataOCNavBlocker::Ref clipData(gdeClipboardDataOCNavBlocker::Ref::NewWith(
-		clipOCNavigationBlocker));
-	
-	pWindowMain.GetClipboard().Set( clipData );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCNavBlocker::Ref::NewWith(clipOCNavigationBlocker));
 	
 	return new gdeUOCRemoveNavBlocker( &objectClass, navBlocker );
 }

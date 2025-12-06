@@ -77,9 +77,8 @@ public:
 			return;
 		}
 		
-		ceUCACoordSysAddSetCoordSysID::Ref undo(ceUCACoordSysAddSetCoordSysID::Ref::NewWith(
-			topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACoordSysAddSetCoordSysID::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -96,9 +95,8 @@ public:
 			return;
 		}
 		
-		ceUCACoordSysAddSetAliasID::Ref undo(ceUCACoordSysAddSetAliasID::Ref::NewWith(
-			topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACoordSysAddSetAliasID::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 

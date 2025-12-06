@@ -73,9 +73,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCLight::Ref clipOCLight(gdeOCLight::Ref::NewWith(*light));
 	
-	gdeClipboardDataOCLight::Ref clipData(gdeClipboardDataOCLight::Ref::NewWith(clipOCLight));
-	
-	pWindowMain.GetClipboard().Set( clipData );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCLight::Ref::NewWith(clipOCLight));
 	
 	return new gdeUOCRemoveLight( &objectClass, light );
 }

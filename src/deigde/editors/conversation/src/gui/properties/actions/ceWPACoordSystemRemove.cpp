@@ -76,9 +76,8 @@ public:
 			return;
 		}
 		
-		ceUCACoordSysRemoveSetCoordSysID::Ref undo(ceUCACoordSysRemoveSetCoordSysID::Ref::NewWith(
-			topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACoordSysRemoveSetCoordSysID::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 

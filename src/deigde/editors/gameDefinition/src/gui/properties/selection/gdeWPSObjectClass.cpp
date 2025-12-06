@@ -241,9 +241,8 @@ public:
 			return;
 		}
 		
-		gdeUOCSetDescription::Ref undo(gdeUOCSetDescription::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCSetDescription::Ref::NewWith(
 			objectClass, textArea->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -563,8 +562,8 @@ public:
 			inherit.SetPropertyPrefix( ioc->GetDefaultInheritPropertyPrefix() );
 		}
 		
-		gdeUOCAddInherit::Ref undo(gdeUOCAddInherit::Ref::NewWith(objectClass, &inherit));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCAddInherit::Ref::NewWith(objectClass, &inherit));
 		
 		pPanel.SelectInherit( &inherit );
 		pPanel.UpdateInherit();
@@ -842,8 +841,8 @@ public:
 		decStringDictionary values( objectClass->GetPropertyValues() );
 		values.SetAt( key, value );
 		
-		gdeUOCSetPropertyValues::Ref undo(gdeUOCSetPropertyValues::Ref::NewWith(objectClass, values));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCSetPropertyValues::Ref::NewWith(objectClass, values));
 	}
 	
 	virtual void AddContextMenuEntries( igdeIconListBox*, igdeMenuCascade &menu ){
@@ -971,8 +970,8 @@ public:
 		
 		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
 		
-		gdeUOCAddTexture::Ref undo(gdeUOCAddTexture::Ref::NewWith(objectClass, texture));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCAddTexture::Ref::NewWith(objectClass, texture));
 		
 		objectClass->SetActiveTexture( texture );
 		pPanel.GetGameDefinition()->NotifyOCActiveTextureChanged( objectClass );
@@ -1043,9 +1042,8 @@ public:
 			return;
 		}
 		
-		gdeUOCTextureSetPathSkin::Ref undo(gdeUOCTextureSetPathSkin::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCTextureSetPathSkin::Ref::NewWith(
 			pPanel.GetObjectClass(), texture, editPath->GetPath()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -1098,9 +1096,8 @@ public:
 			return;
 		}
 		
-		gdeUOCTextureSetColorTint::Ref undo(gdeUOCTextureSetColorTint::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCTextureSetColorTint::Ref::NewWith(
 			pPanel.GetObjectClass(), texture, colorBox->GetColor()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -1152,7 +1149,7 @@ pGameDefinition( NULL )
 		pEditDescription, 15, 5, new cTextDescription( *this ) );
 	
 	helper.ComboBox( groupBox, "Scale Mode:", "Object scale mode", pCBScaleMode,
-	new cComboScaleMode( *this ) );
+		new cComboScaleMode( *this ) );
 	pCBScaleMode->AddItem( "Fixed", NULL, ( void* )( intptr_t )gdeObjectClass::esmFixed );
 	pCBScaleMode->AddItem( "Uniform", NULL, ( void* )( intptr_t )gdeObjectClass::esmUniform );
 	pCBScaleMode->AddItem( "Free", NULL, ( void* )( intptr_t )gdeObjectClass::esmFree );

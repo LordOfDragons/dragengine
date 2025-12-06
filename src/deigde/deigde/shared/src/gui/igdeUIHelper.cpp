@@ -1133,19 +1133,16 @@ igdeTreeListListener *listener ){
 
 
 void igdeUIHelper::Label( igdeContainer &parent, const char *text ){
-	igdeLabel::Ref label(igdeLabel::Ref::NewWith(pEnvironment, text));
-	parent.AddChild( label );
+	parent.AddChild(igdeLabel::Ref::NewWith(pEnvironment, text));
 }
 
 void igdeUIHelper::Label( igdeContainer &parent, const char *text, const char *description ){
-	igdeLabel::Ref label(igdeLabel::Ref::NewWith(pEnvironment, text, description));
-	parent.AddChild( label );
+	parent.AddChild(igdeLabel::Ref::NewWith(pEnvironment, text, description));
 }
 
 void igdeUIHelper::Label( igdeContainer &parent, const char *text,
 const char *description, int alignment ){
-	igdeLabel::Ref label(igdeLabel::Ref::NewWith(pEnvironment, text, description, alignment));
-	parent.AddChild( label );
+	parent.AddChild(igdeLabel::Ref::NewWith(pEnvironment, text, description, alignment));
 }
 
 void igdeUIHelper::Label( igdeContainer &parent, igdeLabel::Ref &label, const char *text ){
@@ -1207,9 +1204,8 @@ igdeViewCurveBezierListener *listener ){
 
 
 void igdeUIHelper::Separator( igdeContainer &parent, bool horizontal ){
-	igdeSeparator::Ref entry(igdeSeparator::Ref::NewWith(
-		pEnvironment, horizontal ? igdeSeparator::eoHorizontal : igdeSeparator::eoVertical));
-	parent.AddChild( entry );
+	parent.AddChild(igdeSeparator::Ref::NewWith(pEnvironment,
+		horizontal ? igdeSeparator::eoHorizontal : igdeSeparator::eoVertical));
 }
 
 
@@ -1434,8 +1430,7 @@ void igdeUIHelper::ToolBarToggleButton( igdeToolBar &toolBar, igdeAction *action
 }
 
 void igdeUIHelper::ToolBarSeparator( igdeToolBar &toolBar ){
-	igdeToolBarSeparator::Ref widget(igdeToolBarSeparator::Ref::NewWith(pEnvironment));
-	toolBar.AddChild( widget );
+	toolBar.AddChild(igdeToolBarSeparator::Ref::NewWith(pEnvironment));
 }
 
 

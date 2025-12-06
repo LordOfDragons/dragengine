@@ -121,8 +121,7 @@ pIgnoreSelectionChange( false )
 		gameDefinition->AddReference();
 		
 		// set sorter
-		cSorter::Ref sorter(cSorter::Ref::NewWith());
-		treeList.SetSorter( sorter );
+		treeList.SetSorter(cSorter::Ref::NewWith());
 		
 		// add items
 		igdeTreeItem::Ref item;

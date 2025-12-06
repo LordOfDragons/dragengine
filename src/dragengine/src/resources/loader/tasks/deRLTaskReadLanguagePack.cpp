@@ -89,13 +89,10 @@ void deRLTaskReadLanguagePack::Run(){
 	
 	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
-		 GetVFS()->OpenFileForReading( vfsPath ) ));
-	
 	pLanguagePack->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
 	pLanguagePack->SetAsynchron( true );
-	module->LoadLanguagePack( reader, pLanguagePack );
-	reader = NULL;
+	module->LoadLanguagePack(decBaseFileReader::Ref::New(
+		GetVFS()->OpenFileForReading(vfsPath)), pLanguagePack);
 	
 	if( ! pLanguagePack->Verify() ){
 		DETHROW( deeInvalidParam );

@@ -313,9 +313,8 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 				continue;
 			}
 			
-			deSkin::Ref skin(deSkin::Ref::New(
+			type.SetSkin(deSkin::Ref::New(
 				 particleEmitter.GetEngine()->GetSkinManager()->LoadSkin( path, basePath ) ));
-			type.SetSkin( skin );
 			
 		}else if( strcmp( tag->GetName(), "model" ) == 0 ){
 			const decString path( GetCDataString( *tag ) );
@@ -323,9 +322,8 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 				continue;
 			}
 			
-			deModel::Ref model(deModel::Ref::New(
+			type.SetModel(deModel::Ref::New(
 				 particleEmitter.GetEngine()->GetModelManager()->LoadModel( path, basePath ) ));
-			type.SetModel( model );
 			
 		}else if( strcmp( tag->GetName(), "modelSkin" ) == 0 ){
 			const decString path( GetCDataString( *tag ) );
@@ -333,9 +331,8 @@ deParticleEmitter &particleEmitter, deParticleEmitterType &type ){
 				continue;
 			}
 			
-			deSkin::Ref skin(deSkin::Ref::New(
+			type.SetModelSkin(deSkin::Ref::New(
 				 particleEmitter.GetEngine()->GetSkinManager()->LoadSkin( path, basePath ) ));
-			type.SetModelSkin( skin );
 			
 		}else if( strcmp( tag->GetName(), "castFrom" ) == 0 ){
 			identifier = GetCDataString( *tag );

@@ -340,9 +340,9 @@ public:
 			return;
 		}
 		
-		gdeUOCNavSpaceSetPropertyName::Ref undo(gdeUOCNavSpaceSetPropertyName::Ref::NewWith(
-			pPanel.GetObjectClass(), pPanel.GetNavigationSpace(), propertyName, comboBox->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCNavSpaceSetPropertyName::Ref::NewWith(pPanel.GetObjectClass(),
+				pPanel.GetNavigationSpace(), propertyName, comboBox->GetText()));
 	}
 };
 

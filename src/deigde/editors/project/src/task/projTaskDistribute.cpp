@@ -302,9 +302,7 @@ void projTaskDistribute::pCreateDelgaWriter(){
 	
 	path.RemoveLastComponent(); // parent directory
 	
-	deVFSDiskDirectory::Ref parentDir(deVFSDiskDirectory::Ref::NewWith(path));
-	
-	pDelgaWriter.TakeOver( parentDir->OpenFileForWriting( localPath ) );
+	pDelgaWriter.TakeOver(deVFSDiskDirectory::Ref::NewWith(path)->OpenFileForWriting(localPath));
 	
 	// create zip file operating on the delga writer
 	zlib_filefunc_def ffunc;
@@ -663,17 +661,10 @@ void projTaskDistribute::pWriteGameXml(){
 	}
 	
 	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith(pathGameXml.GetPathUnix()));
-	
-	decMemoryFileWriter::Ref memoryFileWriter(decMemoryFileWriter::Ref::NewWith(memoryFile, false));
-	
-	// write xml file
 	{
-	decXmlWriter xmlWriter( memoryFileWriter );
+	decXmlWriter xmlWriter(decMemoryFileWriter::Ref::NewWith(memoryFile, false));
 	pWriteGameXml( xmlWriter );
 	}
-	
-	// close memory file and write it to delga
-	memoryFileWriter = NULL;
 	pZipWriteMemoryFile( memoryFile );
 }
 

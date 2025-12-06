@@ -75,9 +75,8 @@ public:
 			return;
 		}
 		
-		ceUCACommentSetComment::Ref undo(ceUCACommentSetComment::Ref::NewWith(
-			topic, action, textArea->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCACommentSetComment::Ref::NewWith(topic, action, textArea->GetText()));
 	}
 };
 

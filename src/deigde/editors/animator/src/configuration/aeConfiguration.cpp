@@ -120,8 +120,8 @@ void aeConfiguration::LoadConfiguration(){
 			return;
 		}
 		
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ));
-		aeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		aeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE).ReadFromFile(
+			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
 	}catch( const deException &e ){

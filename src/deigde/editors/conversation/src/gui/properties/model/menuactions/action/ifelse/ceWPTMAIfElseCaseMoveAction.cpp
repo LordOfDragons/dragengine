@@ -76,7 +76,6 @@ void ceWPTMAIfElseCaseMoveAction::OnAction(){
 		DETHROW( deeInvalidAction );
 	}
 	
-	ceUCAIfElseMove::Ref undo(ceUCAIfElseMove::Ref::NewWith(
+	pConversation->GetUndoSystem()->Add(ceUCAIfElseMove::Ref::NewWith(
 		pTopic, pIfElse, pIfCase, pAction, pIndex));
-	pConversation->GetUndoSystem()->Add( undo );
 }

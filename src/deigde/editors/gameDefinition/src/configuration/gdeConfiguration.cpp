@@ -94,8 +94,8 @@ void gdeConfiguration::LoadConfiguration(){
 			return;
 		}
 		
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ));
-		gdeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		gdeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile(
+			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
 	}catch( const deException &e ){

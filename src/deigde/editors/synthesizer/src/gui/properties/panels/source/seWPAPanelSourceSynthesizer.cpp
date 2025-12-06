@@ -70,9 +70,8 @@ public:
 			return;
 		}
 		
-		seUSourceSynthSetPathSynthesizer::Ref undo(seUSourceSynthSetPathSynthesizer::Ref::NewWith(
-			source, editPath->GetPath()));
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUSourceSynthSetPathSynthesizer::Ref::NewWith(source, editPath->GetPath()));
 	}
 };
 
@@ -104,8 +103,8 @@ public:
 			return;
 		}
 		
-		seUSourceSynthConTargetMore::Ref undo(seUSourceSynthConTargetMore::Ref::NewWith(source));
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUSourceSynthConTargetMore::Ref::NewWith(source));
 	}
 	
 	virtual void Update(){
@@ -127,8 +126,8 @@ public:
 			return;
 		}
 		
-		seUSourceSynthConTargetLess::Ref undo(seUSourceSynthConTargetLess::Ref::NewWith(source));
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUSourceSynthConTargetLess::Ref::NewWith(source));
 	}
 	
 	virtual void Update(){
@@ -156,9 +155,8 @@ public:
 			return;
 		}
 		
-		seUSourceSynthSetConController::Ref undo(seUSourceSynthSetConController::Ref::NewWith(
-			source, target, controller));
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUSourceSynthSetConController::Ref::NewWith(source, target, controller));
 	}
 };
 

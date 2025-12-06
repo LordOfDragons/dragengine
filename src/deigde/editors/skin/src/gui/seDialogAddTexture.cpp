@@ -110,7 +110,7 @@ pWindowMain( windowMain )
 	content.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esLast, 5 ) );
 	
 	helper.ListBox( content, 5, "Textures names in model", pListModelTextureNames,
-	new cListTextureNames( *this ) );
+		new cListTextureNames( *this ) );
 	pListModelTextureNames->SetDefaultSorter();
 	
 	formLine.TakeOver( new igdeContainerForm( env ) );

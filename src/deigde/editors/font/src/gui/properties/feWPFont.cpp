@@ -179,8 +179,7 @@ public:
 			return;
 		}
 		
-		feUFontToggleColorFont::Ref undo(feUFontToggleColorFont::Ref::NewWith(font));
-		font->GetUndoSystem()->Add( undo );
+		font->GetUndoSystem()->Add(feUFontToggleColorFont::Ref::NewWith(font));
 	}
 };
 
@@ -224,8 +223,8 @@ pListener( NULL )
 	
 	helper.FormLineStretchFirst( groupBox, "Image:", "Font image.", frameLine );
 	helper.EditString( frameLine, "Font image.", pEditImagePath, new cTextImagePath( *this ) );
-	helper.Button( frameLine, pBtnImagePath,
-	new cActionSelectImagePath( windowProperties.GetWindowMain(), pEditImagePath ), true );
+	helper.Button( frameLine, pBtnImagePath, new cActionSelectImagePath(
+		windowProperties.GetWindowMain(), pEditImagePath ), true );
 	
 	helper.EditInteger( groupBox, "Line Height:", "Line height in pixels.",
 		pEditLineHeight, new cTextLineHeight( *this ) );

@@ -70,9 +70,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleMapSetLower::Ref undo(meUHTVRuleMapSetLower::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleMapping(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMapSetLower::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMapping(), value));
 	}
 };
 
@@ -89,9 +89,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleMapSetUpper::Ref undo(meUHTVRuleMapSetUpper::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleMapping(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMapSetUpper::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMapping(), value));
 	}
 };
 
@@ -108,9 +108,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleMapSetValue::Ref undo(meUHTVRuleMapSetValue::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleMapping(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMapSetValue::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMapping(), value));
 	}
 };
 
@@ -123,9 +123,9 @@ public:
 		igdeAction( "Inversed", NULL, "Invert value" ), pNode( node ){ }
 	
 	virtual void OnAction(){
-		meUHTVRuleMapToggleInversed::Ref undo(meUHTVRuleMapToggleInversed::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleMapping()));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMapToggleInversed::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMapping()));
 	}
 };
 
@@ -150,24 +150,25 @@ pRuleMapping( rule )
 	SetTitle( "Mapping" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
-		env, "Value", "Mapped value", false, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eosValue));
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Value", "Mapped value",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eosValue));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Lower", "Lower value",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisLower ) );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+		"Lower", "Lower value",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisLower));
 	helper.EditFloat( slot, "Lower value if slot is not connected.",
 		pEditLower, new cTextLower( *this ) );
 	AddSlot( slot );
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Upper", "Upper value",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisUpper ) );
+	slot.TakeOverWith(env, "Upper", "Upper value",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisUpper);
 	helper.EditFloat( slot, "Upper value if slot is not connected.",
 		pEditUpper, new cTextUpper( *this ) );
 	AddSlot( slot );
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Value", "Value to map",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisValue ) );
+	slot.TakeOverWith(env, "Value", "Value to map",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleMapping::eisValue);
 	helper.EditFloat( slot, "Value to map if slot is not connected.",
 		pEditValue, new cTextValue( *this ) );
 	AddSlot( slot );

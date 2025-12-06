@@ -76,7 +76,7 @@ void dealRemoveDirTree::Remove( const char *path ){
 	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(diskPath));
-	( ( deVFSDiskDirectory& )( deVFSContainer& )container ).SetReadOnly( false );
+	container->SetReadOnly( false );
 	vfs->AddContainer( container );
 	
 	// delete the directory recursively if present

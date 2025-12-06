@@ -152,13 +152,12 @@ igdeGameDefinition *gameDefinition, igdeStepableTask **task ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(pWndMain->GetEnvironment().GetFileSystemGame()->
-		OpenFileForReading( decPath::CreatePathUnix( filename ) )));
-	
 	meWorld * const world = new meWorld( *pWndMain, &pWndMain->GetEnvironment() );
 	world->SetFilePath( filename );
 	try{
-		*task = lsWorld->CreateLoadTask( world, reader );
+		*task = lsWorld->CreateLoadTask(world, decBaseFileReader::Ref::New(
+			pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+				decPath::CreatePathUnix(filename))));
 		return world;
 		
 	}catch( const deException & ){
@@ -173,9 +172,9 @@ void meLoadSaveSystem::SaveWorld( meWorld *world, const char *filename ){
 	meLSWorld * const lsWorld = FindLSWorldMatching( filename );
 	if( ! lsWorld ) DETHROW( deeInvalidParam ); // hack
 	
-	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pWndMain->GetEnvironment().GetFileSystemGame()->
-		OpenFileForWriting( decPath::CreatePathUnix( filename ) )));
-	lsWorld->SaveWorld( *this, *world, writer );
+	lsWorld->SaveWorld(*this, *world, decBaseFileWriter::Ref::New(
+		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix(filename))));
 }
 
 
@@ -221,9 +220,9 @@ void meLoadSaveSystem::LoadHeightTerrain( meHeightTerrain &heightTerrain, const 
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
-		decPath::CreatePathUnix( filename ) )));
-	loader->LoadFromFile( heightTerrain, reader );
+	loader->LoadFromFile(heightTerrain, decBaseFileReader::Ref::New(
+		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+			decPath::CreatePathUnix(filename))));
 }
 
 void meLoadSaveSystem::SaveHeightTerrain( meHeightTerrain &heightTerrain, const char *filename ){
@@ -232,9 +231,9 @@ void meLoadSaveSystem::SaveHeightTerrain( meHeightTerrain &heightTerrain, const 
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
-			decPath::CreatePathUnix( filename ) )));
-	loader->SaveToFile( heightTerrain, writer );
+	loader->SaveToFile(heightTerrain, decBaseFileWriter::Ref::New(
+		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix(filename))));
 }
 
 
@@ -243,15 +242,15 @@ void meLoadSaveSystem::SaveHeightTerrain( meHeightTerrain &heightTerrain, const 
 /////////////////////
 
 void meLoadSaveSystem::LoadPFCache( meHeightTerrainSector &sector, const char *filename ){
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
-		decPath::CreatePathUnix( filename ) )));
-	pLSPFCache->LoadFromFile( sector, reader );
+	pLSPFCache->LoadFromFile(sector, decBaseFileReader::Ref::New(
+		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+			decPath::CreatePathUnix(filename))));
 }
 
 void meLoadSaveSystem::SavePFCache( meHeightTerrainSector &sector, const char *filename ){
-	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
-			decPath::CreatePathUnix( filename ) )));
-	pLSPFCache->SaveToFile( sector, writer );
+	pLSPFCache->SaveToFile(sector, decBaseFileWriter::Ref::New(
+		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix(filename))));
 }
 
 
@@ -261,9 +260,9 @@ void meLoadSaveSystem::LoadNavTest( const char *filename, meWorld &world ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
-			decPath::CreatePathUnix( filename ) )));
-	pLSNavTest->LoadNavTest( world, reader );
+	pLSNavTest->LoadNavTest(world, decBaseFileReader::Ref::New(
+		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForReading(
+			decPath::CreatePathUnix(filename))));
 }
 
 void meLoadSaveSystem::SaveNavTest( const char *filename, meWorld &world ){
@@ -271,9 +270,9 @@ void meLoadSaveSystem::SaveNavTest( const char *filename, meWorld &world ){
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileWriter::Ref writer(decBaseFileWriter::Ref::New(pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
-			decPath::CreatePathUnix( filename ) )));
-	pLSNavTest->SaveNavTest( world, writer );
+	pLSNavTest->SaveNavTest(world, decBaseFileWriter::Ref::New(
+		pWndMain->GetEnvironment().GetFileSystemGame()->OpenFileForWriting(
+			decPath::CreatePathUnix(filename))));
 }
 
 

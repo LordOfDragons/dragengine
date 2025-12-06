@@ -85,9 +85,8 @@ public:
 			return;
 		}
 		
-		ceUCCVarSetOperator::Ref undo(ceUCCVarSetOperator::Ref::NewWith(
-			topic, action, condition, newOperator));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCVarSetOperator::Ref::NewWith(topic, action, condition, newOperator));
 	}
 };
 
@@ -105,9 +104,8 @@ public:
 			return;
 		}
 		
-		ceUCCVarSetVariable::Ref undo(ceUCCVarSetVariable::Ref::NewWith(
-			topic, action, condition, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCVarSetVariable::Ref::NewWith(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -130,9 +128,8 @@ public:
 			return;
 		}
 		
-		ceUCCVarSetTestValue::Ref undo(ceUCCVarSetTestValue::Ref::NewWith(
-			topic, action, condition, value));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCVarSetTestValue::Ref::NewWith(topic, action, condition, value));
 	}
 };
 
@@ -150,9 +147,8 @@ public:
 			return;
 		}
 		
-		ceUCCVarSetTestVariable::Ref undo(ceUCCVarSetTestVariable::Ref::NewWith(
-			topic, action, condition, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCVarSetTestVariable::Ref::NewWith(topic, action, condition, textField->GetText()));
 	}
 };
 

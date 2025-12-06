@@ -90,9 +90,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetActor::Ref undo(ceUCAASpeakSetActor::Ref::NewWith(
-			topic, action, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetActor::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -109,9 +108,9 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxText::Ref undo(ceUCAASpeakSetTextBoxText::Ref::NewWith(
-			topic, action, decUnicodeString::NewFromUTF8( textField->GetText() )));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxText::Ref::NewWith(topic, action,
+				decUnicodeString::NewFromUTF8(textField->GetText())));
 	}
 };
 
@@ -138,9 +137,9 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxText::Ref undo(ceUCAASpeakSetTextBoxText::Ref::NewWith(
-			topic, action, decUnicodeString::NewFromUTF8( text )));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxText::Ref::NewWith(topic, action,
+				decUnicodeString::NewFromUTF8(text)));
 	}
 };
 
@@ -157,9 +156,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxTextTranslate::Ref undo(ceUCAASpeakSetTextBoxTextTranslate::Ref::NewWith(
-			topic, action, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxTextTranslate::Ref::NewWith(topic, action, textField->GetText()));
 	}
 };
 
@@ -249,9 +247,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxText::Ref undo(ceUCAASpeakSetTextBoxText::Ref::NewWith(
-			topic, action, entry->GetText()));
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxText::Ref::NewWith(topic, action, entry->GetText()));
 	}
 	
 	virtual void Update(){
@@ -325,9 +322,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetTextBoxTextStyle::Ref undo(ceUCAASpeakSetTextBoxTextStyle::Ref::NewWith(
-			topic, action, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxTextStyle::Ref::NewWith(topic, action, textField->GetText()));
 	}
 };
 
@@ -344,9 +340,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetMovement::Ref undo(ceUCAASpeakSetMovement::Ref::NewWith(
-			topic, action, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetMovement::Ref::NewWith(topic, action, textField->GetText()));
 	}
 };
 
@@ -363,9 +358,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetPathSound::Ref undo(ceUCAASpeakSetPathSound::Ref::NewWith(
-			topic, action, editPath->GetPath()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetPathSound::Ref::NewWith(topic, action, editPath->GetPath()));
 	}
 };
 
@@ -383,9 +377,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakSetMinSpeechTime::Ref undo(ceUCAASpeakSetMinSpeechTime::Ref::NewWith(
-			topic, action, time));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetMinSpeechTime::Ref::NewWith(topic, action, time));
 	}
 };
 
@@ -403,9 +396,8 @@ public:
 			return;
 		}
 		
-		ceUCAASpeakToggleUseSpeechAnimation::Ref undo(ceUCAASpeakToggleUseSpeechAnimation::Ref::NewWith(
-			topic, action));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakToggleUseSpeechAnimation::Ref::NewWith(topic, action));
 	}
 };
 

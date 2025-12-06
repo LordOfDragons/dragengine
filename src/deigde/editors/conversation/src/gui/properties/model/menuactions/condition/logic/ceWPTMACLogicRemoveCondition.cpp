@@ -68,6 +68,6 @@ pCondition( condition )
 ///////////////
 
 void ceWPTMACLogicRemoveCondition::OnAction(){
-	ceUCCLogicRemove::Ref undo(ceUCCLogicRemove::Ref::NewWith(pTopic, pAction, pLogic, pCondition));
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCCLogicRemove::Ref::NewWith(
+		pTopic, pAction, pLogic, pCondition));
 }

@@ -153,9 +153,8 @@ public:
 			return;
 		}
 		
-		gdeUOCWorldSetPath::Ref undo(gdeUOCWorldSetPath::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCWorldSetPath::Ref::NewWith(
 			pPanel.GetObjectClass(), world, editPath->GetPath()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 	}
 };
 
@@ -212,9 +211,8 @@ public:
 			return;
 		}
 		
-		gdeUOCWorldSetPropertyName::Ref undo(gdeUOCWorldSetPropertyName::Ref::NewWith(
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCWorldSetPropertyName::Ref::NewWith(
 			pPanel.GetObjectClass(), pPanel.GetWorld(), propertyName, comboBox->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 	}
 };
 

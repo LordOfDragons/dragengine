@@ -71,6 +71,5 @@ void ceWPTMATopicMoveAction::OnAction(){
 		DETHROW( deeInvalidAction );
 	}
 	
-	ceUCActionMove::Ref undo(ceUCActionMove::Ref::NewWith(pTopic, pAction, pIndex));
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCActionMove::Ref::NewWith(pTopic, pAction, pIndex));
 }

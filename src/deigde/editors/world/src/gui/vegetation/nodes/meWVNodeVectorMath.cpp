@@ -77,9 +77,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleVecMathSetOp::Ref undo(meUHTVRuleVecMathSetOp::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleVectorMath(), op));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleVecMathSetOp::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleVectorMath(), op));
 	}
 };
 
@@ -96,9 +96,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleVecMathSetVectorA::Ref undo(meUHTVRuleVecMathSetVectorA::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleVectorMath(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleVecMathSetVectorA::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleVectorMath(), value));
 	}
 };
 
@@ -115,9 +115,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleVecMathSetVectorB::Ref undo(meUHTVRuleVecMathSetVectorB::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleVectorMath(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleVecMathSetVectorB::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleVectorMath(), value));
 	}
 };
 
@@ -142,22 +142,23 @@ pRuleVectorMath( NULL )
 	SetTitle( "Vector-Math" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
-		env, "Value", "Value result of operation", false, *this, meWVNodeSlot::estValue, meHTVRuleVectorMath::eosValue));
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Value", "Value result of operation",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleVectorMath::eosValue));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Vector", "Vector result of operation",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eosVector ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Vector", "Vector result of operation",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eosVector));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Vector A", "First operand",
-		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorA ) );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+		"Vector A", "First operand",
+		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorA));
 	helper.EditVector( slot, "First operant if slot is not connected.",
 		pEditVectorA, new cTextVectorA( *this ) );
 	AddSlot( slot );
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Vector B", "Second operand if required",
-		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorB ) );
+	slot.TakeOverWith(env, "Vector B", "Second operand if required",
+		true, *this, meWVNodeSlot::estVector, meHTVRuleVectorMath::eisVectorB);
 	helper.EditVector( slot, "Second operant if slot is not connected.",
 		pEditVectorB, new cTextVectorB( *this ) );
 	AddSlot( slot );

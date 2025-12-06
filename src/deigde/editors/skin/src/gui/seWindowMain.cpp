@@ -784,7 +784,7 @@ public:
 			return NULL;
 		}
 		
-		const decString name( ( ( seDialogAddTexture& )( igdeDialog& )dialog ).GetTextureName() );
+		const decString name(dialog->GetTextureName());
 		if( skin->GetTextureList().HasNamed( name ) ){
 			igdeCommonDialogs::Error( &pWindow, "Add Texture", "A texture with this name exists already." );
 			return NULL;
@@ -988,20 +988,19 @@ public:
 		"Add property", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnActionTexture( seSkin*, seTexture *texture ){
-		seDialogAddProperty::Ref refDialog(seDialogAddProperty::Ref::NewWith(pWindow));
-		if( ! refDialog->Run( &pWindow ) ){
+		seDialogAddProperty::Ref dialog(seDialogAddProperty::Ref::NewWith(pWindow));
+		if( ! dialog->Run( &pWindow ) ){
 			return NULL;
 		}
 		
 		const igdeTexturePropertyList &knownPropertyList = *pWindow.GetEnvironment().GetTexturePropertyList();
-		seDialogAddProperty &dialog = ( seDialogAddProperty& )( igdeDialog& )refDialog;
 		const sePropertyList &propertyList = texture->GetPropertyList();
-		const decString &customName = dialog.GetCustomPropertyName();
+		const decString &customName = dialog->GetCustomPropertyName();
 		sePropertyList addPropertyList;
 		seProperty::Ref property;
 		
 		if( customName.IsEmpty() ){
-			const decStringSet selection( dialog.GetSelectedPropertyNames() );
+			const decStringSet selection( dialog->GetSelectedPropertyNames() );
 			const int count = selection.GetCount();
 			int i;
 			

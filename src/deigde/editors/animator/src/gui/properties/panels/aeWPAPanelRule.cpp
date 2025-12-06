@@ -347,8 +347,8 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		aeClipboardDataBones::Ref clip(aeClipboardDataBones::Ref::NewWith(rule->GetListBones()));
-		pPanel.GetWindowMain().GetClipboard().Set( clip );
+		pPanel.GetWindowMain().GetClipboard().Set(
+			aeClipboardDataBones::Ref::NewWith(rule->GetListBones()));
 		return NULL;
 	}
 };
@@ -560,9 +560,8 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position set" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		aeClipboardDataVertexPositionSets::Ref clip(aeClipboardDataVertexPositionSets::Ref::NewWith(
-			rule->GetListVertexPositionSets()));
-		pPanel.GetWindowMain().GetClipboard().Set( clip );
+		pPanel.GetWindowMain().GetClipboard().Set(
+			aeClipboardDataVertexPositionSets::Ref::NewWith(rule->GetListVertexPositionSets()));
 		return nullptr;
 	}
 };

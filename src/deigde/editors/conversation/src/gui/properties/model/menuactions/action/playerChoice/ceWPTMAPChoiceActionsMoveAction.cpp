@@ -74,7 +74,6 @@ void ceWPTMAPChoiceActionsMoveAction::OnAction(){
 		DETHROW( deeInvalidAction );
 	}
 	
-	ceUCAPChoiceActionMove::Ref undo(ceUCAPChoiceActionMove::Ref::NewWith(
+	pConversation->GetUndoSystem()->Add(ceUCAPChoiceActionMove::Ref::NewWith(
 		pTopic, pPlayerChoice, nullptr, pAction, pIndex));
-	pConversation->GetUndoSystem()->Add( undo );
 }

@@ -72,9 +72,8 @@ public:
 			return;
 		}
 		
-		seUSourceGroupSetApplicationType::Ref undo(seUSourceGroupSetApplicationType::Ref::NewWith(
-			source, type));
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUSourceGroupSetApplicationType::Ref::NewWith(source, type));
 	}
 };
 

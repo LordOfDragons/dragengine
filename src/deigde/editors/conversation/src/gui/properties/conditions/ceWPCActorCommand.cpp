@@ -79,9 +79,8 @@ public:
 			return;
 		}
 		
-		ceUCCACommandSetActor::Ref undo(ceUCCACommandSetActor::Ref::NewWith(
-			topic, action, condition, comboBox->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCACommandSetActor::Ref::NewWith(topic, action, condition, comboBox->GetText()));
 	}
 };
 
@@ -100,9 +99,8 @@ public:
 			return;
 		}
 		
-		ceUCCACommandSetCommand::Ref undo(ceUCCACommandSetCommand::Ref::NewWith(
-			topic, action, condition, textField->GetText()));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCACommandSetCommand::Ref::NewWith(topic, action, condition, textField->GetText()));
 	}
 };
 
@@ -130,9 +128,8 @@ public:
 			return;
 		}
 		
-		ceUCCACommandSetCommand::Ref undo(ceUCCACommandSetCommand::Ref::NewWith(
-			topic, action, condition, text));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCACommandSetCommand::Ref::NewWith(topic, action, condition, text));
 	}
 };
 
@@ -151,9 +148,8 @@ public:
 			return;
 		}
 		
-		ceUCCACommandToggleNegate::Ref undo(ceUCCACommandToggleNegate::Ref::NewWith(
-			topic, action, condition));
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCACommandToggleNegate::Ref::NewWith(topic, action, condition));
 	}
 };
 

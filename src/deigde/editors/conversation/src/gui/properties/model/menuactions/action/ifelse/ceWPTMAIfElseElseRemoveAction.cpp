@@ -67,6 +67,6 @@ pAction( action )
 ///////////////
 
 void ceWPTMAIfElseElseRemoveAction::OnAction(){
-	ceUCAIfElseRemove::Ref undo(ceUCAIfElseRemove::Ref::NewWith(pTopic, pIfElse, nullptr, pAction));
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCAIfElseRemove::Ref::NewWith(
+		pTopic, pIfElse, nullptr, pAction));
 }

@@ -200,8 +200,8 @@ public:
 			return;
 		}
 		
-		seULinkSetController::Ref undo(seULinkSetController::Ref::NewWith(link, controller));
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(
+			seULinkSetController::Ref::NewWith(link, controller));
 	}
 };
 
@@ -218,8 +218,7 @@ public:
 			return;
 		}
 		
-		seULinkSetRepeat::Ref undo(seULinkSetRepeat::Ref::NewWith(link, value));
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seULinkSetRepeat::Ref::NewWith(link, value));
 	}
 };
 

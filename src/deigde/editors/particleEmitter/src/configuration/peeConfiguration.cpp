@@ -92,8 +92,8 @@ void peeConfiguration::LoadConfiguration(){
 			return;
 		}
 		
-		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New( vfs.OpenFileForReading( pathFile ) ));
-		peeConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		peeConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile(
+			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
 	}catch( const deException &e ){

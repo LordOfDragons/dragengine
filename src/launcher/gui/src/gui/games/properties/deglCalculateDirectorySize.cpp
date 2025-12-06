@@ -55,7 +55,8 @@ pFailed( false )
 		return;
 	}
 	
-	pVFS->AddContainer( deVFSDiskDirectory::Ref::NewWith(decPath::CreatePathUnix( "/" ), decPath::CreatePathNative( directory ), true) );
+	pVFS->AddContainer(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathUnix("/"), decPath::CreatePathNative(directory), true));
 }
 
 deglCalculateDirectorySize::~deglCalculateDirectorySize(){

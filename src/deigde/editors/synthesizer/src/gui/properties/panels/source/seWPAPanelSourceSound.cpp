@@ -94,9 +94,8 @@ public:
 			return;
 		}
 		
-		seUSetSourceSoundPathSound::Ref undo(seUSetSourceSoundPathSound::Ref::NewWith(
-			source, editPath->GetPath()));
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUSetSourceSoundPathSound::Ref::NewWith(source, editPath->GetPath()));
 	}
 };
 
@@ -135,8 +134,8 @@ public:
 			return;
 		}
 		
-		seUToggleSourceSoundLooping::Ref undo(seUToggleSourceSoundLooping::Ref::NewWith(source));
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUToggleSourceSoundLooping::Ref::NewWith(source));
 	}
 };
 

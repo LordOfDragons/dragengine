@@ -434,9 +434,9 @@ public:
 			return;
 		}
 		
-		gdeUOCForceFieldSetPropertyName::Ref undo(gdeUOCForceFieldSetPropertyName::Ref::NewWith(
-			pPanel.GetObjectClass(), forceField, propertyName, comboBox->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCForceFieldSetPropertyName::Ref::NewWith(pPanel.GetObjectClass(),
+				forceField, propertyName, comboBox->GetText()));
 	}
 };
 
@@ -469,9 +469,9 @@ public:
 			return;
 		}
 		
-		gdeUOCForceFieldSetTriggerName::Ref undo(gdeUOCForceFieldSetTriggerName::Ref::NewWith(
-			pPanel.GetObjectClass(), pPanel.GetForceField(), triggerName, comboBox->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCForceFieldSetTriggerName::Ref::NewWith(pPanel.GetObjectClass(),
+				pPanel.GetForceField(), triggerName, comboBox->GetText()));
 	}
 };
 

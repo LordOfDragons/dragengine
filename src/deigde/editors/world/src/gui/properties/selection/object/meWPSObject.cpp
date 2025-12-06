@@ -1110,7 +1110,7 @@ public:
 		const meObjectList &list = pPanel.GetWorld()->GetSelectionObject().GetSelected();
 		const decString &property = pPanel.GetActiveProperty();
 		return ! property.IsEmpty() && list.GetCount() > 0 ?
-		new meUObjectPropertyRemoveFromSelected( list, property ) : NULL;
+			new meUObjectPropertyRemoveFromSelected( list, property ) : NULL;
 	}
 	
 	virtual void Update(){
@@ -1252,9 +1252,8 @@ public:
 			return;
 		}
 		
-		meUObjectTextureSetSkin::Ref undo(meUObjectTextureSetSkin::Ref::NewWith(
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectTextureSetSkin::Ref::NewWith(
 			texture, editPath->GetPath()));
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
 
@@ -1301,9 +1300,8 @@ public:
 			return;
 		}
 		
-		meUObjectTextureColorTint::Ref undo(meUObjectTextureColorTint::Ref::NewWith(
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectTextureColorTint::Ref::NewWith(
 			texture, colorBox->GetColor()));
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 	}
 };
 

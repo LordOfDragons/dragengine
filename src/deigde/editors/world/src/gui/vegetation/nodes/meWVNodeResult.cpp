@@ -66,9 +66,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleResultSetProb::Ref undo(meUHTVRuleResultSetProb::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleResult(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleResultSetProb::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleResult(), value));
 	}
 };
 
@@ -85,9 +85,9 @@ public:
 			return;
 		}
 		
-		meUHTVRuleResultSetVar::Ref undo(meUHTVRuleResultSetVar::Ref::NewWith(
-			pNode.GetWindowVegetation().GetVLayer(), pNode.GetRuleResult(), value));
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleResultSetVar::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleResult(), value));
 	}
 };
 
@@ -112,14 +112,15 @@ pRuleResult( rule )
 	SetTitle( "Result" );
 	
 	// slots
-	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(
-		env, "Probability", "Probability in the range from 0 to 1", true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability));
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+		"Probability", "Probability in the range from 0 to 1",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisProbability));
 	helper.EditFloat( slot, "Probability if slot is not connected.",
 		pEditProbability, new cTextProbability( *this ) );
 	AddSlot( slot );
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Variation", "Variation to use",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisVariation ) );
+	slot.TakeOverWith(env, "Variation", "Variation to use",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleResult::eisVariation);
 	helper.EditInteger( slot, "Variation if slot is not connected.",
 		pEditVariation, new cTextVariation( *this ) );
 	AddSlot( slot );

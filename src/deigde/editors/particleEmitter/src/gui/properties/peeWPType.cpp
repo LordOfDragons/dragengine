@@ -204,8 +204,7 @@ public:
 			return;
 		}
 		
-		peeUEmitterToggleEmitBurst::Ref undo(peeUEmitterToggleEmitBurst::Ref::NewWith(emitter));
-		emitter->GetUndoSystem()->Add( undo );
+		emitter->GetUndoSystem()->Add(peeUEmitterToggleEmitBurst::Ref::NewWith(emitter));
 	}
 };
 
@@ -225,8 +224,7 @@ public:
 			return;
 		}
 		
-		peeUEmitterSetBurstLifetime::Ref undo(peeUEmitterSetBurstLifetime::Ref::NewWith(emitter, value));
-		emitter->GetUndoSystem()->Add( undo );
+		emitter->GetUndoSystem()->Add(peeUEmitterSetBurstLifetime::Ref::NewWith(emitter, value));
 	}
 };
 
@@ -296,8 +294,7 @@ public:
 			
 			const peeType::Ref type(peeType::Ref::NewWith(emitter->GetEngine(), name));
 			
-			peeUTypeAdd::Ref undo(peeUTypeAdd::Ref::NewWith(emitter, type));
-			emitter->GetUndoSystem()->Add( undo );
+			emitter->GetUndoSystem()->Add(peeUTypeAdd::Ref::NewWith(emitter, type));
 			return;
 		}
 	}
@@ -853,7 +850,7 @@ pPreventUpdate( false )
 	
 	helper.EditPath( groupBox, "Emitter:", "Path to the particle emitter to create for impacts",
 		igdeEnvironment::efpltParticleEmitter, pEditPathCollisionEmitter,
-	new cPathCollisionEmitter( *this ) );
+		new cPathCollisionEmitter( *this ) );
 	helper.EditFloat( groupBox, "Min Impulse:",
 		"Minimal impact impulse required to create a new collision emitter instance",
 		pEditEmitMinImpulse, new cTextEmitMinImpulse( *this ) );
