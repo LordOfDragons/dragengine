@@ -423,7 +423,7 @@ void meCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 			entry->SetObject(colliderOwner->GetObject());
 			entry->SetDistance(info->GetDistance());
 			pHitList.AddEntry(entry);
@@ -433,7 +433,7 @@ void meCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 			entry->SetDecal(colliderOwner->GetDecal());
 			entry->SetDistance(info->GetDistance());
 			pHitList.AddEntry(entry);
@@ -443,7 +443,7 @@ void meCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 			entry->SetNavigationSpace(colliderOwner->GetNavigationSpace());
 			entry->SetDistance(info->GetDistance());
 			pHitList.AddEntry(entry);
@@ -453,7 +453,7 @@ void meCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 			entry->SetObjectShape(colliderOwner->GetShape());
 			entry->SetDistance(info->GetDistance());
 			pHitList.AddEntry(entry);
@@ -474,7 +474,7 @@ void meCLSelect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				const decVector2 coordinates( sector->GetGridPointAt( hitPoint ) );
 				const decPoint closest( decPoint( coordinates + decVector2( 0.5f, 0.5f ) ).Clamped( decPoint(), comax ) );
 				
-				const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+				const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 				entry->SetHTNavSpacePoint(resolution * closest.y + closest.x);
 				entry->SetDistance(info->GetDistance());
 				pHitList.AddEntry(entry);

@@ -70,8 +70,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new reUSetShapeSphereRadius( sphere, value ) );
+		reUSetShapeSphereRadius::Ref undo(reUSetShapeSphereRadius::Ref::NewWith(sphere, value));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}

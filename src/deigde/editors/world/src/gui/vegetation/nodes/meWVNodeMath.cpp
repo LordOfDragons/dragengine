@@ -75,10 +75,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleMathSetOp( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMath(), op ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMathSetOp::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMath(), op));
 	}
 };
 
@@ -95,10 +94,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleMathSetValueA( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMath(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMathSetValueA::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMath(), value));
 	}
 };
 
@@ -115,10 +113,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleMathSetValueB( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleMath(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleMathSetValueB::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleMath(), value));
 	}
 };
 
@@ -143,19 +140,19 @@ pRuleMath( NULL )
 	SetTitle( "Math" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Result", "Result of the operation",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleMath::eosResult ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Result", "Result of the operation",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleMath::eosResult));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Value A", "First operand",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleMath::eisValueA ) );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+		"Value A", "First operand",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleMath::eisValueA));
 	helper.EditFloat( slot, "First operant if slot is not connected.",
 		pEditValueA, new cTextValueA( *this ) );
 	AddSlot( slot );
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Value B", "Second operand if required",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleMath::eisValueB ) );
+	slot.TakeOverWith(env, "Value B", "Second operand if required",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleMath::eisValueB);
 	helper.EditFloat( slot, "Second operant if slot is not connected.",
 		pEditValueB, new cTextValueB( *this ) );
 	AddSlot( slot );

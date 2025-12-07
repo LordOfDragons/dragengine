@@ -39,6 +39,11 @@ class decPointerList;
  * \brief Ray tracing parallel task pre-calculating environment probe information.
  */
 class deoalRTPTTraceSoundRaysFinish : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoalRTPTTraceSoundRaysFinish> Ref;
+	
+	
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	

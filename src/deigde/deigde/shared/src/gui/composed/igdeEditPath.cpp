@@ -519,7 +519,7 @@ void igdeEditPath::ValidatePath(){
 				path = decPath::AbsolutePathNative( pText->GetText(), pBasePath );
 			}
 			
-			decDiskFileReader::Ref::New( new decDiskFileReader( path.GetPathNative() ) );
+			decDiskFileReader::Ref::NewWith(path.GetPathNative());
 			pText->SetInvalidValue( false );
 		}
 		
@@ -672,8 +672,8 @@ void igdeEditPath::BrowsePath(){
 	
 	path.RemoveLastComponent();
 	
-	igdeActionExternOpen::Ref action;
-	action.TakeOver( new igdeActionExternOpen( GetEnvironment(), "", nullptr, "", path.GetPathNative() ) );
+	igdeActionExternOpen::Ref action(igdeActionExternOpen::Ref::NewWith(
+		GetEnvironment(), "", nullptr, "", path.GetPathNative()));
 	action->OnAction();
 }
 

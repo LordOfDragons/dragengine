@@ -355,8 +355,7 @@ public:
 		helper.MenuCommand( menu, pPanel.GetActionPIRebuild() );
 		
 		// view
-		igdeMenuCascade::Ref menuView;
-		menuView.TakeOver( new igdeMenuCascade( helper.GetEnvironment(), "View" ) );
+		igdeMenuCascade::Ref menuView(igdeMenuCascade::Ref::NewWith(helper.GetEnvironment(), "View"));
 		
 		helper.MenuOption( menuView, pPanel.GetActionPISizeSmall() );
 		helper.MenuOption( menuView, pPanel.GetActionPISizeMedium() );
@@ -402,9 +401,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUSetObjectClass( list, cname ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUSetObjectClass::Ref::NewWith(list, cname));
 	}
 	
 	virtual void Update(){
@@ -443,9 +440,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUObjectTextureSetSkin( list, newskin ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectTextureSetSkin::Ref::NewWith(list, newskin));
 	}
 	
 	virtual void Update(){
@@ -484,9 +479,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUDecalSkin( list, newskin ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUDecalSkin::Ref::NewWith(list, newskin));
 	}
 	
 	virtual void Update(){
@@ -777,8 +770,7 @@ void meWPBrowser::AddCategoryToList( igdeGDCategory *category, igdeTreeItem *par
 	const int categoryCount = category->GetCategoryCount();
 	int i;
 	
-	igdeTreeItem::Ref item;
-	item.TakeOver( new igdeTreeItem( category->GetName(), category ) );
+	igdeTreeItem::Ref item(igdeTreeItem::Ref::NewWith(category->GetName(), category));
 	pTreeCategories->AppendItem( parent, item );
 	
 	for( i=0; i<categoryCount; i++ ){

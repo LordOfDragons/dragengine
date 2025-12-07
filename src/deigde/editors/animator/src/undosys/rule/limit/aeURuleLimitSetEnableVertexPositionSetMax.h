@@ -38,6 +38,9 @@ private:
 	aeRuleLimit *pRule;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleLimitSetEnableVertexPositionSetMax> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

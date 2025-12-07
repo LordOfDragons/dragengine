@@ -43,6 +43,9 @@ private:
 	decVector2 pNewOffset;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUObjectTextureTCOffset> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

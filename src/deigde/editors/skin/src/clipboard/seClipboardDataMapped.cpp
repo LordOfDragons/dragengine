@@ -45,7 +45,7 @@ igdeClipboardData( TYPE_NAME )
 	
 	int i;
 	for( i=0; i<count; i++ ){
-		pMapped.Add( seMapped::Ref::New( new seMapped( *list.GetAt( i ) ) ) );
+		pMapped.Add( seMapped::Ref::NewWith(*list.GetAt( i )) );
 	}
 }
 

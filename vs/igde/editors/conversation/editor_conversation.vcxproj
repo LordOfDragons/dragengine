@@ -71,7 +71,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAWait.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationAction.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionList.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionReference.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActor.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActorList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorController.cpp" />
@@ -103,7 +102,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionVariable.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationCondition.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionList.cpp" />
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionReference.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystem.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystemList.cpp" />
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\facepose\ceFacePose.cpp" />
@@ -596,7 +594,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceCAWait.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationAction.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionList.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionReference.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActor.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActorList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\controller\ceActorController.h" />
@@ -628,7 +625,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceCConditionVariable.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationCondition.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionList.h" />
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionReference.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystem.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystemList.h" />
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\facepose\ceFacePose.h" />

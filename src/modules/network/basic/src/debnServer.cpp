@@ -113,8 +113,8 @@ void debnServer::ProcessConnectionRequest( debnAddress &address, decBaseFileRead
 	eProtocols protocol = epDENetworkProtocol;
 	
 	// create connection 
-	deConnection::Ref connection;
-	connection.TakeOver( pNetBasic->GetGameEngine()->GetConnectionManager()->CreateConnection() );
+	deConnection::Ref connection(deConnection::Ref::New(
+		 pNetBasic->GetGameEngine()->GetConnectionManager()->CreateConnection() ));
 	( ( debnConnection* )connection->GetPeerNetwork() )->AcceptConnection( pSocket, address, protocol );
 	
 	// send back result

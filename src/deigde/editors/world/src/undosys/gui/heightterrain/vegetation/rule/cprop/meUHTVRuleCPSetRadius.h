@@ -41,6 +41,11 @@ class meHTVRuleClosestProp;
  * Undo action to set the search radius of a height terrain vegetation rule closest prop.
  */
 class meUHTVRuleCPSetRadius : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleCPSetRadius> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleClosestProp *pRule;

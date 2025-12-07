@@ -43,6 +43,9 @@ private:
 	decStringSet pVertexPositionSets;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeUSetRuleAddVertexPositionSet> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

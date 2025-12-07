@@ -43,6 +43,9 @@ private:
 	decString pNewTarget;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCACShotSetLookAtTarget> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

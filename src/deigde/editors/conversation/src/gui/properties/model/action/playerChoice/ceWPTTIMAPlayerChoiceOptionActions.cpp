@@ -129,9 +129,8 @@ void ceWPTTIMAPlayerChoiceOptionActions::OnContextMenu( igdeMenuCascade &context
 	const int indexAppend = option.GetActions().GetCount();
 	int i;
 	
-	igdeMenuCascade::Ref subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Add Action",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		environment, "Add Action", environment.GetStockIcon( igdeEnvironment::esiPlus )));
 	contextMenu.AddChild( subMenu );
 	
 	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
@@ -204,9 +203,8 @@ igdeMenuCascade &contextMenu, ceConversationAction *action ){
 		windowMain, conversation, *topic, playerChoice, option, action ), true );
 	helper.MenuSeparator( contextMenu );
 	
-	igdeMenuCascade::Ref subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Insert Action Before",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		environment, "Insert Action Before", environment.GetStockIcon( igdeEnvironment::esiPlus )));
 	contextMenu.AddChild( subMenu );
 	for( i=0; i<ceWPTTIMAction::ListAddMenuActionsCount; i++ ){
 		helper.MenuCommand( subMenu, new ceWPTMAPChoiceOptionAddAction( windowMain, conversation, *topic,

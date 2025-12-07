@@ -90,8 +90,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, sky, controller ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, sky, controller ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -114,8 +113,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editSlider->GetValue(), sky, controller ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editSlider->GetValue(), sky, controller ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -147,8 +145,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( sky ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( sky ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}

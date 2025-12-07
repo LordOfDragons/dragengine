@@ -67,8 +67,7 @@ pWPSynthesizer( NULL )
 	SetWidgetGuiThemeName( igdeGuiThemeNames::properties );
 	
 	// content
-	igdeContainer::Ref panels;
-	panels.TakeOver( new igdeContainerBox( env, igdeContainerBox::eaX, 10 ) );
+	igdeContainerBox::Ref panels(igdeContainerBox::Ref::NewWith(env, igdeContainerBox::eaX, 10));
 	AddChild( panels, eaCenter );
 	
 	pWPController = new seWPController( *this );

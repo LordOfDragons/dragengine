@@ -79,9 +79,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCLogicSetOperator( topic, action, condition, newOperator ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCLogicSetOperator::Ref::NewWith(topic, action, condition, newOperator));
 	}
 };
 

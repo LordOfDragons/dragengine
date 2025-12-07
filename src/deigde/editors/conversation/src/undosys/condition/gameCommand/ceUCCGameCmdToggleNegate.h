@@ -43,6 +43,9 @@ private:
 	ceCConditionGameCommand *pGameCommand;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCGameCmdToggleNegate> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

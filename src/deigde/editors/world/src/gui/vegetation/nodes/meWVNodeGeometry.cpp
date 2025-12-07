@@ -67,18 +67,17 @@ pRuleGeometry( rule )
 	SetTitle( "Geometry" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Height", "Height of point relative to terrain position",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosHeight ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Height", "Height of point relative to terrain position",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosHeight));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Normal", "Normalized vector relative to terrain orientation",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleGeometry::eosNormal ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Normal", "Normalized vector relative to terrain orientation",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleGeometry::eosNormal));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Terrain Type", "Terrain type",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosTerrainType ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Terrain Type", "Terrain type",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleGeometry::eosTerrainType));
 	
 	// parameters
 	pFraParameters.TakeOver( new igdeContainerForm( env ) );

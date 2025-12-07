@@ -34,6 +34,11 @@
  * \brief Undo action category set name.
  */
 class gdeUCategorySetName : public gdeUCategoryBase{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeUCategorySetName> Ref;
+	
+	
 private:
 	gdeCategory *pCategory;
 	

@@ -43,7 +43,6 @@ class igdeUIHelper;
  * Composed widget to edit decPoint3.
  */
 class DE_DLL_EXPORT igdeEditPoint3 : public igdeContainerBoxAlternate{
-
 public:
 	/** \brief Type holding strong reference. */
 	typedef deTObjectReference<igdeEditPoint3> Ref;
@@ -59,8 +58,11 @@ protected:
 		igdeTextField::Ref pTextZ;
 		
 	public:
+		typedef deTObjectReference<cListener> Ref;
+		
 		cListener( igdeEditPoint3 &editPoint3, igdeTextField *textX,
 			igdeTextField *textY, igdeTextField *textZ );
+		
 		virtual ~cListener();
 		virtual void OnTextChanged( igdeTextField *textField );
 		virtual void OnTextChanging( igdeTextField *textField );

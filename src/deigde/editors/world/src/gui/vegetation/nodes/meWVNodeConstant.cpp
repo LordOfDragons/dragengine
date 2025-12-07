@@ -64,10 +64,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleConstSetVector( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleConstant(), editVector->GetVector() ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleConstSetVector::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleConstant(), editVector->GetVector()));
 	}
 };
 
@@ -92,22 +91,21 @@ pRuleConstant( rule )
 	SetTitle( "Constant" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Vector", "Vector value",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Vector", "Vector value",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleConstant::eosVector));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "X", "X value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosX ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"X", "X value",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosX));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Y", "Y value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosY ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Y", "Y value",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosY));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Z", "Z value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosZ ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Z", "Z value",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleConstant::eosZ));
 	
 	// parameters
 	pFraParameters.TakeOver( new igdeContainerForm( env ) );

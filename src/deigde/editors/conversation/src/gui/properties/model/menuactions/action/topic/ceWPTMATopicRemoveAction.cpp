@@ -65,7 +65,5 @@ pAction( action )
 ///////////////
 
 void ceWPTMATopicRemoveAction::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCActionRemove( pTopic, pAction ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCActionRemove::Ref::NewWith(pTopic, pAction));
 }

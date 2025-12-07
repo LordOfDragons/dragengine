@@ -28,7 +28,7 @@
 #include "../common/exceptions.h"
 
 /**
- * \brief Template version of deThreadSafeObjectReference.
+ * \brief Template deThreadSafeObject reference.
  * \version 1.5
  * 
  * Safe way to hold a thread safe object reference with correct reference handling.

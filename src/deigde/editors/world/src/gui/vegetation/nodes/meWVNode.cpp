@@ -67,9 +67,8 @@ public:
 		}
 		
 		meWindowVegetation &view = *( ( meWindowVegetation* )pNode.GetOwnerBoard() );
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleRemove( view.GetVLayer(), pNode.GetRule() ) );
-		view.GetWorld()->GetUndoSystem()->Add( undo );
+		view.GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleRemove::Ref::NewWith(view.GetVLayer(), pNode.GetRule()));
 	}
 	
 	virtual void Update(){
@@ -108,6 +107,8 @@ class cActivationListener : public igdeNVNodeListener{
 	meWVNode &pNode;
 	
 public:
+	typedef deTObjectReference<cActivationListener> Ref;
+	
 	cActivationListener( meWVNode &node ) : pNode( node ){ }
 	
 	virtual void OnActivated( igdeNVNode* ){
@@ -130,6 +131,8 @@ class cDragNodeListener : public igdeNVNodeListener{
 	igdeUndo::Ref &pUndo;
 	
 public:
+	typedef deTObjectReference<cDragNodeListener> Ref;
+	
 	cDragNodeListener( meWVNode &node, igdeUndo::Ref &undo ) :
 		pNode( node ), pUndo( undo ){ }
 	
@@ -179,12 +182,8 @@ pRule( NULL )
 		DETHROW( deeInvalidParam );
 	}
 	
-	igdeNVNodeListener::Ref listener;
-	listener.TakeOver( new cActivationListener( *this ) );
-	AddListener( listener );
-	
-	listener.TakeOver( new cDragNodeListener( *this, pUndoMove ) );
-	AddListener( listener );
+	AddListener(cActivationListener::Ref::NewWith(*this));
+	AddListener(cDragNodeListener::Ref::NewWith(*this, pUndoMove));
 	
 	pRule = rule;
 	rule->AddReference();

@@ -104,9 +104,8 @@ pLangPack( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(320)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(320)));
 	AddChild( splitted );
 	
 	pWindowProperties = new lpeWindowProperties( *this );
@@ -491,7 +490,7 @@ public:
 			}
 			
 			igdeUndo::Ref undo;
-			const lpeLangPackEntry::Ref entry( lpeLangPackEntry::Ref::New( new lpeLangPackEntry ) );
+			const lpeLangPackEntry::Ref entry( lpeLangPackEntry::Ref::NewWith() );
 			entry->SetName( name );
 			
 			const lpeLangPack * const refLangPack = pWindow.GetReferenceLangPack();
@@ -541,9 +540,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new lpeULangPackEntryRemove( langpack, list, pWindow.GetReferenceLangPack() ) );
-		langpack->GetUndoSystem()->Add( undo );
+		langpack->GetUndoSystem()->Add(lpeULangPackEntryRemove::Ref::NewWith(
+			langpack, list, pWindow.GetReferenceLangPack()));
 	}
 	
 	virtual void Update(){

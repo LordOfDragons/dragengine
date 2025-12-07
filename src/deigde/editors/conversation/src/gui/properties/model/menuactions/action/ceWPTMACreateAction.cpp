@@ -82,12 +82,8 @@ pActionType( actionType ){
 ///////////////
 
 void ceWPTMACreateAction::OnAction(){
-	ceConversationAction::Ref action;
-	action.TakeOver( CreateAction() );
-	
-	igdeUndo::Ref undo;
-	undo.TakeOver( CreateUndo( action ) );
-	GetConversation().GetUndoSystem()->Add( undo );
+	GetConversation().GetUndoSystem()->Add(igdeUndo::Ref::New(
+		CreateUndo(ceConversationAction::Ref::New(CreateAction()))));
 }
 
 igdeUndo *ceWPTMACreateAction::CreateUndo( ceConversationAction* ){

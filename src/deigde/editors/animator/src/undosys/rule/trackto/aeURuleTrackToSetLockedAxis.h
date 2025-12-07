@@ -43,6 +43,9 @@ private:
 	deAnimatorRuleTrackTo::eLockedAxis pNewAxis;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleTrackToSetLockedAxis> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

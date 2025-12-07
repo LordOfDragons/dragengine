@@ -104,8 +104,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( skin, property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( skin, property ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -264,9 +263,8 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode* ){
-		igdeClipboardData::Ref data;
-		data.TakeOver( new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) );
-		pView.GetWindowMain().GetClipboard().Set( data );
+		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::NewWith(
+			property->GetNodeSelection().GetSelected()));
 		return NULL;
 	}
 };
@@ -277,11 +275,10 @@ public:
 		view.GetEnvironment().GetStockIcon( igdeEnvironment::esiCut ), "Cut nodes" ){}
 	
 	virtual igdeUndo *OnActionNode( seSkin*, seProperty *property, sePropertyNode *node ){
-		igdeClipboardData::Ref data;
-		data.TakeOver( new seClipboardDataPropertyNode( property->GetNodeSelection().GetSelected() ) );
-		pView.GetWindowMain().GetClipboard().Set( data );
+		pView.GetWindowMain().GetClipboard().Set(seClipboardDataPropertyNode::Ref::NewWith(
+			property->GetNodeSelection().GetSelected()));
 		
-		return new seUPNGroupRemoveNodes( node->GetParent(), property->GetNodeSelection().GetSelected() );
+		return new seUPNGroupRemoveNodes(node->GetParent(), property->GetNodeSelection().GetSelected());
 	}
 };
 
@@ -1141,9 +1138,8 @@ const char *pathImage, float order ) const{
 	path.AddComponent( "images" );
 	path.AddUnixPath( pathImage );
 	
-	deImage::Ref image;
-	image.TakeOver( pWindowMain.GetEngine()->GetImageManager()->LoadImage(
-		pWindowMain.GetEnvironment().GetFileSystemIGDE(), path.GetPathUnix(), "/" ) );
+	deImage::Ref image(deImage::Ref::New(pWindowMain.GetEngine()->GetImageManager()->LoadImage(
+		pWindowMain.GetEnvironment().GetFileSystemIGDE(), path.GetPathUnix(), "/" )));
 	
 	canvas.TakeOver( pWindowMain.GetEngine()->GetCanvasManager()->CreateCanvasImage() );
 	canvas->SetOrder( order );

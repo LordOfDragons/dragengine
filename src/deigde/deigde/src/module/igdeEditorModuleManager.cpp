@@ -302,13 +302,10 @@ void igdeEditorModuleManager::pScanForModules(){
 	int i;
 	
 	try{
-		deVirtualFileSystem::Ref vfs;
-		vfs.TakeOver( new deVirtualFileSystem );
+		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 		
 		const decPath searchPath( decPath::CreatePathNative( pPathModules ) );
-		deVFSContainer::Ref container;
-		container.TakeOver( new deVFSDiskDirectory( searchPath ) );
-		vfs->AddContainer( container );
+		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(searchPath));
 		
 		deCollectDirectorySearchVisitor collectDirectories;
 		vfs->SearchFiles( decPath::CreatePathUnix( "/" ), collectDirectories );

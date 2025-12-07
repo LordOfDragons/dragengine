@@ -38,6 +38,10 @@
  */
 class DE_DLL_EXPORT igdeContainerFlow : public igdeContainer{
 public:
+	/** \brief Strong reference. */
+	typedef deTObjectReference<igdeContainerFlow> Ref;
+	
+	
 	/** \brief Layout axis for subclasses. */
 	enum eAxis{
 		/** \brief Layout along the X axis. */

@@ -67,9 +67,8 @@ igdeIcon *igdeIcon::LoadPNG( igdeEnvironment &environment, const char *filename 
 		DETHROW( deeInvalidParam );
 	}
 	
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( environment.GetFileSystemIGDE()->
-		OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(environment.GetFileSystemIGDE()->
+		OpenFileForReading( decPath::CreatePathUnix( filename ) )));
 	
 	void * const native = igdeNativeIcon::CreateNativeIconPNG( reader );
 	
@@ -92,8 +91,8 @@ igdeIcon *igdeIcon::LoadPNG( const igdeEditorModule &editor, const char *filenam
 	path.AddComponent( editor.GetEditorDirectory() );
 	path.AddUnixPath( filename );
 	
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading( path ) );
+	decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+		 editor.GetEnvironment().GetFileSystemIGDE()->OpenFileForReading( path ) ));
 	void * const native = igdeNativeIcon::CreateNativeIconPNG( reader );
 	
 	try{
@@ -110,9 +109,8 @@ igdeIcon *igdeIcon::LoadImage( igdeEnvironment &environment, const char *filenam
 		DETHROW( deeInvalidParam );
 	}
 	
-	deImage::Ref image;
-	image.TakeOver( environment.GetEngineController()->GetEngine()->
-		GetImageManager()->LoadImage( filename, "/" ) );
+	deImage::Ref image(deImage::Ref::New(environment.GetEngineController()->GetEngine()->
+		GetImageManager()->LoadImage( filename, "/" )));
 	void * const native = igdeNativeIcon::CreateNativeIcon( image );
 	
 	try{

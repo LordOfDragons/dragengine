@@ -43,6 +43,9 @@ private:
 	decString pNewName;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCATriggerSetName> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

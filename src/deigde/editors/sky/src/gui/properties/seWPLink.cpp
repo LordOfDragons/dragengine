@@ -89,8 +89,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, sky, link ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, sky, link ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -113,8 +112,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, sky, link ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, sky, link ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}
@@ -146,8 +144,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( sky ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( sky ) ));
 		if( undo ){
 			sky->GetUndoSystem()->Add( undo );
 		}

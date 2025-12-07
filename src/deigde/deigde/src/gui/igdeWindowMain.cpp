@@ -277,8 +277,7 @@ public:
 		"Settings...", NULL, "Game project settings", deInputEvent::ekcT ){}
 	
 	virtual void OnAction(){
-		igdeDialog::Ref dialog;
-		dialog.TakeOver( new igdeDialogProjectSettings( pWindow ) );
+		igdeDialogProjectSettings::Ref dialog(igdeDialogProjectSettings::Ref::NewWith(pWindow));
 		if( dialog->Run( &pWindow )
 		&& ( ( igdeDialogProjectSettings& )( igdeDialog& )dialog ).GetBaseGameDefsChanged() ){
 			pWindow.OnProjectGameDefinitionChanged();
@@ -329,9 +328,7 @@ public:
 		"Shows the engine control system window", deInputEvent::ekcE ){}
 	
 	virtual void OnAction(){
-		igdeDialog::Ref dialog;
-		dialog.TakeOver( new igdeDialogEngine( pWindow ) );
-		dialog->Run( &pWindow );
+		igdeDialogEngine::Ref::NewWith(pWindow)->Run(&pWindow);
 	}
 };
 
@@ -355,9 +352,7 @@ public:
 		"Shows the list of texture properties", deInputEvent::ekcT ){}
 	
 	virtual void OnAction(){
-		igdeDialog::Ref dialog;
-		dialog.TakeOver( new igdeDialogTexturePropertyList( pWindow.GetEnvironment() ) );
-		dialog->Run( &pWindow );
+		igdeDialogTexturePropertyList::Ref::NewWith(pWindow.GetEnvironment())->Run(&pWindow);
 	}
 };
 
@@ -572,14 +567,13 @@ pTaskSyncGameDefinition( NULL )
 		
 		
 		// create window content
-		igdeContainerBorder::Ref content;
-		content.TakeOver( new igdeContainerBorder( pEnvironmentIGDE ) );
+		igdeContainerBorder::Ref content(igdeContainerBorder::Ref::NewWith(pEnvironmentIGDE));
 		AddChild( content );
 		
 		
 		// top side
-		igdeContainer::Ref panel;
-		panel.TakeOver( new igdeContainerFlow( pEnvironmentIGDE, igdeContainerFlow::eaY ) );
+		igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(
+			pEnvironmentIGDE, igdeContainerFlow::eaY));
 		content->AddChild( panel, igdeContainerBorder::eaTop );
 		
 		pMenuBar.TakeOver( new igdeMenuBar( pEnvironmentIGDE ) );
@@ -626,8 +620,7 @@ pTaskSyncGameDefinition( NULL )
 		// center
 		pSwiContent.TakeOver( new igdeSwitcher( pEnvironmentIGDE ) );
 		
-		igdeContainerBorder::Ref emptyContainer;
-		emptyContainer.TakeOver( new igdeContainerBorder( pEnvironmentIGDE ) );
+		igdeContainerBorder::Ref emptyContainer(igdeContainerBorder::Ref::NewWith(pEnvironmentIGDE));
 		pSwiContent->AddChild( emptyContainer );
 		
 		content->AddChild( pSwiContent, igdeContainerBorder::eaCenter );
@@ -697,9 +690,7 @@ bool igdeWindowMain::ProcessCommandLine( const decUnicodeStringList &arguments )
 		DETHROW_INFO( deeInvalidParam, "Missing arguments" );
 		#endif
 		
-		igdeDialog::Ref dialog;
-		dialog.TakeOver( new igdeDialogStartUp( *this ) );
-		return dialog->Run( this );
+		return igdeDialogStartUp::Ref::NewWith(*this)->Run(this);
 	}
 	
 	GetLogger()->LogInfoFormat( LOGSOURCE, "Loading game project %s", loadFile.GetString() );
@@ -775,8 +766,7 @@ void igdeWindowMain::SetGameProject( igdeGameProject *project ){
 }
 
 bool igdeWindowMain::CreateNewGameProject(){
-	igdeDialog::Ref dialog;
-	dialog.TakeOver( new igdeDialogNewGameProject( *this ) );
+	igdeDialogNewGameProject::Ref dialog(igdeDialogNewGameProject::Ref::NewWith(*this));
 	if( dialog->Run( this ) ){
 		SetGameProject( ( ( igdeDialogNewGameProject& )( igdeDialog& )dialog ).GetNewProject() );
 		pModuleManager->ActivateProjectManager();
@@ -1715,12 +1705,12 @@ void igdeWindowMain::pInitLogger(){
 		pLoggerHistory->SetHistorySize( 250 );
 	}
 	
-	const deLoggerChain::Ref loggerChain( deLoggerChain::Ref::New( new deLoggerChain ) );
+	const deLoggerChain::Ref loggerChain( deLoggerChain::Ref::NewWith() );
 	
 	loggerChain->AddLogger( pLoggerHistory );
 	
 	//no console logging to support console use in scripts
-// 	loggerChain->AddLogger( deLoggerConsoleColor::Ref::New( new deLoggerConsoleColor ) );
+// 	loggerChain->AddLogger( deLoggerConsoleColor::Ref::NewWith() );
 	
 	loggerChain->AddLogger( deLoggerFile::Ref::New( new deLoggerFile(
 		decBaseFileWriter::Ref::New( pVFS->OpenFileForWriting(
@@ -1860,8 +1850,8 @@ void igdeWindowMain::pCreateGuiThemes(){
 	pGuiThemes.SetAt( pDefaultGuiTheme->GetName(), pDefaultGuiTheme.operator->() );
 	
 	// properties theme
-	igdeGuiTheme::Ref guitheme;
-	guitheme.TakeOver( new igdeGuiTheme( igdeGuiThemeNames::properties, pDefaultGuiTheme ) );
+	igdeGuiTheme::Ref guitheme(igdeGuiTheme::Ref::NewWith(
+		igdeGuiThemeNames::properties, pDefaultGuiTheme));
 	
 	// guitheme->SetFloatProperty( igdeGuiThemePropertyNames::fontSize, 0.85f );
 	
@@ -1908,8 +1898,7 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	path.SetFromNative( pConfiguration.GetPathShares() );
 	path.AddComponent( "igde.degd" );
 	
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( new decDiskFileReader( path.GetPathNative() ) );
+	decDiskFileReader::Ref reader(decDiskFileReader::Ref::NewWith(path.GetPathNative()));
 	
 	pIGDEGameDefinition = new igdeGameDefinition( pEnvironmentIGDE );
 	pIGDEGameDefinition->SetFilename( path.GetPathNative() );
@@ -1920,12 +1909,10 @@ void igdeWindowMain::pLoadIGDEGameDefinition(){
 	GetLogger()->LogInfoFormat( "IGDE", "IGDE Game Definition find content in %s",
 		pConfiguration.GetPathIGDEData().GetString() );
 	
-	deVirtualFileSystem::Ref vfs;
-	vfs.TakeOver( new deVirtualFileSystem );
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
-	deVFSContainer::Ref diskContainer;
-	diskContainer.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( "/igde" ),
-		decPath::CreatePathNative( pConfiguration.GetPathIGDEData() ) ) );
+	deVFSDiskDirectory::Ref diskContainer(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathUnix( "/igde" ), decPath::CreatePathNative( pConfiguration.GetPathIGDEData() )));
 	vfs->AddContainer( diskContainer );
 	
 	igdeGDClassManager foundClasses;
@@ -1975,12 +1962,10 @@ void igdeWindowMain::pLoadTemplates(){
 	deLogger &logger = *GetLogger();
 	logger.LogInfo( LOGSOURCE, "Loading project templates" );
 	
-	deVirtualFileSystem::Ref vfs;
-	vfs.TakeOver( new deVirtualFileSystem );
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	const decPath basePath( decPath::CreatePathNative( pConfiguration.GetPathIGDETemplates() ) );
-	deVFSContainer::Ref container;
-	container.TakeOver( new deVFSDiskDirectory( basePath ) );
+	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(basePath));
 	vfs->AddContainer( container );
 	
 	// find all templates located in top level directories inside the templates directories
@@ -2049,11 +2034,9 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 	
 	const decPath gameDefPath( decPath::CreatePathNative( pConfiguration.GetPathIGDEGameDefs() ) );
 	
-	deVirtualFileSystem::Ref vfs;
-	vfs.TakeOver( new deVirtualFileSystem );
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
-	deVFSContainer::Ref container;
-	container.TakeOver( new deVFSDiskDirectory( gameDefPath ) );
+	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(gameDefPath));
 	vfs->AddContainer( container );
 	
 	deCollectFileSearchVisitor collectFiles( "*.degd" );
@@ -2111,13 +2094,12 @@ void igdeWindowMain::pLoadSharedGameDefinitions(){
 		
 		const decPath diskPath(decPath::CreatePathNative(gameDefinition->GetBasePath()));
 		const decPath rootPath(decPath::CreatePathUnix(gameDefinition->GetVFSPath()));
-		vfs->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(rootPath, diskPath, true)));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(rootPath, diskPath, true));
 		
 		if(sharePath.IsParentOf(diskPath) && vfsAssetLibraries->GetContainerCount() > 0){
 			decPath relPath(diskPath.RelativePath(sharePath, true));
 			relPath.SetPrefix("/");
-			vfs->AddContainer(deVFSRedirect::Ref::New(new deVFSRedirect(
-				rootPath, relPath, vfsAssetLibraries, true)));
+			vfs->AddContainer(deVFSRedirect::Ref::NewWith(rootPath, relPath, vfsAssetLibraries, true));
 		}
 		
 		igdeGDClassManager foundClasses;
@@ -2335,8 +2317,7 @@ void igdeWindowMain::pLoadXMLElementClasses( igdeGameProject &gameProject ){
 	igdeXMLElementClass loader( GetLogger() );
 	gameProject.GetXMLEClassGameDefinition()->GetClassManager()->RemoveAll();
 	
-	deVirtualFileSystem::Ref vfs;
-	vfs.TakeOver( new deVirtualFileSystem );
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSContainer::Ref container;
 	decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
@@ -2378,8 +2359,7 @@ void igdeWindowMain::pFindAndAddSkins( igdeGameProject &gameProject ){
 	igdeGDSkinManager &gdskins = *gameDefinition.GetSkinManager();
 	gdskins.RemoveAllSkins();
 	
-	deVirtualFileSystem::Ref vfs;
-	vfs.TakeOver( new deVirtualFileSystem );
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSContainer::Ref container;
 	decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );
@@ -2415,8 +2395,7 @@ void igdeWindowMain::pFindAndAddSkies( igdeGameProject &gameProject ){
 	igdeGDSkyManager &gdskies = *gameDefinition.GetSkyManager();
 	gdskies.RemoveAllSkies();
 	
-	deVirtualFileSystem::Ref vfs;
-	vfs.TakeOver( new deVirtualFileSystem );
+	deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 	
 	deVFSContainer::Ref container;
 	decPath pathData( decPath::CreatePathNative( gameProject.GetDirectoryPath() ) );

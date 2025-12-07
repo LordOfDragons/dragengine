@@ -91,9 +91,8 @@ void feConfiguration::LoadConfiguration(){
 			return;
 		}
 		
-		decBaseFileReader::Ref reader;
-		reader.TakeOver( vfs.OpenFileForReading( pathFile ) );
-		feConfigurationXML( pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile( reader, *this );
+		feConfigurationXML(pWindowMain.GetLogger(), LOGSOURCE ).ReadFromFile(
+			decBaseFileReader::Ref::New(vfs.OpenFileForReading(pathFile)), *this);
 		pPreventSaving = false;
 		
 	}catch( const deException &e ){

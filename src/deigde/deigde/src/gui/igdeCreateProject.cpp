@@ -245,8 +245,7 @@ void igdeCreateProject::pCopyDefaultFiles(){
 	decPath path( pNativePathProject );
 	path.AddComponent( ".gitignore" );
 	
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( new decDiskFileWriter( path.GetPathNative(), false ) );
+	decDiskFileWriter::Ref writer(decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false));
 	writer->WriteString( pProject->GetPathLocal() + "\n" );
 	writer->WriteString( pPathCache + "\n" );
 	writer->WriteString( "distribute\n" );
@@ -316,16 +315,15 @@ void igdeCreateProject::pCreateGameDefinition(){
 	decPath path( pNativePathProject );
 	path.AddUnixPath( pPathGameDefProject );
 	
-	( decDiskFileWriter::Ref::New( new decDiskFileWriter( path.GetPathNative(), false ) ) )
-		->Write( pSharedGameDefContent.GetString(), pSharedGameDefContent.GetLength() );
+	decDiskFileWriter::Ref::NewWith(path.GetPathNative(), false)->Write(
+		pSharedGameDefContent, pSharedGameDefContent.GetLength());
 }
 
 void igdeCreateProject::pLoadSharedGameDefContent(){
 	decPath path;
 	path.SetFromNative( pWindowMain.GetConfiguration().GetPathShares() );
 	path.AddComponent( "newproject.degd" );
-	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New(
-		new decDiskFileReader( path.GetPathNative() ) ) );
+	const decDiskFileReader::Ref reader( decDiskFileReader::Ref::NewWith(path.GetPathNative()) );
 	
 	const int contentLen = reader->GetLength();
 	pSharedGameDefContent.Set( ' ', contentLen );
@@ -404,9 +402,8 @@ void igdeCreateProject::pApplyTemplate(){
 	// create vfs directories to work with
 	pVFS.TakeOver( new deVirtualFileSystem );
 	
-	deVFSContainer::Ref container;
-	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_DATA ),
-		decPath::CreatePathNative( pNativePathData ) ) );
+	deVFSDiskDirectory::Ref container(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathUnix( VFS_DIR_DATA ), decPath::CreatePathNative( pNativePathData )));
 	pVFS->AddContainer( container );
 	
 	container.TakeOver( new deVFSDiskDirectory( decPath::CreatePathUnix( VFS_DIR_PROJECT ),
@@ -442,8 +439,7 @@ void igdeCreateProject::pTemplateCreateFile( const igdeTemplateFile &file ){
 	
 	// find files
 	if( ! file.GetPattern().IsEmpty() ){
-		deVirtualFileSystem::Ref vfs;
-		vfs.TakeOver( new deVirtualFileSystem );
+		deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 		
 		deCollectFileSearchVisitor collect( file.GetPattern() );
 		pVFS->SearchFiles( decPath::CreatePathUnix( VFS_DIR_TEMPLATE ), collect );

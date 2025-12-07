@@ -52,7 +52,10 @@
 // Constructor, destructor
 ////////////////////////////
 
-debpParticleEmitterType::debpParticleEmitterType(){
+debpParticleEmitterType::debpParticleEmitterType() :
+pParamFactorLinVelo(1.0f),
+pParamFactorAngVelo(1.0f)
+{
 	pEmitter = NULL,
 	pType = 0;
 	

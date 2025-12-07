@@ -99,14 +99,11 @@ pRuleCurve( rule )
 	SetTitle( "Curve" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Value", "Value of curve at input value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eosValue ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env, "Value", "Value of curve at input value",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eosValue));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Value", "Value to evaluate curve at",
-		true, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eisValue ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env, "Value", "Value to evaluate curve at",
+		true, *this, meWVNodeSlot::estValue, meHTVRuleCurve::eisValue));
 	
 	// parameters
 	pFraParameters.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );

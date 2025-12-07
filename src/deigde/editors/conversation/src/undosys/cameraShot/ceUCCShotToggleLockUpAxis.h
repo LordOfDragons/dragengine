@@ -39,6 +39,9 @@ private:
 	ceCameraShot *pCameraShot;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCShotToggleLockUpAxis> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo action. */

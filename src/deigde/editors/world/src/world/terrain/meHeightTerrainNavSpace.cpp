@@ -695,7 +695,7 @@ void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
 						name.AppendValue( navType );
 						
 						const meHeightTerrainNavSpaceType::Ref newType(
-							meHeightTerrainNavSpaceType::Ref::New( new meHeightTerrainNavSpaceType ) );
+							meHeightTerrainNavSpaceType::Ref::NewWith() );
 						newType->SetName( name );
 						newType->SetType( navType );
 						AddType( newType );
@@ -704,7 +704,7 @@ void meHeightTerrainNavSpace::LoadNavSpaceFromFile(){
 					}
 					
 					const meHeightTerrainNavSpaceFace::Ref newFace(
-						meHeightTerrainNavSpaceFace::Ref::New( new meHeightTerrainNavSpaceFace ) );
+						meHeightTerrainNavSpaceFace::Ref::NewWith() );
 					decIntList &newFacePoints = newFace->GetNavPoints();
 					for( j=0; j<cornerCount; j++ ){
 						newFacePoints.Add( ( int )*navCorners++ );

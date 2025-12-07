@@ -117,7 +117,7 @@ void fbxRigModule::SaveRig(decBaseFileWriter &writer, const deRig &rig){
 
 void fbxRigModule::pLoadRig( deRig &rig, fbxScene &scene ){
 	fbxNode * const nodePose = scene.FirstNodeNamed( "Pose" );
-	const fbxRig::Ref loadRig( fbxRig::Ref::New( new fbxRig( scene, nodePose ) ) );
+	const fbxRig::Ref loadRig( fbxRig::Ref::NewWith(scene, nodePose) );
 	/*
 	decVector r(loadRig->GetMatrix().GetEulerAngles() * RAD2DEG);
 	LogInfoFormat("rigmat (%f,%f,%f)", r.x, r.y, r.z);

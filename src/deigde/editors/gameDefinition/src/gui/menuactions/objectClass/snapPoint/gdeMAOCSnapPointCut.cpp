@@ -73,10 +73,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	
 	const gdeOCSnapPoint::Ref clipOCSnapPoint(gdeOCSnapPoint::Ref::NewWith(*snapPoint));
 	
-	igdeClipboardData::Ref clipData;
-	clipData.TakeOver( new gdeClipboardDataOCSnapPoint( clipOCSnapPoint ) );
-	
-	pWindowMain.GetClipboard().Set( clipData );
+	pWindowMain.GetClipboard().Set(gdeClipboardDataOCSnapPoint::Ref::NewWith(clipOCSnapPoint));
 	
 	return new gdeUOCRemoveSnapPoint( &objectClass, snapPoint );
 }

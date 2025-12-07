@@ -88,12 +88,9 @@ void deRLTaskReadSound::Run(){
 	
 	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
 	
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
-	
 	deBaseSoundInfo soundInfo;
-	module->InitLoadSound( reader, soundInfo );
-	reader = NULL;
+	module->InitLoadSound(decBaseFileReader::Ref::New(
+		GetVFS()->OpenFileForReading(vfsPath)), soundInfo);
 	
 	pSound->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
 	pSound->SetAsynchron( true );

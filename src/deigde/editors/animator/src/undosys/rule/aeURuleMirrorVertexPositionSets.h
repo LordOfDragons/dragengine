@@ -49,6 +49,9 @@ private:
 	decStringList pPatterns;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleMirrorVertexPositionSets> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo action. */

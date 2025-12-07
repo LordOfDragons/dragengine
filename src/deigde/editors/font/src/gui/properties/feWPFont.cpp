@@ -88,8 +88,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, font ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, font ) ));
 		if( undo ){
 			font->GetUndoSystem()->Add( undo );
 		}
@@ -141,8 +140,8 @@ public:
 			return true;
 		}
 		
-		deImage::Ref image;
-		image.TakeOver( pWindow.GetEngine()->GetImageManager()->LoadImage( path, "/" ) );
+		deImage::Ref image(deImage::Ref::New(
+			 pWindow.GetEngine()->GetImageManager()->LoadImage( path, "/" ) ));
 		
 		if( image->GetComponentCount() != 4 ){
 			igdeCommonDialogs::Error( &pWindow, "Import Font Image",
@@ -180,9 +179,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new feUFontToggleColorFont( font ) );
-		font->GetUndoSystem()->Add( undo );
+		font->GetUndoSystem()->Add(feUFontToggleColorFont::Ref::NewWith(font));
 	}
 };
 
@@ -226,8 +223,8 @@ pListener( NULL )
 	
 	helper.FormLineStretchFirst( groupBox, "Image:", "Font image.", frameLine );
 	helper.EditString( frameLine, "Font image.", pEditImagePath, new cTextImagePath( *this ) );
-	helper.Button( frameLine, pBtnImagePath,
-		new cActionSelectImagePath( windowProperties.GetWindowMain(), pEditImagePath ), true );
+	helper.Button( frameLine, pBtnImagePath, new cActionSelectImagePath(
+		windowProperties.GetWindowMain(), pEditImagePath ), true );
 	
 	helper.EditInteger( groupBox, "Line Height:", "Line height in pixels.",
 		pEditLineHeight, new cTextLineHeight( *this ) );

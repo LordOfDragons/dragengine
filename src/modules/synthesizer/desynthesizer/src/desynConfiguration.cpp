@@ -78,9 +78,7 @@ void desynConfiguration::LoadConfig(){
 		return;
 	}
 	
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( vfs.OpenFileForReading( path ) );
-	pLoadConfig( reader );
+	pLoadConfig(decBaseFileReader::Ref::New(vfs.OpenFileForReading(path)));
 }
 
 void desynConfiguration::SaveConfig(){
@@ -199,8 +197,7 @@ int desynConfiguration::pGetCDataInt( const decXmlElementTag &tag, int defaultVa
 
 
 void desynConfiguration::pLoadConfig( decBaseFileReader *file ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( pModule.GetGameEngine()->GetLogger() ).ParseXml( file, xmlDoc );
 	

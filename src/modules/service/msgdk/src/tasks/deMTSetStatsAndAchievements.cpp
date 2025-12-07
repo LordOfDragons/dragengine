@@ -19,7 +19,7 @@ deMTSetStatsAndAchievements::deMTSetStatsAndAchievements(deMsgdkServiceMsgdk &se
 deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
-pResultData(deServiceObject::Ref::New(new deServiceObject)),
+pResultData(deServiceObject::Ref::NewWith()),
 pWaitAchievementsSynced(false)
 {
 	pService.GetModule().LogInfo("deMTSetStatsAndAchievements: Set stats and achievements");
@@ -28,20 +28,20 @@ pWaitAchievementsSynced(false)
 	
 	so = request.GetChildAt("stats");
 	if(so){
-		pResultData->SetChildAt("stats", deServiceObject::Ref::New(new deServiceObject(so, true)));
+		pResultData->SetChildAt("stats", deServiceObject::Ref::NewWith(so, true));
 	}
 	else
 	{
-		pResultData->SetChildAt("stats", deServiceObject::Ref::New(new deServiceObject));
+		pResultData->SetChildAt("stats", deServiceObject::Ref::NewWith());
 	}
 	
 	so = request.GetChildAt("achievements");
 	if(so){
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::New(new deServiceObject(so, true)));
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::NewWith(so, true));
 	}
 	else
 	{
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::New(new deServiceObject));
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::NewWith());
 	}
 
 	pService.NewPendingRequest(pRequestId, "setStatsAndAchievements", pResultData);

@@ -786,7 +786,7 @@ void deovrDevice::pUpdateParametersTracker(){
 
 deovrDeviceComponent *deovrDevice::pAddComponent( deInputDeviceComponent::eComponentTypes type,
 const char *name, const char *id, const char *displayText ){
-	const deovrDeviceComponent::Ref component( deovrDeviceComponent::Ref::New( new deovrDeviceComponent( *this ) ) );
+	const deovrDeviceComponent::Ref component( deovrDeviceComponent::Ref::NewWith(*this) );
 	component->SetID( id );
 	component->SetName( name );
 	component->SetType( type );
@@ -809,7 +809,7 @@ const char *name, const char *id, const char *displayText ){
 		return -1;
 	}
 	
-	const deovrDeviceButton::Ref button( deovrDeviceButton::Ref::New( new deovrDeviceButton( *this ) ) );
+	const deovrDeviceButton::Ref button( deovrDeviceButton::Ref::NewWith(*this) );
 	button->SetID( id );
 	button->SetActionPressHandle( actionHandle );
 	
@@ -842,7 +842,7 @@ deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const 
 		return -1;
 	}
 	
-	const deovrDeviceAxis::Ref axis( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
+	const deovrDeviceAxis::Ref axis( deovrDeviceAxis::Ref::NewWith(*this) );
 	axis->SetActionAnalogHandle( actionHandle );
 	axis->SetType( type );
 	axis->SetRange( 0.0f, 1.0f );
@@ -858,7 +858,7 @@ deVROpenVR::eInputActions actionAnalog, const char *name, const char *id, const 
 
 void deovrDevice::pAddAxisFinger( deInputDeviceAxis::eAxisTypes type, deovrDeviceComponent *component,
 int finger, const char *name, const char *id, const char *displayText ){
-	const deovrDeviceAxis::Ref axis( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
+	const deovrDeviceAxis::Ref axis( deovrDeviceAxis::Ref::NewWith(*this) );
 	axis->SetType( type );
 	axis->SetRange( 0.0f, 1.0f );
 	axis->SetCenter( -1.0f );
@@ -891,7 +891,7 @@ const char *name, const char *id, const char *displayText ){
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		axis.TakeOver( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
+		axis.TakeOver( deovrDeviceAxis::Ref::NewWith(*this) );
 		axis->SetActionAnalogHandle( actionHandle );
 		axis->SetType( deInputDeviceAxis::eatStick );
 		axis->SetComponent( i );
@@ -927,7 +927,7 @@ const char *name, const char *id, const char *displayText ){
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		axis.TakeOver( deovrDeviceAxis::Ref::New( new deovrDeviceAxis( *this ) ) );
+		axis.TakeOver( deovrDeviceAxis::Ref::NewWith(*this) );
 		axis->SetActionAnalogHandle( actionHandle );
 		axis->SetType( deInputDeviceAxis::eatTouchPad );
 		axis->SetComponent( i );

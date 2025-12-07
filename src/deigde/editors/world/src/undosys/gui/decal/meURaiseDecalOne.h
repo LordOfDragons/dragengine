@@ -45,6 +45,9 @@ private:
 	meDecal *pDecal;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meURaiseDecalOne> Ref;
+	
 	// constructor, destructor
 	meURaiseDecalOne( meWorld *world, meDecal *decal );
 	virtual ~meURaiseDecalOne();

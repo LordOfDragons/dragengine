@@ -42,6 +42,11 @@ class igdeWindowMain;
  * project or closing the application.
  */
 class igdeDialogStartUp : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogStartUp> Ref;
+	
+	
 private:
 	igdeWindowMain &pWindowMain;
 	

@@ -49,6 +49,9 @@ private:
 	decVector pNewScaling;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUObjectSetScaling> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo action. */

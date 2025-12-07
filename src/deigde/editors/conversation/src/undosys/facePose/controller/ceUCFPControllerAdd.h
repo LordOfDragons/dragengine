@@ -41,6 +41,9 @@ private:
 	ceControllerValue *pController;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCFPControllerAdd> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

@@ -79,11 +79,10 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakWordFromText( pLane.GetWindow().GetTopic(), action ) );
-		( ( ceUCAASpeakWordFromText& )( igdeUndo& )undo ).SetWordsFromText(
-			action->ResolveTextBoxText( *conversation ), 0.075f );
-		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add( undo );
+		ceUCAASpeakWordFromText::Ref undo(ceUCAASpeakWordFromText::Ref::NewWith(
+			pLane.GetWindow().GetTopic(), action));
+		undo->SetWordsFromText(action->ResolveTextBoxText(*conversation), 0.075f);
+		pLane.GetWindow().GetConversation()->GetUndoSystem()->Add(undo);
 	}
 	
 	virtual void Update(){

@@ -115,8 +115,7 @@ void meLSXMLHeightTerrain::LoadFromFile( meHeightTerrain &heightTerrain, decBase
 	pLSSys->GetWindowMain()->GetLogger()->LogInfoFormat( LOGSOURCE,
 		"XMLHeightTerrain: load height terrain %s", file.GetFilename() );
 	
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( pLSSys->GetWindowMain()->GetEnvironment().GetLogger() ).ParseXml( &file, xmlDoc );
 	
@@ -829,10 +828,9 @@ void meLSXMLHeightTerrain::pLoadTexture( decXmlElementTag &root, meHeightTerrain
 }
 
 void meLSXMLHeightTerrain::pLoadNavSpace( decXmlElementTag &root, meHeightTerrainSector &sector ){
-	const meHeightTerrainNavSpace::Ref refNavSpace(meHeightTerrainNavSpace::Ref::NewWith(*pLSSys->GetWindowMain()->GetEngine()));
-	meHeightTerrainNavSpace &navspace = ( meHeightTerrainNavSpace& )( deObject& )refNavSpace;
+	meHeightTerrainNavSpace::Ref navSpace(meHeightTerrainNavSpace::Ref::NewWith(*pLSSys->GetWindowMain()->GetEngine()));
 	
-	navspace.SetName( GetAttributeString( root, "name" ) );
+	navSpace->SetName( GetAttributeString( root, "name" ) );
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -845,28 +843,28 @@ void meLSXMLHeightTerrain::pLoadNavSpace( decXmlElementTag &root, meHeightTerrai
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "layer" ){
-			navspace.SetLayer( GetCDataInt( *tag ) );
+			navSpace->SetLayer( GetCDataInt( *tag ) );
 			
 		}else if( tagName == "snapDistance" ){
-			navspace.SetSnapDistance( GetCDataFloat( *tag ) );
+			navSpace->SetSnapDistance( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "snapAngle" ){
-			navspace.SetSnapAngle( GetCDataFloat( *tag ) );
+			navSpace->SetSnapAngle( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "type" ){
-			pLoadNavSpaceType( *tag, navspace );
+			pLoadNavSpaceType( *tag, *navSpace );
 			
 		}else if( tagName == "path" ){
-			navspace.SetPathNavSpace( GetCDataString( *tag ), false ); // we can not load here yet
+			navSpace->SetPathNavSpace( GetCDataString( *tag ), false ); // we can not load here yet
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	sector.AddNavSpace( &navspace );
+	sector.AddNavSpace( navSpace );
 	
-	navspace.LoadNavSpaceFromFile(); // because we can only load properly after being added
+	navSpace->LoadNavSpaceFromFile(); // because we can only load properly after being added
 }
 
 void meLSXMLHeightTerrain::pLoadNavSpaceType( decXmlElementTag &root, meHeightTerrainNavSpace &navspace ){
@@ -900,8 +898,7 @@ void meLSXMLHeightTerrain::pLoadNavSpaceType( decXmlElementTag &root, meHeightTe
 }
 
 void meLSXMLHeightTerrain::pLoadVLayer( decXmlElementTag &root, meHeightTerrain &heightTerrain ){
-	const meHTVegetationLayer::Ref refVLayer(meHTVegetationLayer::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
-	meHTVegetationLayer &vlayer = ( meHTVegetationLayer& )( deObject& )refVLayer;
+	meHTVegetationLayer::Ref vLayer(meHTVegetationLayer::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -914,33 +911,32 @@ void meLSXMLHeightTerrain::pLoadVLayer( decXmlElementTag &root, meHeightTerrain 
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "name" ){
-			vlayer.SetName( GetCDataString( *tag ) );
+			vLayer->SetName( GetCDataString( *tag ) );
 			
 		}else if( tagName == "viewCenter" ){
 			decVector2 vector;
 			ReadVector2( *tag, vector );
-			vlayer.SetViewCenter( vector );
+			vLayer->SetViewCenter( vector );
 			
 		}else if( tagName == "variation" ){
-			pLoadVLayerVariation( *tag, vlayer );
+			pLoadVLayerVariation( *tag, *vLayer );
 			
 		}else if( tagName == "rules" ){
-			pLoadVLayerRules( *tag, vlayer );
+			pLoadVLayerRules( *tag, *vLayer );
 			
 		}else if( tagName == "link" ){
-			pLoadVLayerLink( *tag, vlayer );
+			pLoadVLayerLink( *tag, *vLayer );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	heightTerrain.AddVLayer( &vlayer );
+	heightTerrain.AddVLayer( vLayer );
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerVariation( decXmlElementTag &root, meHTVegetationLayer &vlayer ){
-	const meHTVVariation::Ref refVariation(meHTVVariation::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
-	meHTVVariation &variation = ( meHTVVariation& )( deObject& )refVariation;
+	meHTVVariation::Ref variation(meHTVVariation::Ref::NewWith(pLSSys->GetWindowMain()->GetEngine()));
 	
 	const int count = root.GetElementCount();
 	int i;
@@ -953,31 +949,31 @@ void meLSXMLHeightTerrain::pLoadVLayerVariation( decXmlElementTag &root, meHTVeg
 		const decString &tagName = tag->GetName();
 		
 		if( tagName == "model" ){
-			variation.SetPathModel( GetCDataString( *tag ) );
+			variation->SetPathModel( GetCDataString( *tag ) );
 			
 		}else if( tagName == "skin" ){
-			variation.SetPathSkin( GetCDataString( *tag ) );
+			variation->SetPathSkin( GetCDataString( *tag ) );
 			
 		}else if( tagName == "rotationPerForce" ){
-			variation.SetRotationPerForce( GetCDataFloat( *tag ) );
+			variation->SetRotationPerForce( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "restitution" ){
-			variation.SetRestitution( GetCDataFloat( *tag ) );
+			variation->SetRestitution( GetCDataFloat( *tag ) );
 			
 		}else if( tagName == "randomRotation" ){
-			variation.SetMinimumRandomRotation( GetAttributeFloat( *tag, "min" ) );
-			variation.SetMaximumRandomRotation( GetAttributeFloat( *tag, "max" ) );
+			variation->SetMinimumRandomRotation( GetAttributeFloat( *tag, "min" ) );
+			variation->SetMaximumRandomRotation( GetAttributeFloat( *tag, "max" ) );
 			
 		}else if( tagName == "randomScaling" ){
-			variation.SetMinimumRandomScaling( GetAttributeFloat( *tag, "min" ) );
-			variation.SetMaximumRandomScaling( GetAttributeFloat( *tag, "max" ) );
+			variation->SetMinimumRandomScaling( GetAttributeFloat( *tag, "min" ) );
+			variation->SetMaximumRandomScaling( GetAttributeFloat( *tag, "max" ) );
 			
 		}else{
 			LogWarnUnknownTag( root, *tag );
 		}
 	}
 	
-	vlayer.AddVariation( &variation );
+	vlayer.AddVariation( variation );
 }
 
 void meLSXMLHeightTerrain::pLoadVLayerRules( decXmlElementTag &root, meHTVegetationLayer &vlayer ){

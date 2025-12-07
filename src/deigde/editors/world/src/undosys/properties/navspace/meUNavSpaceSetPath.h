@@ -42,6 +42,9 @@ private:
 	decString pNewPath;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUNavSpaceSetPath> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

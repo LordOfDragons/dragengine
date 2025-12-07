@@ -47,6 +47,9 @@ private:
 	ceCConditionLogic::eOperators pNewOperator;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCLogicSetOperator> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

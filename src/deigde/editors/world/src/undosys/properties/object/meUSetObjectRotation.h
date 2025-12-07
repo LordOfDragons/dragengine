@@ -39,6 +39,11 @@ class meObject;
  * Undo action for setting object rotation.
  */
 class meUSetObjectRotation : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUSetObjectRotation> Ref;
+	
+	
 private:
 	meObject *pObject;
 	

@@ -140,8 +140,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( conversation ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( conversation ) ));
 		if( undo ){
 			conversation->GetUndoSystem()->Add( undo );
 		}
@@ -211,8 +210,7 @@ public:
 	virtual void OnTextChanged( igdeComboBox *comboBox ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndo::Ref undo;
-			undo.TakeOver( OnChanged( *comboBox, conversation ) );
+			igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, conversation ) ));
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
 			}
@@ -232,8 +230,7 @@ public:
 	virtual void OnTextChanged( igdeTextField *textField ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndo::Ref undo;
-			undo.TakeOver( OnChanged( *textField, conversation ) );
+			igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, conversation ) ));
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
 			}
@@ -253,8 +250,7 @@ public:
 	virtual void OnVectorChanged( igdeEditVector *editVector ){
 		ceConversation * const conversation = pPanel.GetConversation();
 		if( conversation ){
-			igdeUndo::Ref undo;
-			undo.TakeOver( OnChanged( *editVector, conversation ) );
+			igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *editVector, conversation ) ));
 			if( undo ){
 				conversation->GetUndoSystem()->Add( undo );
 			}
@@ -1217,8 +1213,7 @@ public:
 		}
 		
 		const ceControllerValue::Ref controller(ceControllerValue::Ref::NewWith(name, 1.0f));
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCFPControllerAdd( facePose, controller ) );
+		ceUCFPControllerAdd::Ref undo(ceUCFPControllerAdd::Ref::NewWith(facePose, controller));
 		conversation->GetUndoSystem()->Add( undo );
 		
 		pPanel.SelectFacePoseController( controller );

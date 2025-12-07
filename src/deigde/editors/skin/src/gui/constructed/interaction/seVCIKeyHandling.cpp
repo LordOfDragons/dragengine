@@ -151,8 +151,7 @@ void seVCIKeyHandling::ShowContextMenu( const decPoint &position ){
 	igdeEnvironment &env = pView.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelper();
 	
-	igdeMenuCascade::Ref menu;
-	menu.TakeOver( new igdeMenuCascade( env ) );
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(env));
 	
 	helper.MenuCommand( menu, pView.GetActionAddShape() );
 	helper.MenuCommand( menu, pView.GetActionAddImage() );

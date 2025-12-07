@@ -64,7 +64,6 @@ pWait( &wait )
 ///////////////
 
 void ceWPTMAWaitActionsClearCondition::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCAWaitSetCondition( pTopic, pWait, NULL ) );
-	GetConversation().GetUndoSystem()->Add( undo );
+	GetConversation().GetUndoSystem()->Add(ceUCAWaitSetCondition::Ref::NewWith(
+		pTopic, pWait, nullptr));
 }

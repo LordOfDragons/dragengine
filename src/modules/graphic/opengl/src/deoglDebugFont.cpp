@@ -850,8 +850,7 @@ void gimpDecodeRLE( unsigned char * const image_buf, const unsigned char *rle_da
 }
 
 void deoglDebugFont::pBuildTexture(){
-	const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::New( new deoglPixelBuffer(
-		deoglPixelBuffer::epfByte4, gimp_debugfont.width, gimp_debugfont.height, 1 ) ) );
+	const deoglPixelBuffer::Ref pixbuf( deoglPixelBuffer::Ref::NewWith(deoglPixelBuffer::epfByte4, gimp_debugfont.width, gimp_debugfont.height, 1) );
 	//deoglPixelBuffer pixbuf2( deoglPixelBuffer::epfByte4, gimp_debugfont.width, gimp_debugfont.height, 1 );
 	//unsigned int i, line = gimp_debugfont.width * gimp_debugfont.bytes_per_pixel;
 	

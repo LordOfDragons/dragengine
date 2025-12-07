@@ -179,7 +179,7 @@ void deoglCapCheckUBOIndirectMatrixAccess::Check( GLuint fbo ){
 		const deoglShaderProgram * const shader = shaderManager.GetProgramWith( sources, defines );
 		
 		// generate shader parameter block
-		const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+		const deoglSPBlockUBO::Ref spb( deoglSPBlockUBO::Ref::NewWith(renderThread) );
 		spb->SetParameterCount( 2 );
 		spb->GetParameterAt( 0 ).SetAll( deoglSPBParameter::evtFloat, 4, 3, 1 ); // mat4x3
 		spb->GetParameterAt( 1 ).SetAll( deoglSPBParameter::evtFloat, 3, 3, 1 ); // mat3

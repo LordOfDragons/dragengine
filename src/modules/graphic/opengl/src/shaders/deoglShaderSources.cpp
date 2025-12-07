@@ -59,8 +59,7 @@ deoglShaderSources::deoglShaderSources(){
 deoglShaderSources::deoglShaderSources( deLogger &logger, decBaseFileReader &reader ){
 	pFilename = reader.GetFilename();
 	
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( &logger ).ParseXml( &reader, xmlDoc );
 	

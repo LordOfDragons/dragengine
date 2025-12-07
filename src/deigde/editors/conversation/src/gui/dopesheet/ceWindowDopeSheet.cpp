@@ -237,6 +237,8 @@ class cMouseKeyListener : public igdeMouseKeyListener{
 	igdeMouseKeyListener::Ref pDragListener;
 	
 public:
+	typedef deTObjectReference<cMouseKeyListener> Ref;
+	
 	cMouseKeyListener( ceWindowDopeSheet &window ) : pWindow( window ){}
 	
 	igdeMouseKeyListener *GetListenerAtPosition( const decPoint &position ) const{
@@ -396,10 +398,8 @@ pVAPreview( NULL )
 	panel3->AddChild( panel4 );
 	panel2->AddChild( panel3 );
 	
-	pDopeSheet.TakeOver( new cDopeSheet( *this ) );
-	igdeMouseKeyListener::Ref mklistener;
-	mklistener.TakeOver( new cMouseKeyListener( *this ) );
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).AddListener( mklistener );
+	pDopeSheet.TakeOverWith(*this);
+	pDopeSheet->AddListener(cMouseKeyListener::Ref::NewWith(*this));
 	panel2->AddChild( pDopeSheet );
 	
 	panel->AddChild( panel2 );
@@ -565,12 +565,7 @@ ceWDSLane *ceWindowDopeSheet::GetLaneAtPosition( const decPoint &position ) cons
 }
 
 decPoint ceWindowDopeSheet::GetSizeDopeSheet() const{
-	if( pDopeSheet ){
-		return ( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).GetRenderAreaSize();
-		
-	}else{
-		return decPoint( 100, 10 );
-	}
+	return pDopeSheet ? pDopeSheet->GetRenderAreaSize() : decPoint(100, 10);
 }
 
 int ceWindowDopeSheet::GetLaneHeight() const{
@@ -703,19 +698,19 @@ void ceWindowDopeSheet::OnTimeChanged(){
 
 
 void ceWindowDopeSheet::OnAfterEngineStart(){
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).OnAfterEngineStart();
+	pDopeSheet->OnAfterEngineStart();
 }
 
 void ceWindowDopeSheet::OnBeforeEngineStop(){
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).OnBeforeEngineStop();
+	pDopeSheet->OnBeforeEngineStop();
 }
 
 void ceWindowDopeSheet::OnFrameUpdate( float elapsed ){
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).OnFrameUpdate( elapsed );
+	pDopeSheet->OnFrameUpdate( elapsed );
 }
 
 void ceWindowDopeSheet::SetEnableRendering( bool enable ){
-	( ( cDopeSheet& )( igdeWidget& )pDopeSheet ).SetEnableRendering( enable );
+	pDopeSheet->SetEnableRendering( enable );
 }
 
 
@@ -798,8 +793,8 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 	
 	for( i=timeFirst; i<=timeLast; i++ ){
 		if( i - timeFirst == pTimeLines.GetCount() ){
-			deCanvasPaint::Ref canvas;
-			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasPaint() );
+			deCanvasPaint::Ref canvas(deCanvasPaint::Ref::New(
+				 GetEngine()->GetCanvasManager()->CreateCanvasPaint() ));
 			canvas->SetFillColor( decColor( 0.0f, 0.0f, 0.0f ) );
 			//GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetShadow ) );
 			canvas->SetThickness( 0 );
@@ -809,8 +804,8 @@ void ceWindowDopeSheet::pRebuildTimeLinesAndLabels(){
 		if( i - timeFirst == pTimeLineLabels.GetCount() ){
 			deFont * const font = pFontText->GetEngineFont();
 			
-			deCanvasText::Ref canvas;
-			canvas.TakeOver( GetEngine()->GetCanvasManager()->CreateCanvasText() );
+			deCanvasText::Ref canvas(deCanvasText::Ref::New(
+				 GetEngine()->GetCanvasManager()->CreateCanvasText() ));
 			canvas->SetFont( font );
 			canvas->SetFontSize( ( float )font->GetLineHeight() );
 			canvas->SetColor( GetEnvironment().GetSystemColor( igdeEnvironment::escWidgetForeground ) );

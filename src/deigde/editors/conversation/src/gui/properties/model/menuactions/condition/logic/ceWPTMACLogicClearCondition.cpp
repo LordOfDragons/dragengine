@@ -64,7 +64,6 @@ pLogic( &logic ){
 ///////////////
 
 void ceWPTMACLogicClearCondition::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCCLogicRemoveAll( pTopic, pAction, pLogic ) );
-	GetConversation().GetUndoSystem()->Add( undo );
+	GetConversation().GetUndoSystem()->Add(ceUCCLogicRemoveAll::Ref::NewWith(
+		pTopic, pAction, pLogic));
 }

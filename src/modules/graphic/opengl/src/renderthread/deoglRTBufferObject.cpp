@@ -64,7 +64,7 @@ pInstanceArraySizeUBO( 0 ),
 pInstanceArraySizeSSBO( 0 ),
 
 pBillboardSPBListUBO( NULL ),
-pBillboardRTIGroups( deoglSharedSPBRTIGroupList::Ref::New( new deoglSharedSPBRTIGroupList( renderThread ) ) ),
+pBillboardRTIGroups( deoglSharedSPBRTIGroupList::Ref::NewWith(renderThread) ),
 
 pTemporaryVBOData( NULL ),
 pTemporaryVBODataSize( 0 )

@@ -138,14 +138,13 @@ void meCLAddDecal::RunAction(){
 		decalSize = ( ( meUAddDecal& )( igdeUndo& )pUndo ).GetDecal()->GetSize();
 		
 	}else{
-		const meDecal::Ref refDecal(meDecal::Ref::NewWith(pWorld->GetEnvironment()));
-		meDecal &decal = ( meDecal& )( deObject& )refDecal;
+		meDecal::Ref decal(meDecal::Ref::NewWith(pWorld->GetEnvironment()));
 		
-		decal.SetSkinPath( browseSkin );
-		decal.SetSize( decal.GetDefaultSize( 0.5f ) );
-		decalSize = decal.GetSize();
+		decal->SetSkinPath( browseSkin );
+		decal->SetSize( decal->GetDefaultSize( 0.5f ) );
+		decalSize = decal->GetSize();
 		
-		pUndo.TakeOver( new meUAddDecal( pWorld, &decal ) );
+		pUndo.TakeOver( new meUAddDecal( pWorld, decal ) );
 	}
 	
 	meDecal &decal = *( ( meUAddDecal& )( igdeUndo& )pUndo ).GetDecal();
@@ -181,7 +180,7 @@ void meCLAddDecal::CollisionResponse( deCollider *owner, deCollisionInfo *info )
 		}
 		
 		if( colliderOwner->GetObject() ){
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 			entry->SetObject( colliderOwner->GetObject() );
 			entry->SetDistance( info->GetDistance() );
 			entry->SetNormal( info->GetNormal() );

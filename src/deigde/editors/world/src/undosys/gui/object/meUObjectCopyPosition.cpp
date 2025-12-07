@@ -55,7 +55,7 @@ pCopyZ( copyZ )
 	SetLongInfo( "Copy Object Position" );
 	
 	for( i=0; i<count; i++ ){
-		pObjects.Add( meUndoDataObject::Ref::New( new meUndoDataObject( list.GetAt( i ) ) ) );
+		pObjects.Add( meUndoDataObject::Ref::NewWith(list.GetAt( i )) );
 	}
 	
 	pNewPosition = world->GetSelectionObject().GetActive()->GetPosition();

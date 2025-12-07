@@ -66,8 +66,7 @@ projLauncherEngineConfig::~projLauncherEngineConfig(){
 
 void projLauncherEngineConfig::ReadFromFile(
 decBaseFileReader &reader, projTestRunner &testRunner ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser parser( testRunner.GetWindowMain().GetLogger() );
 	

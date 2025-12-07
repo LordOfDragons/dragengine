@@ -99,8 +99,7 @@ void debpConfiguration::LoadConfig(){
 	deVirtualFileSystem &vfs = pBullet->GetVFS();
 	decBaseFileReader *reader = NULL;
 	
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	// read the configuration file if it exists
 	decPath path;

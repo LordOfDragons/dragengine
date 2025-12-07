@@ -97,6 +97,10 @@
 			"path": "src/modules/input/xsystem"
 		},
 		{
+			"name": "Module Input: Windows",
+			"path": "src/modules/input/w32input"
+		},
+		{
 			"name": "Module Language-Pack: DELangPack",
 			"path": "src/modules/langpack/delangpack"
 		},

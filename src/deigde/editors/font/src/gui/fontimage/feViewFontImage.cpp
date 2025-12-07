@@ -53,6 +53,9 @@
 ///////////
 
 class cScrollView : public igdeScrollBarListener{
+public:
+	typedef deTObjectReference<cScrollView> Ref;
+	
 protected:
 	feViewFontImage &pView;
 	
@@ -66,6 +69,9 @@ public:
 
 
 class cChangeZoom : public igdeComboBoxListener{
+public:
+	typedef deTObjectReference<cChangeZoom> Ref;
+	
 protected:
 	feViewFontImage &pView;
 	
@@ -101,13 +107,11 @@ pViewImage( NULL )
 	
 	igdeEnvironment &env = windowMain.GetEnvironment();
 	
-	igdeContainer::Ref bottomLine;
-	bottomLine.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaX,
-		igdeContainerFlow::esFirst ) );
+	igdeContainerFlow::Ref bottomLine(igdeContainerFlow::Ref::NewWith(
+		env, igdeContainerFlow::eaX, igdeContainerFlow::esFirst));
 	AddChild( bottomLine, igdeContainerBorder::eaBottom );
 	
-	igdeScrollBarListener::Ref scrollView;
-	scrollView.TakeOver( new cScrollView( *this ) );
+	cScrollView::Ref scrollView(cScrollView::Ref::NewWith(*this));
 	
 	pSBHorizontal.TakeOver( new igdeScrollBar( env, igdeScrollBar::eoHorizontal ) );
 	pSBHorizontal->AddListener( scrollView );
@@ -125,8 +129,7 @@ pViewImage( NULL )
 	pCBZoom->SetSelection( 0 ); // 100
 	bottomLine->AddChild( pCBZoom );
 	
-	igdeComboBoxListener::Ref changeZoom;
-	changeZoom.TakeOver( new cChangeZoom( *this ) );
+	cChangeZoom::Ref changeZoom(cChangeZoom::Ref::NewWith(*this));
 	pCBZoom->AddListener( changeZoom );
 	
 	pSBVertical.TakeOver( new igdeScrollBar( env, igdeScrollBar::eoVertical ) );

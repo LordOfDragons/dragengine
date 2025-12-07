@@ -101,8 +101,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, sanimation ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, sanimation ) ));
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
 		}
@@ -131,8 +130,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( sanimation ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( sanimation ) ));
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
 		}
@@ -154,8 +152,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnTextChanged( comboBox, sanimation ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnTextChanged( comboBox, sanimation ) ));
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
 		}
@@ -177,8 +174,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editPath->GetPath(), sanimation ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editPath->GetPath(), sanimation ) ));
 		if( undo ){
 			sanimation->GetUndoSystem()->Add( undo );
 		}

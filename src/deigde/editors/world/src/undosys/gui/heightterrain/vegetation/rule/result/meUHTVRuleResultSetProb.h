@@ -41,6 +41,11 @@ class meHTVRuleResult;
  * Undo action to set the probability of a height terrain vegetation rule result.
  */
 class meUHTVRuleResultSetProb : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleResultSetProb> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleResult *pRule;

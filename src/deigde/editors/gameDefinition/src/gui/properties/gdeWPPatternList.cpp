@@ -67,9 +67,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoSet( *pPanel.GetPatternList() + pEditPath->GetPath() ) );
-		pPanel.GetUndoSystem()->Add( undo );
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(
+			 pPanel.UndoSet( *pPanel.GetPatternList() + pEditPath->GetPath() ) ));
 		
 		pListBox->SetSelection( pListBox->IndexOfItem( pEditPath->GetPath() ) );
 	}
@@ -92,9 +91,7 @@ public:
 		decStringSet patterns( *pPanel.GetPatternList() );
 		patterns.Remove( pListBox->GetSelectedItem()->GetText() );
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoSet( patterns ) );
-		pPanel.GetUndoSystem()->Add( undo );
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( patterns ) ));
 		
 		if( pListBox->GetItemCount() > 0 ){
 			pListBox->SetSelection( 0 );
@@ -115,9 +112,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoSet( decStringSet() ) );
-		pPanel.GetUndoSystem()->Add( undo );
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New( pPanel.UndoSet( decStringSet() ) ));
 	}
 };
 

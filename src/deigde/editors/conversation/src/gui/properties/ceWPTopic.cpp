@@ -247,9 +247,8 @@ public:
 	
 	virtual void OnAction(){
 		if( pPanel.GetFile() ){
-			igdeUndo::Ref undo;
-			undo.TakeOver( new ceUCFileRemove( pPanel.GetFile() ) );
-			pPanel.GetConversation()->GetUndoSystem()->Add( undo );
+			pPanel.GetConversation()->GetUndoSystem()->Add(
+				ceUCFileRemove::Ref::NewWith(pPanel.GetFile()));
 		}
 	}
 	
@@ -283,9 +282,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCFileSetID( *conversation, file, name ) );
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(ceUCFileSetID::Ref::NewWith(*conversation, file, name));
 	}
 	
 	virtual void Update(){
@@ -335,9 +332,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCFilePaste( conversation, clip->GetFiles() ) );
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(
+			ceUCFilePaste::Ref::NewWith(conversation, clip->GetFiles()));
 	}
 	
 	virtual void Update(){
@@ -371,9 +367,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCFileDuplicate( conversation, *file, name ) );
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(ceUCFileDuplicate::Ref::NewWith(
+			conversation, *file, name));
 	}
 	
 	virtual void Update(){
@@ -499,9 +494,8 @@ public:
 	
 	virtual void OnAction(){
 		if( pPanel.GetTopic() ){
-			igdeUndo::Ref undo;
-			undo.TakeOver( new ceUCTopicRemove( pPanel.GetTopic() ) );
-			pPanel.GetConversation()->GetUndoSystem()->Add( undo );
+			pPanel.GetConversation()->GetUndoSystem()->Add(
+				ceUCTopicRemove::Ref::NewWith(pPanel.GetTopic()));
 		}
 	}
 	
@@ -536,9 +530,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCTopicSetID( *conversation, topic, name ) );
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(ceUCTopicSetID::Ref::NewWith(*conversation, topic, name));
 	}
 	
 	virtual void Update(){
@@ -611,9 +603,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCTopicPaste( file, clip->GetTopics() ) );
-		pPanel.GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetConversation()->GetUndoSystem()->Add(
+			ceUCTopicPaste::Ref::NewWith(file, clip->GetTopics()));
 	}
 	
 	virtual void Update(){
@@ -647,9 +638,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCTopicDuplicate( file, *topic, name ) );
-		pPanel.GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetConversation()->GetUndoSystem()->Add(
+			ceUCTopicDuplicate::Ref::NewWith(file, *topic, name));
 	}
 	
 	virtual void Update(){

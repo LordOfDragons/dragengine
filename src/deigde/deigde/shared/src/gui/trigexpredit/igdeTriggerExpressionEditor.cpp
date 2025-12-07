@@ -318,8 +318,7 @@ public:
 igdeTriggerExpressionEditor::igdeTriggerExpressionEditor( igdeEnvironment &environment ) :
 igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast ),
 pParser( NULL ),
-pTargetList( NULL ),
-pWorkExpression( NULL )
+pTargetList( NULL )
 {
 	pCreateContent();
 	RebuildTree(); // otherwise an initial SetExpression("") has no effect since the string equals
@@ -328,8 +327,7 @@ pWorkExpression( NULL )
 igdeTriggerExpressionEditor::igdeTriggerExpressionEditor( igdeEnvironment &environment, igdeAction *action ) :
 igdeContainerFlow( environment, igdeContainerFlow::eaY, igdeContainerFlow::esLast ),
 pParser( NULL ),
-pTargetList( NULL ),
-pWorkExpression( NULL )
+pTargetList( NULL )
 {
 	pCreateContent();
 	RebuildTree(); // otherwise an initial SetExpression("") has no effect since the string equals
@@ -337,9 +335,6 @@ pWorkExpression( NULL )
 }
 
 igdeTriggerExpressionEditor::~igdeTriggerExpressionEditor(){
-	if( pWorkExpression ){
-		pWorkExpression->FreeReference();
-	}
 }
 
 
@@ -405,25 +400,22 @@ void igdeTriggerExpressionEditor::UpdateText(){
 
 void igdeTriggerExpressionEditor::RebuildTree(){
 	pTreeExpression->RemoveAllItems();
-	if( pWorkExpression ){
-		pWorkExpression->FreeReference();
-		pWorkExpression = NULL;
-	}
+	pWorkExpression = nullptr;
 	
 	if( pParser ){
 		try{
-			pWorkExpression = pParser->StringToExpression( pExpression );
+			pWorkExpression = pParser->StringToExpression(pExpression);
 			
 		}catch( const deException & ){
 			pTreeExpression->AppendItem( NULL, "error", GetEnvironment().GetStockIcon( igdeEnvironment::esiWarning ) );
 		}
 	}
 	
-	if( ! pWorkExpression || ! pWorkExpression->GetRootComponent() ){
+	if(!pWorkExpression || !pWorkExpression->GetRootComponent()){
 		igdeTriggerExpressionComponent *component = NULL;
 		
-		if( ! pWorkExpression ){
-			pWorkExpression = new igdeTriggerExpression;
+		if(!pWorkExpression){
+			pWorkExpression.TakeOverWith();
 		}
 		
 		try{
@@ -440,29 +432,26 @@ void igdeTriggerExpressionEditor::RebuildTree(){
 			if( component ){
 				component->FreeReference();
 			}
-			if( pWorkExpression ){
-				pWorkExpression->FreeReference();
-				pWorkExpression = NULL;
-			}
+			pWorkExpression = nullptr;
 			throw;
 		}
 	}
 	
-	if( pWorkExpression ){
-		AddComponentToTree( NULL, pWorkExpression->GetRootComponent() );
+	if(pWorkExpression){
+		AddComponentToTree(nullptr, pWorkExpression->GetRootComponent());
 	}
 	
 	UpdateExpressionComponent();
 }
 
 void igdeTriggerExpressionEditor::UpdateTree(){
-	if( ! pWorkExpression ){
+	if(!pWorkExpression){
 		RebuildTree();
 		return;
 	}
 	
-	if( pWorkExpression && pTreeExpression->GetFirstChild() ){
-		UpdateComponentInTree( pTreeExpression->GetFirstChild(), pWorkExpression->GetRootComponent() );
+	if(pWorkExpression && pTreeExpression->GetFirstChild()){
+		UpdateComponentInTree(pTreeExpression->GetFirstChild(), pWorkExpression->GetRootComponent());
 	}
 	
 	UpdateExpressionComponent();
@@ -614,9 +603,9 @@ void igdeTriggerExpressionEditor::UpdateExpressionComponent(){
 }
 
 void igdeTriggerExpressionEditor::UpdateExpressionFromTree(){
-	if( pParser && pWorkExpression ){
-		pParser->ExpressionToString( pExpression, *pWorkExpression );
-		pEditExpression->SetText( pExpression );
+	if(pParser && pWorkExpression){
+		pParser->ExpressionToString(pExpression, pWorkExpression);
+		pEditExpression->SetText(pExpression);
 	}
 }
 
@@ -695,9 +684,8 @@ void igdeTriggerExpressionEditor::pCreateContent(){
 	AddChild( form );
 	
 	// content
-	igdeContainerSplitted::Ref panelContent;
-	panelContent.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espRight,
-		igdeApplication::app().DisplayScaled(200)));
+	igdeContainerSplitted::Ref panelContent(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espRight, igdeApplication::app().DisplayScaled(200)));
 	AddChild( panelContent );
 	
 	// expression tree

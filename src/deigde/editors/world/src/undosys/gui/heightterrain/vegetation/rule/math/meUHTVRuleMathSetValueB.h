@@ -41,6 +41,11 @@ class meHTVRuleMath;
  * Undo action to set the B value bound of a height terrain vegetation rule mapping.
  */
 class meUHTVRuleMathSetValueB : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleMathSetValueB> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleMath *pRule;

@@ -73,9 +73,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCHasActorSetActor( topic, action, condition, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCHasActorSetActor::Ref::NewWith(topic, action, condition, comboBox->GetText()));
 	}
 };
 
@@ -94,9 +93,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCCHasActorToggleNegate( topic, action, condition ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCCHasActorToggleNegate::Ref::NewWith(topic, action, condition));
 	}
 };
 

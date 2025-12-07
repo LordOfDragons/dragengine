@@ -123,9 +123,8 @@ void ceWPTTIMCLogic::OnContextMenu( igdeMenuCascade &contextMenu ){
 	// child action specific
 	helper.MenuSeparator( contextMenu );
 	
-	igdeMenuCascade::Ref subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Logic: Add Condition",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		environment, "Logic: Add Condition", environment.GetStockIcon( igdeEnvironment::esiPlus )));
 	contextMenu.AddChild( subMenu );
 	
 	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){
@@ -160,9 +159,8 @@ void ceWPTTIMCLogic::ContextMenuCondition( igdeMenuCascade &contextMenu, ceConve
 	int i;
 	
 	// child action specific
-	igdeMenuCascade::Ref subMenu;
-	subMenu.TakeOver( new igdeMenuCascade( environment, "Add Condition",
-		environment.GetStockIcon( igdeEnvironment::esiPlus ) ) );
+	igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+		environment, "Add Condition", environment.GetStockIcon( igdeEnvironment::esiPlus )));
 	contextMenu.AddChild( subMenu );
 	
 	for( i=0; i<ceWPTTIMCondition::ListAddMenuConditionsCount; i++ ){

@@ -46,6 +46,9 @@ private:
 	decUnicodeString pNewText;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAPChoiceOptionSetText> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

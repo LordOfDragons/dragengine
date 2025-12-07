@@ -95,8 +95,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( skin ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( skin ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -163,8 +162,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, skin, mapped ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, skin, mapped ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -294,9 +292,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUMappedSetName( mapped, value ) );
-		pPanel.GetSkin()->GetUndoSystem()->Add( undo );
+		pPanel.GetSkin()->GetUndoSystem()->Add(seUMappedSetName::Ref::NewWith(mapped, value));
 	}
 };
 
@@ -318,9 +314,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUMappedSetInputType( mapped, type ) );
-		skin->GetUndoSystem()->Add( undo );
+		skin->GetUndoSystem()->Add(seUMappedSetInputType::Ref::NewWith(mapped, type));
 	}
 };
 
@@ -469,9 +463,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUMappedSetRenderableComponent( mapped, component ) );
-		skin->GetUndoSystem()->Add( undo );
+		skin->GetUndoSystem()->Add(seUMappedSetRenderableComponent::Ref::NewWith(mapped, component));
 	}
 };
 
@@ -488,7 +480,7 @@ public:
 seWPMapped::seWPMapped( seWindowProperties &windowProperties ) :
 igdeContainerScroll( windowProperties.GetEnvironment(), false, true ),
 pWindowProperties( windowProperties ),
-pListener( seWPMappedListener::Ref::New( new seWPMappedListener( *this ) ) ),
+pListener( seWPMappedListener::Ref::NewWith(*this) ),
 pSkin( nullptr )
 {
 	igdeEnvironment &env = windowProperties.GetEnvironment();

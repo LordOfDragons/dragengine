@@ -49,6 +49,9 @@ private:
 	int pNewTypeNumber;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTTexSetTypeNum> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

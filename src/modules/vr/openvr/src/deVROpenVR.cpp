@@ -134,7 +134,7 @@ deovrRenderModel *deVROpenVR::GetRenderModelNamed( const char *name ){
 		return ( deovrRenderModel* )findObject;
 	}
 	
-	const deovrRenderModel::Ref renderModel( deovrRenderModel::Ref::New( new deovrRenderModel( *this, name ) ) );
+	const deovrRenderModel::Ref renderModel( deovrRenderModel::Ref::NewWith(*this, name) );
 	pRenderModels.SetAt( name, renderModel );
 	return renderModel;
 }
@@ -150,7 +150,7 @@ deovrTextureMap *deVROpenVR::GetTextureMapWithID( vr::TextureID_t id ){
 		}
 	}
 	
-	const deovrTextureMap::Ref textureMap( deovrTextureMap::Ref::New( new deovrTextureMap( *this, id ) ) );
+	const deovrTextureMap::Ref textureMap( deovrTextureMap::Ref::NewWith(*this, id) );
 	pTextureMaps.Add( textureMap );
 	return textureMap;
 }

@@ -1925,8 +1925,7 @@ decString deScriptingDragonScript::BuildFullName( const dsClass *theClass ) cons
 void deScriptingDragonScript::pAddVFSContainerHideScriptDirectory(){
 	pRemoveVFSContainerHideScriptDirectory();
 	
-	const deVFSNull::Ref container( deVFSNull::Ref::New(
-		new deVFSNull( decPath::CreatePathUnix( pInitScriptDirectory ) ) ) );
+	const deVFSNull::Ref container( deVFSNull::Ref::NewWith(decPath::CreatePathUnix( pInitScriptDirectory )) );
 	container->SetHidden( true );
 	container->AddHiddenPath( decPath::CreatePathUnix( "/" ) );
 	pVFSContainerHideScriptDirectory = container;

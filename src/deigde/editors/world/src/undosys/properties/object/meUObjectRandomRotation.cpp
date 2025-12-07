@@ -46,8 +46,7 @@ pWorld(world)
 	const int count = objects.GetCount();
 	int i;
 	for(i=0; i<count; i++){
-		pObjects.Add(ObjectData::Ref::New(new ObjectData(
-			objects.GetAt(i), randomizeX, randomizeY, randomizeZ)));
+		pObjects.Add(ObjectData::Ref::NewWith(objects.GetAt(i), randomizeX, randomizeY, randomizeZ));
 	}
 }
 

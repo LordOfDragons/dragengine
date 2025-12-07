@@ -36,6 +36,11 @@
  * \brief Dialog bezier curve coordinates.
  */
 class DE_DLL_EXPORT igdeDialogCurveBezierCoord : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogCurveBezierCoord> Ref;
+	
+	
 private:
 	decCurveBezierPoint pPoint;
 	igdeEditVector2::Ref pEditPoint;

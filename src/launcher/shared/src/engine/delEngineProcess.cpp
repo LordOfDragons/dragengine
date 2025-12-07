@@ -1016,8 +1016,7 @@ void delEngineProcess::CommandVFSAddDiskDir(){
 		pathRoot.SetFromUnix( root.GetString() );
 		pathDisk.SetFromNative( disk.GetString() );
 		
-		const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::New(
-			new deVFSDiskDirectory( pathRoot, pathDisk, readOnly ) ) );
+		const deVFSDiskDirectory::Ref container( deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, readOnly) );
 		
 		const int hiddenPathCount = ReadUShortFromPipe();
 		decString hiddenPath;
@@ -1083,8 +1082,8 @@ void delEngineProcess::CommandVFSAddDelgaFile(){
 		const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 		pathDelgaDir.RemoveLastComponent();
 		
-		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
-		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
+		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::NewWith() );
+		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::NewWith(pathDelgaDir) );
 		
 		const deArchiveContainer::Ref container( deArchiveContainer::Ref::New( amgr.CreateContainer(
 			decPath::CreatePathUnix( "/" ),
@@ -1467,16 +1466,16 @@ void delEngineProcess::CommandDelgaReadGameDefs(){
 		deArchiveManager &amgr = *pEngine->GetArchiveManager();
 		decPath pathRoot( decPath::CreatePathUnix( "/" ) );
 		
-		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::NewWith() );
 		
 		decPath pathDelgaDir( decPath::CreatePathNative( delgaFilename ) );
 		const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 		pathDelgaDir.RemoveLastComponent();
-		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
+		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::NewWith(pathDelgaDir) );
 		
 		const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 		
-		const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+		const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::NewWith() );
 		vfs->AddContainer( deArchiveContainer::Ref::New( amgr.CreateContainer( pathRoot, delgaArchive, pathRoot ) ) );
 		
 		deCollectFileSearchVisitor collect( "*.degame", true );
@@ -1531,16 +1530,16 @@ void delEngineProcess::CommandDelgaReadPatchDefs(){
 		deArchiveManager &amgr = *pEngine->GetArchiveManager();
 		decPath pathRoot( decPath::CreatePathUnix( "/" ) );
 		
-		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::NewWith() );
 		
 		decPath pathDelgaDir( decPath::CreatePathNative( delgaFilename ) );
 		const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 		pathDelgaDir.RemoveLastComponent();
-		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
+		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::NewWith(pathDelgaDir) );
 		
 		const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 		
-		const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+		const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::NewWith() );
 		vfs->AddContainer( deArchiveContainer::Ref::New( amgr.CreateContainer( pathRoot, delgaArchive, pathRoot ) ) );
 		
 		deCollectFileSearchVisitor collect( "*.depatch", true );
@@ -1603,16 +1602,16 @@ void delEngineProcess::CommandDelgaReadFiles(){
 		deArchiveManager &amgr = *pEngine->GetArchiveManager();
 		const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
 		
-		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+		const deVirtualFileSystem::Ref delgaVfs( deVirtualFileSystem::Ref::NewWith() );
 		
 		decPath pathDelgaDir( decPath::CreatePathNative( delgaFilename ) );
 		const decString delgaFileTitle( pathDelgaDir.GetLastComponent() );
 		pathDelgaDir.RemoveLastComponent();
-		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathDelgaDir ) ) );
+		delgaVfs->AddContainer( deVFSDiskDirectory::Ref::NewWith(pathDelgaDir) );
 		
 		const deArchive::Ref delgaArchive( deArchive::Ref::New( amgr.OpenArchive( delgaVfs, delgaFileTitle, "/" ) ) );
 		
-		const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+		const deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::NewWith() );
 		vfs->AddContainer( deArchiveContainer::Ref::New( amgr.CreateContainer( pathRoot, delgaArchive, pathRoot ) ) );
 		
 		// read files
@@ -1623,7 +1622,7 @@ void delEngineProcess::CommandDelgaReadFiles(){
 			reader.TakeOver( vfs->OpenFileForReading( decPath::CreatePathUnix( filename ) ) );
 			const int size = reader->GetLength();
 			
-			const decMemoryFile::Ref content( decMemoryFile::Ref::New( new decMemoryFile( filename ) ) );
+			const decMemoryFile::Ref content( decMemoryFile::Ref::NewWith(filename) );
 			content->Resize( size );
 			reader->Read( content->GetPointer(), size );
 			
@@ -1667,7 +1666,7 @@ void delEngineProcess::pCreateLogger( const char *logfile ){
 	diskPath.RemoveLastComponent();
 	
 	const deVFSDiskDirectory::Ref diskDir(
-		deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( diskPath ) ) );
+		deVFSDiskDirectory::Ref::NewWith(diskPath) );
 	
 	pLogger.TakeOver( new deLoggerFile(
 		decBaseFileWriter::Ref::New( diskDir->OpenFileForWriting( filePath ) ) ) );

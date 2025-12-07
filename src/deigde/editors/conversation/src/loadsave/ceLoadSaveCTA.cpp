@@ -70,8 +70,7 @@ pPattern( ".decta" ){
 ///////////////////////
 
 void ceLoadSaveCTA::LoadCTA( ceConversationActor &actor, decBaseFileReader &reader ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	
@@ -341,7 +340,7 @@ void ceLoadSaveCTA::pReadPose( const decXmlElementTag &root, ceConversationActor
 				pose->SetPathAnimator( GetCDataString( *tag ) );
 				
 			}else if( tagName == "controller" ){
-				const ceActorController::Ref controller( ceActorController::Ref::New( new ceActorController ) );
+				const ceActorController::Ref controller( ceActorController::Ref::NewWith() );
 				
 				if( HasAttribute( *tag, "index" ) ){ // deprecated
 					controller->SetName( GetAttributeString( *tag, "index" ) );

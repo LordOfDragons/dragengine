@@ -1079,8 +1079,7 @@ void gdeViewActiveObject::pInitOCWorlds(const gdeObjectClass &objectClass, const
 	int i;
 	
 	for(i=0; i<count; i++){
-		pOCWorlds.Add(gdeVAOWorld::Ref::New(new gdeVAOWorld(
-			*this, objectClass, propertyPrefix, list.GetAt(i))));
+		pOCWorlds.Add(gdeVAOWorld::Ref::NewWith(*this, objectClass, propertyPrefix, list.GetAt(i)));
 	}
 }
 

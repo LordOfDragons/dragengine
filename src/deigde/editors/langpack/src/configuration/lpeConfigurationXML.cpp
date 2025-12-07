@@ -63,8 +63,7 @@ lpeConfigurationXML::~lpeConfigurationXML(){
 ///////////////
 
 void lpeConfigurationXML::ReadFromFile( decBaseFileReader &reader, lpeConfiguration &config ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

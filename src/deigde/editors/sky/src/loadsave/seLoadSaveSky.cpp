@@ -78,8 +78,7 @@ pPattern( ".desky" ){
 ///////////////////////
 
 void seLoadSaveSky::LoadSky( seLoadSaveSystem &lssys, seSky &sky, decBaseFileReader &reader ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( lssys.GetWindowMain().GetEnvironment().GetLogger() ).ParseXml( &reader, xmlDoc );
 	

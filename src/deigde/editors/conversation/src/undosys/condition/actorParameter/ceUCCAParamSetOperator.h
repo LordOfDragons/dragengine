@@ -47,6 +47,9 @@ private:
 	ceCConditionActorParameter::eOperators pNewOperator;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCAParamSetOperator> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

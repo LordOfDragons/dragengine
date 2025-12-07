@@ -27,7 +27,6 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/threading/deThreadSafeObject.h>
-#include <dragengine/threading/deThreadSafeObjectReference.h>
 
 
 /**

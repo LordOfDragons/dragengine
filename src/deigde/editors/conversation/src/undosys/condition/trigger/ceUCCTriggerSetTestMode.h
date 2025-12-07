@@ -46,6 +46,9 @@ private:
 	ceCConditionTrigger::eTestModes pNewTestMode;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCCTriggerSetTestMode> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Creates a new undo object. */

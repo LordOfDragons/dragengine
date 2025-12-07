@@ -64,7 +64,7 @@ pNodePose( nodePose )
 			continue;
 		}
 		
-		const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodePoseBone, nodePoseBone ) ) );
+		const fbxRigBone::Ref bone( fbxRigBone::Ref::NewWith(*this, nodePoseBone, nodePoseBone) );
 		bone->SetIndex( pBones.GetCount() );
 		
 		if( ! GetBoneNamed( bone->GetName() ) ){
@@ -86,7 +86,7 @@ pNodePose( nodePose )
 			
 			fbxNode &nodeModel = *scene.NodeWithID( nodePoseBone.FirstNodeNamed( "Node" )->GetID() );
 			if( nodeModel.GetPropertyAt( 2 )->CastString().GetValue() == "LimbNode" ){
-				const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodePoseBone, nodeModel ) ) );
+				const fbxRigBone::Ref bone( fbxRigBone::Ref::NewWith(*this, nodePoseBone, nodeModel) );
 				bone->SetIndex( pBones.GetCount() );
 				
 				if( ! GetBoneNamed( bone->GetName() ) ){
@@ -94,7 +94,7 @@ pNodePose( nodePose )
 				}
 				
 			}else if( nodeModel.GetPropertyAt( 2 )->CastString().GetValue() == "Root" ){
-				const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodeModel, nodeModel ) ) );
+				const fbxRigBone::Ref bone( fbxRigBone::Ref::NewWith(*this, nodeModel, nodeModel) );
 				bone->SetIndex( pBones.GetCount() );
 				
 				if( ! GetBoneNamed( bone->GetName() ) ){
@@ -118,7 +118,7 @@ pNodePose( nodePose )
 				continue;
 			}
 			
-			const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodeModel, nodeModel ) ) );
+			const fbxRigBone::Ref bone( fbxRigBone::Ref::NewWith(*this, nodeModel, nodeModel) );
 			bone->SetIndex( pBones.GetCount() );
 			
 			if( ! GetBoneNamed( bone->GetName() ) ){
@@ -218,7 +218,7 @@ void fbxRig::pAddRootBone( fbxScene &scene, fbxNode &nodeRoot ){
 			continue;
 		}
 		
-		const fbxRigBone::Ref bone( fbxRigBone::Ref::New( new fbxRigBone( *this, nodeModel, nodeModel ) ) );
+		const fbxRigBone::Ref bone( fbxRigBone::Ref::NewWith(*this, nodeModel, nodeModel) );
 		bone->SetIndex( pBones.GetCount() );
 		
 		if( ! GetBoneNamed( bone->GetName() ) ){

@@ -87,8 +87,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -128,8 +127,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -151,9 +149,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeURuleSASetPathAnimator( rule, editPath->GetPath() ) );
-		pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
+		pPanel.GetAnimator()->GetUndoSystem()->Add(
+			aeURuleSASetPathAnimator::Ref::NewWith(rule, editPath->GetPath()));
 	}
 };
 

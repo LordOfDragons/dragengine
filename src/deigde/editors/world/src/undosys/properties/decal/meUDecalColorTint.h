@@ -43,6 +43,9 @@ private:
 	decColor pNewColor;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUDecalColorTint> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

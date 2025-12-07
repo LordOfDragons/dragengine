@@ -41,6 +41,9 @@ private:
 	ceConversationAction *pAction;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCActionToggleWaitForActor> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

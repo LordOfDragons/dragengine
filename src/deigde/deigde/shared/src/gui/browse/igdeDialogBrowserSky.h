@@ -36,6 +36,9 @@ class igdeGDSky;
  */
 class DE_DLL_EXPORT igdeDialogBrowserSky : public igdeDialogBrowser{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogBrowserSky> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */

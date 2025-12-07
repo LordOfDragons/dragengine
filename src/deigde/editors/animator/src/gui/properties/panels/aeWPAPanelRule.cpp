@@ -115,8 +115,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -156,8 +155,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -180,8 +178,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, animator, rule ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, animator, rule ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -350,9 +347,8 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy bones" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		igdeClipboardData::Ref clip;
-		clip.TakeOver( new aeClipboardDataBones( rule->GetListBones() ) );
-		pPanel.GetWindowMain().GetClipboard().Set( clip );
+		pPanel.GetWindowMain().GetClipboard().Set(
+			aeClipboardDataBones::Ref::NewWith(rule->GetListBones()));
 		return NULL;
 	}
 };
@@ -564,9 +560,8 @@ public:
 		panel.GetEnvironment().GetStockIcon( igdeEnvironment::esiCopy ), "Copy vertex position set" ){}
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeRule *rule ){
-		igdeClipboardData::Ref clip;
-		clip.TakeOver( new aeClipboardDataVertexPositionSets( rule->GetListVertexPositionSets() ) );
-		pPanel.GetWindowMain().GetClipboard().Set( clip );
+		pPanel.GetWindowMain().GetClipboard().Set(
+			aeClipboardDataVertexPositionSets::Ref::NewWith(rule->GetListVertexPositionSets()));
 		return nullptr;
 	}
 };

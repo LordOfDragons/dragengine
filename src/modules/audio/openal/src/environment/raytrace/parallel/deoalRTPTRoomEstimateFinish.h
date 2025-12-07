@@ -36,6 +36,11 @@ class decPointerList;
  * \brief Finish ray tracing parallel task estimating room parameters.
  */
 class deoalRTPTRoomEstimateFinish : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoalRTPTRoomEstimateFinish> Ref;
+	
+	
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	

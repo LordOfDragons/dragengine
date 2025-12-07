@@ -43,6 +43,11 @@ class meHTVRuleComponents;
  * Undo action to set the vector of a height terrain vegetation rule components.
  */
 class meUHTVRuleCompSetVector : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleCompSetVector> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleComponents *pRule;

@@ -35,12 +35,11 @@ public:
 	pInvalidator(service.GetInvalidator()),
 	pUrl(url),
 	pRequestId(requestId),
-	pVFS(deVirtualFileSystem::Ref::New(new deVirtualFileSystem))
+	pVFS(deVirtualFileSystem::Ref::NewWith()
 	{
 		SetEmptyRun( true );
 
-		const deVFSMemoryFiles::Ref container(deVFSMemoryFiles::Ref::New(
-			new deVFSMemoryFiles(decPath::CreatePathUnix("/"))));
+		const deVFSMemoryFiles::Ref container(deVFSMemoryFiles::Ref::NewWith(decPath::CreatePathUnix("/")));
 		container->AddMemoryFile(memoryFile);
 		pVFS->AddContainer(container);
 
@@ -161,7 +160,7 @@ void deMTLoadUserResource::GetGamerPicture()
 	
 	pService.GetModule().LogInfoFormat("deMTLoadUserResource.GetGamerPicture: url=%s", pUrl.url.GetString());
 	
-	const deServiceObject::Ref data(deServiceObject::Ref::New(new deServiceObject));
+	const deServiceObject::Ref data(deServiceObject::Ref::NewWith());
 	data->SetStringChildAt("url", pUrl.url);
 	data->SetStringChildAt("resourceType", "image");
 	
@@ -248,7 +247,7 @@ void deMTLoadUserResource::OnFinished()
 		return;
 	}
 	
-	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::New(new decMemoryFile("/image.png")));
+	const decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith("/image.png"));
 	memoryFile->Resize((int)bufferSize);
 	size_t bufferUsed;
 	result = XUserGetGamerPictureResult(GetAsyncBlockPtr(),

@@ -128,8 +128,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( skin, texture, property, node ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( skin, texture, property, node ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -173,8 +172,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, skin, texture, property, node ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *textField, skin, texture, property, node ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -200,8 +198,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *editPath, skin, texture, property, node ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *editPath, skin, texture, property, node ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -227,8 +224,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *colorBox, skin, texture, property, node ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *colorBox, skin, texture, property, node ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -254,8 +250,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *editPoint3, skin, texture, property, node ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *editPoint3, skin, texture, property, node ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -281,8 +276,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *editPoint, skin, texture, property, node ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *editPoint, skin, texture, property, node ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -308,8 +302,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *comboBox, skin, texture, property, node ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( *comboBox, skin, texture, property, node ) ));
 		if( undo ){
 			skin->GetUndoSystem()->Add( undo );
 		}
@@ -741,9 +734,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUPropertyNodeSetMapped( node, type, newMapped ) );
-		skin->GetUndoSystem()->Add( undo );
+		skin->GetUndoSystem()->Add(seUPropertyNodeSetMapped::Ref::NewWith(node, type, newMapped));
 	}
 };
 

@@ -63,8 +63,7 @@ reConfigurationXML::~reConfigurationXML(){
 ///////////////
 
 void reConfigurationXML::ReadFromFile( decBaseFileReader &reader, reConfiguration &config ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

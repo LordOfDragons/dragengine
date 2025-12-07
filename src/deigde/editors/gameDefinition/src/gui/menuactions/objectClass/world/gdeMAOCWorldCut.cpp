@@ -64,7 +64,7 @@ gdeGameDefinition &gameDefinition, gdeObjectClass &objectClass ){
 	}
 	
 	pWindowMain.GetClipboard().Set(gdeClipboardDataOCWorld::Ref::New(
-		new gdeClipboardDataOCWorld(gdeOCWorld::Ref::New(new gdeOCWorld(*world)))));
+		new gdeClipboardDataOCWorld(gdeOCWorld::Ref::NewWith(*world))));
 	
 	return new gdeUOCRemoveWorld(&objectClass, world);
 }

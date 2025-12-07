@@ -64,10 +64,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleCompSetVector( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleComponents(), editVector->GetVector() ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCompSetVector::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleComponents(), editVector->GetVector()));
 	}
 };
 
@@ -92,21 +91,21 @@ pRuleComponents( rule )
 	SetTitle( "Components" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "X", "X component of vector",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosX ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"X", "X component of vector",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosX));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Y", "Y component of vector",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosY ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Y", "Y component of vector",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosY));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Z", "Z component of vector",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosZ ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Z", "Z component of vector",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleComponents::eosZ));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Vector", "Vector to decompose",
-		true, *this, meWVNodeSlot::estVector, meHTVRuleComponents::eisVector ) );
+	meWVNodeSlot::Ref slot(meWVNodeSlot::Ref::NewWith(env,
+		"Vector", "Vector to decompose",
+		true, *this, meWVNodeSlot::estVector, meHTVRuleComponents::eisVector));
 	helper.EditVector( slot, "Input vector.", pEditVector, new cEditVector( *this ) );
 	AddSlot( slot );
 	

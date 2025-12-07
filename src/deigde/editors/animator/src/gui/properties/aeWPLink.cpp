@@ -107,8 +107,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( animator, link ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, link ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -142,9 +141,8 @@ public:
 		"Copy link to clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new aeClipboardDataLink( link ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataLink::Ref::NewWith(link));
 		return nullptr;
 	}
 };
@@ -156,9 +154,8 @@ public:
 		"Cut link into clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeLink *link ){
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new aeClipboardDataLink( link ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataLink::Ref::NewWith(link));
 		return new aeULinkRemove( link );
 	}
 };
@@ -183,9 +180,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkPaste( animator, cdata->GetLinks() ) );
-		animator->GetUndoSystem()->Add( undo );
+		animator->GetUndoSystem()->Add(aeULinkPaste::Ref::NewWith(animator, cdata->GetLinks()));
 	}
 	
 	virtual void Update(){
@@ -236,8 +231,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetName( link, value ) );
+		aeULinkSetName::Ref undo(aeULinkSetName::Ref::NewWith(link, value));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -263,8 +257,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetBone( link, bone ) );
+		aeULinkSetBone::Ref undo(aeULinkSetBone::Ref::NewWith(link, bone));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -291,8 +284,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetController( link, controller ) );
+		aeULinkSetController::Ref undo(aeULinkSetController::Ref::NewWith(link, controller));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -312,8 +304,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetRepeat( link, value ) );
+		aeULinkSetRepeat::Ref undo(aeULinkSetRepeat::Ref::NewWith(link, value));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -398,8 +389,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetBone( link, value ) );
+		aeULinkSetBone::Ref undo(aeULinkSetBone::Ref::NewWith(link, value));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -421,8 +411,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetBoneParameter( link, parameter ) );
+		aeULinkSetBoneParameter::Ref undo(aeULinkSetBoneParameter::Ref::NewWith(link, parameter));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -442,8 +431,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetBoneMinimum( link, value ) );
+		aeULinkSetBoneMinimum::Ref undo(aeULinkSetBoneMinimum::Ref::NewWith(link, value));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -463,8 +451,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetBoneMaximum( link, value ) );
+		aeULinkSetBoneMaximum::Ref undo(aeULinkSetBoneMaximum::Ref::NewWith(link, value));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -491,8 +478,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetVertexPositionSet( link, vps ) );
+		aeULinkSetVertexPositionSet::Ref undo(aeULinkSetVertexPositionSet::Ref::NewWith(link, vps));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -512,8 +498,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetVertexPositionSet( link, value ) );
+		aeULinkSetVertexPositionSet::Ref undo(aeULinkSetVertexPositionSet::Ref::NewWith(link, value));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -533,8 +518,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetVertexPositionSetMinimum( link, value ) );
+		aeULinkSetVertexPositionSetMinimum::Ref undo(aeULinkSetVertexPositionSetMinimum::Ref::NewWith(
+			link, value));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}
@@ -554,8 +539,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeULinkSetVertexPositionSetMaximum( link, value ) );
+		aeULinkSetVertexPositionSetMaximum::Ref undo(aeULinkSetVertexPositionSetMaximum::Ref::NewWith(
+			link, value));
 		if( undo ){
 			pPanel.GetAnimator()->GetUndoSystem()->Add( undo );
 		}

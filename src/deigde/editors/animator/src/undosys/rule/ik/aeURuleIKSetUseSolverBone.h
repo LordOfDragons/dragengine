@@ -45,6 +45,9 @@ private:
 	aeRuleInverseKinematic *pRule;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleIKSetUseSolverBone> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

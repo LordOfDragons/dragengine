@@ -33,11 +33,11 @@
 #include "../event/igdeActionListener.h"
 #include "../event/igdeAction.h"
 #include "../layout/igdeContainerFlow.h"
+#include "../../triggersystem/igdeTriggerExpression.h"
 
 #include <dragengine/common/string/decString.h>
 
 
-class igdeTriggerExpression;
 class igdeTriggerExpressionComponent;
 class igdeTriggerExpressionParser;
 class igdeTriggerTargetList;
@@ -51,7 +51,7 @@ class DE_DLL_EXPORT igdeTriggerExpressionEditor : public igdeContainerFlow, igde
 private:
 	igdeTriggerExpressionParser *pParser;
 	const igdeTriggerTargetList *pTargetList;
-	igdeTriggerExpression *pWorkExpression;
+	igdeTriggerExpression::Ref pWorkExpression;
 	decString pExpression;
 	
 	igdeToggleButton::Ref pBtnNegate;

@@ -237,8 +237,7 @@ void igdeEditVector2::pCreateContent( igdeUIHelper &helper ){
 	pTextY->SetFloat( pVector2.y );
 	
 	// add listener
-	igdeTextFieldListener::Ref listener;
-	listener.TakeOver( new cListener( *this, pTextX, pTextY ) );
+	cListener::Ref listener(cListener::Ref::NewWith(*this, pTextX, pTextY));
 	pTextX->AddListener( listener );
 	pTextY->AddListener( listener );
 }

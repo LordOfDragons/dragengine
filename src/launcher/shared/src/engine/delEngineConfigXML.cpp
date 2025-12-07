@@ -69,7 +69,7 @@ delEngineConfigXML::~delEngineConfigXML(){
 ///////////////
 
 void delEngineConfigXML::ReadFromFile( decBaseFileReader &reader, delLauncher &launcher ){
-	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::New( new decXmlDocument ) );
+	const decXmlDocument::Ref xmlDoc( decXmlDocument::Ref::NewWith() );
 	decXmlParser( launcher.GetLogger() ).ParseXml( &reader, xmlDoc );
 	
 	xmlDoc->StripComments();

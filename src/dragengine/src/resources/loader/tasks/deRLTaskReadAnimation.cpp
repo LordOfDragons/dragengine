@@ -86,13 +86,10 @@ void deRLTaskReadAnimation::Run(){
 	
 	const decPath vfsPath( decPath::CreatePathUnix( GetPath() ) );
 	
-	decBaseFileReader::Ref reader;
-	reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
-	
 	pAnimation->SetModificationTime( GetVFS()->GetFileModificationTime( vfsPath ) );
 	pAnimation->SetAsynchron( true );
-	module->LoadAnimation( reader, pAnimation );
-	reader = NULL;
+	module->LoadAnimation(decBaseFileReader::Ref::New(
+		GetVFS()->OpenFileForReading(vfsPath)), pAnimation);
 	
 	GetEngine().GetAnimatorSystem()->LoadAnimation( pAnimation );
 	

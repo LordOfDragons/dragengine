@@ -1343,7 +1343,7 @@ void deoglRenderGI::pCleanUp(){
 
 void deoglRenderGI::pCreateUBORenderLight(){
 	deoglRenderThread &renderThread = GetRenderThread();
-	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( renderThread ) ) );
+	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::NewWith(renderThread) );
 	
 	ubo->SetRowMajor(renderThread.GetCapabilities().GetUBOIndirectMatrixAccess().Working());
 	ubo->SetParameterCount( euprlGridCoordUnshift + 1 );

@@ -432,7 +432,7 @@ int deVROpenXR::GetDeviceCount(){
 }
 
 deInputDevice *deVROpenXR::GetDeviceAt( int index ){
-	deInputDevice::Ref device( deInputDevice::Ref::New( new deInputDevice ) );
+	deInputDevice::Ref device( deInputDevice::Ref::NewWith() );
 	pDevices.GetAt( index )->GetInfo( *device );
 	
 	device->AddReference(); // caller takes over reference

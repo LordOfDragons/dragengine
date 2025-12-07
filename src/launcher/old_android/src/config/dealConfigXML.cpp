@@ -63,8 +63,7 @@ dealConfigXML::~dealConfigXML(){
 ///////////////
 
 void dealConfigXML::ReadFromFile( decBaseFileReader &reader, dealConfiguration &config ){
-	decXmlDocument::Ref xmldoc;
-	xmldoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmldoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser parser( GetLogger() );
 	

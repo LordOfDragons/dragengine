@@ -41,6 +41,9 @@ private:
 	ceGesture *pGesture;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCGestureAdd> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

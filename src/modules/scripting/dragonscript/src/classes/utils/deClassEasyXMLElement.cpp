@@ -1132,7 +1132,7 @@ void deClassEasyXMLElement::nfAddCData::RunFunction( dsRunTime *rt, dsValue *mys
 	const char * const value = rt->GetValue( 0 )->GetString();
 	decXmlContainer &container = *element.CastToContainer();
 	
-	const decXmlCharacterData::Ref cdata( decXmlCharacterData::Ref::New( new decXmlCharacterData( value ) ) );
+	const decXmlCharacterData::Ref cdata( decXmlCharacterData::Ref::NewWith(value) );
 	container.AddElement( cdata );
 	clsXmlElement->PushElement( rt, cdata );
 }

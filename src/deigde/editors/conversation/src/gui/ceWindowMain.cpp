@@ -190,16 +190,15 @@ pRecentFilesLangPack( *this )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(400)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
 	
 	pWindowProperties = new ceWindowProperties( *this );
 	splitted->AddChild( pWindowProperties, igdeContainerSplitted::eaSide );
 	
-	igdeContainer::Ref panel;
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5 ) );
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(
+		env, igdeContainerFlow::eaY, igdeContainerFlow::esFirst, 5));
 	splitted->AddChild( panel, igdeContainerSplitted::eaCenter );
 	
 	pViewConversation = new ceViewConversation( *this );
@@ -297,7 +296,7 @@ void ceWindowMain::SetConversation( ceConversation *conversation ){
 }
 
 void ceWindowMain::CreateNewConversation(){
-	SetConversation( ceConversation::Ref::New( new ceConversation( &GetEnvironment() ) ) );
+	SetConversation( ceConversation::Ref::NewWith(&GetEnvironment()) );
 }
 
 void ceWindowMain::SaveConversation( const char *filename ){
@@ -354,8 +353,7 @@ void ceWindowMain::LoadCTA( const char *filename ){
 		pLoadSaveSystem->LoadCTA( filename, *activeActor );
 		
 	}else{
-		const ceConversationActor::Ref actor( ceConversationActor::Ref::New(
-			new ceConversationActor( GetEnvironment() ) ) );
+		const ceConversationActor::Ref actor( ceConversationActor::Ref::NewWith(GetEnvironment()) );
 		pLoadSaveSystem->LoadCTA( filename, actor );
 		pConversation->AddActor( actor );
 	}
@@ -510,8 +508,7 @@ public:
 		if( ! pWindow.GetConversation() ){
 			return;
 		}
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( pWindow.GetConversation() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( pWindow.GetConversation() ) ));
 		if( undo ){
 			pWindow.GetConversation()->GetUndoSystem()->Add( undo );
 		}

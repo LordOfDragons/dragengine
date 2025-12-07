@@ -42,6 +42,9 @@ private:
 	decString pNewAnimator;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCGestureSetAnimator> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

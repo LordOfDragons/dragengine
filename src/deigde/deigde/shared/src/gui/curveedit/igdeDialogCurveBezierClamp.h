@@ -35,6 +35,11 @@
  * \brief Dialog bezier curve clamp parameters.
  */
 class DE_DLL_EXPORT igdeDialogCurveBezierClamp : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogCurveBezierClamp> Ref;
+	
+	
 private:
 	igdeCheckBox::Ref pChkClamp;
 	igdeEditVector2::Ref pEditMinimum;

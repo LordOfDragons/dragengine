@@ -258,16 +258,13 @@ void projWindowMain::LoadProject(){
 void projWindowMain::LoadProjectLocal( projProject &project ){
 	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 	
-	deVFSContainer::Ref directory;
-	directory.TakeOver( new deVFSDiskDirectory( 
-		decPath::CreatePathNative( gameProject.GetDirectoryPath() ) ) );
-	
 	decBaseFileReader::Ref reader;
 	decPath path( decPath::CreatePathUnix( gameProject.GetPathLocal() ) );
 	path.AddComponent( "project.xml" );
 	
 	try{
-		reader.TakeOver( directory->OpenFileForReading( path ) );
+		reader.TakeOver(deVFSDiskDirectory::Ref::NewWith(
+			decPath::CreatePathNative(gameProject.GetDirectoryPath()))->OpenFileForReading(path));
 		
 	}catch( const deException & ){
 		// file does not exist. this is fine and allowed.
@@ -284,9 +281,8 @@ void projWindowMain::SaveProject(){
 		return;
 	}
 	
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( new decDiskFileWriter( pProject->GetFilePath(), false ) );
-	projProjectXml( GetLogger(), LOGSOURCE ).WriteToFile( writer, *pProject );
+	projProjectXml(GetLogger(), LOGSOURCE ).WriteToFile(
+		decDiskFileWriter::Ref::NewWith(pProject->GetFilePath(), false), *pProject);
 	pProject->SetChanged( false );
 }
 
@@ -297,14 +293,11 @@ void projWindowMain::SaveProjectLocal(){
 	
 	const igdeGameProject &gameProject = *GetEnvironment().GetGameProject();
 	
-	deVFSContainer::Ref directory;
-	directory.TakeOver( new deVFSDiskDirectory( 
-		decPath::CreatePathNative( gameProject.GetDirectoryPath() ) ) );
-	
 	decBaseFileWriter::Ref writer;
 	decPath path( decPath::CreatePathUnix( gameProject.GetPathLocal() ) );
 	path.AddComponent( "project.xml" );
-	writer.TakeOver( directory->OpenFileForWriting( path ) );
+	writer.TakeOver(deVFSDiskDirectory::Ref::NewWith(
+		decPath::CreatePathNative(gameProject.GetDirectoryPath()))->OpenFileForWriting(path));
 	projProjectLocalXml( GetLogger(), LOGSOURCE ).WriteToFile( writer, *pProject );
 }
 
@@ -642,9 +635,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new projUProfileRemove( project, profile ) );
-		project->GetUndoSystem()->Add( undo );
+		project->GetUndoSystem()->Add(projUProfileRemove::Ref::NewWith(project, profile));
 	}
 	
 	virtual void Update(){
@@ -740,9 +731,7 @@ public:
 			return;
 		}
 		
-		igdeDialog::Ref dialog;
-		dialog.TakeOver( new projDialogDistribute( pWindow, project->GetActiveProfile() ) );
-		dialog->Run( &pWindow );
+		projDialogDistribute::Ref::NewWith(pWindow, project->GetActiveProfile())->Run(&pWindow);
 	}
 	
 	virtual void Update(){

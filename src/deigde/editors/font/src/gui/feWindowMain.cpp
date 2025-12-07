@@ -110,9 +110,8 @@ igdeEditorWindow( module )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(260)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(260)));
 	AddChild( splitted );
 	
 	pWndProps = new feWindowProperties( *this );

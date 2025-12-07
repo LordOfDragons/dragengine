@@ -60,87 +60,78 @@ dewiDevice( module, esWindows )
 	SetName( " Mouse" );
 	SetType( deInputDevice::edtMouse );
 	
-	const dewiDeviceAxis::Ref refObject(dewiDeviceAxis::Ref::NewWith(module));
-	AddAxis( refObject );
-	dewiDeviceAxis &axisX = ( dewiDeviceAxis& )( deObject& )refObject;
-	axisX.SetIndex( 0 );
-	axisX.SetAbsolute( false );
-	axisX.SetID( "x" );
-	axisX.SetName( "X" );
-	axisX.SetType( deInputDeviceAxis::eatMouse );
-	axisX.SetDisplayImages( "mouseX" );
+	const dewiDeviceAxis::Ref axisX(dewiDeviceAxis::Ref::NewWith(module));
+	AddAxis(axisX);
+	axisX->SetIndex( 0 );
+	axisX->SetAbsolute( false );
+	axisX->SetID( "x" );
+	axisX->SetName( "X" );
+	axisX->SetType( deInputDeviceAxis::eatMouse );
+	axisX->SetDisplayImages( "mouseX" );
 	
-	refObject.TakeOver( new dewiDeviceAxis( module ) );
-	AddAxis( refObject );
-	dewiDeviceAxis &axisY = ( dewiDeviceAxis& )( deObject& )refObject;
-	axisY.SetIndex( 1 );
-	axisY.SetAbsolute( false );
-	axisY.SetID( "y" );
-	axisY.SetName( "Y" );
-	axisY.SetType( deInputDeviceAxis::eatMouse );
-	axisY.SetDisplayImages( "mouseY" );
+	const dewiDeviceAxis::Ref axisY(dewiDeviceAxis::Ref::NewWith(module));
+	AddAxis(axisY);
+	axisY->SetIndex( 1 );
+	axisY->SetAbsolute( false );
+	axisY->SetID( "y" );
+	axisY->SetName( "Y" );
+	axisY->SetType( deInputDeviceAxis::eatMouse );
+	axisY->SetDisplayImages( "mouseY" );
 	
-	refObject.TakeOver( new dewiDeviceAxis( module ) );
-	AddAxis( refObject );
-	dewiDeviceAxis &wheelY = ( dewiDeviceAxis& )( deObject& )refObject;
-	wheelY.SetIndex( 2 );
-	wheelY.SetAbsolute( false );
-	wheelY.SetWheelOtherAxis( false );
-	wheelY.SetID( "wheelY" );
-	wheelY.SetName( "Wheel Y" );
-	wheelY.SetType( deInputDeviceAxis::eatMouseWheel );
-	wheelY.SetDisplayImages( "mouseY" );
-	wheelY.SetDisplayText( "Wheel" );
+	const dewiDeviceAxis::Ref wheelY(dewiDeviceAxis::Ref::NewWith(module));
+	AddAxis(wheelY);
+	wheelY->SetIndex( 2 );
+	wheelY->SetAbsolute( false );
+	wheelY->SetWheelOtherAxis( false );
+	wheelY->SetID( "wheelY" );
+	wheelY->SetName( "Wheel Y" );
+	wheelY->SetType( deInputDeviceAxis::eatMouseWheel );
+	wheelY->SetDisplayImages( "mouseY" );
+	wheelY->SetDisplayText( "Wheel" );
 	
 	/*
-	refObject.TakeOver( new dewiDeviceAxis( module ) );
-	AddAxis( refObject );
-	dewiDeviceAxis &wheelX = ( dewiDeviceAxis& )( deObject& )refObject;
-	wheelX.SetAbsolute( false );
-	wheelX.SetWheelOtherAxis( true );
-	wheelX.SetID( "wheelX" );
-	wheelX.SetName( "Wheel X" );
-	wheelX.SetType( deInputDeviceAxis::eatMouseWheel );
-	wheelX.SetDisplayImages( "mouseX" );
-	wheelX.SetDisplayText( "Wheel X" );
+	const dewiDeviceAxis::Ref wheelX(dewiDeviceAxis::Ref::NewWith(module));
+	AddAxis(wheelX);
+	wheelX->SetAbsolute( false );
+	wheelX->SetWheelOtherAxis( true );
+	wheelX->SetID( "wheelX" );
+	wheelX->SetName( "Wheel X" );
+	wheelX->SetType( deInputDeviceAxis::eatMouseWheel );
+	wheelX->SetDisplayImages( "mouseX" );
+	wheelX->SetDisplayText( "Wheel X" );
 	*/
 	
-	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( refObject );
-	dewiDeviceButton &buttonLeft = ( dewiDeviceButton& )( deObject& )refObject;
-	buttonLeft.SetID( "left" );
-	buttonLeft.SetName( "Left" );
-	buttonLeft.SetDisplayImages( "mouseL" );
+	const dewiDeviceButton::Ref buttonLeft(dewiDeviceButton::Ref::NewWith(module));
+	AddButton(buttonLeft);
+	buttonLeft->SetID( "left" );
+	buttonLeft->SetName( "Left" );
+	buttonLeft->SetDisplayImages( "mouseL" );
 	
-	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( refObject );
-	dewiDeviceButton &buttonRight = ( dewiDeviceButton& )( deObject& )refObject;
-	buttonRight.SetID( "right" );
-	buttonRight.SetName( "Right" );
-	buttonRight.SetDisplayImages( "mouseR" );
+	const dewiDeviceButton::Ref buttonRight(dewiDeviceButton::Ref::NewWith(module));
+	AddButton(buttonRight);
+	buttonRight->SetID( "right" );
+	buttonRight->SetName( "Right" );
+	buttonRight->SetDisplayImages( "mouseR" );
 	
-	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( refObject );
-	dewiDeviceButton &buttonMiddle = ( dewiDeviceButton& )( deObject& )refObject;
-	buttonMiddle.SetID( "middle" );
-	buttonMiddle.SetName( "Middle" );
-	buttonMiddle.SetDisplayImages( "mouseM" );
+	const dewiDeviceButton::Ref buttonMiddle(dewiDeviceButton::Ref::NewWith(module));
+	AddButton(buttonMiddle);
+	buttonMiddle->SetID( "middle" );
+	buttonMiddle->SetName( "Middle" );
+	buttonMiddle->SetDisplayImages( "mouseM" );
 	
-	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( refObject );
-	dewiDeviceButton &buttonBackward = ( dewiDeviceButton& )( deObject& )refObject;
-	buttonBackward.SetID( "backward" );
-	buttonBackward.SetName( "Backward" );
-	buttonBackward.SetDisplayImages( "mouseX" );
-	buttonBackward.SetDisplayText( "B" );
+	const dewiDeviceButton::Ref buttonBackward(dewiDeviceButton::Ref::NewWith(module));
+	AddButton(buttonBackward);
+	buttonBackward->SetID( "backward" );
+	buttonBackward->SetName( "Backward" );
+	buttonBackward->SetDisplayImages( "mouseX" );
+	buttonBackward->SetDisplayText( "B" );
 	
-	refObject.TakeOver( new dewiDeviceButton( module ) );
-	AddButton( refObject );
-	dewiDeviceButton &buttonForward = ( dewiDeviceButton& )( deObject& )refObject;
-	buttonForward.SetID( "forward" );
-	buttonForward.SetName( "Forward" );
-	buttonForward.SetDisplayImages( "mouseX" );
-	buttonForward.SetDisplayText( "F" );
+	const dewiDeviceButton::Ref buttonForward(dewiDeviceButton::Ref::NewWith(module));
+	AddButton(buttonForward);
+	buttonForward->SetID( "forward" );
+	buttonForward->SetName( "Forward" );
+	buttonForward->SetDisplayImages( "mouseX" );
+	buttonForward->SetDisplayText( "F" );
 }
 
 dewiDeviceMouse::~dewiDeviceMouse(){

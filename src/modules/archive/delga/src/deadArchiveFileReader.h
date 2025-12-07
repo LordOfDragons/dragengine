@@ -37,6 +37,11 @@ class deadArchiveFile;
  * Archive file entry reader.
  */
 class deadArchiveFileReader : public decBaseFileReader{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<deadArchiveFileReader> Ref;
+	
+	
 private:
 	deadContextUnpack *pContext;
 	const unz_file_pos pArchivePosition;
@@ -91,7 +96,7 @@ public:
 	virtual void Read( void *buffer, int size );
 	
 	/** Duplicate file reader. */
-	virtual Ref Duplicate();
+	virtual decBaseFileReader::Ref Duplicate();
 	/*@}*/
 };
 

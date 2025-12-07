@@ -48,6 +48,9 @@ private:
 	ceUndoCActionList pActionList;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCFacePoseSetName> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

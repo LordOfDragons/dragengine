@@ -251,7 +251,7 @@ void deClassSkinBuilder::nfAddMapped::RunFunction( dsRunTime *rt, dsValue *mysel
 	deClassVector2 &clsVector2 = *ds.GetClassVector2();
 	dsClassEnumeration &clsEnum = *( ( dsClassEnumeration* )rt->GetEngine()->GetClassEnumeration() );
 	
-	const deSkinMapped::Ref mapped( deSkinMapped::Ref::New( new deSkinMapped( rt->GetValue( 0 )->GetString() ) ) );
+	const deSkinMapped::Ref mapped( deSkinMapped::Ref::NewWith(rt->GetValue( 0 )->GetString()) );
 	mapped->GetCurve() = clsCurveBezier.GetCurve( rt->GetValue( 1 )->GetRealObject() );
 	mapped->SetInputType( ( deSkinMapped::eInputTypes )
 		clsEnum.GetConstantOrder( *rt->GetValue( 2 )->GetRealObject() ) );

@@ -106,8 +106,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( project, project->GetActiveProfile() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( project, project->GetActiveProfile() ) ));
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
 		}
@@ -139,8 +138,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, project, profile ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, project, profile ) ));
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
 		}
@@ -168,8 +166,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textArea, project, profile ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textArea, project, profile ) ));
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
 		}
@@ -197,8 +194,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editPoint, project, profile ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editPoint, project, profile ) ));
 		if( undo ){
 			project->GetUndoSystem()->Add( undo );
 		}

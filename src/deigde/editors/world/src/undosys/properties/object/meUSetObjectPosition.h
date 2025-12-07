@@ -46,6 +46,9 @@ private:
 	decDVector pNewPosition;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUSetObjectPosition> Ref;
+	
 	// constructor, destructor
 	meUSetObjectPosition( meObject *object, const decDVector &newPosition );
 	

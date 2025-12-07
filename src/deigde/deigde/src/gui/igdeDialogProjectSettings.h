@@ -42,6 +42,11 @@ class igdeWindowMain;
  * \brief Game project settings dialog.
  */
 class igdeDialogProjectSettings : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogProjectSettings> Ref;
+	
+	
 private:
 	igdeWindowMain &pWindowMain;
 	

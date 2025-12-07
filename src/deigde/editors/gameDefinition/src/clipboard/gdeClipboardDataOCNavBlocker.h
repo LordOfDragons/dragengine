@@ -36,6 +36,9 @@ class gdeOCNavigationBlocker;
  */
 class gdeClipboardDataOCNavBlocker : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeClipboardDataOCNavBlocker> Ref;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	

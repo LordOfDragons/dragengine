@@ -262,7 +262,7 @@ void saeSAnimation::RebuildAnimator(){
 		
 		// reset the animation state to a well known state for testing purpose
 		const deAnimatorRuleStateManipulator::Ref ruleReset(
-			deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
+			deAnimatorRuleStateManipulator::Ref::NewWith() );
 		ruleReset->SetEnablePosition( true );
 		pEngAnimator->AddRule( ruleReset );
 		
@@ -272,7 +272,7 @@ void saeSAnimation::RebuildAnimator(){
 		/*
 		if( pNeutralVertexPositionSets.GetCount() > 0 ){
 			const deAnimatorRuleStateManipulator::Ref rule(
-				deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
+				deAnimatorRuleStateManipulator::Ref::NewWith() );
 			rule->SetEnableRotation( false );
 			rule->GetListVertexPositionSets() = pNeutralVertexPositionSets;
 			pEngAnimator->AddRule( rule );
@@ -303,7 +303,7 @@ void saeSAnimation::RebuildAnimator(){
 			// add an animation rule for the new viseme
 			if( ! vertexPositionSet.IsEmpty() ){
 				const deAnimatorRuleStateManipulator::Ref rule(
-					deAnimatorRuleStateManipulator::Ref::New( new deAnimatorRuleStateManipulator ) );
+					deAnimatorRuleStateManipulator::Ref::NewWith() );
 				rule->GetListVertexPositionSets().Add( vertexPositionSet );
 				rule->SetEnableRotation( false );
 				rule->SetMaximumVertexPositionSet( 1.0f );
@@ -312,7 +312,7 @@ void saeSAnimation::RebuildAnimator(){
 				
 			}else{
 				const deAnimatorRuleAnimation::Ref rule(
-					deAnimatorRuleAnimation::Ref::New( new deAnimatorRuleAnimation ) );
+					deAnimatorRuleAnimation::Ref::NewWith() );
 				rule->SetMoveName( moveName );
 				rule->SetBlendMode( deAnimatorRule::ebmOverlay );
 				rule->GetTargetBlendFactor().AddLink( linkIndex );

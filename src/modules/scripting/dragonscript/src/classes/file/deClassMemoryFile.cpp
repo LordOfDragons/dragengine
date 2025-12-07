@@ -161,8 +161,7 @@ void deClassMemoryFile::nfGetReader::RunFunction( dsRunTime *rt, dsValue *myself
 	decMemoryFile * const memoryFile = ( ( const sMemFileNatDat * )p_GetNativeData( myself ) )->memoryFile;
 	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
 	
-	ds.GetClassFileReader()->PushFileReader( rt, decMemoryFileReader::Ref::New(
-		new decMemoryFileReader( memoryFile ) ) );
+	ds.GetClassFileReader()->PushFileReader( rt, decMemoryFileReader::Ref::NewWith(memoryFile) );
 }
 
 // public func FileWriter getWriter( bool append )
@@ -176,8 +175,7 @@ void deClassMemoryFile::nfGetWriter::RunFunction( dsRunTime *rt, dsValue *myself
 	
 	const bool append = rt->GetValue( 0 )->GetBool();
 	
-	ds.GetClassFileWriter()->PushFileWriter( rt, decMemoryFileWriter::Ref::New(
-		new decMemoryFileWriter( memoryFile, append ) ) );
+	ds.GetClassFileWriter()->PushFileWriter( rt, decMemoryFileWriter::Ref::NewWith(memoryFile, append) );
 }
 
 // public func FileReader getReaderZCompressed()
@@ -190,7 +188,7 @@ void deClassMemoryFile::nfGetReaderZCompressed::RunFunction( dsRunTime *rt, dsVa
 	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
 	
 	ds.GetClassFileReader()->PushFileReader( rt, decZFileReader::Ref::New( new decZFileReader(
-		decMemoryFileReader::Ref::New( new decMemoryFileReader( memoryFile ) ) ) ) );
+		decMemoryFileReader::Ref::NewWith(memoryFile) ) ) );
 }
 
 // public func FileWriter getWriterZCompressed()
@@ -203,7 +201,7 @@ void deClassMemoryFile::nfGetWriterZCompressed::RunFunction( dsRunTime *rt, dsVa
 	deScriptingDragonScript &ds = ( ( deClassMemoryFile* )GetOwnerClass() )->GetDS();
 	
 	ds.GetClassFileWriter()->PushFileWriter( rt, decZFileWriter::Ref::New( new decZFileWriter(
-		decMemoryFileWriter::Ref::New( new decMemoryFileWriter( memoryFile, false ) ) ) ) );
+		decMemoryFileWriter::Ref::NewWith(memoryFile, false) ) ) );
 }
 
 

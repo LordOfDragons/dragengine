@@ -80,9 +80,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAWaitSetInterval( topic, action, interval ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAWaitSetInterval::Ref::NewWith(topic, action, interval));
 	}
 };
 

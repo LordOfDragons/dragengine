@@ -166,9 +166,8 @@ pLoadTask( NULL )
 	pCreateToolBarObject();
 	pCreateToolBarDecal();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(400)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
 	
 	pWindowProperties = new meWindowProperties( *this );
@@ -439,9 +438,8 @@ void meWindowMain::RotateActiveObjectBy( const decVector &rotation ){
 		return;
 	}
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( new meUSetObjectRotation( object, object->GetRotation() + rotation ) );
-	pWorld->GetUndoSystem()->Add( undo );
+	pWorld->GetUndoSystem()->Add(meUSetObjectRotation::Ref::NewWith(
+		object, object->GetRotation() + rotation));
 }
 
 
@@ -485,8 +483,7 @@ public:
 		if( ! pWindow.GetWorld() ){
 			return;
 		}
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( pWindow.GetWorld() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( pWindow.GetWorld() ) ));
 		if( undo ){
 			pWindow.GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -2217,15 +2214,13 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 	helper.MenuCommand( menu, pActionObjectSubclassAsEclass );
 	
 	helper.MenuSeparator( menu );
-	igdeMenuCascade::Ref active;
-	active.TakeOver( new igdeMenuCascade( GetEnvironment(), "Active Object",
-		NULL, "Active object", deInputEvent::ekcA ) );
+	igdeMenuCascade::Ref active(igdeMenuCascade::Ref::NewWith(
+		GetEnvironment(), "Active Object", nullptr, "Active object", deInputEvent::ekcA));
 		
 		menu.AddChild( active );
 		
-		igdeMenuCascade::Ref activeRotate;
-		activeRotate.TakeOver( new igdeMenuCascade( GetEnvironment(), "Rotate",
-			NULL, "Rotate active object", deInputEvent::ekcR ) );
+		igdeMenuCascade::Ref activeRotate(igdeMenuCascade::Ref::NewWith(
+			GetEnvironment(), "Rotate", nullptr, "Rotate active object", deInputEvent::ekcR));
 			
 			active->AddChild( activeRotate );
 			helper.MenuCommand( activeRotate, pActionObjectRotateL45 );
@@ -2235,9 +2230,8 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeRotate, pActionObjectRotate180 );
 			helper.MenuCommand( activeRotate, pActionObjectRotateRandom );
 		
-		igdeMenuCascade::Ref activeCopySelected;
-		activeCopySelected.TakeOver( new igdeMenuCascade( GetEnvironment(),
-			"Copy To Selected", nullptr, "Copy To Selected" ) );
+		igdeMenuCascade::Ref activeCopySelected(igdeMenuCascade::Ref::NewWith(
+			GetEnvironment(), "Copy To Selected", nullptr, "Copy To Selected"));
 			
 			active->AddChild( activeCopySelected );
 			helper.MenuCommand( activeCopySelected, pActionObjectCopyPositionX );
@@ -2258,16 +2252,14 @@ void meWindowMain::pCreateMenuObject( igdeMenuCascade &menu ){
 			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleZ );
 			helper.MenuCommand( activeCopySelected, pActionObjectCopyScaleXYZ );
 			
-		igdeMenuCascade::Ref activeLight;
-		activeLight.TakeOver( new igdeMenuCascade( GetEnvironment(), "Light",
-			NULL, "Active object light", deInputEvent::ekcL ) );
+		igdeMenuCascade::Ref activeLight(igdeMenuCascade::Ref::NewWith(
+			GetEnvironment(), "Light", nullptr, "Active object light", deInputEvent::ekcL));
 			
 			active->AddChild( activeLight );
 			helper.MenuCommand( activeLight, pActionObjectLightToggle );
 			
-		igdeMenuCascade::Ref activeShapes;
-		activeShapes.TakeOver( new igdeMenuCascade( GetEnvironment(), "Property Shapes",
-			NULL, "Active object property shapes", deInputEvent::ekcS ) );
+		igdeMenuCascade::Ref activeShapes(igdeMenuCascade::Ref::NewWith(
+			GetEnvironment(), "Property Shapes", nullptr, "Active object property shapes", deInputEvent::ekcS));
 			
 			active->AddChild( activeShapes );
 			helper.MenuCommand( activeShapes, pActionObjectShapeAddSphere );

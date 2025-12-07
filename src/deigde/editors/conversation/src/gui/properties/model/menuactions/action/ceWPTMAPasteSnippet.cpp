@@ -67,16 +67,14 @@ void ceWPTMAPasteSnippet::OnAction(){
 		return;
 	}
 	
-	igdeDialog::Ref refDialog;
-	refDialog.TakeOver( new ceDialogPasteSnippet( GetWindowMain().GetEnvironment(), pConversation ) );
-	ceDialogPasteSnippet &dialog = ( ceDialogPasteSnippet& )( igdeDialog& )refDialog;
+	ceDialogPasteSnippet::Ref dialog(ceDialogPasteSnippet::Ref::NewWith(
+		GetWindowMain().GetEnvironment(), pConversation));
 	
-	if( ! dialog.Run( &GetWindowMain() ) || dialog.GetActions().GetCount() == 0 ){
+	if( ! dialog->Run( &GetWindowMain() ) || dialog->GetActions().GetCount() == 0 ){
 		return;
 	}
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( CreateUndo( dialog.GetActions() ) );
+	igdeUndo::Ref undo(igdeUndo::Ref::New( CreateUndo( dialog->GetActions() ) ));
 	//undo->SetShortInfo( "Paste Conversation Snippet" );
 	pConversation->GetUndoSystem()->Add( undo );
 }

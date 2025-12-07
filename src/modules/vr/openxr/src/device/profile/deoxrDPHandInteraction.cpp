@@ -131,7 +131,7 @@ void deoxrDPHandInteraction::pAddDevice( bool left ){
 	deoxrDeviceComponent * const gesture = device->AddComponent(
 		deInputDeviceComponent::ectGesture, "Hand Gesture", "handGesture", "Hand Gesture" );
 	
-	deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+	deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(device) );
 	axis->SetActionAnalog( oxr.GetAction( deVROpenXR::eiaGesturePinch ) );
 	axis->SetType( deInputDeviceAxis::eatGesture );
 	axis->SetRange( 0.0f, 1.0f );

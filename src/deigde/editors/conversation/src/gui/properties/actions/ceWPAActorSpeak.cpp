@@ -90,9 +90,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakSetActor( topic, action, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetActor::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 
@@ -109,10 +108,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action,
-			decUnicodeString::NewFromUTF8( textField->GetText() ) ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxText::Ref::NewWith(topic, action,
+				decUnicodeString::NewFromUTF8(textField->GetText())));
 	}
 };
 
@@ -139,9 +137,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action, decUnicodeString::NewFromUTF8( text ) ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxText::Ref::NewWith(topic, action,
+				decUnicodeString::NewFromUTF8(text)));
 	}
 };
 
@@ -158,9 +156,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakSetTextBoxTextTranslate( topic, action, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxTextTranslate::Ref::NewWith(topic, action, textField->GetText()));
 	}
 };
 
@@ -250,9 +247,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakSetTextBoxText( topic, action, entry->GetText() ) );
-		conversation->GetUndoSystem()->Add( undo );
+		conversation->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxText::Ref::NewWith(topic, action, entry->GetText()));
 	}
 	
 	virtual void Update(){
@@ -326,9 +322,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakSetTextBoxTextStyle( topic, action, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetTextBoxTextStyle::Ref::NewWith(topic, action, textField->GetText()));
 	}
 };
 
@@ -345,9 +340,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakSetMovement( topic, action, textField->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetMovement::Ref::NewWith(topic, action, textField->GetText()));
 	}
 };
 
@@ -364,9 +358,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakSetPathSound( topic, action, editPath->GetPath() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetPathSound::Ref::NewWith(topic, action, editPath->GetPath()));
 	}
 };
 
@@ -384,9 +377,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakSetMinSpeechTime( topic, action, time ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakSetMinSpeechTime::Ref::NewWith(topic, action, time));
 	}
 };
 
@@ -404,9 +396,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCAASpeakToggleUseSpeechAnimation( topic, action ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCAASpeakToggleUseSpeechAnimation::Ref::NewWith(topic, action));
 	}
 };
 

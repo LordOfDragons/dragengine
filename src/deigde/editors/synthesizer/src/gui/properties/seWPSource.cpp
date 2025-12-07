@@ -132,8 +132,7 @@ public:
 		igdeUIHelper &helper = menu.GetEnvironment().GetUIHelper();
 		
 		const seWindowMain &windowMain = pPanel.GetViewSynthesizer().GetWindowMain();
-		igdeMenuCascade::Ref submenu;
-		submenu.TakeOver( new igdeMenuCascade( menu.GetEnvironment(), "Add" ) );
+		igdeMenuCascade::Ref submenu(igdeMenuCascade::Ref::NewWith(menu.GetEnvironment(), "Add"));
 		helper.MenuCommand( submenu, windowMain.GetActionSourceAddWave() );
 		helper.MenuCommand( submenu, windowMain.GetActionSourceAddSound() );
 		helper.MenuCommand( submenu, windowMain.GetActionSourceAddChain() );
@@ -184,9 +183,8 @@ public:
 			return;
 		}
 		
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new seClipboardDataSource( source ) );
-		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
+			seClipboardDataSource::Ref::NewWith(source));
 	}
 	
 	virtual void Update(){
@@ -208,9 +206,8 @@ public:
 			return;
 		}
 		
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new seClipboardDataSource( source ) );
-		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetViewSynthesizer().GetWindowMain().GetClipboard().Set(
+			seClipboardDataSource::Ref::NewWith(source));
 		
 		igdeUndo::Ref undo;
 		if( source->GetParentGroup() ){
@@ -350,8 +347,7 @@ pActivePanel( NULL )
 	pSwitcher.TakeOver( new igdeSwitcher( env ) );
 	content->AddChild( pSwitcher );
 	
-	igdeWidget::Ref panel;
-	panel.TakeOver( new igdeContainerFlow( env, igdeContainerFlow::eaY ) );
+	igdeContainerFlow::Ref panel(igdeContainerFlow::Ref::NewWith(env, igdeContainerFlow::eaY));
 	pSwitcher->AddChild( panel );
 	
 	panel.TakeOver( pPanelSound = new seWPAPanelSourceSound( *this ) );
@@ -462,8 +458,7 @@ void seWPSource::UpdateSourceTree(){
 			seSource * const source = pSynthesizer->GetSources().GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItem::Ref item;
-				item.TakeOver( new igdeTreeItem( "" ) );
+				igdeTreeItem::Ref item(igdeTreeItem::Ref::NewWith(""));
 				pTreeSource->AppendItem( NULL, item );
 				nextItem = item;
 			}
@@ -524,8 +519,7 @@ void seWPSource::UpdateSourceTreeItem( igdeTreeItem *item, seSource *source ){
 			seSource * const source2 = sourceGroup.GetSources().GetAt( i );
 			
 			if( ! nextItem ){
-				igdeTreeItem::Ref child;
-				child.TakeOver( new igdeTreeItem( "" ) );
+				igdeTreeItem::Ref child(igdeTreeItem::Ref::NewWith(""));
 				pTreeSource->AppendItem( item, child );
 				nextItem = child;
 			}
@@ -558,6 +552,7 @@ void seWPSource::ShowActiveSourcePanel(){
 	}
 	
 	const deSynthesizerSourceVisitorIdentify::eSourceTypes type = source->GetType();
+	seWPAPanelSource* const activePanel = pActivePanel;
 	
 	if( type == pPanelSound->GetRequiredType() ){
 		pSwitcher->SetCurrent( epSound );
@@ -584,8 +579,13 @@ void seWPSource::ShowActiveSourcePanel(){
 		pActivePanel = NULL;
 	}
 	
-	if( pActivePanel ){
-		pActivePanel->OnActivated();
+	if(pActivePanel != activePanel){
+		if(activePanel){
+			activePanel->OnDeactivated();
+		}
+		if(pActivePanel){
+			pActivePanel->OnActivated();
+		}
 	}
 }
 

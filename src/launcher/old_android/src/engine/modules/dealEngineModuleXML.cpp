@@ -59,8 +59,7 @@ dealEngineModuleXML::~dealEngineModuleXML(){
 ///////////////
 
 void dealEngineModuleXML::ReadFromFile( decBaseFileReader &reader, dealEngineModule &module ){
-	decXmlDocument::Ref xmldoc;
-	xmldoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmldoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser parser( GetLogger() );
 	

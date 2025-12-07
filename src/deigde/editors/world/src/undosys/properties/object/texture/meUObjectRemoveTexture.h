@@ -45,6 +45,9 @@ private:
 	meObjectTexture *pTexture;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUObjectRemoveTexture> Ref;
+	
 	// constructor, destructor
 	meUObjectRemoveTexture( meObjectTexture *texture );
 	

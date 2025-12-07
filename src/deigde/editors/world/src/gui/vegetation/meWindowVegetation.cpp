@@ -72,6 +72,7 @@
 #include "../../world/terrain/meHeightTerrainSector.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
@@ -398,9 +399,8 @@ public:
 		const meHTVRLink::Ref ruleLink(meHTVRLink::Ref::NewWith(wvnodeSource.GetRule(), indexSlotSource,
 			wvnodeTarget.GetRule(), indexSlotTarget));
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVLinkAdd( pView.GetVLayer(), ruleLink ) );
-		pView.GetWorld()->GetUndoSystem()->Add( undo );
+			pView.GetWorld()->GetUndoSystem()->Add(
+				meUHTVLinkAdd::Ref::NewWith(pView.GetVLayer(), ruleLink));
 	}
 	
 	virtual void OnLinkRemoved( igdeNVBoard*, igdeNVSlot *source, igdeNVSlot *target ){
@@ -413,10 +413,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVLinkCut( pView.GetVLayer() ) );
-		( ( meUHTVLinkCut& )( igdeUndo& )undo ).AddLinkToCut( ruleLink );
-		pView.GetWorld()->GetUndoSystem()->Add( undo );
+		meUHTVLinkCut::Ref undo(meUHTVLinkCut::Ref::NewWith(pView.GetVLayer()));
+		undo->AddLinkToCut(ruleLink);
+		pView.GetWorld()->GetUndoSystem()->Add(undo);
 	}
 	
 	virtual void OnOffsetChanged( igdeNVBoard *board ){
@@ -443,8 +442,8 @@ pWindowMain( windowMain ),
 pListener( NULL ),
 pWorld( NULL ),
 pVLayer( NULL ),
-pUnitsToPixel( 100.0f ),
-pPixelToUnits( 1.0f / pUnitsToPixel )
+pUnitsToPixel(igdeApplication::app().DisplayScaled(100.0f)),
+pPixelToUnits(1.0f / pUnitsToPixel)
 {
 	pListener = new meWindowVegetationListener( *this );
 	AddListener( new cBoardListener( *this ) );

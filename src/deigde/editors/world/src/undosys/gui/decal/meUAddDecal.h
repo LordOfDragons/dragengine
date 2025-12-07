@@ -48,6 +48,9 @@ private:
 	meDecal *pDecal;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUAddDecal> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

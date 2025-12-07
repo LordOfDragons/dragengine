@@ -77,9 +77,7 @@ void ceWPTMAPasteActions::OnAction(){
 		return;
 	}
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( CreateUndo( cdata->GetActions() ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(igdeUndo::Ref::New(CreateUndo(cdata->GetActions())));
 }
 
 ceUCActionPaste *ceWPTMAPasteActions::CreateUndo( const ceConversationActionList &actions ){

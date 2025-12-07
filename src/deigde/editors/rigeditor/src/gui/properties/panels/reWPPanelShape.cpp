@@ -74,8 +74,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new reUShapeSetProperty( shape, textField->GetText() ) );
+		reUShapeSetProperty::Ref undo(reUShapeSetProperty::Ref::NewWith(shape, textField->GetText()));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -104,8 +103,7 @@ void reWPPanelShape::cEditPosition::OnVectorChanged( igdeEditVector *editVector 
 		return;
 	}
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( new reUSetShapePosition( shape, editVector->GetVector() ) );
+	reUSetShapePosition::Ref undo(reUSetShapePosition::Ref::NewWith(shape, editVector->GetVector()));
 	if( undo ){
 		rig->GetUndoSystem()->Add( undo );
 	}
@@ -131,8 +129,8 @@ void reWPPanelShape::cEditRotation::OnVectorChanged( igdeEditVector *editVector 
 		return;
 	}
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( new reUSetShapeOrientation( shape, editVector->GetVector() ) );
+	reUSetShapeOrientation::Ref undo(reUSetShapeOrientation::Ref::NewWith(
+		shape, editVector->GetVector()));
 	if( undo ){
 		rig->GetUndoSystem()->Add( undo );
 	}
@@ -156,8 +154,7 @@ pShape( NULL )
 	igdeEnvironment &env = wpShape.GetEnvironment();
 	igdeUIHelper &helper = env.GetUIHelperProperties();
 	
-	igdeContainer::Ref content;
-	content.TakeOver( new igdeContainerForm( env ) );
+	igdeContainerForm::Ref content(igdeContainerForm::Ref::NewWith(env));
 	AddChild( content );
 	
 	helper.EditString( content, "Parent:", "Parent bone name or empty string for rig shapes.",

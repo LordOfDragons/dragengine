@@ -74,10 +74,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRulePCSetClass( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRulePropCount(), comboBox->GetText() ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRulePCSetClass::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRulePropCount(), comboBox->GetText()));
 	}
 };
 
@@ -108,10 +107,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRulePCSetRadius( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRulePropCount(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRulePCSetRadius::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRulePropCount(), value));
 	}
 };
 
@@ -138,10 +136,9 @@ pRulePC( rule )
 	pActionMenuClass.TakeOver( new cActionMenuClass( *this ) );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Distance", "Distance in meters from closest prop",
-		false, *this, meWVNodeSlot::estValue, meHTVRulePropCount::eosCount ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Distance", "Distance in meters from closest prop",
+		false, *this, meWVNodeSlot::estValue, meHTVRulePropCount::eosCount));
 	
 	// parameters
 	pFraParameters.TakeOver( new igdeContainerForm( env ) );

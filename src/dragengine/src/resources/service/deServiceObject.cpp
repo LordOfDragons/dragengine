@@ -38,49 +38,49 @@ pValueType( evtDictionary ){
 }
 
 deServiceObject::Ref deServiceObject::NewBool( bool value ){
-	const deServiceObject::Ref object( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref object( deServiceObject::Ref::NewWith() );
 	object->pValueType = evtBoolean;
 	object->pBoolean = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewInt( int value ){
-	const deServiceObject::Ref object( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref object( deServiceObject::Ref::NewWith() );
 	object->pValueType = evtInteger;
 	object->pInteger = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewFloat( float value ){
-	const deServiceObject::Ref object( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref object( deServiceObject::Ref::NewWith() );
 	object->pValueType = evtFloat;
 	object->pFloat = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewString( const char *value ){
-	const deServiceObject::Ref object( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref object( deServiceObject::Ref::NewWith() );
 	object->pValueType = evtString;
 	object->pString = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewResource( deResource *value ){
-	const deServiceObject::Ref object( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref object( deServiceObject::Ref::NewWith() );
 	object->pValueType = evtResource;
 	object->pResource = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewData( const decMemoryFile::Ref &value ){
-	const deServiceObject::Ref object( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref object( deServiceObject::Ref::NewWith() );
 	object->pValueType = evtData;
 	object->pData = value;
 	return object;
 }
 
 deServiceObject::Ref deServiceObject::NewList(){
-	const deServiceObject::Ref object( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref object( deServiceObject::Ref::NewWith() );
 	object->pValueType = evtList;
 	return object;
 }

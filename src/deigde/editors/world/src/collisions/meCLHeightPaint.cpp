@@ -198,11 +198,9 @@ void meCLHeightPaint::Paint( float elapsed ){
 void meCLHeightPaint::EndSession(){
 	// check if we have any changes at all
 	if( pOldHeights ){
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTPaintHeight( pDrawMode, pWorld, decPoint( pAreaSector.x1, pAreaSector.y1 ),
-			decPoint( pAreaGrid.x1, pAreaGrid.y1 ), decPoint( pModifyWidth, pModifyHeight ), pOldHeights ) );
-//		pWorld->GetLogger()->LogInfoFormat( LOGSOURCE, "Height Paint: Adding Undo with %i bytes memory consumption.\n", undo->GetMemoryConsumption() );
-		pWorld->GetUndoSystem()->Add( undo, false );
+		pWorld->GetUndoSystem()->Add(meUHTPaintHeight::Ref::NewWith(pDrawMode, pWorld,
+			decPoint(pAreaSector.x1, pAreaSector.y1), decPoint(pAreaGrid.x1, pAreaGrid.y1),
+			decPoint(pModifyWidth, pModifyHeight), pOldHeights), false);
 	}
 	
 	// clean up

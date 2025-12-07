@@ -41,6 +41,11 @@ class meHTVRuleMapping;
  * Undo action to set the lower bound of a height terrain vegetation rule mapping.
  */
 class meUHTVRuleMapSetLower : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleMapSetLower> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleMapping *pRule;

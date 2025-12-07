@@ -317,39 +317,36 @@ dewiDevice( module, esWindows )
 	}
 #endif
 	
-	const dewiDeviceButton::Ref refSharedButton(dewiDeviceButton::Ref::NewWith(module));
-	dewiDeviceButton &sharedButton = ( dewiDeviceButton& )( deObject& )refSharedButton;
-	sharedButton.SetDisplayImages( "key" );
+	dewiDeviceButton::Ref sharedButton(dewiDeviceButton::Ref::NewWith(module));
+	sharedButton->SetDisplayImages( "key" );
 	
 	int buttonIndex = 0;
 	const sKeyTableEntry *iterentry = &vKeyTable[0];
-	deObjectReference refButton;
 	
 	while( iterentry->virtkey ){
-		refButton.TakeOver( new dewiDeviceButton( module ) );
-		dewiDeviceButton &button = ( dewiDeviceButton& )( deObject& )refButton;
-		AddButton( &button );
+		const dewiDeviceButton::Ref button(dewiDeviceButton::Ref::NewWith(module));
+		AddButton(button);
 		
 		string.Format( "sc%d", buttonIndex );
-		button.SetID( string );
+		button->SetID( string );
 		
-		button.SetName( iterentry->name );
-		button.SetWICode( iterentry->virtkey );
+		button->SetName( iterentry->name );
+		button->SetWICode( iterentry->virtkey );
 		
-		button.SetDisplayImages( sharedButton );
+		button->SetDisplayImages( sharedButton );
 		
 		const int wichar = MapVirtualKey( iterentry->virtkey, MAPVK_VK_TO_CHAR );
 		if( wichar >= 32 ){
-			button.SetWIChar( wichar );
-			button.SetDisplayText( decUnicodeString( wichar ).GetUpper().ToUTF8() );
+			button->SetWIChar( wichar );
+			button->SetDisplayText( decUnicodeString( wichar ).GetUpper().ToUTF8() );
 			
 		}else{
-			button.SetDisplayText( button.GetName() );
+			button->SetDisplayText( button->GetName() );
 		}
 		
-		button.SetKeyCode( KeyCodeForWICode( iterentry->virtkey ) );
-		button.SetKeyLocation( KeyLocationForWICode( iterentry->virtkey ) );
-		button.SetMatchPriority( MatchingPriorityForWICode( iterentry->virtkey ) );
+		button->SetKeyCode( KeyCodeForWICode( iterentry->virtkey ) );
+		button->SetKeyLocation( KeyLocationForWICode( iterentry->virtkey ) );
+		button->SetMatchPriority( MatchingPriorityForWICode( iterentry->virtkey ) );
 		
 		buttonIndex++;
 		iterentry++;

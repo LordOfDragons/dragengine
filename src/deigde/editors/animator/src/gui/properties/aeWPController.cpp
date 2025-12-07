@@ -102,8 +102,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( animator, controller ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( animator, controller ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -143,8 +142,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, animator, controller ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, animator, controller ) ));
 		if( undo ){
 			animator->GetUndoSystem()->Add( undo );
 		}
@@ -162,9 +160,8 @@ public:
 		"Copy controller to clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator*, aeController *controller ){
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new aeClipboardDataController( controller ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataController::Ref::NewWith(controller));
 		return nullptr;
 	}
 };
@@ -176,9 +173,8 @@ public:
 		"Cut controller into clipboard" ){ }
 	
 	virtual igdeUndo *OnAction( aeAnimator *animator, aeController *controller ){
-		igdeClipboardData::Ref cdata;
-		cdata.TakeOver( new aeClipboardDataController( controller ) );
-		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set( cdata );
+		pPanel.GetWindowProperties().GetWindowMain().GetClipboard().Set(
+			aeClipboardDataController::Ref::NewWith(controller));
 		return new aeURemoveController( animator, controller );
 	}
 };
@@ -203,9 +199,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new aeUControllerPaste( animator, cdata->GetControllers() ) );
-		animator->GetUndoSystem()->Add( undo );
+		animator->GetUndoSystem()->Add(
+			aeUControllerPaste::Ref::NewWith(animator, cdata->GetControllers()));
 	}
 	
 	virtual void Update(){
@@ -459,9 +454,8 @@ public:
 		
 		const decVector &vector = editVector->GetVector();
 		if( ! controller->GetDefaultVector().IsEqualTo( vector ) ){
-			igdeUndo::Ref undo;
-			undo.TakeOver( new aeUControllerSetDefaultVector( controller, vector ) );
-			animator->GetUndoSystem()->Add( undo );
+			animator->GetUndoSystem()->Add(
+				aeUControllerSetDefaultVector::Ref::NewWith(controller, vector));
 		}
 	}
 };

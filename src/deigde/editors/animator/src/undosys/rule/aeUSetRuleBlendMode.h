@@ -44,6 +44,9 @@ private:
 	deAnimatorRule::eBlendModes pNewMode;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeUSetRuleBlendMode> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Creates a new undo object. */

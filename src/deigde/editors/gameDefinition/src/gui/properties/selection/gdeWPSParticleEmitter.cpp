@@ -91,9 +91,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUParticleEmitterSetPath( particleEmitter, editPath->GetPath() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUParticleEmitterSetPath::Ref::NewWith(
+			particleEmitter, editPath->GetPath()));
 	}
 };
 
@@ -109,9 +108,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUParticleEmitterSetName( particleEmitter, textField->GetText() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUParticleEmitterSetName::Ref::NewWith(
+			particleEmitter, textField->GetText()));
 	}
 };
 
@@ -127,9 +125,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUParticleEmitterSetDescription( particleEmitter, textArea->GetText() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUParticleEmitterSetDescription::Ref::NewWith(particleEmitter, textArea->GetText()));
 	}
 };
 
@@ -145,9 +142,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUParticleEmitterSetCategory( particleEmitter, comboBox->GetText() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUParticleEmitterSetCategory::Ref::NewWith(particleEmitter, comboBox->GetText()));
 	}
 };
 

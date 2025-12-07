@@ -37,6 +37,11 @@ class igdeMainWindow;
  * \brief Engine control dialog.
  */
 class DE_DLL_EXPORT igdeDialogEngine : public igdeDialog{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogEngine> Ref;
+	
+	
 private:
 	igdeMainWindow &pMainWindow;
 	igdeTabBook::Ref pTabPanels;

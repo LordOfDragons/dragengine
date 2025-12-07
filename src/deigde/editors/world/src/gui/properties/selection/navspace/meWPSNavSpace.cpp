@@ -109,9 +109,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUNavSpaceSetPath( navspace, editPath->GetPath() ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(
+			meUNavSpaceSetPath::Ref::NewWith(navspace, editPath->GetPath()));
 	}
 };
 
@@ -131,9 +130,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUNavSpaceSetPosition( navspace, editDVector->GetDVector() ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUNavSpaceSetPosition::Ref::NewWith(
+			navspace, editDVector->GetDVector()));
 	}
 };
 
@@ -153,9 +151,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUNavSpaceSetOrientation( navspace, editVector->GetVector() ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUNavSpaceSetOrientation::Ref::NewWith(
+			navspace, editVector->GetVector()));
 	}
 };
 

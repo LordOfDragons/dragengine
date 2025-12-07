@@ -36,6 +36,10 @@ class meWVNode;
  */
 class meWVNodeSlot : public igdeNVSlot{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meWVNodeSlot> Ref;
+	
+	
 	/** \brief Slot Types. */
 	enum eSlotTypes{
 		estValue,

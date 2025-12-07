@@ -123,27 +123,25 @@ void fbxAnimModule::SaveAnimation( decBaseFileWriter &writer, const deAnimation 
 //////////////////////
 
 void fbxAnimModule::pLoadAnimation( deAnimation &animation, fbxScene &scene ){
-	const fbxAnimation::Ref refLoadAnimation(fbxAnimation::Ref::NewWith(scene));
-	fbxAnimation &loadAnimation = ( fbxAnimation& )( deObject& )refLoadAnimation;
+	fbxAnimation::Ref loadAnimation(fbxAnimation::Ref::NewWith(scene));
 	
 	fbxNode * const nodePose = scene.FirstNodeNamedOrNull( "Pose" );
-	const fbxRig::Ref refLoadRig(fbxRig::Ref::NewWith(scene, nodePose));
-	fbxRig &loadRig = ( fbxRig& )( deObject& )refLoadRig;
-	// loadRig.DebugPrintStructure( *this, "LoadAnimation ", true );
-	loadAnimation.MatchRig( loadRig );
+	fbxRig::Ref loadRig(fbxRig::Ref::NewWith(scene, nodePose));
+	// loadRig->DebugPrintStructure( *this, "LoadAnimation ", true );
+	loadAnimation->MatchRig( *loadRig );
 	
-	//loadAnimation.DebugPrintStructure( *this, "", true );
+	//loadAnimation->DebugPrintStructure( *this, "", true );
 	
-	const int boneCount = loadRig.GetBoneCount();
+	const int boneCount = loadRig->GetBoneCount();
 	deAnimationBone *bone = NULL;
 	int i;
 	for( i=0; i<boneCount; i++ ){
 		bone = new deAnimationBone;
-		bone->SetName( loadRig.GetBoneAt( i )->GetName() );
+		bone->SetName( loadRig->GetBoneAt( i )->GetName() );
 		animation.AddBone( bone );
 	}
 	
-	pLoadMoves( animation, loadAnimation );
+	pLoadMoves( animation, *loadAnimation );
 }
 
 void fbxAnimModule::pLoadMoves( deAnimation &animation, const fbxAnimation &loadAnimation ){

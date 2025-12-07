@@ -96,7 +96,7 @@ void deoglGI::pCleanUp(){
 }
 
 void deoglGI::pCreateUBOParameter(){
-	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::NewWith(pRenderThread) );
 	
 	// memory consumption:
 	// - 10 vec4 blocks = 40 components = 160 bytes
@@ -138,7 +138,7 @@ void deoglGI::pCreateUBOParameter(){
 }
 
 void deoglGI::pCreateUBOProbeIndex(){
-	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::NewWith(pRenderThread) );
 	
 	// memory consumption (UBO maximum at minimum 65536):
 	// - 4096 probe indices = 4096 components = 16384 bytes
@@ -152,7 +152,7 @@ void deoglGI::pCreateUBOProbeIndex(){
 }
 
 void deoglGI::pCreateUBOProbePosition(){
-	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::NewWith(pRenderThread) );
 	
 	// memory consumption (UBO maximum at minimum 65536):
 	// - 4096 probe positions = 16384 components = 65536 bytes
@@ -166,7 +166,7 @@ void deoglGI::pCreateUBOProbePosition(){
 }
 
 void deoglGI::pCreateUBORayDirection(){
-	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::New( new deoglSPBlockUBO( pRenderThread ) ) );
+	const deoglSPBlockUBO::Ref ubo( deoglSPBlockUBO::Ref::NewWith(pRenderThread) );
 	
 	// memory consumption (UBO maximum at minimum 65536):
 	// - 512 rays = 2048 components = 8192 bytes

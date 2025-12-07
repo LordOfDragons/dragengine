@@ -55,6 +55,9 @@ private:
 	unsigned char *pNewValues;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTPaintMask> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

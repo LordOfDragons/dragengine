@@ -40,6 +40,9 @@ private:
 	aeRuleStateSnapshot *pRule;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleSnapToggleEnableRotation> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

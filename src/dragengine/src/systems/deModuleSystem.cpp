@@ -67,7 +67,7 @@
 deModuleSystem::deModuleSystem(deEngine *engine) :
 pEngine(engine),
 pInternalModulesLibrary(nullptr),
-pVFSAssetLibraries(deVirtualFileSystem::Ref::New(new deVirtualFileSystem))
+pVFSAssetLibraries(deVirtualFileSystem::Ref::NewWith())
 {
 	DEASSERT_NOTNULL(engine)
 }
@@ -814,11 +814,11 @@ void deModuleSystem::pDetectModulesIn(const char *basePath, const char *director
 	
 	try{
 		// find directories
-		const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::New(new deVirtualFileSystem));
+		const deVirtualFileSystem::Ref vfs(deVirtualFileSystem::Ref::NewWith());
 		
 		searchPath.SetFromNative( basePath );
 		searchPath.AddUnixPath( directory );
-		vfs->AddContainer(deVFSDiskDirectory::Ref::New(new deVFSDiskDirectory(searchPath)));
+		vfs->AddContainer(deVFSDiskDirectory::Ref::NewWith(searchPath));
 		
 		deCollectDirectorySearchVisitor collect;
 		vfs->SearchFiles( decPath::CreatePathUnix( "/" ), collect );

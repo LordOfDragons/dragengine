@@ -43,6 +43,11 @@ class meHTVRuleVectorMath;
  * Undo action to set the A vector of a height terrain vegetation rule vector math.
  */
 class meUHTVRuleVecMathSetVectorA : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleVecMathSetVectorA> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleVectorMath *pRule;

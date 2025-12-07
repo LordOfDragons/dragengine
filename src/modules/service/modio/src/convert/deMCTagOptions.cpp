@@ -41,7 +41,7 @@ deServiceObject::Ref deMCTagOptions::ModTagOptions( const Modio::ModTagOptions &
 }
 
 deServiceObject::Ref deMCTagOptions::ModTagInfo( const Modio::ModTagInfo &info ){
-	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 	so->SetStringChildAt( "name", info.TagGroupName.c_str() );
 	so->SetChildAt( "nameTranslations", deMCCommon::StringMap( info.TagGroupNameLocData ) );
 	so->SetBoolChildAt( "allowMultipleSelection", info.bAllowMultipleSelection );
@@ -50,7 +50,7 @@ deServiceObject::Ref deMCTagOptions::ModTagInfo( const Modio::ModTagInfo &info )
 	const std::vector<Modio::ModTagLocalizationData> &tags = info.TagGroupValueLocData;
 	std::vector<Modio::ModTagLocalizationData>::const_iterator iterTags;
 	for( iterTags = tags.cbegin(); iterTags != tags.cend(); iterTags++ ){
-		const deServiceObject::Ref soTag( deServiceObject::Ref::New( new deServiceObject ) );
+		const deServiceObject::Ref soTag( deServiceObject::Ref::NewWith() );
 		soTag->SetStringChildAt( "name", iterTags->Tag.c_str() );
 		soTag->SetChildAt( "nameTranslations", deMCCommon::StringMap( iterTags->Translations ) );
 		soTags->AddChild( soTag );

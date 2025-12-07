@@ -45,6 +45,11 @@ class deImage;
  * Undo action to import a height image into a height terrain.
  */
 class meUHTImportHeightImage : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTImportHeightImage> Ref;
+	
+	
 private:
 	meWorld *pWorld;
 	meHeightTerrainSector *pSector;

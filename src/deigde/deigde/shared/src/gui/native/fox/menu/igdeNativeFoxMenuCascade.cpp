@@ -190,6 +190,9 @@ long igdeNativeFoxMenuCascadeTitle::updateMenuAction( FXObject*, FXSelector, voi
 
 
 class igdeNativeFoxMenuCascade_PopupWindow : public igdeWindow{
+public:
+	typedef deTObjectReference<igdeNativeFoxMenuCascade_PopupWindow> Ref;
+	
 private:
 	igdeMenuCascade &pMenu;
 	
@@ -400,9 +403,7 @@ void igdeNativeFoxMenuCascade::PostCreateNativePopup( igdeMenuCascade&, void *na
 
 void igdeNativeFoxMenuCascade::ShowPopupWindow( igdeMenuCascade &powner,
 igdeWidget &widgetOwner, const decPoint &position ){
-	igdeWidget::Ref window;
-	window.TakeOver( new igdeNativeFoxMenuCascade_PopupWindow( powner ) );
-	( ( igdeNativeFoxMenuCascade_PopupWindow& )( igdeWidget& )window ).Popup( position );
+	igdeNativeFoxMenuCascade_PopupWindow::Ref::NewWith(powner)->Popup(position);
 }
 
 void igdeNativeFoxMenuCascade::DestroyNativePopup( igdeMenuCascade&, void *native ){

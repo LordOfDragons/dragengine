@@ -73,7 +73,6 @@ void ceWPTMAIfElseElseMoveAction::OnAction(){
 		DETHROW( deeInvalidAction );
 	}
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCAIfElseMove( pTopic, pIfElse, NULL, pAction, pIndex ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCAIfElseMove::Ref::NewWith(
+		pTopic, pIfElse, nullptr, pAction, pIndex));
 }

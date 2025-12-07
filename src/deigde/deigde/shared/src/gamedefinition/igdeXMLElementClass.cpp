@@ -79,8 +79,7 @@ igdeXMLElementClass::~igdeXMLElementClass(){
 igdeGDClass *igdeXMLElementClass::LoadElementClass(decBaseFileReader &reader,
 const char *filename){
 	try{
-		decXmlDocument::Ref document;
-		document.TakeOver( new decXmlDocument );
+		decXmlDocument::Ref document(decXmlDocument::Ref::NewWith());
 		
 		decXmlParser( GetLogger() ).ParseXml( &reader, document );
 		
@@ -317,7 +316,7 @@ igdeGDClass &gdClass, const char *filename, const decString &basePathStr){
 	}
 	
 	decStringDictionary &properties = inherit->GetAutoPrefixProperties();
-	const cMap::Ref map(cMap::Ref::New(new cMap));
+	const cMap::Ref map(cMap::Ref::NewWith());
 	int i;
 	
 	for( i=0; i<root.GetElementCount(); i++ ){

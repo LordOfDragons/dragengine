@@ -41,6 +41,11 @@ class meHTVRLink;
  * Undo action for adding a height terrain vegetation link.
  */
 class meUHTVLinkAdd : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVLinkAdd> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRLink *pLink;

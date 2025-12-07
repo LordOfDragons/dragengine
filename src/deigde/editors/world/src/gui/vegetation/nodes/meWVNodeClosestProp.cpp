@@ -75,10 +75,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleCPSetClass( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleClosestProp(), comboBox->GetText() ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCPSetClass::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleClosestProp(), comboBox->GetText()));
 	}
 };
 
@@ -95,10 +94,9 @@ public:
 		
 		decString propClass( pNode.GetRuleClosestProp()->GetPropClass() );
 		if( igdeDialogBrowserObjectClass::SelectObjectClass( &pNode, propClass ) ){
-			igdeUndo::Ref undo;
-			undo.TakeOver( new meUHTVRuleCPSetClass( pNode.GetWindowVegetation().GetVLayer(),
-				pNode.GetRuleClosestProp(), propClass ) );
-			pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+			pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+				meUHTVRuleCPSetClass::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+					pNode.GetRuleClosestProp(), propClass));
 		}
 	}
 };
@@ -128,10 +126,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUHTVRuleCPSetRadius( pNode.GetWindowVegetation().GetVLayer(),
-			pNode.GetRuleClosestProp(), value ) );
-		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add( undo );
+		pNode.GetWindowVegetation().GetWorld()->GetUndoSystem()->Add(
+			meUHTVRuleCPSetRadius::Ref::NewWith(pNode.GetWindowVegetation().GetVLayer(),
+				pNode.GetRuleClosestProp(), value));
 	}
 };
 
@@ -158,14 +155,13 @@ pRuleCP( rule )
 	pActionMenuClass.TakeOver( new cActionMenuClass( *this ) );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Distance", "Distance in meters from closest prop",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestProp::eosDistance ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Distance", "Distance in meters from closest prop",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleClosestProp::eosDistance));
 	
-	slot.TakeOver( new meWVNodeSlot( env, "Direction", "Direction (normalized vector) towards closest prop",
-		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestProp::eosDirection ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Direction", "Direction (normalized vector) towards closest prop",
+		false, *this, meWVNodeSlot::estVector, meHTVRuleClosestProp::eosDirection));
 	
 	// parameters
 	pFraParameters.TakeOver( new igdeContainerForm( env ) );

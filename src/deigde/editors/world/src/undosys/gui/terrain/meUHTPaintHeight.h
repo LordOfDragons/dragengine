@@ -52,6 +52,9 @@ private:
 	float *pNewHeights;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTPaintHeight> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

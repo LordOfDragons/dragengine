@@ -41,6 +41,9 @@ private:
 	
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUViewSetLimitBoxExtends> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo object. */

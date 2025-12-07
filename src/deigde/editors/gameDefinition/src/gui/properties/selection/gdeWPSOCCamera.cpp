@@ -83,8 +83,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), camera ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *textField, pPanel.GetObjectClass(), camera ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -107,8 +107,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), camera ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), camera ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -213,9 +213,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCCameraSetPropertyName(
-			pPanel.GetObjectClass(), camera, comboBox->GetText() ) );
+		gdeUOCCameraSetPropertyName::Ref undo(gdeUOCCameraSetPropertyName::Ref::NewWith(
+			pPanel.GetObjectClass(), camera, comboBox->GetText()));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -234,8 +233,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver(new gdeUOCCameraSetPropertyPosition(
+		gdeUOCCameraSetPropertyPosition::Ref undo(gdeUOCCameraSetPropertyPosition::Ref::NewWith(
 			pPanel.GetObjectClass(), camera, comboBox->GetText()));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
@@ -255,8 +253,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver(new gdeUOCCameraSetPropertyRotation(
+		gdeUOCCameraSetPropertyRotation::Ref undo(gdeUOCCameraSetPropertyRotation::Ref::NewWith(
 			pPanel.GetObjectClass(), camera, comboBox->GetText()));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);

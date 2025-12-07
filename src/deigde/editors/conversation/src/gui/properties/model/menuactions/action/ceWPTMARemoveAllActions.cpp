@@ -58,9 +58,7 @@ pConversation( &conversation ){
 ///////////////
 
 void ceWPTMARemoveAllActions::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( CreateUndo() );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(igdeUndo::Ref::New(CreateUndo()));
 }
 
 igdeUndo *ceWPTMARemoveAllActions::CreateUndo(){

@@ -72,8 +72,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new reUSetShapeCapsuleHalfHeight( capsule, value ) );
+		reUSetShapeCapsuleHalfHeight::Ref undo(reUSetShapeCapsuleHalfHeight::Ref::NewWith(
+			capsule, value));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -97,8 +97,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new reUSetShapeCapsuleTopRadius( capsule, value ) );
+		reUSetShapeCapsuleTopRadius::Ref undo(reUSetShapeCapsuleTopRadius::Ref::NewWith(capsule, value));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}
@@ -122,8 +121,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new reUSetShapeCapsuleBottomRadius( capsule, value ) );
+		reUSetShapeCapsuleBottomRadius::Ref undo(reUSetShapeCapsuleBottomRadius::Ref::NewWith(
+			capsule, value));
 		if( undo ){
 			rig->GetUndoSystem()->Add( undo );
 		}

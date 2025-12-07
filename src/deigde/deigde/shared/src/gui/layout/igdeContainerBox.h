@@ -38,6 +38,10 @@
  */
 class DE_DLL_EXPORT igdeContainerBox : public igdeContainer{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeContainerBox> Ref;
+	
+	
 	/** \brief Layout axis for subclasses. */
 	enum eAxis{
 		/** \brief Layout along the X axis. */

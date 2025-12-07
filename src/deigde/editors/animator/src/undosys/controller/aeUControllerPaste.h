@@ -42,6 +42,9 @@ private:
 	int pIndex;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeUControllerPaste> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create a new undo object. */

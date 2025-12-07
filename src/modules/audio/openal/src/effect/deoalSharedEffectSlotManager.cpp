@@ -72,7 +72,7 @@ void deoalSharedEffectSlotManager::SetMaxCount( int count ){
 	pMaxCount = count;
 	
 	for( i=0; i<count; i++ ){
-		pSlots.Add( deoalSharedEffectSlot::Ref::New( new deoalSharedEffectSlot( pAudioThread ) ) );
+		pSlots.Add( deoalSharedEffectSlot::Ref::NewWith(pAudioThread) );
 	}
 }
 

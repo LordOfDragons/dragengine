@@ -480,8 +480,7 @@ void igdeTreeList::ShowContextMenu( const decPoint &position ){
 		return;
 	}
 	
-	igdeMenuCascade::Ref menu;
-	menu.TakeOver( new igdeMenuCascade( GetEnvironment() ) );
+	igdeMenuCascade::Ref menu(igdeMenuCascade::Ref::NewWith(GetEnvironment()));
 	
 	const int count = pListeners.GetCount();
 	int i;

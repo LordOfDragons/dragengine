@@ -82,9 +82,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCActionSetDelay( topic, action, delay ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCActionSetDelay::Ref::NewWith(topic, action, delay));
 	}
 };
 
@@ -103,9 +102,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCActionToggleWaitForActor( topic, action ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCActionToggleWaitForActor::Ref::NewWith(topic, action));
 	}
 	
 	virtual void Update(){
@@ -130,9 +128,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCActionToggleWaitSpeakOnly( topic, action ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCActionToggleWaitSpeakOnly::Ref::NewWith(topic, action));
 	}
 	
 	virtual void Update(){
@@ -155,9 +152,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new ceUCActionSetWaitForActorID( topic, action, comboBox->GetText() ) );
-		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add( undo );
+		pPanel.GetParentPanel().GetConversation()->GetUndoSystem()->Add(
+			ceUCActionSetWaitForActorID::Ref::NewWith(topic, action, comboBox->GetText()));
 	}
 };
 

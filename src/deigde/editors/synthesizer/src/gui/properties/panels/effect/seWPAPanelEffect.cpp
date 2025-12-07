@@ -83,8 +83,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, effect ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, effect ) ));
 		if( undo ){
 			effect->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -106,8 +105,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, effect ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, effect ) ));
 		if( undo ){
 			effect->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -131,8 +129,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( effect ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( effect ) ));
 		if( undo ){
 			effect->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}

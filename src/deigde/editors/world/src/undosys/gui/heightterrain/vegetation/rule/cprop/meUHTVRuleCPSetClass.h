@@ -43,6 +43,11 @@ class meHTVRuleClosestProp;
  * Undo action to set the prop class of a height terrain vegetation rule closest prop.
  */
 class meUHTVRuleCPSetClass : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleCPSetClass> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleClosestProp *pRule;

@@ -47,6 +47,11 @@ class reRigConstraintList;
  * parameters copied but mirrored along the x axis.
  */
 class reUBoneMirror : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<reUBoneMirror> Ref;
+	
+
 private:
 	struct sBone{
 		reRigBone *boneSource;

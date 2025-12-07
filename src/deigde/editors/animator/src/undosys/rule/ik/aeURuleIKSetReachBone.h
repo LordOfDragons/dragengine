@@ -42,6 +42,9 @@ private:
 	decString pNewValue;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeURuleIKSetReachBone> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/**

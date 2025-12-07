@@ -44,6 +44,9 @@ private:
 	decVector pNewOrientation;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUNavSpaceSetOrientation> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create object. */

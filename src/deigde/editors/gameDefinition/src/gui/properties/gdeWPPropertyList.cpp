@@ -135,8 +135,7 @@ public:
 			
 			const gdeProperty::Ref property(gdeProperty::Ref::NewWith(name));
 			
-			igdeUndo::Ref undo;
-			undo.TakeOver( pPanel.UndoAdd( property ) );
+			igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoAdd( property ) ));
 			if( undo ){
 				pPanel.GetUndoSystem()->Add( undo );
 				pPanel.SelectProperty( property );
@@ -165,8 +164,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoRemove( property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoRemove( property ) ));
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
 		}
@@ -195,10 +193,7 @@ public:
 		
 		const gdeProperty::Ref clipProperty(gdeProperty::Ref::NewWith(*property));
 		
-		igdeClipboardData::Ref clipData;
-		clipData.TakeOver( new gdeClipboardDataProperty( clipProperty ) );
-		
-		pPanel.GetClipboard()->Set( clipData );
+		pPanel.GetClipboard()->Set(gdeClipboardDataProperty::Ref::NewWith(clipProperty));
 	}
 	
 	virtual void Update(){
@@ -222,8 +217,7 @@ public:
 		
 		cActionPropertyCopy::OnAction();
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoRemove( property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoRemove( property ) ));
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
 		}
@@ -264,8 +258,7 @@ public:
 		gdeProperty * const property = refProperty;
 		property->SetName( name );
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoPaste( property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoPaste( property ) ));
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
 			pPanel.SelectProperty( property );
@@ -292,8 +285,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, property ) ));
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
 		}
@@ -315,8 +307,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textArea, property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textArea, property ) ));
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
 		}
@@ -338,8 +329,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, property ) ));
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
 		}
@@ -362,8 +352,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnActionUndo( property ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionUndo( property ) ));
 		if( undo ){
 			pPanel.GetUndoSystem()->Add( undo );
 		}
@@ -420,8 +409,7 @@ public:
 			return NULL;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoType( property, type ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( pPanel.UndoType( property, type ) ));
 		pPanel.GetUndoSystem()->Add( undo );
 		
 		pPanel.SetDefaultValueFromType();
@@ -621,9 +609,8 @@ public:
 		const gdeFilePattern::Ref refFilePattern(gdeFilePattern::Ref::NewWith(name, "*.ext", "*.ext"));
 		gdeFilePattern * const filePattern = refFilePattern;
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( pPanel.UndoCustomFilePatternAdd( property, filePattern ) );
-		pPanel.GetUndoSystem()->Add( undo );
+		pPanel.GetUndoSystem()->Add(igdeUndo::Ref::New(
+			 pPanel.UndoCustomFilePatternAdd( property, filePattern ) ));
 		
 		pPanel.SelectCustomPattern( filePattern );
 	}
@@ -1220,7 +1207,6 @@ void gdeWPPropertyList::SetDefaultValueFromType(){
 		return;
 	}
 	
-	igdeUndo::Ref undo;
-	undo.TakeOver( UndoDefaultValue( property, value, pEditDefault->GetValue() ) );
-	pGameDefinition->GetUndoSystem()->Add( undo );
+	pGameDefinition->GetUndoSystem()->Add(igdeUndo::Ref::New(
+		 UndoDefaultValue( property, value, pEditDefault->GetValue() ) ));
 }

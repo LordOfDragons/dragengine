@@ -36,6 +36,9 @@ class igdeGDParticleEmitter;
  */
 class DE_DLL_EXPORT igdeDialogBrowserParticleEmitter : public igdeDialogBrowser{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<igdeDialogBrowserParticleEmitter> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create dialog. */

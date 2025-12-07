@@ -73,7 +73,6 @@ pIndex( index )
 ///////////////
 
 void ceWPTMAPChoiceOptionMove::OnAction(){
-	igdeUndo::Ref undo;
-	undo.TakeOver( new ceUCAPChoiceOptionMove( pTopic, pPlayerChoice, pOption, pIndex ) );
-	pConversation->GetUndoSystem()->Add( undo );
+	pConversation->GetUndoSystem()->Add(ceUCAPChoiceOptionMove::Ref::NewWith(
+		pTopic, pPlayerChoice, pOption, pIndex));
 }

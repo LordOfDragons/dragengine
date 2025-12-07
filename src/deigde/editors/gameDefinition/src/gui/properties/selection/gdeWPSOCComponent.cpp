@@ -128,8 +128,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *textField, pPanel.GetObjectClass(), component ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *textField, pPanel.GetObjectClass(), component ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -152,8 +152,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), component ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( editVector->GetVector(), pPanel.GetObjectClass(), component ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -176,8 +176,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( *comboBox, pPanel.GetObjectClass(), component ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChanged( *comboBox, pPanel.GetObjectClass(), component ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -204,8 +204,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnActionComponent( pPanel.GetObjectClass(), component ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnActionComponent( pPanel.GetObjectClass(), component ) ));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -232,10 +231,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCComponentSetModelPath(
-			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetModelPath::Ref::NewWith(
+			pPanel.GetObjectClass(), component, editPath->GetPath()));
 	}
 };
 
@@ -251,10 +248,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCComponentSetSkinPath(
-			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetSkinPath::Ref::NewWith(
+			pPanel.GetObjectClass(), component, editPath->GetPath()));
 	}
 };
 
@@ -270,10 +265,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCComponentSetRigPath(
-			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetRigPath::Ref::NewWith(
+			pPanel.GetObjectClass(), component, editPath->GetPath()));
 	}
 };
 
@@ -289,10 +282,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCComponentSetAnimatorPath(
-			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCComponentSetAnimatorPath::Ref::NewWith(pPanel.GetObjectClass(),
+				component, editPath->GetPath()));
 	}
 };
 
@@ -308,10 +300,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCComponentSetAnimationPath(
-			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCComponentSetAnimationPath::Ref::NewWith(pPanel.GetObjectClass(),
+				component, editPath->GetPath()));
 	}
 };
 
@@ -327,10 +318,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCComponentSetMove(
-			pPanel.GetObjectClass(), component, textField->GetText() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCComponentSetMove::Ref::NewWith(
+			pPanel.GetObjectClass(), component, textField->GetText()));
 	}
 };
 
@@ -346,10 +335,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCComponentSetOccMeshPath(
-			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCComponentSetOccMeshPath::Ref::NewWith(pPanel.GetObjectClass(),
+				component, editPath->GetPath()));
 	}
 };
 
@@ -365,10 +353,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCComponentSetAudioModelPath(
-			pPanel.GetObjectClass(), component, editPath->GetPath() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCComponentSetAudioModelPath::Ref::NewWith(pPanel.GetObjectClass(),
+				component, editPath->GetPath()));
 	}
 };
 
@@ -554,10 +541,9 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCComponentSetPropertyName(
-			pPanel.GetObjectClass(), component, propertyName, comboBox->GetText() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(
+			gdeUOCComponentSetPropertyName::Ref::NewWith(pPanel.GetObjectClass(),
+				component, propertyName, comboBox->GetText()));
 	}
 };
 
@@ -624,9 +610,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChangedTexture( editVector2->GetVector2(),
-			pPanel.GetObjectClass(), pPanel.GetComponent(), texture ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChangedTexture( editVector2->GetVector2(),
+			pPanel.GetObjectClass(), pPanel.GetComponent(), texture )));
 		if( undo ){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
 		}
@@ -684,9 +669,8 @@ public:
 		
 		const gdeOCComponentTexture::Ref texture(gdeOCComponentTexture::Ref::NewWith(name));
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCCAddTexture( objectClass, component, texture ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCAddTexture::Ref::NewWith(
+			objectClass, component, texture));
 		
 		component->SetActiveTexture( texture );
 		pPanel.GetGameDefinition()->NotifyOCComponentActiveTextureChanged( objectClass, component );
@@ -728,9 +712,8 @@ public:
 		helper.MenuCommand( contextMenu, pPanel.GetActionTextureAdd() );
 		
 		if( actionsAddFromModel.GetCount() > 0 ){
-			igdeMenuCascade::Ref subMenu;
-			subMenu.TakeOver( new igdeMenuCascade( env, "Add Texture From Model",
-				env.GetStockIcon( igdeEnvironment::esiPlus ), "Add Texture From Model" ) );
+			igdeMenuCascade::Ref subMenu(igdeMenuCascade::Ref::NewWith(
+				env, "Add Texture From Model", env.GetStockIcon( igdeEnvironment::esiPlus ), "Add Texture From Model"));
 			
 			const int count = actionsAddFromModel.GetCount();
 			int i;
@@ -777,10 +760,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCCTextureSetPathSkin( pPanel.GetObjectClass(),
-			pPanel.GetComponent(), texture, editPath->GetPath() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCTextureSetPathSkin::Ref::NewWith(
+			pPanel.GetObjectClass(), pPanel.GetComponent(), texture, editPath->GetPath()));
 	}
 };
 
@@ -836,10 +817,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCCTextureSetColorTint( pPanel.GetObjectClass(),
-			pPanel.GetComponent(), texture, colorBox->GetColor() ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCTextureSetColorTint::Ref::NewWith(
+			pPanel.GetObjectClass(), pPanel.GetComponent(), texture, colorBox->GetColor()));
 	}
 };
 
@@ -946,10 +925,8 @@ public:
 		decStringDictionary values( texture->GetProperties() );
 		values.SetAt( key, value );
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new gdeUOCCTextureSetProperties( pPanel.GetObjectClass(),
-			pPanel.GetComponent(), texture, values ) );
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add( undo );
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCCTextureSetProperties::Ref::NewWith(
+			pPanel.GetObjectClass(), pPanel.GetComponent(), texture, values));
 	}
 	
 	virtual void AddContextMenuEntries( igdeIconListBox*, igdeMenuCascade &menu ){

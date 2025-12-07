@@ -43,6 +43,9 @@ private:
 	decString pNewStyle;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<ceUCAASpeakSetTextBoxTextStyle> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo. */

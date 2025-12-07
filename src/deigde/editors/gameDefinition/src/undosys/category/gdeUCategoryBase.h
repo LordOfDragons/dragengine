@@ -38,6 +38,9 @@ class gdeCategory;
  */
 class gdeUCategoryBase : public igdeUndo{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<gdeUCategoryBase> Ref;
+	
 	/** \brief Category type. */
 	enum eCategoryType{
 		ectObjectClass,

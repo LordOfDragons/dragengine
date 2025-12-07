@@ -169,7 +169,7 @@ deadArchiveFileReader::Ref deadContextUnpack::OpenFileForReading( const deadArch
 		pZipFileOpen = true;
 		pArchiveFilePosition = file.GetArchivePosition();
 		
-		return deadArchiveFileReader::Ref::New( new deadArchiveFileReader( this, file ) );
+		return deadArchiveFileReader::Ref::NewWith(this, file);
 		
 	}catch( const deException & ){
 		CloseFile();
@@ -272,8 +272,7 @@ deadArchiveDirectory::Ref deadContextUnpack::ReadFileTable(){
 		DETHROW_INFO( deeReadFile, pContainer->GetFilename() );
 	}
 	
-	const deadArchiveDirectory::Ref archiveDirectory( deadArchiveDirectory::Ref::New(
-		new deadArchiveDirectory( pModule, "" ) ) );
+	const deadArchiveDirectory::Ref archiveDirectory( deadArchiveDirectory::Ref::NewWith(pModule, "") );
 	
 	while( error == UNZ_OK ){ // exit if error == UNZ_END_OF_LIST_OF_FILE
 		if( unzGetCurrentFileInfo( pZipFile, &info, NULL, 0, NULL, 0, NULL, 0 ) != UNZ_OK ){
@@ -303,8 +302,7 @@ deadArchiveDirectory::Ref deadContextUnpack::ReadFileTable(){
 				DETHROW_INFO( deeReadFile, filename );
 			}
 			
-			directory->AddFile( deadArchiveFile::Ref::New( new deadArchiveFile(
-				pModule, archivePath.GetLastComponent(), info, archivePosition ) ) );
+			directory->AddFile( deadArchiveFile::Ref::NewWith(pModule, archivePath.GetLastComponent(), info, archivePosition) );
 		}
 		
 		error = unzGoToNextFile( pZipFile );

@@ -61,7 +61,7 @@ projConfigurationXml::~projConfigurationXml(){
 ///////////////
 
 void projConfigurationXml::ReadFromFile(decBaseFileReader &reader, projConfiguration &config){
-	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::New(new decXmlDocument));
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser(GetLogger()).ParseXml(&reader, xmlDoc);
 	

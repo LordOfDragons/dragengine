@@ -49,7 +49,6 @@
 #include <dragengine/common/exceptions.h>
 #include <dragengine/parallel/deParallelProcessing.h>
 #include <dragengine/threading/deMutexGuard.h>
-#include <dragengine/threading/deThreadSafeObjectReference.h>
 
 
 
@@ -617,11 +616,10 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	#endif
 	
 	if( taskCount > pTasksReadyTraceSoundRays.GetCount() ){
-		deThreadSafeObjectReference task;
 		while( pTasksReadyTraceSoundRays.GetCount() < taskCount ){
-			task.TakeOver( new deoalRTPTTraceSoundRays( *this ) );
-			pTasksTraceSoundRays.Add( task );
-			pTasksReadyTraceSoundRays.Add( task );
+			const deoalRTPTTraceSoundRays::Ref task(deoalRTPTTraceSoundRays::Ref::NewWith(*this));
+			pTasksTraceSoundRays.Add(task);
+			pTasksReadyTraceSoundRays.Add(task);
 		}
 	}
 	
@@ -669,10 +667,9 @@ const decLayerMask &layerMask, const deoalATRayTracing::sConfigSoundTracing &con
 	
 	// prepare finish task
 	if( pTasksReadyTraceSoundRaysFinish.GetCount() == 0 ){
-		deThreadSafeObjectReference task;
-		task.TakeOver( new deoalRTPTTraceSoundRaysFinish( *this ) );
-		pTasksTraceSoundRaysFinish.Add( task );
-		pTasksReadyTraceSoundRaysFinish.Add( task );
+		const deoalRTPTTraceSoundRaysFinish::Ref task(deoalRTPTTraceSoundRaysFinish::Ref::NewWith(*this));
+		pTasksTraceSoundRaysFinish.Add(task);
+		pTasksReadyTraceSoundRaysFinish.Add(task);
 	}
 	
 	deParallelProcessing &parallel = pAudioThread.GetOal().GetGameEngine()->GetParallelProcessing();
@@ -728,11 +725,10 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	#endif
 	
 	if( taskCount > pTasksReadyListen.GetCount() ){
-		deThreadSafeObjectReference task;
 		while( pTasksReadyListen.GetCount() < taskCount ){
-			task.TakeOver( new deoalRTPTListen( *this ) );
-			pTasksListen.Add( task );
-			pTasksReadyListen.Add( task );
+			const deoalRTPTListen::Ref task(deoalRTPTListen::Ref::NewWith(*this));
+			pTasksListen.Add(task);
+			pTasksReadyListen.Add(task);
 		}
 	}
 	
@@ -772,10 +768,9 @@ deoalRTWorldBVH *rtWorldBVH, const decLayerMask &layerMask, const decDVector &po
 	
 	// prepare finish task
 	if( pTasksReadyListenFinish.GetCount() == 0 ){
-		deThreadSafeObjectReference task;
-		task.TakeOver( new deoalRTPTListenFinish( *this ) );
-		pTasksListenFinish.Add( task );
-		pTasksReadyListenFinish.Add( task );
+		const deoalRTPTListenFinish::Ref task(deoalRTPTListenFinish::Ref::NewWith(*this));
+		pTasksListenFinish.Add(task);
+		pTasksReadyListenFinish.Add(task);
 	}
 	
 	deParallelProcessing &parallel = pAudioThread.GetOal().GetGameEngine()->GetParallelProcessing();
@@ -926,11 +921,10 @@ const deoalRayTraceConfig &probeConfig ){
 	#endif
 	
 	if( taskCount > pTasksReadyRoomEstimate.GetCount() ){
-		deThreadSafeObjectReference task;
 		while( pTasksReadyRoomEstimate.GetCount() < taskCount ){
-			task.TakeOver( new deoalRTPTRoomEstimate( *this ) );
-			pTasksRoomEstimate.Add( task );
-			pTasksReadyRoomEstimate.Add( task );
+			const deoalRTPTRoomEstimate::Ref task(deoalRTPTRoomEstimate::Ref::NewWith(*this));
+			pTasksRoomEstimate.Add(task);
+			pTasksReadyRoomEstimate.Add(task);
 		}
 	}
 	
@@ -971,10 +965,9 @@ const deoalRayTraceConfig &probeConfig ){
 	
 	// prepare finish task
 	if( pTasksReadyRoomEstimateFinish.GetCount() == 0 ){
-		deThreadSafeObjectReference task;
-		task.TakeOver( new deoalRTPTRoomEstimateFinish( *this ) );
-		pTasksRoomEstimateFinish.Add( task );
-		pTasksReadyRoomEstimateFinish.Add( task );
+		const deoalRTPTRoomEstimateFinish::Ref task(deoalRTPTRoomEstimateFinish::Ref::NewWith(*this));
+		pTasksRoomEstimateFinish.Add(task);
+		pTasksReadyRoomEstimateFinish.Add(task);
 	}
 	
 	deParallelProcessing &parallel = pAudioThread.GetOal().GetGameEngine()->GetParallelProcessing();

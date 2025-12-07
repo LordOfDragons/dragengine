@@ -35,6 +35,9 @@
  */
 class meCDProperties : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meCDProperties> Ref;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	

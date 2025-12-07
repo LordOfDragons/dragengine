@@ -37,6 +37,11 @@ class meHeightTerrainNavSpaceType;
  * \brief Undo action height terrain navigation space type set name.
  */
 class meUHTNavSpaceTypeSetColor : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTNavSpaceTypeSetColor> Ref;
+	
+	
 private:
 	meHeightTerrainNavSpaceType *pType;
 	decColor pOldColor;

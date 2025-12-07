@@ -46,6 +46,9 @@ private:
 	aeLink *pLink;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<aeULinkAdd> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** Create undo. */

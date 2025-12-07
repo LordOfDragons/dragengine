@@ -59,7 +59,7 @@ pSkin( mapped ? mapped->GetSkin() : nullptr )
 			
 			for( k=0; k<4; k++ ){
 				if( property->GetMappedComponent( k ) == mapped ){
-					pDependencies.Add( sDependency::Ref::New( new sDependency( property, k ) ) );
+					pDependencies.Add( sDependency::Ref::NewWith(property, k) );
 				}
 			}
 		}

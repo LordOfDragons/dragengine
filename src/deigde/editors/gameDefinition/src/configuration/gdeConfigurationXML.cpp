@@ -63,8 +63,7 @@ gdeConfigurationXML::~gdeConfigurationXML(){
 ///////////////
 
 void gdeConfigurationXML::ReadFromFile( decBaseFileReader &reader, gdeConfiguration &config ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

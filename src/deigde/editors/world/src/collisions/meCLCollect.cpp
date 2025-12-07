@@ -114,7 +114,7 @@ void meCLCollect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 			return;
 		}
 		
-		const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+		const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 		entry->SetHTSector(htsector);
 		entry->SetDistance(info->GetDistance());
 		entry->SetNormal(info->GetNormal());
@@ -138,7 +138,7 @@ void meCLCollect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 			entry->SetObject(colliderOwner->GetObject());
 			entry->SetDistance(info->GetDistance());
 			entry->SetNormal(info->GetNormal());
@@ -152,7 +152,7 @@ void meCLCollect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 			entry->SetDecal(colliderOwner->GetDecal());
 			entry->SetDistance(info->GetDistance());
 			entry->SetNormal(info->GetNormal());
@@ -163,7 +163,7 @@ void meCLCollect::CollisionResponse( deCollider *owner, deCollisionInfo *info ){
 				return;
 			}
 			
-			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::New(new meCLHitListEntry));
+			const meCLHitListEntry::Ref entry(meCLHitListEntry::Ref::NewWith());
 			entry->SetSnapPoint(colliderOwner->GetSnapPoint());
 			entry->SetDistance(info->GetDistance());
 			entry->SetNormal(info->GetNormal());

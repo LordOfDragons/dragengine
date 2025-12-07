@@ -79,9 +79,8 @@ void deRLTaskWriteOcclusionMesh::Run(){
 	decPath path;
 	path.SetFromUnix( GetPath() );
 	
-	decBaseFileWriter::Ref writer;
-	writer.TakeOver( GetVFS()->OpenFileForWriting( path ) );
-	module->SaveOcclusionMesh( writer, pOcclusionMesh );
+	module->SaveOcclusionMesh(decBaseFileWriter::Ref::New(
+		GetVFS()->OpenFileForWriting(path)), pOcclusionMesh);
 	
 	pSucceeded = true;
 	LogRunExit();

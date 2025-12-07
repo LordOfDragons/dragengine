@@ -364,7 +364,7 @@ pEvdevMapKeys( NULL )
 				continue;
 			}
 			
-			const dexsiDeviceAxis::Ref axis( dexsiDeviceAxis::Ref::New( new dexsiDeviceAxis( module ) ) );
+			const dexsiDeviceAxis::Ref axis( dexsiDeviceAxis::Ref::NewWith(module) );
 			AddAxis( axis );
 			axis->SetIndex( indexAxis );
 			axis->SetName( libevdev_event_code_get_name( EV_REL, i ) );
@@ -435,7 +435,7 @@ pEvdevMapKeys( NULL )
 				continue;
 			}
 			
-			const dexsiDeviceAxis::Ref axis(dexsiDeviceAxis::Ref::New(new dexsiDeviceAxis(module)));
+			const dexsiDeviceAxis::Ref axis(dexsiDeviceAxis::Ref::NewWith(module));
 			AddAxis(axis);
 			axis->SetIndex(indexAxis);
 			axis->SetName(libevdev_event_code_get_name(EV_ABS, i));
@@ -500,7 +500,7 @@ pEvdevMapKeys( NULL )
 				continue;
 			}
 			
-			const dexsiDeviceButton::Ref button( dexsiDeviceButton::Ref::New( new dexsiDeviceButton( module ) ) );
+			const dexsiDeviceButton::Ref button( dexsiDeviceButton::Ref::NewWith(module) );
 			AddButton( button );
 			button->SetName( libevdev_event_code_get_name( EV_KEY, i ) );
 			button->SetEvdevCode( i );

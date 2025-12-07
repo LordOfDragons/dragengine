@@ -64,8 +64,7 @@ ceConfigurationXML::~ceConfigurationXML(){
 ///////////////
 
 void ceConfigurationXML::ReadFromFile( decBaseFileReader &reader, ceConfiguration &config ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

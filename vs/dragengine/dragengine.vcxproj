@@ -644,7 +644,6 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deSemaphore.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deThread.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObject.cpp" />
-    <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\service\deService.cpp" />
     <ClCompile Include="..\..\src\dragengine\src\resources\service\deServiceObject.cpp" />
@@ -1262,7 +1261,6 @@
     <ClInclude Include="..\..\src\dragengine\src\threading\deThread.h" />
     <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObject.h" />
     <ClInclude Include="..\..\src\dragengine\src\threading\deTThreadSafeObjectReference.h" />
-    <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.h" />
     <ClInclude Include="..\..\src\dragengine\src\threading\deWriteLockGuard.h" />
     <ClInclude Include="dragengine_configuration.h" />
     <ClInclude Include="..\..\src\dragengine\src\resources\service\deService.h" />

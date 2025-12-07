@@ -132,8 +132,8 @@ public:
 		}
 		
 		/*
-		igdeMenuCascade::Ref contextMenu;
-		contextMenu.TakeOver( new igdeMenuCascade( pVAPreview.GetWindow().GetEnvironment() ) );
+		igdeMenuCascade::Ref contextMenu(igdeMenuCascade::Ref::NewWith(
+			pVAPreview.GetWindow().GetEnvironment()));
 		
 		// TODO
 		

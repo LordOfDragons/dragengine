@@ -41,6 +41,11 @@ class meHTVRuleMapping;
  * Undo action to toggle inversed of a height terrain vegetation rule mapping.
  */
 class meUHTVRuleMapToggleInversed : public igdeUndo{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUHTVRuleMapToggleInversed> Ref;
+	
+	
 private:
 	meHTVegetationLayer *pVLayer;
 	meHTVRuleMapping *pRule;

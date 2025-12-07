@@ -476,6 +476,8 @@ public:
 class cActionMenuCamera : public igdeActionContextMenu{
 	igdeWPCamera &pPanel;
 public:
+	typedef deTObjectReference<cActionMenuCamera> Ref;
+	
 	cActionMenuCamera( igdeWPCamera &panel ) : igdeActionContextMenu(
 		"...", nullptr, "Camera menu" ), pPanel( panel ){ }
 	
@@ -713,8 +715,7 @@ void igdeWPCamera::pCreateContent(){
 	
 	helper.CheckBoxOnly( frameLine, pChkEnableHDRR, new cCheckEnableHDRR( *this ), true );
 	
-	igdeActionContextMenu::Ref actionMenuCamera;
-	actionMenuCamera.TakeOver( new cActionMenuCamera( *this ) );
+	cActionMenuCamera::Ref actionMenuCamera(cActionMenuCamera::Ref::NewWith(*this));
 	helper.Button( frameLine, pBtnCamera, actionMenuCamera );
 	actionMenuCamera->SetWidget( pBtnCamera );
 	

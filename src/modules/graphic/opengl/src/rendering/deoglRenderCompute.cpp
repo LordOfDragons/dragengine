@@ -860,7 +860,7 @@ void deoglRenderCompute::pDebugPrintSSBOGeometries( const deoglRenderPlan &plan,
 	deoglRenderThread &renderThread = GetRenderThread();
 	
 	OGL_CHECK( renderThread, pglMemoryBarrier( GL_CLIENT_MAPPED_BUFFER_BARRIER_BIT ) );
-	const deoglFence::Ref fence( deoglFence::Ref::New( new deoglFence( GetRenderThread() ) ) );
+	const deoglFence::Ref fence( deoglFence::Ref::NewWith(GetRenderThread()) );
 	fence->Arm();
 	fence->Wait();
 	

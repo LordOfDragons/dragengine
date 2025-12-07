@@ -31,7 +31,7 @@
 /////////////////////
 
 deServiceObject::Ref deMCDetail::Avatar( Modio::ModID modId, const Modio::Detail::Avatar &avatar ){
-	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 	
 	so->SetStringChildAt( "original", deModioResourceUrl::FormatUrl(
 		"mod", modId, "avatar", "original" ) );
@@ -44,7 +44,7 @@ deServiceObject::Ref deMCDetail::Avatar( Modio::ModID modId, const Modio::Detail
 }
 
 deServiceObject::Ref deMCDetail::Avatar( Modio::UserID userId, const Modio::Detail::Avatar &avatar ){
-	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 	
 	so->SetStringChildAt( "original", deModioResourceUrl::FormatUrl(
 		"user", userId, "avatar", "original" ) );
@@ -58,7 +58,7 @@ deServiceObject::Ref deMCDetail::Avatar( Modio::UserID userId, const Modio::Deta
 
 deServiceObject::Ref deMCDetail::Image( Modio::ModID modId, int index,
 const Modio::Detail::Image &image ){
-	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 	
 	so->SetStringChildAt( "original", deModioResourceUrl::FormatUrl(
 		"mod", modId, "gallery", index, "original" ) );
@@ -84,7 +84,7 @@ const std::vector<Modio::Detail::Image> &list ){
 }
 
 deServiceObject::Ref deMCDetail::Logo( Modio::ModID modId, const Modio::Detail::Logo &logo ){
-	const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+	const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 	
 	so->SetStringChildAt( "original", deModioResourceUrl::FormatUrl(
 		"mod", modId, "logo", "original" ) );

@@ -72,8 +72,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, source ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, source ) ));
 		if( undo ){
 			source->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -95,9 +94,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUSetSourceSoundPathSound( source, editPath->GetPath() ) );
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUSetSourceSoundPathSound::Ref::NewWith(source, editPath->GetPath()));
 	}
 };
 
@@ -136,9 +134,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seUToggleSourceSoundLooping( source ) );
-		source->GetSynthesizer()->GetUndoSystem()->Add( undo );
+		source->GetSynthesizer()->GetUndoSystem()->Add(
+			seUToggleSourceSoundLooping::Ref::NewWith(source));
 	}
 };
 

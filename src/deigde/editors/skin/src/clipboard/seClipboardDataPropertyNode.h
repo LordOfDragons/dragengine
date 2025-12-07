@@ -39,6 +39,9 @@ class sePropertyNodeList;
  */
 class seClipboardDataPropertyNode : public igdeClipboardData{
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<seClipboardDataPropertyNode> Ref;
+	
 	/** \brief Type name. */
 	static const char * const TYPE_NAME;
 	

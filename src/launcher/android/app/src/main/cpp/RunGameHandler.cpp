@@ -104,8 +104,7 @@ void RunGameHandler::Command(BaseGameActivityAdapter &adapter, int32_t cmd){
 
         if(size > 0 && data){
             pSavedState.TakeOver(new decMemoryFile("savedState"));
-            decMemoryFileWriter::Ref::New(
-                new decMemoryFileWriter(pSavedState, false))
+            decMemoryFileWriter::Ref::NewWith(pSavedState, false)
                     ->Write(data, (int)size);
         }
         }break;
@@ -182,8 +181,7 @@ void RunGameHandler::StartGame(BaseGameActivityAdapter &adapter){
     pSetState(State::gameRunning);
 
     const delEngineInstanceDirect::Factory::Ref factory(
-        delEngineInstanceDirect::Factory::Ref::New(
-            new delEngineInstanceDirect::Factory()));
+        delEngineInstanceDirect::Factory::Ref::NewWith());
     pInitEngineInstanceFactory(factory);
 
     deOSAndroid::sConfig osConfig(pLauncher->GetConfig().osConfig);
@@ -268,8 +266,7 @@ void RunGameHandler::pCreateEngineLogger() {
 
     diskPath.RemoveLastComponent();
 
-    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::New(
-            new deVFSDiskDirectory(diskPath)));
+    const deVFSDiskDirectory::Ref diskDir(deVFSDiskDirectory::Ref::NewWith(diskPath));
 
     pEngineLogger->AddLogger(deLogger::Ref::New(
             new deLoggerFile(decBaseFileWriter::Ref::New(

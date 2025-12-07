@@ -64,8 +64,7 @@ peeConfigurationXML::~peeConfigurationXML(){
 ///////////////
 
 void peeConfigurationXML::ReadFromFile( decBaseFileReader &reader, peeConfiguration &config ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser( GetLogger() ).ParseXml( &reader, xmlDoc );
 	

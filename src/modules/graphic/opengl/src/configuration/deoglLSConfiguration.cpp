@@ -103,8 +103,7 @@ void deoglLSConfiguration::SaveConfig( const deoglConfiguration & ){
 //////////////////////
 
 void deoglLSConfiguration::pLoadConfigOpenGL( deoglConfiguration &configuration, decBaseFileReader &file ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	const char *name;
 	int i;

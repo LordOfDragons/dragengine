@@ -146,7 +146,7 @@ deService *deServiceManager::CreateService( const char *name, const deServiceObj
 			continue;
 		}
 		
-		const deService::Ref service( deService::Ref::New( new deService( this, name ) ) );
+		const deService::Ref service( deService::Ref::NewWith(this, name) );
 		
 		deBaseServiceModule * const srvmod = ( deBaseServiceModule* )loadmod.GetModule();
 		deBaseServiceService * const peer = srvmod->CreateService( service, name, data );
@@ -168,21 +168,18 @@ deService *deServiceManager::CreateService( const char *name, const deServiceObj
 void deServiceManager::QueueRequestResponse( deService *service, const decUniqueID &id,
 const deServiceObject::Ref &response, bool finished ){
 	const deMutexGuard lock( pMutex );
-	pEventQueue.Add( cEvent::Ref::New( new cEvent(
-		cEvent::eeRequestResponse, service, id, response, finished ) ) );
+	pEventQueue.Add( cEvent::Ref::NewWith(cEvent::eeRequestResponse, service, id, response, finished) );
 }
 
 void deServiceManager::QueueRequestFailed( deService *service, const decUniqueID &id,
 const deServiceObject::Ref &error ){
 	const deMutexGuard lock( pMutex );
-	pEventQueue.Add( cEvent::Ref::New( new cEvent(
-		cEvent::eeRequestFailed, service, id, error, true ) ) );
+	pEventQueue.Add( cEvent::Ref::NewWith(cEvent::eeRequestFailed, service, id, error, true) );
 }
 
 void deServiceManager::QueueEventReceived( deService *service, const deServiceObject::Ref &event ){
 	const deMutexGuard lock( pMutex );
-	pEventQueue.Add( cEvent::Ref::New( new cEvent(
-		cEvent::eeEventReceived, service, decUniqueID(), event, true ) ) );
+	pEventQueue.Add( cEvent::Ref::NewWith(cEvent::eeEventReceived, service, decUniqueID(), event, true) );
 }
 
 void deServiceManager::RemoveAllMatchingEvents( deService *service ){

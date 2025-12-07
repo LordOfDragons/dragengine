@@ -109,8 +109,7 @@ igdeXMLGameDefinition::~igdeXMLGameDefinition(){
 ////////////
 
 void igdeXMLGameDefinition::Load( decBaseFileReader &file, igdeGameDefinition &gamedef ){
-	decXmlDocument::Ref xmlDoc;
-	xmlDoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmlDoc(decXmlDocument::Ref::NewWith());
 	
 	// parse xml
 	decXmlParser( GetLogger() ).ParseXml( &file, xmlDoc );
@@ -1766,7 +1765,7 @@ void igdeXMLGameDefinition::pParseClassNavigationBlocker( const decXmlElementTag
 }
 
 void igdeXMLGameDefinition::pParseClassWorld(const decXmlElementTag &root, igdeGDClass &gdclass){
-	const igdeGDCWorld::Ref gdcWorld(igdeGDCWorld::Ref::New(new igdeGDCWorld));
+	const igdeGDCWorld::Ref gdcWorld(igdeGDCWorld::Ref::NewWith());
 	int i;
 	
 	for(i=0; i<root.GetElementCount(); i++){

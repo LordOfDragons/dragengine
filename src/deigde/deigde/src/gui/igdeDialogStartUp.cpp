@@ -139,8 +139,6 @@ pWindowMain( windowMain )
 	
 	SetSize(igdeApplication::app().DisplayScaled(decPoint(600, 0)));
 	
-	igdeLabel::Ref label;
-	label.TakeOver( new igdeLabel( env, "Recently used Game Projects" ) );
 	helper.ListBox( 10, "Recently loaded game projects", pListRecentProjects,
 		new igdeDialogStartUp_ListRecentProjects( *this ) );
 	
@@ -157,7 +155,7 @@ pWindowMain( windowMain )
 	
 	pUpdateRecentProjectList();
 	
-	AddContent( pListRecentProjects, label, buttonBar );
+	AddContent(pListRecentProjects, igdeLabel::Ref::NewWith(env, "Recently used Game Projects"), buttonBar);
 }
 
 igdeDialogStartUp::~igdeDialogStartUp(){
@@ -200,13 +198,12 @@ void igdeDialogStartUp::LoadProjectFromFile(){
 }
 
 void igdeDialogStartUp::NewGameProject(){
-	igdeDialog::Ref dialog;
-	dialog.TakeOver( new igdeDialogNewGameProject( pWindowMain ) );
+	igdeDialogNewGameProject::Ref dialog(igdeDialogNewGameProject::Ref::NewWith(pWindowMain));
 	if( ! dialog->Run( this ) ){
 		return;
 	}
 	
-	pWindowMain.SetGameProject( ( ( igdeDialogNewGameProject& )( igdeDialog& )dialog ).GetNewProject() );
+	pWindowMain.SetGameProject(dialog->GetNewProject());
 	pWindowMain.GetModuleManager().ActivateProjectManager();
 	Accept();
 }

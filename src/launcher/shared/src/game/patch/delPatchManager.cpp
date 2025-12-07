@@ -72,7 +72,7 @@ delPatchManager::~delPatchManager(){
 void delPatchManager::LoadPatches( delEngineInstance &instance ){
 	pLauncher.GetLogger()->LogInfo( pLauncher.GetLogSource(), "Loading patch list" );
 	
-	deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+	deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::NewWith() );
 	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
 	decPath pathDisk;
 	
@@ -94,14 +94,14 @@ void delPatchManager::LoadPatches( delEngineInstance &instance ){
 		pathDisk.SetFromNative( game.GetDelgaFile() );
 		pathDisk.RemoveLastComponent();
 		
-		vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
+		vfs->AddContainer( deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk) );
 		pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot, pPatches );
 	}
 	
 	// load patches from install games directory (deprecated)
 	vfs->RemoveAllContainers();
 	pathDisk.SetFromNative( pLauncher.GetPathGames() );
-	vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk ) ) );
+	vfs->AddContainer( deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk) );
 	pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot, pPatches );
 }
 
@@ -122,8 +122,8 @@ void delPatchManager::LoadPatchFromDisk( delEngineInstance &instance, const decS
 		}
 		
 	}else{
-		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::New( new decDiskFileReader( path ) ) );
-		const delPatch::Ref patch( delPatch::Ref::New( new delPatch ) );
+		const decDiskFileReader::Ref reader( decDiskFileReader::Ref::NewWith(path) );
+		const delPatch::Ref patch( delPatch::Ref::NewWith() );
 		
 		patchXML.ReadFromFile( reader, patch );
 		
@@ -139,11 +139,11 @@ void delPatchManager::LoadPatchFromDisk( delEngineInstance &instance, const decS
 }
 
 void delPatchManager::LoadPatchesFromDisk( delEngineInstance &instance, const decString &baseDir, delPatchList &list ){
-	deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::New( new deVirtualFileSystem ) );
+	deVirtualFileSystem::Ref vfs( deVirtualFileSystem::Ref::NewWith() );
 	const decPath pathRoot( decPath::CreatePathUnix( "/" ) );
 	const decPath pathDisk( decPath::CreatePathNative( baseDir ) );
 	
-	vfs->AddContainer( deVFSDiskDirectory::Ref::New( new deVFSDiskDirectory( pathRoot, pathDisk, true ) ) );
+	vfs->AddContainer( deVFSDiskDirectory::Ref::NewWith(pathRoot, pathDisk, true) );
 	pScanPatchDefFiles( instance, vfs, pathDisk, pathRoot, list );
 }
 

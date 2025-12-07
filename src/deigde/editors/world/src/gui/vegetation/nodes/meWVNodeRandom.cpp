@@ -67,10 +67,9 @@ pRuleRandom( rule )
 	SetTitle( "Random" );
 	
 	// slots
-	igdeNVSlot::Ref slot;
-	slot.TakeOver( new meWVNodeSlot( env, "Random", "Random value",
-		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom ) );
-	AddSlot( slot );
+	AddSlot(meWVNodeSlot::Ref::NewWith(env,
+		"Random", "Random value",
+		false, *this, meWVNodeSlot::estValue, meHTVRuleRandom::eosRandom));
 	
 	// parameters
 	pFraParameters.TakeOver( new igdeContainerForm( env ) );

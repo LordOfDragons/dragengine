@@ -753,7 +753,7 @@ void projTestRunner::pInitLogFile(){
 	pPathLogFile = path.GetPathNative();
 	
 	// create log file or truncate it to 0 length if present
-	decDiskFileWriter::Ref::New( new decDiskFileWriter( pPathLogFile, false ) );
+	decDiskFileWriter::Ref::NewWith(pPathLogFile, false);
 	
 	// open file for reading
 	pLogFileReader.TakeOver( new decDiskFileReader( pPathLogFile ) );

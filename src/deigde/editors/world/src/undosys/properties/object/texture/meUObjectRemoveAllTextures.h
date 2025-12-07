@@ -41,6 +41,9 @@ private:
 	meObjectTextureList pTextureList;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUObjectRemoveAllTextures> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create new undo object. */

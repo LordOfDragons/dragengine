@@ -132,9 +132,8 @@ pSkin( NULL )
 	pCreateToolBarFile();
 	pCreateToolBarEdit();
 	
-	igdeContainerSplitted::Ref splitted;
-	splitted.TakeOver(new igdeContainerSplitted(env, igdeContainerSplitted::espLeft,
-		igdeApplication::app().DisplayScaled(400)));
+	igdeContainerSplitted::Ref splitted(igdeContainerSplitted::Ref::NewWith(
+		env, igdeContainerSplitted::espLeft, igdeApplication::app().DisplayScaled(400)));
 	AddChild( splitted );
 	
 	pWindowProperties = new seWindowProperties( *this );
@@ -446,8 +445,7 @@ public:
 		if( ! pWindow.GetSkin() ){
 			return;
 		}
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( pWindow.GetSkin() ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( pWindow.GetSkin() ) ));
 		if( undo ){
 			pWindow.GetSkin()->GetUndoSystem()->Add( undo );
 		}
@@ -718,7 +716,7 @@ public:
 				igdeCommonDialogs::Error( &pWindow, "Add Mapped", "A mapped with this name exists already." );
 				
 			}else{
-				return new seUMappedAdd( skin, seMapped::Ref::New( new seMapped( name ) ) );
+				return new seUMappedAdd( skin, seMapped::Ref::NewWith(name) );
 			}
 		}
 		
@@ -781,13 +779,12 @@ public:
 		"Add texture", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnAction( seSkin *skin ){
-		igdeDialog::Ref dialog;
-		dialog.TakeOver( new seDialogAddTexture( pWindow ) );
+		seDialogAddTexture::Ref dialog(seDialogAddTexture::Ref::NewWith(pWindow));
 		if( ! dialog->Run( &pWindow ) ){
 			return NULL;
 		}
 		
-		const decString name( ( ( seDialogAddTexture& )( igdeDialog& )dialog ).GetTextureName() );
+		const decString name(dialog->GetTextureName());
 		if( skin->GetTextureList().HasNamed( name ) ){
 			igdeCommonDialogs::Error( &pWindow, "Add Texture", "A texture with this name exists already." );
 			return NULL;
@@ -991,21 +988,19 @@ public:
 		"Add property", deInputEvent::ekcA ){}
 	
 	virtual igdeUndo *OnActionTexture( seSkin*, seTexture *texture ){
-		igdeDialog::Ref refDialog;
-		refDialog.TakeOver( new seDialogAddProperty( pWindow ) );
-		if( ! refDialog->Run( &pWindow ) ){
+		seDialogAddProperty::Ref dialog(seDialogAddProperty::Ref::NewWith(pWindow));
+		if( ! dialog->Run( &pWindow ) ){
 			return NULL;
 		}
 		
 		const igdeTexturePropertyList &knownPropertyList = *pWindow.GetEnvironment().GetTexturePropertyList();
-		seDialogAddProperty &dialog = ( seDialogAddProperty& )( igdeDialog& )refDialog;
 		const sePropertyList &propertyList = texture->GetPropertyList();
-		const decString &customName = dialog.GetCustomPropertyName();
+		const decString &customName = dialog->GetCustomPropertyName();
 		sePropertyList addPropertyList;
 		seProperty::Ref property;
 		
 		if( customName.IsEmpty() ){
-			const decStringSet selection( dialog.GetSelectedPropertyNames() );
+			const decStringSet selection( dialog->GetSelectedPropertyNames() );
 			const int count = selection.GetCount();
 			int i;
 			

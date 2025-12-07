@@ -85,8 +85,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, link ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, link ) ));
 		if( undo ){
 			link->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -110,8 +109,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( link ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( link ) ));
 		if( undo ){
 			link->GetSynthesizer()->GetUndoSystem()->Add( undo );
 		}
@@ -202,9 +200,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seULinkSetController( link, controller ) );
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(
+			seULinkSetController::Ref::NewWith(link, controller));
 	}
 };
 
@@ -221,9 +218,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new seULinkSetRepeat( link, value ) );
-		pPanel.GetSynthesizer()->GetUndoSystem()->Add( undo );
+		pPanel.GetSynthesizer()->GetUndoSystem()->Add(seULinkSetRepeat::Ref::NewWith(link, value));
 	}
 };
 

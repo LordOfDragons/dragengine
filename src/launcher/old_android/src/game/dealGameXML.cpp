@@ -65,8 +65,7 @@ dealGameXML::~dealGameXML(){
 ///////////////
 
 void dealGameXML::ReadFromFile( decBaseFileReader &reader, dealGame &game ){
-	decXmlDocument::Ref xmldoc;
-	xmldoc.TakeOver( new decXmlDocument );
+	decXmlDocument::Ref xmldoc(decXmlDocument::Ref::NewWith());
 	
 	decXmlParser parser( GetLogger() );
 	

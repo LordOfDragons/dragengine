@@ -83,8 +83,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver(OnChanged(*textField, pPanel.GetObjectClass(), world));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*textField, pPanel.GetObjectClass(), world)));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
@@ -107,8 +106,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver(OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), world));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			OnChanged(editVector->GetVector(), pPanel.GetObjectClass(), world)));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
@@ -131,8 +130,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver(OnChanged(*comboBox, pPanel.GetObjectClass(), world));
+		igdeUndo::Ref undo(igdeUndo::Ref::New(OnChanged(*comboBox, pPanel.GetObjectClass(), world)));
 		if(undo){
 			pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
 		}
@@ -155,9 +153,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver(new gdeUOCWorldSetPath(pPanel.GetObjectClass(), world, editPath->GetPath()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCWorldSetPath::Ref::NewWith(
+			pPanel.GetObjectClass(), world, editPath->GetPath()));
 	}
 };
 
@@ -214,10 +211,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver(new gdeUOCWorldSetPropertyName(pPanel.GetObjectClass(),
-			pPanel.GetWorld(), propertyName, comboBox->GetText()));
-		pPanel.GetGameDefinition()->GetUndoSystem()->Add(undo);
+		pPanel.GetGameDefinition()->GetUndoSystem()->Add(gdeUOCWorldSetPropertyName::Ref::NewWith(
+			pPanel.GetObjectClass(), pPanel.GetWorld(), propertyName, comboBox->GetText()));
 	}
 };
 

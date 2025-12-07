@@ -260,17 +260,15 @@ public:
 			triggerTargetList = &dummyList;
 		}
 		
-		igdeDialog::Ref refDialog;
-		refDialog.TakeOver( new igdeTriggerExpressionDialog( pWidget.GetEnvironment(),
-			*triggerTargetList, pWidget.GetTriggerExpressionParser() ) );
-		igdeTriggerExpressionDialog &dialog = ( igdeTriggerExpressionDialog& )( igdeDialog& )refDialog;
+		igdeTriggerExpressionDialog::Ref dialog(igdeTriggerExpressionDialog::Ref::NewWith(
+			pWidget.GetEnvironment(), *triggerTargetList, pWidget.GetTriggerExpressionParser()));
 		
-		dialog.SetExpression( pWidget.GetValue() );
-		if( ! dialog.Run( &pWidget ) || dialog.GetExpression() == pWidget.GetValue() ){
+		dialog->SetExpression( pWidget.GetValue() );
+		if( ! dialog->Run( &pWidget ) || dialog->GetExpression() == pWidget.GetValue() ){
 			return;
 		}
 		
-		pWidget.SetValue( dialog.GetExpression(), pWidget.GetGDProperty() );
+		pWidget.SetValue( dialog->GetExpression(), pWidget.GetGDProperty() );
 		pWidget.EditWidgetValueChanged( false );
 	}
 	

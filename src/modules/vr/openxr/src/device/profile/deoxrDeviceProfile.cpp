@@ -179,11 +179,11 @@ const char *idPrefix, bool withOrientationAction ){
 	
 	device->SetID( id );
 	
-	device->SetSpacePose( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(),
-		device->GetActionPose(), device->GetSubactionPath(), pDeviceRotation ) ) );
+	device->SetSpacePose( deoxrSpace::Ref::NewWith(*pGetSession(),
+		device->GetActionPose(), device->GetSubactionPath(), pDeviceRotation) );
 	if( withOrientationAction ){
-		device->SetSpacePoseOrientation( deoxrSpace::Ref::New( new deoxrSpace( *pGetSession(),
-			device->GetActionPoseOrientation(), device->GetSubactionPath(), pDeviceRotation ) ) );
+		device->SetSpacePoseOrientation( deoxrSpace::Ref::NewWith(*pGetSession(),
+			device->GetActionPoseOrientation(), device->GetSubactionPath(), pDeviceRotation) );
 	}
 }
 
@@ -191,7 +191,7 @@ deoxrDeviceComponent *deoxrDeviceProfile::pAddComponent( deoxrDevice &device,
 deInputDeviceComponent::eComponentTypes type, const char *name, const char *id,
 const char *displayText ){
 	const deoxrDeviceComponent::Ref component(
-		deoxrDeviceComponent::Ref::New( new deoxrDeviceComponent( device ) ) );
+		deoxrDeviceComponent::Ref::NewWith(device) );
 	component->SetID( id );
 	component->SetName( name );
 	component->SetDisplayText( displayText );
@@ -206,7 +206,7 @@ deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentTrigger( deoxrDevice &dev
 }
 
 void deoxrDeviceProfile::pAddAxisTrigger( deoxrDevice &device, deoxrDeviceComponent *component ){
-	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(device) );
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaTriggerAnalog ) );
 	axis->SetType( deInputDeviceAxis::eatTrigger );
 	axis->SetRange( 0.0f, 1.0f );
@@ -223,7 +223,7 @@ void deoxrDeviceProfile::pAddAxisTrigger( deoxrDevice &device, deoxrDeviceCompon
 
 void deoxrDeviceProfile::pAddButtonTrigger(deoxrDevice &device, deoxrDeviceComponent *component,
 bool withTouch, bool withAproach){
-	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(new deoxrDeviceButton(device)));
+	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::NewWith(device));
 	button->SetID("trig");
 	button->SetName("Trigger");
 	button->SetType(deInputDeviceButton::ebtTrigger);
@@ -242,7 +242,7 @@ bool withTouch, bool withAproach){
 }
 
 void deoxrDeviceProfile::pAddAxisTriggerForce(deoxrDevice &device, deoxrDeviceComponent *component){
-	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::NewWith(device));
 	axis->SetActionAnalog(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerForce));
 	axis->SetType(deInputDeviceAxis::eatTriggerForce);
 	axis->SetRange(0.0f, 1.0f);
@@ -257,7 +257,7 @@ void deoxrDeviceProfile::pAddAxisTriggerForce(deoxrDevice &device, deoxrDeviceCo
 }
 
 void deoxrDeviceProfile::pAddAxisTriggerCurl(deoxrDevice &device, deoxrDeviceComponent *component){
-	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::NewWith(device));
 	axis->SetActionAnalog(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerCurl));
 	axis->SetType(deInputDeviceAxis::eatTriggerCurl);
 	axis->SetRange(0.0f, 1.0f);
@@ -272,7 +272,7 @@ void deoxrDeviceProfile::pAddAxisTriggerCurl(deoxrDevice &device, deoxrDeviceCom
 }
 
 void deoxrDeviceProfile::pAddAxisTriggerSlide(deoxrDevice &device, deoxrDeviceComponent *component){
-	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::NewWith(device));
 	axis->SetActionAnalog(pInstance.GetOxr().GetAction(deVROpenXR::eiaTriggerSlide));
 	axis->SetType(deInputDeviceAxis::eatTriggerSlide);
 	axis->SetRange(0.0f, 1.0f);
@@ -297,7 +297,7 @@ void deoxrDeviceProfile::pAddAxesTrackpad( deoxrDevice &device, deoxrDeviceCompo
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(device) );
 		axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaTrackpadAnalog ) );
 		axis->SetType( deInputDeviceAxis::eatTouchPad );
 		axis->SetComponent( i );
@@ -315,7 +315,7 @@ void deoxrDeviceProfile::pAddAxesTrackpad( deoxrDevice &device, deoxrDeviceCompo
 
 void deoxrDeviceProfile::pAddButtonTrackpad( deoxrDevice &device,
 deoxrDeviceComponent *component, bool withPress, bool withTouch ){
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( device ) ) );
+	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::NewWith(device) );
 	button->SetID( "tp" );
 	button->SetName( "TrackPad" );
 	button->SetType( deInputDeviceButton::ebtTouchPad );
@@ -342,7 +342,7 @@ void deoxrDeviceProfile::pAddAxesJoystick( deoxrDevice &device, deoxrDeviceCompo
 	int i;
 	
 	for( i=0; i<2; i++ ){
-		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(device) );
 		axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaJoystickAnalog ) );
 		axis->SetType( deInputDeviceAxis::eatStick );
 		axis->SetComponent( i );
@@ -360,7 +360,7 @@ void deoxrDeviceProfile::pAddAxesJoystick( deoxrDevice &device, deoxrDeviceCompo
 
 void deoxrDeviceProfile::pAddButtonJoystick( deoxrDevice &device,
 deoxrDeviceComponent *component, bool withPress, bool withTouch ){
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( device ) ) );
+	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::NewWith(device) );
 	button->SetID( "js" );
 	button->SetName( "Joystick" );
 	button->SetType( deInputDeviceButton::ebtStick );
@@ -382,7 +382,7 @@ deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentThumbrest( deoxrDevice &d
 
 void deoxrDeviceProfile::pAddButtonThumbrest(deoxrDevice &device, deoxrDeviceComponent *component,
 bool withPress, bool withApproach){
-	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::New(new deoxrDeviceButton(device)));
+	const deoxrDeviceButton::Ref button(deoxrDeviceButton::Ref::NewWith(device));
 	button->SetID("trest");
 	button->SetName("Thumbrest");
 	button->SetType(deInputDeviceButton::ebtGeneric);
@@ -400,7 +400,7 @@ bool withPress, bool withApproach){
 }
 
 void deoxrDeviceProfile::pAddAxesThumbrestPress(deoxrDevice &device, deoxrDeviceComponent *component){
-	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+	const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::NewWith(device));
 	axis->SetActionAnalog(pInstance.GetOxr().GetAction(deVROpenXR::eiaThumbrestPress));
 	axis->SetType(deInputDeviceAxis::eatThumbrestPress);
 	axis->SetRange(0.0f, 1.0f);
@@ -419,7 +419,7 @@ deoxrDeviceComponent *deoxrDeviceProfile::pAddComponentGrip( deoxrDevice &device
 }
 
 void deoxrDeviceProfile::pAddAxisGripGrab( deoxrDevice &device, deoxrDeviceComponent *component ){
-	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(device) );
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaGripGrab ) );
 	axis->SetType( deInputDeviceAxis::eatGripGrab );
 	axis->SetRange( 0.0f, 1.0f );
@@ -434,7 +434,7 @@ void deoxrDeviceProfile::pAddAxisGripGrab( deoxrDevice &device, deoxrDeviceCompo
 }
 
 void deoxrDeviceProfile::pAddAxisGripSqueeze( deoxrDevice &device, deoxrDeviceComponent *component ){
-	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(device) );
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaGripSqueeze ) );
 	axis->SetType( deInputDeviceAxis::eatGripSqueeze );
 	axis->SetRange( 0.0f, 1.0f );
@@ -449,7 +449,7 @@ void deoxrDeviceProfile::pAddAxisGripSqueeze( deoxrDevice &device, deoxrDeviceCo
 }
 
 void deoxrDeviceProfile::pAddAxisGripPinch( deoxrDevice &device, deoxrDeviceComponent *component ){
-	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+	const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(device) );
 	axis->SetActionAnalog( pInstance.GetOxr().GetAction( deVROpenXR::eiaGripSqueeze ) );
 	axis->SetType( deInputDeviceAxis::eatGripPinch );
 	axis->SetRange( 0.0f, 1.0f );
@@ -464,7 +464,7 @@ void deoxrDeviceProfile::pAddAxisGripPinch( deoxrDevice &device, deoxrDeviceComp
 }
 
 void deoxrDeviceProfile::pAddButtonGrip( deoxrDevice &device, deoxrDeviceComponent *component, bool withTouch ){
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( device ) ) );
+	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::NewWith(device) );
 	button->SetID( "grip" );
 	button->SetName( "Grip" );
 	button->SetType( deInputDeviceButton::ebtTrigger );
@@ -483,7 +483,7 @@ eButtonLabel label, bool withTouch ){
 	deoxrDeviceComponent * const component = pAddComponent( device, deInputDeviceComponent::ectButton,
 		pButtonName( label ), pButtonId( label ), pButtonName( label ) );
 	
-	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::New( new deoxrDeviceButton( device ) ) );
+	const deoxrDeviceButton::Ref button( deoxrDeviceButton::Ref::NewWith(device) );
 	button->SetID( pButtonId( label ) );
 	button->SetName( pButtonName( label ) );
 	button->SetDisplayText( pButtonDisplayText( label ) );
@@ -650,8 +650,7 @@ bool withInputSimulation){
 		return nullptr;
 	}
 	
-	const deoxrHandTracker::Ref handTracker( deoxrHandTracker::Ref::New(
-		new deoxrHandTracker( session, device, leftHand ? XR_HAND_LEFT_EXT : XR_HAND_RIGHT_EXT ) ) );
+	const deoxrHandTracker::Ref handTracker( deoxrHandTracker::Ref::NewWith(session, device, leftHand ? XR_HAND_LEFT_EXT : XR_HAND_RIGHT_EXT) );
 	
 	device.SetHandTracker( handTracker );
 	device.SetBoneConfiguration( deInputDevice::ebcHand );
@@ -674,7 +673,7 @@ bool withInputSimulation){
 	int i;
 	
 	for( i=0; i<5; i++ ){
-		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(device) );
 		axis->SetType( deInputDeviceAxis::eatFingerBend );
 		axis->SetRange( 0.0f, 1.0f );
 		axis->SetCenter( -1.0f );
@@ -695,7 +694,7 @@ bool withInputSimulation){
 		{ "Spread Ring Pinky Finger", "fs4", "FS4" } };
 	
 	for( i=0; i<4; i++ ){
-		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::New( new deoxrDeviceAxis( device ) ) );
+		const deoxrDeviceAxis::Ref axis( deoxrDeviceAxis::Ref::NewWith(device) );
 		axis->SetType( deInputDeviceAxis::eatFingerSpread );
 		axis->SetRange( 0.0f, 1.0f );
 		axis->SetCenter( -1.0f );
@@ -718,7 +717,7 @@ bool withInputSimulation){
 			{"Input Pinky Finger", "tfi4", "FI4" }};
 		
 		for(i=0; i<4; i++){
-			const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::New(new deoxrDeviceAxis(device)));
+			const deoxrDeviceAxis::Ref axis(deoxrDeviceAxis::Ref::NewWith(device));
 			axis->SetType(deInputDeviceAxis::eatTwoFingerTrigger);
 			axis->SetRange(0.0f, 1.0f);
 			axis->SetCenter(-1.0f);
@@ -732,7 +731,7 @@ bool withInputSimulation){
 			device.AddAxis(axis);
 			
 			const deoxrDeviceButton::Ref button(
-				deoxrDeviceButton::Ref::New(new deoxrDeviceButton(device)));
+				deoxrDeviceButton::Ref::NewWith(device));
 			button->SetType(deInputDeviceButton::ebtTwoFingerTrigger);
 			button->SetName(tfiData[i].name);
 			button->SetID(tfiData[i].id);

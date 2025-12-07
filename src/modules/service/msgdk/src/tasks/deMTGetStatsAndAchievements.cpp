@@ -20,7 +20,7 @@ deMsgdkAsyncTask(service.GetInvalidator()),
 pService(service),
 pRequestId(id),
 pStatNames(nullptr),
-pResultData(deServiceObject::Ref::New(new deServiceObject)),
+pResultData(deServiceObject::Ref::NewWith()),
 pWaitAchievementsSynced(false)
 {
 	deServiceObject::Ref so;
@@ -105,7 +105,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 {
 	if(pAchievements.GetCount() == 0)
 	{
-		pResultData->SetChildAt("achievements", deServiceObject::Ref::New( new deServiceObject ));
+		pResultData->SetChildAt("achievements", deServiceObject::Ref::NewWith());
 		return;
 	}
 	
@@ -124,7 +124,7 @@ void deMTGetStatsAndAchievements::pGetAchievements()
 			achievementResult, &achievements, &achievementsCount),
 			"deMTGetStatsAndAchievements.pGetAchievements.XblAchievementsManagerResultGetAchievements");
 
-		const deServiceObject::Ref so( deServiceObject::Ref::New( new deServiceObject ) );
+		const deServiceObject::Ref so( deServiceObject::Ref::NewWith() );
 		
 		for(i=0; i<achievementsCount; i++){
 			const char * const name = achievements[i].id;
@@ -152,7 +152,7 @@ void deMTGetStatsAndAchievements::pGetStats()
 		const deMsgdkPendingRequest::Ref pr(pService.GetPendingRequestWithId(pRequestId));
 		if(pr)
 		{
-			pResultData->SetChildAt("stats", deServiceObject::Ref::New(new deServiceObject));
+			pResultData->SetChildAt("stats", deServiceObject::Ref::NewWith());
 			pService.GetModule().GetGameEngine()->GetServiceManager()->
 				QueueRequestResponse(pService.GetService(), pr->id, pr->data, true);
 		}
@@ -207,7 +207,7 @@ void deMTGetStatsAndAchievements::OnFinished()
 			return;
 		}
 		
-		const deServiceObject::Ref so(deServiceObject::Ref::New(new deServiceObject));
+		const deServiceObject::Ref so(deServiceObject::Ref::NewWith());
 		const decString &scid = pService.GetModule().GetGameConfig().scid;
 		uint32_t i, j;
 

@@ -42,6 +42,9 @@ private:
 	int pNavSpaceCount;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUDeleteNavSpace> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

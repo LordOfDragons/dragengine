@@ -107,8 +107,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, decal ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, decal ) ));
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -132,8 +131,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( decal ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( decal ) ));
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -155,8 +153,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), decal ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), decal ) ));
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -178,8 +175,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editDVector->GetDVector(), decal ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editDVector->GetDVector(), decal ) ));
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -201,8 +197,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector2->GetVector2(), decal ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector2->GetVector2(), decal ) ));
 		if( undo ){
 			decal->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -292,9 +287,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUDecalSkin( decal, editPath->GetPath() ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(
+			meUDecalSkin::Ref::NewWith(decal, editPath->GetPath()));
 	}
 };
 
@@ -341,9 +335,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUDecalColorTint( decal, colorBox->GetColor() ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(
+			meUDecalColorTint::Ref::NewWith(decal, colorBox->GetColor()));
 	}
 };
 

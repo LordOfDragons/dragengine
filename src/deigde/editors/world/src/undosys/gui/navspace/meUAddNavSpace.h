@@ -42,6 +42,9 @@ private:
 	meNavigationSpace *pNavSpace;
 	
 public:
+	/** \brief Type holding strong reference. */
+	typedef deTObjectReference<meUAddNavSpace> Ref;
+	
 	/** \name Constructors and Destructors */
 	/*@{*/
 	/** \brief Create undo object. */

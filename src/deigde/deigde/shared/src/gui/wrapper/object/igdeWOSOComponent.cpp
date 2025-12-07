@@ -885,7 +885,7 @@ void igdeWOSOComponent::pUpdateComponent(){
 				
 				try{
 					const deAnimatorRuleAnimation::Ref rule(
-						deAnimatorRuleAnimation::Ref::New( new deAnimatorRuleAnimation ) );
+						deAnimatorRuleAnimation::Ref::NewWith() );
 					rule->SetEnableSize( true );
 					rule->SetMoveName( move );
 					rule->GetTargetMoveTime().AddLink( 0 );

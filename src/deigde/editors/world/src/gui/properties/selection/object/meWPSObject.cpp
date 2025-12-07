@@ -142,8 +142,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( textField, object ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( textField, object ) ));
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -167,8 +166,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnAction( object ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnAction( object ) ));
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -205,8 +203,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( comboBox, object ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( comboBox, object ) ));
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -228,8 +225,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editVector->GetVector(), object ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editVector->GetVector(), object ) ));
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -251,8 +247,7 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChanged( editDVector->GetDVector(), object ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New( OnChanged( editDVector->GetDVector(), object ) ));
 		if( undo ){
 			object->GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -692,8 +687,8 @@ public:
 		if( ! texture ){
 			return;
 		}
-		igdeUndo::Ref undo;
-		undo.TakeOver( OnChangedTexture( editVector2->GetVector2(), pPanel.GetActiveObject(), texture ) );
+		igdeUndo::Ref undo(igdeUndo::Ref::New(
+			 OnChangedTexture( editVector2->GetVector2(), pPanel.GetActiveObject(), texture ) ));
 		if( undo ){
 			pPanel.GetWorld()->GetUndoSystem()->Add( undo );
 		}
@@ -1257,9 +1252,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUObjectTextureSetSkin( texture, editPath->GetPath() ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectTextureSetSkin::Ref::NewWith(
+			texture, editPath->GetPath()));
 	}
 };
 
@@ -1306,9 +1300,8 @@ public:
 			return;
 		}
 		
-		igdeUndo::Ref undo;
-		undo.TakeOver( new meUObjectTextureColorTint( texture, colorBox->GetColor() ) );
-		pPanel.GetWorld()->GetUndoSystem()->Add( undo );
+		pPanel.GetWorld()->GetUndoSystem()->Add(meUObjectTextureColorTint::Ref::NewWith(
+			texture, colorBox->GetColor()));
 	}
 };
 

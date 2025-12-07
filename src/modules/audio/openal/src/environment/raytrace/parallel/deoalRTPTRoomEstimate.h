@@ -61,6 +61,11 @@ class deoalAWorld;
  * - Number of rays hitting room geometry
  */
 class deoalRTPTRoomEstimate : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoalRTPTRoomEstimate> Ref;
+	
+	
 private:
 	struct sHitResult{
 		const deoalRayTraceHitElement *element;

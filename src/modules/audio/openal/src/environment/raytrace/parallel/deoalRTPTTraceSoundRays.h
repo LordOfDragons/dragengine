@@ -67,6 +67,11 @@ class deoalRTWorldBVH;
  * - Sum absorptions
  */
 class deoalRTPTTraceSoundRays : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoalRTPTTraceSoundRays> Ref;
+	
+	
 private:
 	struct sTraceRay{
 		decDVector position;

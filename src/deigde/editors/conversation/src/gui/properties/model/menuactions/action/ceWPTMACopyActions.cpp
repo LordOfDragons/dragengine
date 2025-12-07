@@ -63,7 +63,5 @@ void ceWPTMACopyActions::OnAction(){
 		return;
 	}
 	
-	igdeClipboardData::Ref cdata;
-	cdata.TakeOver( new ceClipboardDataAction( *pActions ) );
-	GetWindowMain().GetClipboard().Set( cdata );
+	GetWindowMain().GetClipboard().Set(ceClipboardDataAction::Ref::NewWith(*pActions));
 }

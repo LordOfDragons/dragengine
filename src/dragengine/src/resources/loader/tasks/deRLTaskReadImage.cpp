@@ -89,8 +89,8 @@ void deRLTaskReadImage::Run(){
 	deBaseImageInfo *infos = NULL;
 	
 	try{
-		decBaseFileReader::Ref reader;
-		reader.TakeOver( GetVFS()->OpenFileForReading( vfsPath ) );
+		decBaseFileReader::Ref reader(decBaseFileReader::Ref::New(
+			 GetVFS()->OpenFileForReading( vfsPath ) ));
 		
 		infos = module->InitLoadImage( reader );
 		if( ! infos ){
