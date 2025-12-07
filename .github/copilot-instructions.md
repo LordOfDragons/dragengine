@@ -94,7 +94,7 @@ scons -h
 
 6. **Braces**:
    - Opening brace on same line for methods, control structures
-   - No whitespace around braces
+   - No whitespace around braces except for control structures
 
 7. **Comments**:
    - Use `//` for single-line comments
