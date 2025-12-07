@@ -165,8 +165,8 @@ public:
 	// inline const deoglSharedVBOBlock::Ref &GetVBOBlockPositionWeight() const{ return pVBOBlockPositionWeight; }
 	// inline const deoglSharedVBOBlock::Ref &GetVBOBlockCalcNormalTangent() const{ return pVBOBlockCalcNormalTangent; }
 	// inline deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO() const{ return pVBOBlockWriteSkinnedVBO; }
-	inline deoglSharedVBOBlock *GetVBOBlockWithWeight() const{ return pVBOBlockWithWeight; }
-	inline deoglSharedVBOBlock *GetVBOBlockVertPosSet() const{ return pVBOBlockVertPosSet; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlockWithWeight() const{ return pVBOBlockWithWeight; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlockVertPosSet() const{ return pVBOBlockVertPosSet; }
 	
 	/** Index buffer object. */
 	GLuint GetIBO();

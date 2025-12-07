@@ -297,7 +297,7 @@ public:
 	void SetCacheID(const char *cacheID);
 	
 	/** Cache verify data or nullptr if absent. */
-	inline const const decMemoryFile::Ref &GetCacheVerify() const{ return pCacheVerify; }
+	inline const decMemoryFile::Ref &GetCacheVerify() const{ return pCacheVerify; }
 	
 	
 	

@@ -123,9 +123,6 @@ void dedsCollisionTester::SetWorld(deWorld *world){
 	}
 	
 	pWorld = world;
-	if(world){
-		world->AddReference();
-	}
 }
 
 void dedsCollisionTester::SetTouchSensor(deTouchSensor *touchSensor){
@@ -134,9 +131,6 @@ void dedsCollisionTester::SetTouchSensor(deTouchSensor *touchSensor){
 	}
 	
 	pTouchSensor = touchSensor;
-	if(touchSensor){
-		touchSensor->AddReference();
-	}
 }
 
 
